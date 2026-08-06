@@ -1,0 +1,16 @@
+// Page components barrel export
+export { default as HomePage } from './Home';
+export { default as AboutPage } from './About';
+export { default as MinistriesPage } from './Ministries';
+export { default as SermonsPage } from './Sermons';
+export { default as SermonDetailPage } from './SermonDetail';
+export { default as SongsPage } from './Songs';
+export { default as SongDetailPage } from './SongDetail';
+export { default as EventsPage } from './Events';
+export { default as NewsPage } from './News';
+export { default as VisitPage } from './Visit';
+export { default as GivePage } from './Give';
+export { default as ContactPage } from './Contact';
+export { default as NotFoundPage } from './NotFound';
+export { default as LoginPage } from './Login';
+export { default as RegisterPage } from './Register';
