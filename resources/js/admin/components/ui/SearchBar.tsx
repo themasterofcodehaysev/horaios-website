@@ -42,7 +42,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
       </div>
       <input
         type="text"
-        className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C8102E] focus:border-transparent transition-all sm:text-sm"
+        className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-red focus:border-transparent transition-all sm:text-sm"
         placeholder={placeholder}
         value={localValue}
         onChange={(e) => setLocalValue(e.target.value)}

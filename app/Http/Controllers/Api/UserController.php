@@ -121,4 +121,42 @@ class UserController extends BaseApiController
 
         return $this->success(new UserResource($user->load('role')), 'User restored successfully');
     }
+
+    /**
+     * PATCH /api/users/{uuid}/toggle-status
+     * Toggle a user's status between 'active' and 'inactive'.
+     */
+    public function toggleStatus(Request $request, string $uuid): JsonResponse
+    {
+        $user = User::where('uuid', $uuid)->firstOrFail();
+
+        $this->authorize('update', $user);
+
+        try {
+            $updated = $this->userService->toggleStatus($user, $request->user());
+
+            return $this->success(new UserResource($updated), "User status changed to {$updated->status}");
+        } catch (Throwable $e) {
+            return $this->error('Failed to update user status: ' . $e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * POST /api/users/{uuid}/reset-password
+     * Trigger a password reset email for the user (admin action).
+     */
+    public function sendPasswordReset(Request $request, string $uuid): JsonResponse
+    {
+        $user = User::where('uuid', $uuid)->firstOrFail();
+
+        $this->authorize('update', $user);
+
+        try {
+            $this->userService->sendPasswordReset($user, $request->user());
+
+            return $this->success(null, 'Password reset link sent successfully');
+        } catch (Throwable $e) {
+            return $this->error('Failed to send password reset link: ' . $e->getMessage(), 500);
+        }
+    }
 }

@@ -89,8 +89,8 @@ export const GivePage: React.FC = () => {
                     onClick={() => setSelectedAmount(level.amount)}
                     className={`p-3 rounded-lg border-2 transition-all ${
                       selectedAmount === level.amount
-                        ? 'border-primary-navy bg-primary-navy text-white'
-                        : 'border-neutral-200 text-neutral-900 hover:border-primary-navy'
+                        ? 'border-primary-red bg-primary-red text-white'
+                        : 'border-neutral-200 text-neutral-900 hover:border-primary-red'
                     }`}
                   >
                     <div className="font-semibold">${level.amount}</div>
@@ -100,8 +100,8 @@ export const GivePage: React.FC = () => {
               </div>
 
               {selectedAmount && (
-                <div className="text-center mb-6 p-4 bg-primary-navy/10 rounded-lg">
-                  <p className="text-h5 font-semibold text-primary-navy">
+                <div className="text-center mb-6 p-4 bg-primary-red/10 rounded-lg">
+                  <p className="text-h5 font-semibold text-primary-red">
                     ${selectedAmount}
                   </p>
                   <p className="text-body-sm text-neutral-600">
@@ -198,21 +198,21 @@ export const GivePage: React.FC = () => {
           <Card padding="lg" shadow="lg">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
               <div>
-                <p className="text-h4 font-bold text-primary-navy mb-2">$5</p>
+                <p className="text-h4 font-bold text-primary-red mb-2">$5</p>
                 <p className="text-body-sm text-neutral-600">
                   Provides a meal for a family in need
                 </p>
               </div>
 
               <div>
-                <p className="text-h4 font-bold text-primary-navy mb-2">$25</p>
+                <p className="text-h4 font-bold text-primary-red mb-2">$25</p>
                 <p className="text-body-sm text-neutral-600">
                   Supports a week of youth program activities
                 </p>
               </div>
 
               <div>
-                <p className="text-h4 font-bold text-primary-navy mb-2">$100</p>
+                <p className="text-h4 font-bold text-primary-red mb-2">$100</p>
                 <p className="text-body-sm text-neutral-600">
                   Funds Bible materials for 10 children
                 </p>

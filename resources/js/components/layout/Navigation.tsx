@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { Menu, X, Search } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '../ui/Button';
+import { MobileMenu } from './MobileMenu';
 
 interface NavigationProps {
   onLinkClick?: (href: string) => void;
@@ -67,7 +68,7 @@ export const Navigation: React.FC<NavigationProps> = ({ onLinkClick }) => {
                 </p>
                 <p className={clsx(
                   'text-label-sm transition-colors tracking-widest uppercase font-semibold',
-                  isScrolled || location.pathname !== '/' ? 'text-primary-navy' : 'text-white/90'
+                  isScrolled || location.pathname !== '/' ? 'text-primary-red' : 'text-white/90'
                 )}>
                   CAMBODIA
                 </p>
@@ -87,7 +88,7 @@ export const Navigation: React.FC<NavigationProps> = ({ onLinkClick }) => {
                       'px-4 py-2 rounded-md text-body-sm font-medium transition-colors',
                       isScrolled || location.pathname !== '/'
                         ? isActive
-                          ? 'bg-neutral-100 text-primary-navy font-bold'
+                          ? 'bg-neutral-100 text-primary-red font-bold'
                           : 'text-neutral-700 hover:bg-neutral-100'
                         : isActive
                           ? 'bg-white/20 text-white font-bold'
@@ -139,32 +140,13 @@ export const Navigation: React.FC<NavigationProps> = ({ onLinkClick }) => {
       </nav>
 
       {/* Mobile Menu */}
-      {isOpen && (
-        <div className="fixed inset-0 top-20 z-30 bg-white lg:hidden">
-          <div className="px-4 py-6 space-y-2">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                to={item.href}
-                onClick={() => handleNavClick(item.href)}
-                className={clsx(
-                  'block px-4 py-3 rounded-md font-medium transition-colors',
-                  location.pathname === item.href
-                    ? 'bg-neutral-100 text-primary-navy font-bold'
-                    : 'text-neutral-700 hover:bg-neutral-100'
-                )}
-              >
-                {item.label}
-              </Link>
-            ))}
-            <Link to="/give" onClick={() => setIsOpen(false)} className="block mt-4">
-              <Button variant="primary" fullWidth>
-                Give
-              </Button>
-            </Link>
-          </div>
-        </div>
-      )}
+      <MobileMenu
+        isOpen={isOpen}
+        navItems={navItems}
+        currentPath={location.pathname}
+        onNavClick={handleNavClick}
+        onClose={() => setIsOpen(false)}
+      />
     </>
   );
 };

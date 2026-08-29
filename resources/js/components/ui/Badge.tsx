@@ -11,9 +11,9 @@ interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 const getVariantStyles = (variant: string) => {
   switch (variant) {
     case 'primary':
-      return 'bg-primary-navy text-white';
+      return 'bg-primary-red text-white';
     case 'secondary':
-      return 'bg-neutral-100 text-primary-navy';
+      return 'bg-neutral-100 text-primary-red';
     case 'success':
       return 'bg-success/10 text-success';
     case 'warning':
@@ -23,7 +23,7 @@ const getVariantStyles = (variant: string) => {
     case 'info':
       return 'bg-info/10 text-info';
     default:
-      return 'bg-primary-navy text-white';
+      return 'bg-primary-red text-white';
   }
 };
 

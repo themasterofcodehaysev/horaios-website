@@ -11,6 +11,9 @@ class EventService
 {
     public function getPublicEvents(array $filters = [], int $perPage = 12): LengthAwarePaginator
     {
+        $today = now()->toDateString();
+        $now = now();
+
         $query = Event::with(['category'])
             ->where('status', 'published')
             ->when(!empty($filters['search']), function ($q) use ($filters) {
@@ -29,6 +32,26 @@ class EventService
             ->when(isset($filters['featured']) && $filters['featured'] !== '', fn($q) => $q->where('featured', filter_var($filters['featured'], FILTER_VALIDATE_BOOLEAN)))
             ->when(!empty($filters['start_date_from']), fn($q) => $q->whereDate('start_date', '>=', $filters['start_date_from']))
             ->when(!empty($filters['start_date_to']), fn($q) => $q->whereDate('start_date', '<=', $filters['start_date_to']))
+            ->when(!empty($filters['scope']), function ($q) use ($filters, $today, $now) {
+                $scope = $filters['scope'];
+                if ($scope === 'upcoming') {
+                    $q->where(function ($sub) use ($today, $now) {
+                        $sub->whereDate('start_date', '>', $today)
+                            ->orWhere(function ($todaySub) use ($today, $now) {
+                                $todaySub->whereDate('start_date', '=', $today)
+                                    ->whereTime('start_time', '>=', $now->toTimeString());
+                            });
+                    });
+                } elseif ($scope === 'past') {
+                    $q->where(function ($sub) use ($today, $now) {
+                        $sub->whereDate('end_date', '<', $today)
+                            ->orWhere(function ($todaySub) use ($today, $now) {
+                                $todaySub->whereDate('end_date', '=', $today)
+                                    ->whereTime('end_time', '<=', $now->toTimeString());
+                            });
+                    });
+                }
+            })
             ->orderBy('featured', 'desc')
             ->orderBy('start_date', 'asc')
             ->orderBy('start_time', 'asc')

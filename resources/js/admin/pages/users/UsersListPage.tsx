@@ -3,13 +3,16 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
   Plus, Search, MoreVertical, Edit2, Trash2,
   ChevronLeft, ChevronRight, X, Users, AlertTriangle,
+  UserCheck, UserX, KeyRound,
 } from 'lucide-react';
 import { userService } from '../../services/user.service';
 import { roleService } from '../../services/role.service';
+import { useToast } from '../../hooks/useToast';
 import type { User, Role, PaginatedResponse, UserFilters } from '../../types';
 
 const UsersListPage: React.FC = () => {
   const navigate = useNavigate();
+  const { addToast } = useToast();
   const [users, setUsers] = useState<User[]>([]);
   const [meta, setMeta] = useState<PaginatedResponse<User>['meta'] | null>(null);
   const [roles, setRoles] = useState<Role[]>([]);
@@ -20,6 +23,8 @@ const UsersListPage: React.FC = () => {
   const [deleteModal, setDeleteModal] = useState<{ open: boolean; user: User | null }>({ open: false, user: null });
   const [deleting, setDeleting] = useState(false);
   const [actionMenu, setActionMenu] = useState<number | null>(null);
+  const [togglingStatus, setTogglingStatus] = useState<number | null>(null);
+  const [sendingReset, setSendingReset] = useState<number | null>(null);
 
   const fetchUsers = useCallback(async () => {
     try {
@@ -58,12 +63,42 @@ const UsersListPage: React.FC = () => {
     try {
       setDeleting(true);
       await userService.delete(deleteModal.user.uuid);
+      addToast({ type: 'success', title: 'User deleted', message: `${deleteModal.user.display_name} has been deleted.` });
       setDeleteModal({ open: false, user: null });
       fetchUsers();
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to delete user');
+      addToast({ type: 'error', title: 'Failed to delete user', message: err?.response?.data?.message || 'Please try again.' });
     } finally {
       setDeleting(false);
+    }
+  };
+
+  const handleToggleStatus = async (user: User) => {
+    try {
+      setTogglingStatus(user.id);
+      const updated = await userService.toggleStatus(user.uuid);
+      setUsers(prev => prev.map(u => u.id === user.id ? updated : u));
+      addToast({
+        type: 'success',
+        title: updated.status === 'active' ? 'User activated' : 'User deactivated',
+        message: `${updated.display_name} is now ${updated.status}.`,
+      });
+    } catch (err: any) {
+      addToast({ type: 'error', title: 'Failed to update status', message: err?.response?.data?.message || 'Please try again.' });
+    } finally {
+      setTogglingStatus(null);
+    }
+  };
+
+  const handleSendPasswordReset = async (user: User) => {
+    try {
+      setSendingReset(user.id);
+      await userService.sendPasswordReset(user.uuid);
+      addToast({ type: 'success', title: 'Password reset sent', message: `A reset link has been emailed to ${user.email}.` });
+    } catch (err: any) {
+      addToast({ type: 'error', title: 'Failed to send reset link', message: err?.response?.data?.message || 'Please try again.' });
+    } finally {
+      setSendingReset(null);
     }
   };
 
@@ -203,12 +238,30 @@ const UsersListPage: React.FC = () => {
                     {actionMenu === user.id && (
                       <>
                         <div className="fixed inset-0 z-10" onClick={() => setActionMenu(null)} />
-                        <div className="absolute right-0 top-full mt-1 w-44 bg-white rounded-xl border border-neutral-200 shadow-lg z-20 py-1 animate-scale-in">
+                        <div className="absolute right-0 top-full mt-1 w-52 bg-white rounded-xl border border-neutral-200 shadow-lg z-20 py-1 animate-scale-in">
                           <button
                             onClick={() => { setActionMenu(null); navigate(`/admin/users/${user.uuid}/edit`); }}
                             className="w-full flex items-center gap-2.5 px-3.5 py-2 text-body-sm text-neutral-700 hover:bg-neutral-50"
                           >
                             <Edit2 className="w-4 h-4" /> Edit User
+                          </button>
+                          <button
+                            onClick={() => { setActionMenu(null); handleToggleStatus(user); }}
+                            disabled={togglingStatus === user.id}
+                            className="w-full flex items-center gap-2.5 px-3.5 py-2 text-body-sm text-neutral-700 hover:bg-neutral-50 disabled:opacity-50"
+                          >
+                            {user.status === 'active' ? (
+                              <><UserX className="w-4 h-4" /> Deactivate User</>
+                            ) : (
+                              <><UserCheck className="w-4 h-4" /> Activate User</>
+                            )}
+                          </button>
+                          <button
+                            onClick={() => { setActionMenu(null); handleSendPasswordReset(user); }}
+                            disabled={sendingReset === user.id}
+                            className="w-full flex items-center gap-2.5 px-3.5 py-2 text-body-sm text-neutral-700 hover:bg-neutral-50 disabled:opacity-50"
+                          >
+                            <KeyRound className="w-4 h-4" /> Send Password Reset
                           </button>
                           <button
                             onClick={() => { setActionMenu(null); setDeleteModal({ open: true, user }); }}

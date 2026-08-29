@@ -194,10 +194,32 @@ export interface DashboardStats {
   };
 }
 
+export interface RecentContentItem {
+  type: 'song' | 'sermon' | 'blog_post' | 'event' | 'ministry';
+  id: number;
+  uuid: string;
+  title: string;
+  date: string | null;
+}
+
+export interface DraftContentSummary {
+  total: number;
+  by_type: {
+    songs: number;
+    sermons: number;
+    blog_posts: number;
+    events: number;
+    ministries: number;
+  };
+  items: RecentContentItem[];
+}
+
 export interface DashboardData {
   stats: DashboardStats;
   recent_users: RecentUser[];
   recent_activity: RecentActivity[];
+  recently_published: RecentContentItem[];
+  draft_content: DraftContentSummary;
 }
 
 export interface RecentUser {
@@ -621,5 +643,408 @@ export interface MinistryFilters {
   per_page?: number;
   sort_by?: string;
   sort_dir?: 'asc' | 'desc';
+}
+
+// ============================================================
+// Prayer Requests Module Types
+// ============================================================
+
+export interface PrayerRequest {
+  id: number;
+  uuid: string;
+  name: string;
+  email: string | null;
+  phone: string | null;
+  title: string;
+  request: string;
+  request_type: 'general' | 'healing' | 'guidance' | 'thanksgiving' | 'emergency';
+  urgency: 'low' | 'medium' | 'high' | 'urgent';
+  allow_public_prayer: boolean;
+  is_anonymous: boolean;
+  status: 'pending' | 'reviewed' | 'praying' | 'completed' | 'archived';
+  admin_notes: string | null;
+  processed_by: { id: number; display_name: string } | null;
+  processed_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreatePrayerRequestPayload {
+  name: string;
+  email?: string;
+  phone?: string;
+  title: string;
+  request: string;
+  request_type?: 'general' | 'healing' | 'guidance' | 'thanksgiving' | 'emergency';
+  urgency?: 'low' | 'medium' | 'high' | 'urgent';
+  allow_public_prayer?: boolean;
+  is_anonymous?: boolean;
+}
+
+export interface UpdatePrayerRequestPayload {
+  status?: 'pending' | 'reviewed' | 'praying' | 'completed' | 'archived';
+  admin_notes?: string;
+  urgency?: 'low' | 'medium' | 'high' | 'urgent';
+  allow_public_prayer?: boolean;
+}
+
+export interface PrayerRequestFilters {
+  search?: string;
+  status?: string;
+  request_type?: string;
+  urgency?: string;
+  allow_public_prayer?: boolean | string;
+  page?: number;
+  per_page?: number;
+  sort_by?: string;
+  sort_dir?: 'asc' | 'desc';
+}
+
+export interface PrayerRequestStats {
+  total: number;
+  pending: number;
+  reviewed: number;
+  praying: number;
+  completed: number;
+  archived: number;
+  urgent: number;
+  public: number;
+}
+
+// ============================================================
+// Contact Messages Module Types
+// ============================================================
+
+export interface ContactMessage {
+  id: number;
+  uuid: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  subject: string;
+  message: string;
+  status: 'unread' | 'read' | 'replied' | 'archived';
+  admin_notes: string | null;
+  replied_by: { id: number; display_name: string } | null;
+  replied_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateContactMessagePayload {
+  name: string;
+  email: string;
+  phone?: string;
+  subject: string;
+  message: string;
+}
+
+export interface UpdateContactMessagePayload {
+  status?: 'unread' | 'read' | 'replied' | 'archived';
+  admin_notes?: string;
+}
+
+export interface ContactMessageFilters {
+  search?: string;
+  status?: string;
+  page?: number;
+  per_page?: number;
+  sort_by?: string;
+  sort_dir?: 'asc' | 'desc';
+}
+
+export interface ContactMessageStats {
+  total: number;
+  unread: number;
+  read: number;
+  replied: number;
+  archived: number;
+}
+
+// ============================================================
+// Media Library Module Types
+// ============================================================
+
+export interface MediaItem {
+  id: number;
+  uuid: string;
+  filename: string;
+  original_filename: string;
+  mime_type: string;
+  extension: string;
+  size: number;
+  size_formatted: string;
+  width: number | null;
+  height: number | null;
+  disk: string;
+  path: string;
+  url: string;
+  alt_text: string | null;
+  caption: string | null;
+  uploaded_by: { id: number; display_name: string } | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface UpdateMediaPayload {
+  alt_text?: string;
+  caption?: string;
+}
+
+export interface MediaFilters {
+  search?: string;
+  mime_type?: string;
+  uploaded_by?: number;
+  page?: number;
+  per_page?: number;
+}
+
+export interface MediaStats {
+  total: number;
+  images: number;
+  documents: number;
+  videos: number;
+  audio: number;
+  total_size: number;
+}
+
+// ============================================================
+// Notification Center Types
+// ============================================================
+
+export interface Notification {
+  id: number;
+  uuid: string;
+  type: string;
+  title: string;
+  message: string;
+  data: Record<string, unknown> | null;
+  link: string | null;
+  is_read?: boolean;
+  read_at: string | null;
+  created_at: string;
+}
+
+export interface NotificationStats {
+  count: number;
+  unread_count: number;
+}
+
+// ============================================================
+// Navigation/Menu Management Types
+// ============================================================
+
+export interface NavigationMenu {
+  id: number;
+  uuid: string;
+  name: string;
+  slug: string;
+  location: 'header' | 'footer' | 'quick_links';
+  description: string | null;
+  is_active: boolean;
+  display_order: number;
+  items: NavigationMenuItem[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface NavigationMenuItem {
+  id: number;
+  uuid: string;
+  menu_id: number;
+  parent_id: number | null;
+  label: string;
+  url: string;
+  is_external: boolean;
+  open_in_new_tab: boolean;
+  is_active: boolean;
+  display_order: number;
+  icon: string | null;
+  children: NavigationMenuItem[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateNavigationMenuPayload {
+  name: string;
+  location: 'header' | 'footer' | 'quick_links';
+  description?: string;
+  is_active?: boolean;
+  display_order?: number;
+}
+
+export interface UpdateNavigationMenuPayload {
+  name?: string;
+  location?: 'header' | 'footer' | 'quick_links';
+  description?: string;
+  is_active?: boolean;
+  display_order?: number;
+}
+
+export interface CreateNavigationMenuItemPayload {
+  menu_id: number;
+  parent_id?: number | null;
+  label: string;
+  url: string;
+  is_external?: boolean;
+  open_in_new_tab?: boolean;
+  is_active?: boolean;
+  display_order?: number;
+  icon?: string;
+}
+
+export interface UpdateNavigationMenuItemPayload {
+  label?: string;
+  url?: string;
+  is_external?: boolean;
+  open_in_new_tab?: boolean;
+  is_active?: boolean;
+  display_order?: number;
+  icon?: string;
+}
+
+// ============================================================
+// Homepage CMS Types
+// ============================================================
+
+export interface HomepageSection {
+  id: number;
+  uuid: string;
+  key: string;
+  title: string;
+  content: string | null;
+  data: Record<string, unknown> | null;
+  is_visible: boolean;
+  display_order: number;
+  background_image: string | null;
+  background_color: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateHomepageSectionPayload {
+  key: string;
+  title: string;
+  content?: string;
+  data?: Record<string, unknown>;
+  is_visible?: boolean;
+  display_order?: number;
+  background_image?: string;
+  background_color?: string;
+}
+
+export interface UpdateHomepageSectionPayload {
+  title?: string;
+  content?: string;
+  data?: Record<string, unknown>;
+  is_visible?: boolean;
+  display_order?: number;
+  background_image?: string;
+  background_color?: string;
+}
+
+// ============================================================
+// Footer Management Types
+// ============================================================
+
+export interface FooterSetting {
+  id: number;
+  uuid: string;
+  key: string;
+  value: string | null;
+  type: 'text' | 'image' | 'html' | 'json' | 'boolean' | 'integer';
+  group: 'general' | 'social' | 'contact' | 'links';
+  is_active: boolean;
+  display_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateFooterSettingPayload {
+  key: string;
+  value?: string;
+  type: 'text' | 'image' | 'html' | 'json' | 'boolean' | 'integer';
+  group: 'general' | 'social' | 'contact' | 'links';
+  is_active?: boolean;
+  display_order?: number;
+}
+
+export interface UpdateFooterSettingPayload {
+  value?: string;
+  is_active?: boolean;
+  display_order?: number;
+}
+
+// ============================================================
+// Search Types
+// ============================================================
+
+interface PrayerRequestSearchItem {
+  id: number;
+  title: string;
+  status: string;
+  created_at: string;
+}
+
+interface ContactMessageSearchItem {
+  id: number;
+  subject: string;
+  status: string;
+  created_at: string;
+}
+
+interface MediaSearchItem {
+  id: number;
+  original_filename: string;
+  mime_type: string;
+  created_at: string;
+}
+
+interface BlogSearchItem {
+  id: number;
+  title: string;
+  status: string;
+  created_at: string;
+}
+
+interface SermonSearchItem {
+  id: number;
+  title: string;
+  status: string;
+  created_at: string;
+}
+
+interface SongSearchItem {
+  id: number;
+  title: string;
+  status: string;
+  created_at: string;
+}
+
+interface EventSearchItem {
+  id: number;
+  title: string;
+  status: string;
+  created_at: string;
+}
+
+interface MinistrySearchItem {
+  id: number;
+  name: string;
+  status: string;
+  created_at: string;
+}
+
+type SearchItem = PrayerRequestSearchItem | ContactMessageSearchItem | MediaSearchItem | BlogSearchItem | SermonSearchItem | SongSearchItem | EventSearchItem | MinistrySearchItem;
+
+export interface SearchResult {
+  prayer_requests?: PrayerRequestSearchItem[];
+  contact_messages?: ContactMessageSearchItem[];
+  media?: MediaSearchItem[];
+  blogs?: BlogSearchItem[];
+  sermons?: SermonSearchItem[];
+  songs?: SongSearchItem[];
+  events?: EventSearchItem[];
+  ministries?: MinistrySearchItem[];
 }
 

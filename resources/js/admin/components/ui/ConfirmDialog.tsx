@@ -55,7 +55,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         <div className="mt-6 flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
           <button
             type="button"
-            className="w-full sm:w-auto inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#1E366D] focus:ring-offset-2 sm:text-sm"
+            className="w-full sm:w-auto inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-navy focus:ring-offset-2 sm:text-sm"
             onClick={onClose}
             disabled={loading}
           >
@@ -66,7 +66,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
             className={`w-full sm:w-auto inline-flex justify-center rounded-md border border-transparent px-4 py-2 text-base font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:text-sm ${
               isDanger 
                 ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500' 
-                : 'bg-[#1E366D] hover:bg-[#15264d] focus:ring-[#1E366D]'
+                : 'bg-primary-navy hover:bg-primary-dark-navy focus:ring-primary-navy'
             } ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
             onClick={onConfirm}
             disabled={loading}

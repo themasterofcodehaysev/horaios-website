@@ -12,8 +12,7 @@ export const authService = {
 
   async logout(): Promise<void> {
     await api.post('/auth/logout');
-    localStorage.removeItem('admin_token');
-    localStorage.removeItem('admin_user');
+    authService.clearAuth();
   },
 
   async me(): Promise<AuthUser> {
@@ -29,26 +28,50 @@ export const authService = {
     });
   },
 
+  async forgotPassword(email: string): Promise<void> {
+    await api.post('/auth/forgot-password', { email });
+  },
+
+  async resetPassword(token: string, email: string, password: string): Promise<void> {
+    await api.post('/auth/reset-password', {
+      token,
+      email,
+      password,
+      password_confirmation: password,
+    });
+  },
+
   getStoredToken(): string | null {
-    return localStorage.getItem('admin_token');
+    return localStorage.getItem('admin_token') || sessionStorage.getItem('admin_token');
   },
 
   getStoredUser(): AuthUser | null {
-    const user = localStorage.getItem('admin_user');
+    const user = localStorage.getItem('admin_user') || sessionStorage.getItem('admin_user');
     return user ? JSON.parse(user) : null;
   },
 
-  storeAuth(token: string, user: AuthUser): void {
-    localStorage.setItem('admin_token', token);
-    localStorage.setItem('admin_user', JSON.stringify(user));
+  /**
+   * Persists to localStorage when `remember` is true (survives browser restarts),
+   * otherwise to sessionStorage (cleared when the tab/browser closes).
+   */
+  storeAuth(token: string, user: AuthUser, remember: boolean = true): void {
+    const storage = remember ? localStorage : sessionStorage;
+    const other = remember ? sessionStorage : localStorage;
+
+    storage.setItem('admin_token', token);
+    storage.setItem('admin_user', JSON.stringify(user));
+    other.removeItem('admin_token');
+    other.removeItem('admin_user');
   },
 
   clearAuth(): void {
     localStorage.removeItem('admin_token');
     localStorage.removeItem('admin_user');
+    sessionStorage.removeItem('admin_token');
+    sessionStorage.removeItem('admin_user');
   },
 
   isTokenValid(): boolean {
-    return !!localStorage.getItem('admin_token');
+    return !!authService.getStoredToken();
   },
 };

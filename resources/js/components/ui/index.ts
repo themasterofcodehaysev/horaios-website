@@ -12,3 +12,5 @@ export { Pagination } from './Pagination';
 export { Toast } from './Toast';
 export { Table } from './Table';
 export { Gallery } from './Gallery';
+export { Heading, Text } from './Typography';
+export { Section } from './Section';

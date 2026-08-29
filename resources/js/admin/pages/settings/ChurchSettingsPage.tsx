@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Save, Loader2, CheckCircle2, AlertCircle, Upload } from 'lucide-react';
 import { settingsService } from '../../services/settings.service';
 
-const TABS = ['General', 'Contact', 'Social Media', 'Services', 'Advanced'];
+const TABS = ['General', 'Contact', 'Social Media', 'Service Times', 'SEO', 'Localization', 'Advanced'];
 
 export default function ChurchSettingsPage() {
   const [activeTab, setActiveTab] = useState('General');
@@ -205,15 +205,44 @@ export default function ChurchSettingsPage() {
   const renderServicesTab = () => (
     <div className="space-y-6">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Service Times</label>
-        <textarea
-          rows={5}
-          className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue font-mono text-sm"
-          value={settings.services?.times || ''}
-          onChange={e => handleInputChange('services', 'times', e.target.value)}
-          placeholder="Sunday 9:00 AM - 1st Service&#10;Sunday 11:30 AM - 2nd Service"
+        <label className="block text-sm font-medium text-gray-700 mb-1">Sunday Service</label>
+        <input
+          type="text"
+          className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
+          value={settings.services?.sunday_service || ''}
+          onChange={e => handleInputChange('services', 'sunday_service', e.target.value)}
+          placeholder="e.g. 9:00 AM & 11:30 AM"
         />
-        <p className="text-xs text-gray-500 mt-2">Enter each service time on a new line.</p>
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Bible Study</label>
+        <input
+          type="text"
+          className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
+          value={settings.services?.bible_study || ''}
+          onChange={e => handleInputChange('services', 'bible_study', e.target.value)}
+          placeholder="e.g. Wednesday 7:00 PM"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Youth Meeting</label>
+        <input
+          type="text"
+          className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
+          value={settings.services?.youth_meeting || ''}
+          onChange={e => handleInputChange('services', 'youth_meeting', e.target.value)}
+          placeholder="e.g. Friday 6:00 PM"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Prayer Meeting</label>
+        <input
+          type="text"
+          className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
+          value={settings.services?.prayer_meeting || ''}
+          onChange={e => handleInputChange('services', 'prayer_meeting', e.target.value)}
+          placeholder="e.g. Saturday 10:00 AM"
+        />
       </div>
       <div className="flex justify-end pt-4 border-t border-gray-100">
         <button
@@ -228,30 +257,138 @@ export default function ChurchSettingsPage() {
     </div>
   );
 
+  const renderSeoTab = () => (
+    <div className="space-y-6">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Meta Title</label>
+        <input
+          type="text"
+          className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
+          value={settings.seo?.meta_title || ''}
+          onChange={e => handleInputChange('seo', 'meta_title', e.target.value)}
+          placeholder="Default meta title for website"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Meta Description</label>
+        <textarea
+          rows={3}
+          className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
+          value={settings.seo?.meta_description || ''}
+          onChange={e => handleInputChange('seo', 'meta_description', e.target.value)}
+          placeholder="Default meta description for SEO"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Keywords</label>
+        <input
+          type="text"
+          className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
+          value={settings.seo?.keywords || ''}
+          onChange={e => handleInputChange('seo', 'keywords', e.target.value)}
+          placeholder="church, christian, worship, community"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Google Analytics ID</label>
+        <input
+          type="text"
+          className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
+          value={settings.seo?.google_analytics || ''}
+          onChange={e => handleInputChange('seo', 'google_analytics', e.target.value)}
+          placeholder="e.g. G-XXXXXXXXXX"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Facebook Pixel ID</label>
+        <input
+          type="text"
+          className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
+          value={settings.seo?.facebook_pixel || ''}
+          onChange={e => handleInputChange('seo', 'facebook_pixel', e.target.value)}
+          placeholder="e.g. XXXXXXXXXXXXXX"
+        />
+      </div>
+      <div className="flex justify-end pt-4 border-t border-gray-100">
+        <button
+          onClick={() => handleSave('seo')}
+          disabled={saving}
+          className="bg-accent-blue hover:bg-[#152752] text-white px-5 py-2.5 rounded-lg flex items-center gap-2 transition-colors shadow-sm disabled:opacity-50 font-medium"
+        >
+          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+          Save Changes
+        </button>
+      </div>
+    </div>
+  );
+
+  const renderLocalizationTab = () => (
+    <div className="space-y-6">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Timezone</label>
+        <select
+          className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
+          value={settings.localization?.timezone || 'UTC'}
+          onChange={e => handleInputChange('localization', 'timezone', e.target.value)}
+        >
+          <option value="UTC">UTC</option>
+          <option value="Asia/Phnom_Penh">Asia/Phnom_Penh</option>
+          <option value="America/New_York">America/New_York</option>
+          <option value="America/Los_Angeles">America/Los_Angeles</option>
+          <option value="Europe/London">Europe/London</option>
+        </select>
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Language</label>
+        <select
+          className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
+          value={settings.localization?.language || 'en'}
+          onChange={e => handleInputChange('localization', 'language', e.target.value)}
+        >
+          <option value="en">English</option>
+          <option value="km">Khmer</option>
+          <option value="zh">Chinese</option>
+        </select>
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Date Format</label>
+        <select
+          className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
+          value={settings.localization?.date_format || 'Y-m-d'}
+          onChange={e => handleInputChange('localization', 'date_format', e.target.value)}
+        >
+          <option value="Y-m-d">YYYY-MM-DD</option>
+          <option value="m/d/Y">MM/DD/YYYY</option>
+          <option value="d/m/Y">DD/MM/YYYY</option>
+          <option value="F j, Y">Month DD, YYYY</option>
+        </select>
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Time Format</label>
+        <select
+          className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
+          value={settings.localization?.time_format || 'H:i'}
+          onChange={e => handleInputChange('localization', 'time_format', e.target.value)}
+        >
+          <option value="H:i">24-hour (14:30)</option>
+          <option value="g:i A">12-hour (2:30 PM)</option>
+        </select>
+      </div>
+      <div className="flex justify-end pt-4 border-t border-gray-100">
+        <button
+          onClick={() => handleSave('localization')}
+          disabled={saving}
+          className="bg-accent-blue hover:bg-[#152752] text-white px-5 py-2.5 rounded-lg flex items-center gap-2 transition-colors shadow-sm disabled:opacity-50 font-medium"
+        >
+          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+          Save Changes
+        </button>
+      </div>
+    </div>
+  );
+
   const renderAdvancedTab = () => (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Timezone</label>
-          <input
-            type="text"
-            className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
-            value={settings.advanced?.timezone || ''}
-            onChange={e => handleInputChange('advanced', 'timezone', e.target.value)}
-            placeholder="e.g. UTC, America/New_York"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Language</label>
-          <input
-            type="text"
-            className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
-            value={settings.advanced?.language || ''}
-            onChange={e => handleInputChange('advanced', 'language', e.target.value)}
-            placeholder="e.g. en-US"
-          />
-        </div>
-      </div>
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Google Maps URL</label>
         <input
@@ -322,7 +459,9 @@ export default function ChurchSettingsPage() {
           {activeTab === 'General' && renderGeneralTab()}
           {activeTab === 'Contact' && renderContactTab()}
           {activeTab === 'Social Media' && renderSocialTab()}
-          {activeTab === 'Services' && renderServicesTab()}
+          {activeTab === 'Service Times' && renderServicesTab()}
+          {activeTab === 'SEO' && renderSeoTab()}
+          {activeTab === 'Localization' && renderLocalizationTab()}
           {activeTab === 'Advanced' && renderAdvancedTab()}
         </div>
       </div>

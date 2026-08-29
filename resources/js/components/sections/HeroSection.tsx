@@ -57,7 +57,10 @@ export const HeroSection: React.FC<HeroProps> = ({
     >
       {/* Gradient Overlay */}
       {backgroundGradient && (
-        <div className="absolute inset-0 bg-gradient-to-r from-primary-navy/95 to-primary-navy/80" />
+        <div className="absolute inset-0 bg-gradient-hero-overlay" />
+      )}
+      {!backgroundGradient && !backgroundImage && (
+        <div className="absolute inset-0 bg-gradient-hero" />
       )}
       {backgroundImage && !backgroundGradient && (
         <div className="absolute inset-0 bg-black/40" />
@@ -88,7 +91,7 @@ export const HeroSection: React.FC<HeroProps> = ({
                 variant="primary"
                 size="lg"
                 onClick={primaryCTA.onClick}
-                className="bg-accent-red hover:bg-accent-dark-red"
+                className="bg-primary-red hover:bg-primary-dark-red"
               >
                 {primaryCTA.label}
               </Button>
@@ -98,7 +101,7 @@ export const HeroSection: React.FC<HeroProps> = ({
                 variant="default"
                 size="lg"
                 onClick={secondaryCTA.onClick}
-                className="border-2 border-white text-white hover:bg-white/10"
+                className="border-2 border-white bg-white text-primary-dark-red hover:bg-white/10 hover:text-white"
               >
                 {secondaryCTA.label}
               </Button>

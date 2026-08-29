@@ -14,3 +14,5 @@ export { default as ContactPage } from './Contact';
 export { default as NotFoundPage } from './NotFound';
 export { default as LoginPage } from './Login';
 export { default as RegisterPage } from './Register';
+export { default as ForgotPasswordPage } from './ForgotPassword';
+export { default as ResetPasswordPage } from './ResetPassword';

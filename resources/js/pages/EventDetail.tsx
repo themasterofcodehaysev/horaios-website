@@ -2,9 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft, Calendar, Clock, MapPin, Share2, Copy, Check,
-  Sparkles, ChevronRight, Linkedin, Facebook, Twitter,
+  Sparkles, ChevronRight,
   CalendarDays, Users, AlertCircle, CheckCircle2, XCircle, PlayCircle, CalendarRange,
 } from 'lucide-react';
+import { FacebookIcon, LinkedinIcon, TwitterIcon } from '../components/common/SocialIcons';
 import MarkdownPreview from '@uiw/react-markdown-preview';
 import { Layout } from '../components/layout';
 import { Breadcrumb } from '../components/common';
@@ -342,8 +343,8 @@ export const EventDetailPage: React.FC = () => {
                   </li>
                   {timeRange && (
                     <li className="flex items-start gap-3">
-                      <div className="w-9 h-9 rounded-xl bg-accent-blue/10 flex items-center justify-center shrink-0">
-                        <Clock className="w-4 h-4 text-accent-blue" />
+                      <div className="w-9 h-9 rounded-xl bg-primary-red/10 flex items-center justify-center shrink-0">
+                        <Clock className="w-4 h-4 text-primary-red" />
                       </div>
                       <div>
                         <p className="text-body-xs font-semibold text-neutral-500 uppercase tracking-wider">Time</p>
@@ -383,14 +384,14 @@ export const EventDetailPage: React.FC = () => {
                   status === 'cancelled'
                     ? 'bg-red-50 border-red-100'
                     : canRegister
-                      ? 'bg-primary-navy/5 border-primary-navy/20'
+                      ? 'bg-primary-red/5 border-primary-red/20'
                       : 'bg-neutral-50 border-neutral-200'
                 }`}>
                   <div className="flex items-start gap-3">
                     {status === 'cancelled' ? (
                       <XCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
                     ) : canRegister ? (
-                      <CheckCircle2 className="w-5 h-5 text-primary-navy shrink-0 mt-0.5" />
+                      <CheckCircle2 className="w-5 h-5 text-primary-red shrink-0 mt-0.5" />
                     ) : (
                       <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
                     )}
@@ -434,7 +435,7 @@ export const EventDetailPage: React.FC = () => {
             </Card>
 
             <Card padding="lg" className="text-center border-dashed border-2 bg-neutral-50/70 space-y-3">
-              <Calendar className="w-8 h-8 text-primary-navy mx-auto" />
+              <Calendar className="w-8 h-8 text-primary-red mx-auto" />
               <h4 className="text-h6 font-bold text-neutral-900">Add to Calendar</h4>
               <p className="text-body-xs text-neutral-500">
                 Never miss an event. Sync our calendar with yours.
@@ -474,14 +475,14 @@ export const EventDetailPage: React.FC = () => {
           </section>
         )}
 
-        <Card padding="lg" className="text-center bg-gradient-to-r from-primary-navy via-primary-navy to-accent-blue border-0 !text-white">
+        <Card padding="lg" className="text-center bg-gradient-to-r from-primary-red via-primary-red to-primary-red border-0 !text-white">
           <CalendarDays className="w-10 h-10 text-primary-100 mx-auto mb-4" />
           <h2 className="text-h3 font-bold mb-3">Never Miss an Event</h2>
           <p className="text-body-lg text-primary-100 max-w-xl mx-auto mb-6">
             Subscribe to our public calendar and get all upcoming events automatically synced to your device.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button variant="primary" size="lg" className="bg-white !text-primary-navy hover:bg-primary-100 transition-colors">
+            <Button variant="primary" size="lg" className="bg-white !text-primary-red hover:bg-primary-100 transition-colors">
               <Calendar className="w-5 h-5 mr-2" />
               Download .ics
             </Button>

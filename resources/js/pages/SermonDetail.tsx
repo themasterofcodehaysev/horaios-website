@@ -6,8 +6,64 @@ import {
 } from 'lucide-react';
 import MarkdownPreview from '@uiw/react-markdown-preview';
 import { Layout } from '../components/layout';
+import { Seo } from '../components/common';
+import type { SeoStructuredData } from '../components/common/Seo';
 import { sermonService } from '../admin/services/sermon.service';
 import type { SermonItem } from '../admin/types';
+
+const SITE_NAME = 'Horaios Baptist Church';
+
+function stripMarkdown(markdown: string): string {
+  return markdown
+    .replace(/!\[(.*?)\]\(.*?\)/g, '$1')
+    .replace(/\[(.*?)\]\(.*?\)/g, '$1')
+    .replace(/[#>*_`~-]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function truncate(text: string, maxLength: number): string {
+  if (text.length <= maxLength) return text;
+  return `${text.slice(0, maxLength).trim()}…`;
+}
+
+/**
+ * NOTE: SermonItem has no seo_title/seo_description/seo_image/canonical_url
+ * fields (unlike BlogItem/EventItem/MinistryItem) -- the sermons table and
+ * SermonResource simply don't carry them. These are sensible fallbacks built
+ * from data that actually exists (summary, description, thumbnail), not a
+ * stand-in for those admin-editable SEO fields.
+ */
+function buildSermonSeo(sermon: SermonItem) {
+  const canonicalUrl = typeof window !== 'undefined'
+    ? `${window.location.origin}${window.location.pathname}`
+    : undefined;
+
+  const description = sermon.summary
+    || (sermon.description ? truncate(stripMarkdown(sermon.description), 160) : null)
+    || `${sermon.title}${sermon.speaker ? ` — a message from ${sermon.speaker.name}` : ''} at ${SITE_NAME}.`;
+
+  const jsonLd: SeoStructuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: sermon.title,
+    description,
+    ...(sermon.published_at ? { datePublished: sermon.published_at } : {}),
+    dateModified: sermon.updated_at,
+    ...(sermon.speaker ? { author: { '@type': 'Person', name: sermon.speaker.name } } : {}),
+    ...(sermon.thumbnail ? { image: sermon.thumbnail } : {}),
+    publisher: { '@type': 'Organization', name: SITE_NAME },
+    ...(canonicalUrl ? { url: canonicalUrl } : {}),
+  };
+
+  return {
+    title: `${sermon.title} | ${SITE_NAME} Sermons`,
+    description,
+    canonicalUrl,
+    image: sermon.thumbnail,
+    jsonLd,
+  };
+}
 
 export const SermonDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -40,16 +96,6 @@ export const SermonDetailPage: React.FC = () => {
     };
     fetchSermon();
   }, [slug]);
-
-  // Dynamic SEO Page Title
-  useEffect(() => {
-    if (sermon) {
-      document.title = `${sermon.title} | Horaios Baptist Church Sermons`;
-    }
-    return () => {
-      document.title = 'Horaios Baptist Church';
-    };
-  }, [sermon]);
 
   // Extract YouTube Video ID
   const getYouTubeId = (url: string | null): string | null => {
@@ -94,9 +140,18 @@ export const SermonDetailPage: React.FC = () => {
   }
 
   const youtubeId = getYouTubeId(sermon.youtube_url);
+  const sermonSeo = buildSermonSeo(sermon);
 
   return (
     <Layout>
+      <Seo
+        title={sermonSeo.title}
+        description={sermonSeo.description}
+        canonicalUrl={sermonSeo.canonicalUrl}
+        image={sermonSeo.image}
+        type="article"
+        jsonLd={sermonSeo.jsonLd}
+      />
       <article className="max-w-4xl mx-auto py-10 px-4 sm:px-6 space-y-8 animate-fade-in">
         {/* Back Link */}
         <div>

@@ -1,6 +1,8 @@
 import React from 'react';
 import { Mail, MapPin, Phone } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { CHURCH_INFO } from '../../constants';
+import { FacebookIcon, YoutubeIcon } from '../common/SocialIcons';
 
 interface FooterProps {}
 
@@ -21,7 +23,7 @@ const Footer: React.FC<FooterProps> = () => {
   ];
 
   return (
-    <footer className="bg-primary-navy text-white">
+    <footer className="relative z-10 bg-gradient-footer text-white border-t border-white/10">
       {/* Main Footer */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -35,21 +37,30 @@ const Footer: React.FC<FooterProps> = () => {
               />
               <div>
                 <h3 className="text-h6 font-bold tracking-wide">HORAIOS BAPTIST CHURCH</h3>
-                <p className="text-label-sm tracking-widest text-primary-light-navy uppercase">CAMBODIA</p>
+                <p className="text-label-sm tracking-widest text-primary-light-red uppercase">CAMBODIA</p>
               </div>
             </Link>
             <p className="text-body-sm text-white/80 mb-6">
               A community of faith serving God and loving our neighbors in Phnom Penh, Cambodia.
             </p>
             <div className="flex gap-3">
-              <a href="#" className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
-                <span className="text-sm font-bold">f</span>
+              <a
+                href={CHURCH_INFO.socialMedia.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Follow Horaios Baptist Church on Facebook"
+                className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors"
+              >
+                <FacebookIcon className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
-                <span className="text-sm font-bold">▶</span>
-              </a>
-              <a href="#" className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
-                <span className="text-sm font-bold">@</span>
+              <a
+                href={CHURCH_INFO.socialMedia.youtube}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Subscribe to Horaios Ministry Cambodia on YouTube"
+                className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors"
+              >
+                <YoutubeIcon className="w-5 h-5" />
               </a>
             </div>
           </div>

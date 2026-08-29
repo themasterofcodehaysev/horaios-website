@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navigation } from './Navigation';
 import Footer from './Footer';
+import { PageBackground } from './PageBackground';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -14,9 +15,10 @@ export const Layout: React.FC<LayoutProps> = ({
   hideFooter = false,
 }) => {
   return (
-    <div className="flex flex-col min-h-screen bg-white">
+    <div className="relative flex min-h-screen flex-col bg-brand-burgundy">
+      <PageBackground />
       {!hideNavigation && <Navigation />}
-      <main className="flex-1">
+      <main className="relative z-10 flex-1">
         {children}
       </main>
       {!hideFooter && <Footer />}

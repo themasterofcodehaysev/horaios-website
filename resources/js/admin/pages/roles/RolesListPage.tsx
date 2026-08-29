@@ -62,11 +62,11 @@ export default function RolesListPage() {
                 className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow cursor-pointer group flex flex-col h-full"
               >
                 <div className="flex justify-between items-start mb-4">
-                  <h3 className="text-lg font-medium text-gray-900 group-hover:text-[#1E366D] transition-colors">
+                  <h3 className="text-lg font-medium text-gray-900 group-hover:text-primary-navy transition-colors">
                     {role.display_name || role.name}
                   </h3>
                   {isSystem && (
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#1E366D]/10 text-[#1E366D]">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-navy/10 text-primary-navy">
                       System Role
                     </span>
                   )}
@@ -87,7 +87,7 @@ export default function RolesListPage() {
                       <span>{role.permissions?.length || 0}</span>
                     </div>
                   </div>
-                  <ChevronRight size={18} className="text-gray-300 group-hover:text-[#C8102E] transition-colors" />
+                  <ChevronRight size={18} className="text-gray-300 group-hover:text-primary-red transition-colors" />
                 </div>
               </div>
             );

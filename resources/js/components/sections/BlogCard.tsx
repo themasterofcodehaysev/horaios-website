@@ -41,7 +41,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({
       <div className="flex-1 flex flex-col space-y-3">
         {category && (
           <div className="flex gap-2">
-            <span className="text-label-sm font-semibold text-accent-red uppercase">
+            <span className="text-label-sm font-semibold text-primary-red uppercase">
               {category}
             </span>
           </div>

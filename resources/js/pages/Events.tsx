@@ -152,7 +152,7 @@ export const EventsPage: React.FC = () => {
                   onClick={() => setScope(opt.key)}
                   className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-body-sm font-semibold transition-all ${
                     scope === opt.key
-                      ? 'bg-white text-primary-navy shadow-sm'
+                      ? 'bg-white text-primary-red shadow-sm'
                       : 'text-neutral-600 hover:text-neutral-900'
                   }`}
                 >
@@ -262,7 +262,7 @@ export const EventsPage: React.FC = () => {
           <div className="space-y-8">
             <div className="flex items-center justify-between flex-wrap gap-3">
               <h2 className="text-h4 font-bold text-neutral-900 flex items-center gap-2">
-                <CalendarDays className="w-5 h-5 text-primary-navy" />
+                <CalendarDays className="w-5 h-5 text-primary-red" />
                 {scope === 'upcoming' ? 'Upcoming Events' : scope === 'past' ? 'Past Events' : 'All Events'}
                 {selectedCategory && ` — ${categories.find(c => c.slug === selectedCategory)?.name || 'Category'}`}
                 {searchDebounced && ` matching "${searchDebounced}"`}
@@ -317,9 +317,9 @@ export const EventsPage: React.FC = () => {
                 {Object.entries(groupedByMonth).map(([month, monthEvents]) => (
                   <div key={month} className="space-y-5">
                     <div className="flex items-center gap-3">
-                      <div className="h-9 flex items-center justify-center px-4 rounded-xl bg-primary-navy/10 border border-primary-navy/20">
-                        <CalendarDays className="w-4 h-4 text-primary-navy mr-2" />
-                        <span className="text-body-sm font-extrabold text-primary-navy uppercase tracking-wider">
+                      <div className="h-9 flex items-center justify-center px-4 rounded-xl bg-primary-red/10 border border-primary-red/20">
+                        <CalendarDays className="w-4 h-4 text-primary-red mr-2" />
+                        <span className="text-body-sm font-extrabold text-primary-red uppercase tracking-wider">
                           {month}
                         </span>
                       </div>
@@ -380,7 +380,7 @@ export const EventsPage: React.FC = () => {
 
       <section className="py-20 bg-white border-t border-neutral-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary-navy/10 text-primary-navy">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary-red/10 text-primary-red">
             <CalendarDays className="w-7 h-7" />
           </div>
           <h2 className="text-h3 font-bold text-neutral-900">Never Miss an Event</h2>

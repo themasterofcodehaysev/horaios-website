@@ -2,10 +2,19 @@
 
 namespace App\Http\Requests\Blog;
 
+use App\Services\HtmlSanitizerService;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateBlogPostRequest extends FormRequest
 {
+    protected HtmlSanitizerService $sanitizer;
+
+    public function __construct(HtmlSanitizerService $sanitizer)
+    {
+        parent::__construct();
+        $this->sanitizer = $sanitizer;
+    }
+
     public function authorize(): bool
     {
         return true;
@@ -28,5 +37,13 @@ class CreateBlogPostRequest extends FormRequest
             'seo_image'       => ['nullable', 'string', 'max:500'],
             'canonical_url'   => ['nullable', 'url', 'max:500'],
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'content' => $this->sanitizer->sanitize($this->input('content', '')),
+            'excerpt' => $this->sanitizer->sanitizeSimple($this->input('excerpt', '')),
+        ]);
     }
 }

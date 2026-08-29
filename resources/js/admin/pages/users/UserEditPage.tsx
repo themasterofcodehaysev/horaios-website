@@ -3,11 +3,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Save, Loader2, Trash2 } from 'lucide-react';
 import { userService } from '../../services/user.service';
 import { roleService } from '../../services/role.service';
+import { useToast } from '../../hooks/useToast';
 import { Role } from '../../types';
 
 export default function UserEditPage() {
   const { uuid } = useParams<{ uuid: string }>();
   const navigate = useNavigate();
+  const { addToast } = useToast();
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
   const [roles, setRoles] = useState<Role[]>([]);
@@ -51,6 +53,7 @@ export default function UserEditPage() {
       } catch (err) {
         console.error('Failed to fetch data', err);
         setErrorState('Failed to load user data. They may not exist.');
+        addToast({ type: 'error', title: 'Failed to load user', message: 'The user data could not be loaded. They may not exist.' });
       } finally {
         setFetching(false);
       }
@@ -94,11 +97,11 @@ export default function UserEditPage() {
       if (!payload.password) delete payload.password;
       
       await userService.update(uuid!, payload);
-      // toast success here
+      addToast({ type: 'success', title: 'User updated', message: 'The user was updated successfully.' });
       navigate('/admin/users');
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to update user', err);
-      // toast error here
+      addToast({ type: 'error', title: 'Failed to update user', message: err?.response?.data?.message || 'Please try again.' });
     } finally {
       setLoading(false);
     }
@@ -107,9 +110,11 @@ export default function UserEditPage() {
   const handleDelete = async () => {
     try {
       await userService.delete(uuid!);
+      addToast({ type: 'success', title: 'User deleted', message: 'The user was deleted successfully.' });
       navigate('/admin/users');
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to delete user', err);
+      addToast({ type: 'error', title: 'Failed to delete user', message: err?.response?.data?.message || 'Please try again.' });
     }
   };
 
@@ -133,7 +138,7 @@ export default function UserEditPage() {
       <div className="max-w-4xl mx-auto py-6">
         <div className="bg-red-50 border border-red-200 text-red-600 rounded-xl p-6 text-center">
           <p>{errorState}</p>
-          <button onClick={() => navigate('/admin/users')} className="mt-4 text-[#1E366D] hover:underline">
+          <button onClick={() => navigate('/admin/users')} className="mt-4 text-primary-navy hover:underline">
             Back to Users
           </button>
         </div>
@@ -170,7 +175,7 @@ export default function UserEditPage() {
                 name="first_name"
                 value={formData.first_name}
                 onChange={handleChange}
-                className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-[#1E366D] focus:border-transparent outline-none transition-all ${errors.first_name ? 'border-red-500' : 'border-gray-200'}`}
+                className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-primary-navy focus:border-transparent outline-none transition-all ${errors.first_name ? 'border-red-500' : 'border-gray-200'}`}
               />
               {errors.first_name && <p className="text-red-500 text-xs mt-1">{errors.first_name}</p>}
             </div>
@@ -182,7 +187,7 @@ export default function UserEditPage() {
                 name="last_name"
                 value={formData.last_name}
                 onChange={handleChange}
-                className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-[#1E366D] focus:border-transparent outline-none transition-all ${errors.last_name ? 'border-red-500' : 'border-gray-200'}`}
+                className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-primary-navy focus:border-transparent outline-none transition-all ${errors.last_name ? 'border-red-500' : 'border-gray-200'}`}
               />
               {errors.last_name && <p className="text-red-500 text-xs mt-1">{errors.last_name}</p>}
             </div>
@@ -194,7 +199,7 @@ export default function UserEditPage() {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-[#1E366D] focus:border-transparent outline-none transition-all ${errors.email ? 'border-red-500' : 'border-gray-200'}`}
+                className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-primary-navy focus:border-transparent outline-none transition-all ${errors.email ? 'border-red-500' : 'border-gray-200'}`}
               />
               {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
             </div>
@@ -206,7 +211,7 @@ export default function UserEditPage() {
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                className="w-full rounded-lg border border-gray-200 px-4 py-2 focus:ring-2 focus:ring-[#1E366D] focus:border-transparent outline-none transition-all"
+                className="w-full rounded-lg border border-gray-200 px-4 py-2 focus:ring-2 focus:ring-primary-navy focus:border-transparent outline-none transition-all"
               />
             </div>
 
@@ -218,7 +223,7 @@ export default function UserEditPage() {
                 placeholder="Leave blank to keep current password"
                 value={formData.password}
                 onChange={handleChange}
-                className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-[#1E366D] focus:border-transparent outline-none transition-all ${errors.password ? 'border-red-500' : 'border-gray-200'}`}
+                className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-primary-navy focus:border-transparent outline-none transition-all ${errors.password ? 'border-red-500' : 'border-gray-200'}`}
               />
               {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
             </div>
@@ -231,7 +236,7 @@ export default function UserEditPage() {
                 value={formData.confirm_password}
                 onChange={handleChange}
                 disabled={!formData.password}
-                className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-[#1E366D] focus:border-transparent outline-none transition-all ${errors.confirm_password ? 'border-red-500' : 'border-gray-200'} disabled:bg-gray-50`}
+                className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-primary-navy focus:border-transparent outline-none transition-all ${errors.confirm_password ? 'border-red-500' : 'border-gray-200'} disabled:bg-gray-50`}
               />
               {errors.confirm_password && <p className="text-red-500 text-xs mt-1">{errors.confirm_password}</p>}
             </div>
@@ -242,7 +247,7 @@ export default function UserEditPage() {
                 name="role_id"
                 value={formData.role_id}
                 onChange={handleChange}
-                className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-[#1E366D] focus:border-transparent outline-none transition-all bg-white ${errors.role_id ? 'border-red-500' : 'border-gray-200'}`}
+                className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-primary-navy focus:border-transparent outline-none transition-all bg-white ${errors.role_id ? 'border-red-500' : 'border-gray-200'}`}
               >
                 <option value="">Select a role</option>
                 {roles.map(role => (
@@ -258,7 +263,7 @@ export default function UserEditPage() {
                 name="status"
                 value={formData.status}
                 onChange={handleChange}
-                className="w-full rounded-lg border border-gray-200 px-4 py-2 focus:ring-2 focus:ring-[#1E366D] focus:border-transparent outline-none transition-all bg-white"
+                className="w-full rounded-lg border border-gray-200 px-4 py-2 focus:ring-2 focus:ring-primary-navy focus:border-transparent outline-none transition-all bg-white"
               >
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
@@ -286,7 +291,7 @@ export default function UserEditPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-[#C8102E] hover:bg-[#a00d25] rounded-lg transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                className="flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-primary-red hover:bg-primary-dark-red rounded-lg transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
               >
                 {loading ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
                 {loading ? 'Saving...' : 'Save Changes'}

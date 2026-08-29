@@ -56,12 +56,12 @@ export const EventCard: React.FC<EventCardProps> = ({
 
         <div className="space-y-1.5 text-body-sm text-neutral-600">
           <div className="flex items-center gap-2">
-            <span className="font-medium text-primary-navy">{date}</span>
+            <span className="font-medium text-primary-red">{date}</span>
             <span>•</span>
             <span>{time}</span>
           </div>
           <p className="flex items-start gap-2">
-            <span className="font-medium text-primary-navy">📍</span>
+            <span className="font-medium text-primary-red">📍</span>
             <span>{location}</span>
           </p>
         </div>
@@ -73,7 +73,7 @@ export const EventCard: React.FC<EventCardProps> = ({
         )}
 
         <div className="pt-3 border-t border-neutral-200">
-          <button className="text-accent-red font-medium text-body-sm hover:text-accent-dark-red transition-colors">
+          <button className="text-primary-red font-medium text-body-sm hover:text-primary-dark-red transition-colors">
             Learn More →
           </button>
         </div>

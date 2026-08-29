@@ -1,6 +1,6 @@
 import type React from 'react';
 
-export type Variant = 'primary' | 'secondary' | 'danger' | 'success' | 'warning';
+export type Variant = 'primary' | 'secondary' | 'outline' | 'danger' | 'success' | 'warning';
 export type Size = 'sm' | 'md' | 'lg' | 'xl';
 export type Align = 'left' | 'center' | 'right';
 
@@ -289,4 +289,22 @@ export interface MinistryFilters {
   per_page?: number;
   sort_by?: string;
   sort_dir?: 'asc' | 'desc';
+}
+
+export interface Notification {
+  id: number;
+  uuid: string;
+  type: string;
+  title: string;
+  message: string;
+  data: Record<string, unknown> | null;
+  link: string | null;
+  is_read?: boolean;
+  read_at: string | null;
+  created_at: string;
+}
+
+export interface NotificationStats {
+  count: number;
+  unread_count: number;
 }

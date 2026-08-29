@@ -19,6 +19,8 @@ export const songService = {
     if (filters.featured !== undefined && filters.featured !== '') params.set('featured', String(filters.featured));
     if (filters.page) params.set('page', String(filters.page));
     if (filters.per_page) params.set('per_page', String(filters.per_page));
+    if (filters.sort_by) params.set('sort_by', filters.sort_by);
+    if (filters.sort_dir) params.set('sort_dir', filters.sort_dir);
 
     const { data } = await api.get<PaginatedResponse<SongItem>>(`/songs?${params.toString()}`);
     return data;

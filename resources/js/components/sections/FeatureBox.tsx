@@ -22,8 +22,8 @@ export const FeatureBox: React.FC<FeatureBoxProps> = ({
       className={clsx(
         'p-6 rounded-lg transition-all duration-base',
         highlight
-          ? 'bg-primary-navy text-white shadow-lg'
-          : 'bg-white text-neutral-900 border-2 border-neutral-200 hover:border-primary-navy hover:shadow-md'
+          ? 'bg-primary-red text-white shadow-lg'
+          : 'bg-white text-neutral-900 border-2 border-neutral-200 hover:border-primary-red hover:shadow-md'
       )}
     >
       {icon && (
@@ -31,9 +31,9 @@ export const FeatureBox: React.FC<FeatureBoxProps> = ({
           'mb-4 inline-flex p-3 rounded-lg',
           highlight
             ? 'bg-white/20'
-            : 'bg-primary-navy/10'
+            : 'bg-primary-red/10'
         )}>
-          <span className={highlight ? 'text-white' : 'text-primary-navy'}>
+          <span className={highlight ? 'text-white' : 'text-primary-red'}>
             {icon}
           </span>
         </div>

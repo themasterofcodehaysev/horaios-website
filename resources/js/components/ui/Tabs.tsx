@@ -44,13 +44,13 @@ export const Tabs: React.FC<TabsProps> = ({
                 'px-4 py-2 rounded-md text-body-sm font-medium transition-all duration-base',
                 'disabled:opacity-50 disabled:cursor-not-allowed',
                 activeTab === tab.value
-                  ? 'bg-white text-primary-navy shadow-sm'
+                  ? 'bg-white text-primary-red shadow-sm'
                   : 'text-neutral-600 hover:text-neutral-900'
               )}
             >
               {tab.label}
               {tab.badge && (
-                <span className="ml-2 px-2 py-0.5 text-label-sm bg-primary-navy text-white rounded-full">
+                <span className="ml-2 px-2 py-0.5 text-label-sm bg-primary-red text-white rounded-full">
                   {tab.badge}
                 </span>
               )}
@@ -74,13 +74,13 @@ export const Tabs: React.FC<TabsProps> = ({
               'px-4 py-3 text-body-base font-medium transition-all duration-base',
               'border-b-2 -mb-0.5 disabled:opacity-50 disabled:cursor-not-allowed',
               activeTab === tab.value
-                ? 'border-primary-navy text-primary-navy'
+                ? 'border-primary-red text-primary-red'
                 : 'border-transparent text-neutral-600 hover:text-neutral-900'
             )}
           >
             {tab.label}
             {tab.badge && (
-              <span className="ml-2 px-2 py-0.5 text-label-sm bg-primary-navy text-white rounded-full">
+              <span className="ml-2 px-2 py-0.5 text-label-sm bg-primary-red text-white rounded-full">
                 {tab.badge}
               </span>
             )}

@@ -2,8 +2,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft, Calendar, User, Share2, Copy, Check,
-  Sparkles, ChevronRight, Linkedin, Facebook, Twitter, Newspaper, Mail,
+  Sparkles, ChevronRight, Newspaper, Mail,
 } from 'lucide-react';
+import { FacebookIcon, LinkedinIcon, TwitterIcon } from '../components/common/SocialIcons';
 import MarkdownPreview from '@uiw/react-markdown-preview';
 import { Layout } from '../components/layout';
 import { Breadcrumb } from '../components/common';
@@ -11,6 +12,7 @@ import { BlogCard } from '../components/sections';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { blogService } from '../services/publicContent.service';
+import { placeholderImage } from '../lib/placeholderImage';
 import type { BlogPostPublic } from '../types';
 
 export const BlogDetailPage: React.FC = () => {
@@ -131,7 +133,7 @@ export const BlogDetailPage: React.FC = () => {
             alt={post.title}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-primary-navy/40 via-primary-navy/60 to-primary-navy/95" />
+          <div className="absolute inset-0 bg-gradient-to-b from-primary-red/40 via-primary-red/60 to-primary-red/95" />
         </div>
       )}
 
@@ -258,7 +260,7 @@ export const BlogDetailPage: React.FC = () => {
                     excerpt={rel.excerpt || ''}
                     author={rel.author?.display_name || 'Horaios Church'}
                     date={rel.published_at ? new Date(rel.published_at).toLocaleDateString() : 'Recent'}
-                    image={rel.featured_image || 'https://via.placeholder.com/400x250?text=News'}
+                    image={rel.featured_image || placeholderImage(400, 250, 'News')}
                     category={rel.category?.name || undefined}
                   />
                 </Link>
@@ -268,7 +270,7 @@ export const BlogDetailPage: React.FC = () => {
         )}
 
         <section>
-          <Card padding="lg" className="text-center bg-gradient-to-br from-primary-navy via-primary-navy to-accent-blue border-0 !text-white overflow-hidden relative">
+          <Card padding="lg" className="text-center bg-gradient-to-br from-primary-red via-primary-red to-primary-red border-0 !text-white overflow-hidden relative">
             <div className="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(circle_at_top_right,_white,_transparent_60%)]" />
             <div className="relative">
               <Mail className="w-10 h-10 text-primary-100 mx-auto mb-4" />
@@ -284,7 +286,7 @@ export const BlogDetailPage: React.FC = () => {
                   placeholder="Enter your email address"
                   className="flex-1 px-4 py-3 rounded-xl bg-white text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-4 focus:ring-white/20 text-body-base shadow-lg"
                 />
-                <Button variant="primary" size="lg" className="bg-white !text-primary-navy hover:bg-primary-100 transition-colors whitespace-nowrap">
+                <Button variant="primary" size="lg" className="bg-white !text-primary-red hover:bg-primary-100 transition-colors whitespace-nowrap">
                   Subscribe
                 </Button>
               </div>

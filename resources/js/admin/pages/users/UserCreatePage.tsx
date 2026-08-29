@@ -110,7 +110,7 @@ export default function UserCreatePage() {
                 name="first_name"
                 value={formData.first_name}
                 onChange={handleChange}
-                className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-[#1E366D] focus:border-transparent outline-none transition-all ${errors.first_name ? 'border-red-500' : 'border-gray-200'}`}
+                className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-primary-navy focus:border-transparent outline-none transition-all ${errors.first_name ? 'border-red-500' : 'border-gray-200'}`}
               />
               {errors.first_name && <p className="text-red-500 text-xs mt-1">{errors.first_name}</p>}
             </div>
@@ -122,7 +122,7 @@ export default function UserCreatePage() {
                 name="last_name"
                 value={formData.last_name}
                 onChange={handleChange}
-                className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-[#1E366D] focus:border-transparent outline-none transition-all ${errors.last_name ? 'border-red-500' : 'border-gray-200'}`}
+                className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-primary-navy focus:border-transparent outline-none transition-all ${errors.last_name ? 'border-red-500' : 'border-gray-200'}`}
               />
               {errors.last_name && <p className="text-red-500 text-xs mt-1">{errors.last_name}</p>}
             </div>
@@ -134,7 +134,7 @@ export default function UserCreatePage() {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-[#1E366D] focus:border-transparent outline-none transition-all ${errors.email ? 'border-red-500' : 'border-gray-200'}`}
+                className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-primary-navy focus:border-transparent outline-none transition-all ${errors.email ? 'border-red-500' : 'border-gray-200'}`}
               />
               {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
             </div>
@@ -146,7 +146,7 @@ export default function UserCreatePage() {
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                className="w-full rounded-lg border border-gray-200 px-4 py-2 focus:ring-2 focus:ring-[#1E366D] focus:border-transparent outline-none transition-all"
+                className="w-full rounded-lg border border-gray-200 px-4 py-2 focus:ring-2 focus:ring-primary-navy focus:border-transparent outline-none transition-all"
               />
             </div>
 
@@ -157,7 +157,7 @@ export default function UserCreatePage() {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-[#1E366D] focus:border-transparent outline-none transition-all ${errors.password ? 'border-red-500' : 'border-gray-200'}`}
+                className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-primary-navy focus:border-transparent outline-none transition-all ${errors.password ? 'border-red-500' : 'border-gray-200'}`}
               />
               {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
             </div>
@@ -169,7 +169,7 @@ export default function UserCreatePage() {
                 name="confirm_password"
                 value={formData.confirm_password}
                 onChange={handleChange}
-                className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-[#1E366D] focus:border-transparent outline-none transition-all ${errors.confirm_password ? 'border-red-500' : 'border-gray-200'}`}
+                className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-primary-navy focus:border-transparent outline-none transition-all ${errors.confirm_password ? 'border-red-500' : 'border-gray-200'}`}
               />
               {errors.confirm_password && <p className="text-red-500 text-xs mt-1">{errors.confirm_password}</p>}
             </div>
@@ -181,7 +181,7 @@ export default function UserCreatePage() {
                 value={formData.role_id}
                 onChange={handleChange}
                 disabled={loadingRoles}
-                className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-[#1E366D] focus:border-transparent outline-none transition-all bg-white ${errors.role_id ? 'border-red-500' : 'border-gray-200'}`}
+                className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-primary-navy focus:border-transparent outline-none transition-all bg-white ${errors.role_id ? 'border-red-500' : 'border-gray-200'}`}
               >
                 <option value="">Select a role</option>
                 {roles.map(role => (
@@ -197,7 +197,7 @@ export default function UserCreatePage() {
                 name="status"
                 value={formData.status}
                 onChange={handleChange}
-                className="w-full rounded-lg border border-gray-200 px-4 py-2 focus:ring-2 focus:ring-[#1E366D] focus:border-transparent outline-none transition-all bg-white"
+                className="w-full rounded-lg border border-gray-200 px-4 py-2 focus:ring-2 focus:ring-primary-navy focus:border-transparent outline-none transition-all bg-white"
               >
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
@@ -216,7 +216,7 @@ export default function UserCreatePage() {
             <button
               type="submit"
               disabled={loading}
-              className="flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-[#C8102E] hover:bg-[#a00d25] rounded-lg transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-primary-red hover:bg-primary-dark-red rounded-lg transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {loading ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
               {loading ? 'Saving...' : 'Create User'}

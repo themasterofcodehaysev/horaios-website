@@ -26,6 +26,7 @@ class EventController extends BaseApiController
             'featured'        => $request->input('featured'),
             'start_date_from' => $request->input('start_date_from'),
             'start_date_to'   => $request->input('start_date_to'),
+            'scope'           => $request->input('scope'),
         ], $request->input('per_page', 12));
 
         return $this->paginated(EventResource::collection($events), 'Published events retrieved');

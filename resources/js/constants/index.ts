@@ -22,8 +22,8 @@ export const CHURCH_INFO = {
   email: 'info@horaiosbaptist.org',
   website: 'horaiosbaptist.org',
   socialMedia: {
-    facebook: 'https://facebook.com/horaiosbaptist',
-    youtube: 'https://youtube.com/@horaiosbaptist',
+    facebook: 'https://www.facebook.com/profile.php?id=61583373172735',
+    youtube: 'https://www.youtube.com/@horaiosministrycambodia7430',
     instagram: 'https://instagram.com/horaiosbaptist',
   },
   serviceTimes: [

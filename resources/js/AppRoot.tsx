@@ -1,3 +1,4 @@
+import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import {
   HomePage,
@@ -15,6 +16,8 @@ import {
   NotFoundPage,
   LoginPage,
   RegisterPage,
+  ForgotPasswordPage,
+  ResetPasswordPage,
 } from './pages';
 import AdminRouter from './admin/AdminRouter';
 
@@ -36,6 +39,8 @@ function App() {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
         
         {/* Admin Dashboard Routes */}
         <Route path="/admin/*" element={<AdminRouter />} />

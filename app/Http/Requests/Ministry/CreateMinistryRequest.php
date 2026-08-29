@@ -2,10 +2,19 @@
 
 namespace App\Http\Requests\Ministry;
 
+use App\Services\HtmlSanitizerService;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateMinistryRequest extends FormRequest
 {
+    protected HtmlSanitizerService $sanitizer;
+
+    public function __construct(HtmlSanitizerService $sanitizer)
+    {
+        parent::__construct();
+        $this->sanitizer = $sanitizer;
+    }
+
     public function authorize(): bool
     {
         return true;
@@ -34,5 +43,12 @@ class CreateMinistryRequest extends FormRequest
             'seo_image'      => ['nullable', 'string', 'max:500'],
             'canonical_url'  => ['nullable', 'url', 'max:500'],
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'description' => $this->sanitizer->sanitize($this->input('description', '')),
+        ]);
     }
 }

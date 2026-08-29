@@ -82,7 +82,7 @@ export default function RoleEditPage() {
       <div className="max-w-5xl mx-auto py-6">
         <div className="bg-red-50 border border-red-200 text-red-600 rounded-xl p-6 text-center">
           <p>{errorState || 'Role not found.'}</p>
-          <button onClick={() => navigate('/admin/roles')} className="mt-4 text-[#1E366D] hover:underline">
+          <button onClick={() => navigate('/admin/roles')} className="mt-4 text-primary-navy hover:underline">
             Back to Roles
           </button>
         </div>
@@ -115,11 +115,11 @@ export default function RoleEditPage() {
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         {isSuperAdmin && (
-          <div className="bg-[#1E366D]/10 px-6 py-4 border-b border-[#1E366D]/20 flex items-start gap-3">
-            <ShieldAlert className="text-[#1E366D] shrink-0 mt-0.5" size={20} />
+          <div className="bg-primary-navy/10 px-6 py-4 border-b border-primary-navy/20 flex items-start gap-3">
+            <ShieldAlert className="text-primary-navy shrink-0 mt-0.5" size={20} />
             <div>
-              <h3 className="text-sm font-medium text-[#1E366D]">System Administrator Role</h3>
-              <p className="text-sm text-[#1E366D]/80 mt-1">
+              <h3 className="text-sm font-medium text-primary-navy">System Administrator Role</h3>
+              <p className="text-sm text-primary-navy/80 mt-1">
                 This is a core system role. Super Administrators automatically have full access to all permissions. These settings cannot be modified.
               </p>
             </div>
@@ -140,7 +140,7 @@ export default function RoleEditPage() {
                       <label 
                         key={perm.id} 
                         className={`flex items-start gap-3 p-3 rounded-lg border transition-colors cursor-pointer ${
-                          isChecked ? 'bg-[#1E366D]/5 border-[#1E366D]/20' : 'border-transparent hover:bg-gray-50'
+                          isChecked ? 'bg-primary-navy/5 border-primary-navy/20' : 'border-transparent hover:bg-gray-50'
                         } ${isSuperAdmin ? 'opacity-70 cursor-not-allowed' : ''}`}
                       >
                         <div className="flex items-center h-5">
@@ -149,7 +149,7 @@ export default function RoleEditPage() {
                             checked={isChecked}
                             disabled={isSuperAdmin}
                             onChange={() => handleTogglePermission(perm.id)}
-                            className="w-4 h-4 text-[#C8102E] border-gray-300 rounded focus:ring-[#C8102E]"
+                            className="w-4 h-4 text-primary-red border-gray-300 rounded focus:ring-primary-red"
                           />
                         </div>
                         <div className="flex flex-col">
@@ -177,7 +177,7 @@ export default function RoleEditPage() {
                 type="button"
                 onClick={handleSubmit}
                 disabled={loading}
-                className="flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-[#C8102E] hover:bg-[#a00d25] rounded-lg transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                className="flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-primary-red hover:bg-primary-dark-red rounded-lg transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
               >
                 {loading ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
                 {loading ? 'Saving...' : 'Save Permissions'}

@@ -5,6 +5,8 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -16,6 +18,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         // Sanctum SPA middleware (for cookie-based auth if needed later)
         $middleware->statefulApi();
+        
+        // Apply security headers to all routes
+        $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         // Return JSON for unauthenticated API requests instead of redirect
@@ -28,8 +33,11 @@ return Application::configure(basePath: dirname(__DIR__))
             }
         });
 
-        // Return JSON for authorization failures on API routes
-        $exceptions->render(function (\Illuminate\Auth\Access\AuthorizationException $e, Request $request) {
+        // Return JSON for authorization failures on API routes.
+        // Note: Laravel's Handler::prepareException() converts AuthorizationException
+        // to AccessDeniedHttpException before any render() callback sees it, so this
+        // must be registered against the converted type, not AuthorizationException.
+        $exceptions->render(function (AccessDeniedHttpException $e, Request $request) {
             if ($request->is('api/*') || $request->expectsJson()) {
                 return response()->json([
                     'success' => false,
@@ -38,8 +46,10 @@ return Application::configure(basePath: dirname(__DIR__))
             }
         });
 
-        // Return JSON for model-not-found on API routes
-        $exceptions->render(function (\Illuminate\Database\Eloquent\ModelNotFoundException $e, Request $request) {
+        // Return JSON for model-not-found / unmatched-route 404s on API routes.
+        // Same conversion caveat as above: ModelNotFoundException is turned into
+        // NotFoundHttpException before reaching here.
+        $exceptions->render(function (NotFoundHttpException $e, Request $request) {
             if ($request->is('api/*') || $request->expectsJson()) {
                 return response()->json([
                     'success' => false,

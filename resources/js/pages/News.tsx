@@ -8,6 +8,7 @@ import { Input } from '../components/ui/Input';
 import { Pagination } from '../components/ui/Pagination';
 import { Search, Sparkles, Newspaper, Star, Mail, ChevronLeft, ChevronRight } from 'lucide-react';
 import { blogService } from '../services/publicContent.service';
+import { placeholderImage } from '../lib/placeholderImage';
 import type { BlogPostPublic, BlogCategoryPublic, PaginatedMeta } from '../types';
 
 export const NewsPage: React.FC = () => {
@@ -175,7 +176,7 @@ export const NewsPage: React.FC = () => {
                           excerpt={post.excerpt || ''}
                           author={post.author?.display_name || 'Horaios Church'}
                           date={post.published_at ? new Date(post.published_at).toLocaleDateString() : 'Recent'}
-                          image={post.featured_image || 'https://via.placeholder.com/400x250?text=News'}
+                          image={post.featured_image || placeholderImage(400, 250, 'News')}
                           category={post.category?.name || undefined}
                           featured={post.featured}
                         />
@@ -195,7 +196,7 @@ export const NewsPage: React.FC = () => {
           <div className="space-y-6">
             <div className="flex items-center justify-between flex-wrap gap-3">
               <h2 className="text-h4 font-bold text-neutral-900 flex items-center gap-2">
-                <Newspaper className="w-5 h-5 text-primary-navy" />
+                <Newspaper className="w-5 h-5 text-primary-red" />
                 {selectedCategory
                   ? `${categories.find(c => c.slug === selectedCategory)?.name || 'Category'} Articles`
                   : searchDebounced
@@ -255,7 +256,7 @@ export const NewsPage: React.FC = () => {
                       excerpt={post.excerpt || ''}
                       author={post.author?.display_name || 'Horaios Church'}
                       date={post.published_at ? new Date(post.published_at).toLocaleDateString() : 'Recent'}
-                      image={post.featured_image || 'https://via.placeholder.com/400x250?text=News'}
+                      image={post.featured_image || placeholderImage(400, 250, 'News')}
                       category={post.category?.name || undefined}
                       featured={post.featured}
                     />
@@ -293,7 +294,7 @@ export const NewsPage: React.FC = () => {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <Card
             padding="lg"
-            className="text-center bg-gradient-to-br from-primary-navy via-primary-navy to-accent-blue border-0 !text-white relative overflow-hidden"
+            className="text-center bg-gradient-to-br from-primary-red via-primary-red to-primary-red border-0 !text-white relative overflow-hidden"
           >
             <div className="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(circle_at_top_right,_white,_transparent_60%)]" />
             <div className="relative">
@@ -310,7 +311,7 @@ export const NewsPage: React.FC = () => {
                   placeholder="Enter your email address"
                   className="flex-1 px-4 py-3 rounded-xl bg-white text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-4 focus:ring-white/20 text-body-base shadow-lg"
                 />
-                <Button variant="primary" size="lg" className="bg-white !text-primary-navy hover:bg-primary-100 transition-colors whitespace-nowrap">
+                <Button variant="primary" size="lg" className="bg-white !text-primary-red hover:bg-primary-100 transition-colors whitespace-nowrap">
                   Subscribe
                 </Button>
               </div>

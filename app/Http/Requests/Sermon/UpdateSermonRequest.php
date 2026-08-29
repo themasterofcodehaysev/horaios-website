@@ -2,11 +2,20 @@
 
 namespace App\Http\Requests\Sermon;
 
+use App\Services\HtmlSanitizerService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class UpdateSermonRequest extends FormRequest
 {
+    protected HtmlSanitizerService $sanitizer;
+
+    public function __construct(HtmlSanitizerService $sanitizer)
+    {
+        parent::__construct();
+        $this->sanitizer = $sanitizer;
+    }
+
     public function authorize(): bool
     {
         return true;
@@ -34,5 +43,19 @@ class UpdateSermonRequest extends FormRequest
             'published_at'        => ['nullable', 'date'],
             'display_order'       => ['nullable', 'integer', 'min:0'],
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('description')) {
+            $this->merge([
+                'description' => $this->sanitizer->sanitize($this->input('description', '')),
+            ]);
+        }
+        if ($this->has('summary')) {
+            $this->merge([
+                'summary' => $this->sanitizer->sanitizeSimple($this->input('summary', '')),
+            ]);
+        }
     }
 }

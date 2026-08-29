@@ -61,7 +61,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
               icon && iconPosition === 'right' && 'pr-10',
               error
                 ? 'border-error focus:border-error'
-                : 'border-neutral-300 focus:border-primary-navy',
+                : 'border-neutral-300 focus:border-primary-red',
               className
             )}
           />

@@ -25,14 +25,14 @@ export const VisitPage: React.FC = () => {
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card padding="lg" className="border-l-4 border-primary-navy">
+            <Card padding="lg" className="border-l-4 border-primary-red">
               <div className="flex items-start gap-4">
-                <Clock className="w-6 h-6 text-primary-navy flex-shrink-0 mt-1" />
+                <Clock className="w-6 h-6 text-primary-red flex-shrink-0 mt-1" />
                 <div>
                   <h3 className="text-h6 font-semibold text-neutral-900 mb-2">
                     Sunday Morning
                   </h3>
-                  <p className="text-body-base font-medium text-primary-navy mb-2">
+                  <p className="text-body-base font-medium text-primary-red mb-2">
                     9:00 AM & 11:00 AM
                   </p>
                   <p className="text-body-sm text-neutral-600">
@@ -42,14 +42,14 @@ export const VisitPage: React.FC = () => {
               </div>
             </Card>
 
-            <Card padding="lg" className="border-l-4 border-accent-red">
+            <Card padding="lg" className="border-l-4 border-primary-red">
               <div className="flex items-start gap-4">
-                <Clock className="w-6 h-6 text-accent-red flex-shrink-0 mt-1" />
+                <Clock className="w-6 h-6 text-primary-red flex-shrink-0 mt-1" />
                 <div>
                   <h3 className="text-h6 font-semibold text-neutral-900 mb-2">
                     Wednesday Evening
                   </h3>
-                  <p className="text-body-base font-medium text-accent-red mb-2">
+                  <p className="text-body-base font-medium text-primary-red mb-2">
                     7:00 PM
                   </p>
                   <p className="text-body-sm text-neutral-600">
@@ -98,7 +98,7 @@ export const VisitPage: React.FC = () => {
 
               <div className="space-y-4 mb-8">
                 <div className="flex items-start gap-4">
-                  <MapPin className="w-6 h-6 text-primary-navy flex-shrink-0 mt-1" />
+                  <MapPin className="w-6 h-6 text-primary-red flex-shrink-0 mt-1" />
                   <div>
                     <p className="font-semibold text-neutral-900">Address</p>
                     <p className="text-body-base text-neutral-600">
@@ -108,20 +108,20 @@ export const VisitPage: React.FC = () => {
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <Phone className="w-6 h-6 text-primary-navy flex-shrink-0 mt-1" />
+                  <Phone className="w-6 h-6 text-primary-red flex-shrink-0 mt-1" />
                   <div>
                     <p className="font-semibold text-neutral-900">Phone</p>
-                    <a href="tel:+" className="text-body-base text-primary-navy hover:text-primary-dark-navy">
+                    <a href="tel:+" className="text-body-base text-primary-red hover:text-primary-dark-red">
                       +855 (0) 23 XXX XXXX
                     </a>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <Mail className="w-6 h-6 text-primary-navy flex-shrink-0 mt-1" />
+                  <Mail className="w-6 h-6 text-primary-red flex-shrink-0 mt-1" />
                   <div>
                     <p className="font-semibold text-neutral-900">Email</p>
-                    <a href="mailto:info@horaiosbaptist.org" className="text-body-base text-primary-navy hover:text-primary-dark-navy">
+                    <a href="mailto:info@horaiosbaptist.org" className="text-body-base text-primary-red hover:text-primary-dark-red">
                       info@horaiosbaptist.org
                     </a>
                   </div>
@@ -277,7 +277,7 @@ export const VisitPage: React.FC = () => {
       </section>
 
       {/* CTA */}
-      <section className="py-20 bg-primary-navy">
+      <section className="py-20 bg-primary-red">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-h3 font-semibold text-white mb-6">
             Ready to Visit?
@@ -288,7 +288,7 @@ export const VisitPage: React.FC = () => {
           <Button
             variant="primary"
             size="lg"
-            className="bg-accent-red hover:bg-accent-dark-red"
+            className="bg-primary-red hover:bg-primary-dark-red"
           >
             Get Directions & More Info
           </Button>

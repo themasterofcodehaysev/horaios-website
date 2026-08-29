@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Layout } from '../components/layout';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
@@ -13,6 +13,7 @@ export const LoginPage: React.FC = () => {
     email: '',
     password: '',
   });
+  const [rememberMe, setRememberMe] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,7 +32,7 @@ export const LoginPage: React.FC = () => {
 
     try {
       const response = await authService.login(formData.email, formData.password);
-      authService.storeAuth(response.token, response.user);
+      authService.storeAuth(response.token, response.user, rememberMe);
       navigate('/admin');
     } catch (err: any) {
       console.error('Login error:', err);
@@ -47,7 +48,7 @@ export const LoginPage: React.FC = () => {
 
   return (
     <Layout hideNavigation hideFooter>
-      <div className="min-h-screen bg-gradient-to-br from-primary-navy to-primary-light-navy flex items-center justify-center px-4 py-12">
+      <div className="min-h-screen bg-gradient-to-br from-primary-red to-primary-light-red flex items-center justify-center px-4 py-12">
         <Card padding="lg" shadow="lg" className="w-full max-w-md bg-white">
           <div className="text-center mb-8">
             <img
@@ -94,12 +95,17 @@ export const LoginPage: React.FC = () => {
 
             <div className="flex items-center justify-between text-body-sm">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" className="rounded text-primary-navy focus:ring-primary-navy" />
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="rounded text-primary-red focus:ring-primary-red"
+                />
                 <span className="text-neutral-700">Remember me</span>
               </label>
-              <a href="#" className="text-primary-navy hover:text-primary-dark-navy font-medium">
+              <Link to="/forgot-password" className="text-primary-red hover:text-primary-dark-red font-medium">
                 Forgot password?
-              </a>
+              </Link>
             </div>
 
             <Button type="submit" variant="primary" fullWidth size="lg" disabled={loading}>

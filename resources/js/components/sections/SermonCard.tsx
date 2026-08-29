@@ -36,15 +36,15 @@ export const SermonCard: React.FC<SermonCardProps> = ({
             />
             {videoUrl && (
               <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors flex items-center justify-center">
-                <button className="w-16 h-16 bg-accent-red text-white rounded-full flex items-center justify-center hover:bg-accent-dark-red transition-colors">
+                <button className="w-16 h-16 bg-primary-red text-white rounded-full flex items-center justify-center hover:bg-primary-dark-red transition-colors">
                   <Play className="w-6 h-6 ml-1" fill="currentColor" />
                 </button>
               </div>
             )}
           </>
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-primary-navy/20 to-accent-red/20 flex items-center justify-center">
-            <Play className="w-12 h-12 text-primary-navy/40" />
+          <div className="w-full h-full bg-gradient-to-br from-primary-red/20 to-primary-red/20 flex items-center justify-center">
+            <Play className="w-12 h-12 text-primary-red/40" />
           </div>
         )}
       </div>
@@ -61,7 +61,7 @@ export const SermonCard: React.FC<SermonCardProps> = ({
         </h3>
 
         <div className="flex flex-col text-body-sm text-neutral-600">
-          <span className="font-medium text-primary-navy">{speaker}</span>
+          <span className="font-medium text-primary-red">{speaker}</span>
           <span>{date}</span>
         </div>
 
@@ -72,7 +72,7 @@ export const SermonCard: React.FC<SermonCardProps> = ({
         )}
 
         <div className="pt-3 border-t border-neutral-200 mt-auto">
-          <button className="text-accent-red font-medium text-body-sm hover:text-accent-dark-red transition-colors">
+          <button className="text-primary-red font-medium text-body-sm hover:text-primary-dark-red transition-colors">
             Watch Sermon →
           </button>
         </div>

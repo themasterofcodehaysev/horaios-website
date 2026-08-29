@@ -38,4 +38,13 @@ export const userService = {
     const { data } = await api.post<ApiResponse<User>>(`/users/${uuid}/restore`);
     return data.data;
   },
+
+  async toggleStatus(uuid: string): Promise<User> {
+    const { data } = await api.patch<ApiResponse<User>>(`/users/${uuid}/toggle-status`);
+    return data.data;
+  },
+
+  async sendPasswordReset(uuid: string): Promise<void> {
+    await api.post<ApiResponse<null>>(`/users/${uuid}/reset-password`);
+  },
 };

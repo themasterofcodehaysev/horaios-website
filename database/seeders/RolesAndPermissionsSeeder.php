@@ -58,8 +58,10 @@ class RolesAndPermissionsSeeder extends Seeder
             ['display_name' => 'Editor', 'description' => 'Content management only.']
         );
 
-        // Assign permissions to Admin & Editor
-        $adminPermissions = Permission::whereNotIn('name', ['settings.manage', 'users.delete'])->get();
+        // Assign permissions to Admin & Editor.
+        // Per spec, ADMIN covers Dashboard, Content, and Settings — but not user
+        // management, which is reserved for SUPER_ADMIN.
+        $adminPermissions = Permission::where('group', '!=', 'users')->get();
         $adminRole->permissions()->sync($adminPermissions->pluck('id'));
 
         $editorPermissions = Permission::whereIn('group', ['content', 'media'])->get();

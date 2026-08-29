@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
-import { Search, Music, Sparkles, ChevronRight, Star, ChevronLeft } from 'lucide-react';
+import { Search, Music, Sparkles, ChevronRight, ChevronLeft, Clock } from 'lucide-react';
 import { Layout } from '../components/layout';
+import { SongCard } from '../components/sections';
 import { songService } from '../admin/services/song.service';
 import type { SongItem, SongCategory, PaginatedResponse } from '../admin/types';
 
@@ -13,6 +13,7 @@ export const SongsPage: React.FC = () => {
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [page, setPage] = useState(1);
+  const [recentSongs, setRecentSongs] = useState<SongItem[]>([]);
 
   const fetchCategories = useCallback(async () => {
     try {
@@ -39,8 +40,23 @@ export const SongsPage: React.FC = () => {
     }
   }, [search, selectedCategory, page]);
 
+  // Recently added songs: fetched independently of search/category/page filters so the
+  // section always reflects the newest songs, sorted by creation date. The public songs
+  // endpoint doesn't (yet) support server-side sorting by recency, so the most recent
+  // items are pulled out here on the client from a broad batch of published songs.
+  const fetchRecentSongs = useCallback(async () => {
+    try {
+      const res = await songService.getPublicSongs({ per_page: 100, sort_by: 'created_at', sort_dir: 'desc' });
+      const sorted = [...res.data].sort(
+        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+      setRecentSongs(sorted.slice(0, 6));
+    } catch { /* ignore */ }
+  }, []);
+
   useEffect(() => { fetchCategories(); }, [fetchCategories]);
   useEffect(() => { fetchSongs(); }, [fetchSongs]);
+  useEffect(() => { fetchRecentSongs(); }, [fetchRecentSongs]);
 
   // Separate featured songs
   const featuredSongs = songs.filter(s => s.featured);
@@ -48,7 +64,7 @@ export const SongsPage: React.FC = () => {
   return (
     <Layout>
       {/* Hero Header */}
-      <section className="bg-gradient-to-br from-primary-navy via-primary-dark-navy to-accent-blue py-16 px-4 text-white">
+      <section className="bg-gradient-to-br from-primary-red via-primary-dark-red to-primary-red py-16 px-4 text-white">
         <div className="max-w-5xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-body-xs font-semibold uppercase tracking-wider text-primary-100 mb-4 border border-white/10">
             <Music className="w-3.5 h-3.5 text-primary-300" /> Digital Worship Songbook
@@ -107,33 +123,21 @@ export const SongsPage: React.FC = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               {featuredSongs.slice(0, 3).map((song) => (
-                <Link
-                  key={song.id}
-                  to={`/songs/${song.slug}`}
-                  className="group relative bg-gradient-to-br from-neutral-900 to-neutral-800 text-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col justify-between overflow-hidden"
-                >
-                  <div className="absolute top-3 right-3">
-                    <Star className="w-5 h-5 fill-amber-400 text-amber-400" />
-                  </div>
-                  <div>
-                    {song.category && (
-                      <span className="inline-block text-body-xs font-semibold text-primary-300 uppercase tracking-wider mb-2">
-                        {song.category.name}
-                      </span>
-                    )}
-                    <h3 className="text-h4 font-bold leading-tight group-hover:text-primary-100 transition-colors mb-2">
-                      {song.title}
-                    </h3>
-                    <p className="text-body-xs text-neutral-300">
-                      {song.artist || 'Traditional Worship'}
-                    </p>
-                  </div>
+                <SongCard key={song.id} song={song} variant="spotlight" />
+              ))}
+            </div>
+          </div>
+        )}
 
-                  <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-4 text-body-xs font-medium text-neutral-300 group-hover:text-white">
-                    <span>Read Lyrics</span>
-                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </Link>
+        {/* Recently Added Songs (if on page 1 and no search query) */}
+        {!search && !selectedCategory && page === 1 && recentSongs.length > 0 && (
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-h5 font-bold text-neutral-900">
+              <Clock className="w-5 h-5 text-primary-red" /> Recently Added
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {recentSongs.map((song) => (
+                <SongCard key={song.id} song={song} />
               ))}
             </div>
           </div>
@@ -179,37 +183,7 @@ export const SongsPage: React.FC = () => {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {songs.map((song) => (
-                <Link
-                  key={song.id}
-                  to={`/songs/${song.slug}`}
-                  className="group bg-white rounded-2xl border border-neutral-200 p-6 hover:shadow-lg hover:border-neutral-300 transition-all duration-200 flex flex-col justify-between"
-                >
-                  <div>
-                    <div className="flex items-start justify-between gap-2 mb-2">
-                      {song.category ? (
-                        <span className="text-body-xs font-semibold px-2.5 py-0.5 rounded-md bg-accent-blue/10 text-accent-blue">
-                          {song.category.name}
-                        </span>
-                      ) : (
-                        <span className="text-body-xs text-neutral-400">Worship</span>
-                      )}
-                      {song.featured && (
-                        <Star className="w-4 h-4 fill-amber-400 text-amber-400 shrink-0" />
-                      )}
-                    </div>
-                    <h3 className="text-h5 font-bold text-neutral-900 group-hover:text-primary-red transition-colors leading-snug mb-1">
-                      {song.title}
-                    </h3>
-                    <p className="text-body-xs text-neutral-500">
-                      {song.artist || 'Traditional'} {song.composer && `• ${song.composer}`}
-                    </p>
-                  </div>
-
-                  <div className="mt-5 pt-3 border-t border-neutral-100 flex items-center justify-between text-body-xs font-semibold text-primary-red">
-                    <span>View Lyrics</span>
-                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </Link>
+                <SongCard key={song.id} song={song} />
               ))}
             </div>
           )}

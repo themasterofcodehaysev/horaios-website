@@ -4,7 +4,9 @@ import { HeroSection } from '../components/sections';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Alert } from '../components/ui/Alert';
-import { Send } from 'lucide-react';
+import { Send, CheckCircle, AlertTriangle } from 'lucide-react';
+import { contactService } from '../services/publicContent.service';
+import { CHURCH_INFO } from '../constants';
 
 export const ContactPage: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -15,6 +17,8 @@ export const ContactPage: React.FC = () => {
     message: '',
   });
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -23,15 +27,23 @@ export const ContactPage: React.FC = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log('Form submitted:', formData);
-    setSubmitted(true);
-    setTimeout(() => {
+    setSubmitting(true);
+    setError(null);
+
+    try {
+      await contactService.submitContactMessage(formData);
+      setSubmitted(true);
       setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
-      setSubmitted(false);
-    }, 3000);
+      setTimeout(() => {
+        setSubmitted(false);
+      }, 5000);
+    } catch (err: any) {
+      setError(err?.response?.data?.message || 'Failed to send message. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -59,6 +71,13 @@ export const ContactPage: React.FC = () => {
                 <Alert variant="success" title="Message Sent!" className="mb-6">
                   Thank you for contacting us. We'll get back to you soon!
                 </Alert>
+              )}
+
+              {error && (
+                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
+                  <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                  <p className="text-body-sm text-red-700">{error}</p>
+                </div>
               )}
 
               <form onSubmit={handleSubmit} className="space-y-4">
@@ -107,7 +126,7 @@ export const ContactPage: React.FC = () => {
                     onChange={handleChange}
                     required
                     rows={6}
-                    className="w-full px-3 py-2 rounded-md border-2 border-neutral-300 focus:border-primary-navy focus:outline-none transition-all"
+                    className="w-full px-3 py-2 rounded-md border-2 border-neutral-300 focus:border-primary-red focus:outline-none transition-all"
                     placeholder="Tell us how we can help..."
                   ></textarea>
                 </div>
@@ -118,8 +137,9 @@ export const ContactPage: React.FC = () => {
                   size="lg"
                   fullWidth
                   icon={<Send className="w-5 h-5" />}
+                  disabled={submitting}
                 >
-                  Send Message
+                  {submitting ? 'Sending...' : 'Send Message'}
                 </Button>
               </form>
             </div>
@@ -146,7 +166,7 @@ export const ContactPage: React.FC = () => {
                   </h4>
                   <a
                     href="tel:+"
-                    className="text-body-base text-primary-navy hover:text-primary-dark-navy font-medium"
+                    className="text-body-base text-primary-red hover:text-primary-dark-red font-medium"
                   >
                     +855 (0) 23 XXX XXXX
                   </a>
@@ -158,7 +178,7 @@ export const ContactPage: React.FC = () => {
                   </h4>
                   <a
                     href="mailto:info@horaiosbaptist.org"
-                    className="text-body-base text-primary-navy hover:text-primary-dark-navy font-medium"
+                    className="text-body-base text-primary-red hover:text-primary-dark-red font-medium"
                   >
                     info@horaiosbaptist.org
                   </a>
@@ -183,19 +203,19 @@ export const ContactPage: React.FC = () => {
                   <ul className="space-y-2">
                     <li>
                       <span className="font-medium text-neutral-900">Pastoral:</span>{' '}
-                      <a href="mailto:" className="text-primary-navy hover:text-primary-dark-navy">
+                      <a href="mailto:" className="text-primary-red hover:text-primary-dark-red">
                         pastoral@horaiosbaptist.org
                       </a>
                     </li>
                     <li>
                       <span className="font-medium text-neutral-900">Worship:</span>{' '}
-                      <a href="mailto:" className="text-primary-navy hover:text-primary-dark-navy">
+                      <a href="mailto:" className="text-primary-red hover:text-primary-dark-red">
                         worship@horaiosbaptist.org
                       </a>
                     </li>
                     <li>
                       <span className="font-medium text-neutral-900">Youth:</span>{' '}
-                      <a href="mailto:" className="text-primary-navy hover:text-primary-dark-navy">
+                      <a href="mailto:" className="text-primary-red hover:text-primary-dark-red">
                         youth@horaiosbaptist.org
                       </a>
                     </li>
@@ -214,16 +234,27 @@ export const ContactPage: React.FC = () => {
             Other Ways to Connect
           </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <Button variant="default" fullWidth>
-              Follow on Facebook
-            </Button>
-            <Button variant="default" fullWidth>
-              Subscribe on YouTube
-            </Button>
-            <Button variant="default" fullWidth>
-              Follow on Instagram
-            </Button>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
+            <a
+              href={CHURCH_INFO.socialMedia.facebook}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex"
+            >
+              <Button variant="default" fullWidth>
+                Follow on Facebook
+              </Button>
+            </a>
+            <a
+              href={CHURCH_INFO.socialMedia.youtube}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex"
+            >
+              <Button variant="default" fullWidth>
+                Subscribe on YouTube
+              </Button>
+            </a>
           </div>
         </div>
       </section>

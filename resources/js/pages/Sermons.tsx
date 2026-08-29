@@ -60,7 +60,7 @@ export const SermonsPage: React.FC = () => {
   return (
     <Layout>
       {/* Hero Header */}
-      <section className="bg-gradient-to-br from-neutral-900 via-primary-navy to-accent-blue py-16 px-4 text-white">
+      <section className="bg-gradient-to-br from-neutral-900 via-primary-red to-primary-red py-16 px-4 text-white">
         <div className="max-w-5xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-body-xs font-semibold uppercase tracking-wider text-primary-100 mb-4 border border-white/10">
             <Video className="w-3.5 h-3.5 text-amber-400" /> Watch & Listen
@@ -277,7 +277,7 @@ export const SermonsPage: React.FC = () => {
                     <div className="p-5 space-y-3">
                       <div className="flex items-center gap-2">
                         {sermon.category && (
-                          <span className="text-body-xs font-semibold px-2.5 py-0.5 rounded-md bg-accent-blue/10 text-accent-blue">
+                          <span className="text-body-xs font-semibold px-2.5 py-0.5 rounded-md bg-primary-red/10 text-primary-red">
                             {sermon.category.name}
                           </span>
                         )}

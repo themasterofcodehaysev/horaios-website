@@ -16,6 +16,14 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onLogout }) => {
     return saved === 'true';
   });
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => localStorage.getItem('admin_theme') === 'dark');
+
+  // Initialize dark mode from localStorage
+  useEffect(() => {
+    const isDark = localStorage.getItem('admin_theme') === 'dark';
+    setDarkMode(isDark);
+    document.documentElement.classList.toggle('dark', isDark);
+  }, []);
 
   useEffect(() => {
     localStorage.setItem('sidebar_collapsed', String(sidebarCollapsed));
@@ -31,12 +39,13 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onLogout }) => {
   };
 
   return (
-    <div className="flex h-screen bg-neutral-50 font-sans overflow-hidden">
+    <div className={`flex h-screen font-sans overflow-hidden ${darkMode ? 'bg-slate-900' : 'bg-neutral-50'}`}>
       <AdminSidebar
         collapsed={sidebarCollapsed}
         onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
         mobileOpen={mobileSidebarOpen}
         onCloseMobile={() => setMobileSidebarOpen(false)}
+        darkMode={darkMode}
       />
 
       <div 
@@ -48,9 +57,16 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onLogout }) => {
           user={user} 
           onLogout={handleLogout} 
           onOpenMobileSidebar={() => setMobileSidebarOpen(true)}
+          darkMode={darkMode}
+          onToggleDarkMode={() => {
+            const next = !darkMode;
+            setDarkMode(next);
+            localStorage.setItem('admin_theme', next ? 'dark' : 'light');
+            document.documentElement.classList.toggle('dark', next);
+          }}
         />
         
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+        <main className={`flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 ${darkMode ? 'bg-slate-900' : 'bg-white'}`}>
           <Outlet />
         </main>
       </div>

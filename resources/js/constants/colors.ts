@@ -1,23 +1,23 @@
-// Church Branding Colors derived from Horaios Baptist Church Logo
+// Church branding colors from the Horaios Baptist Church logo
 export const BRAND_COLORS = {
   primary: {
-    red: '#C8102E',        // Primary Church Red from logo
-    darkRed: '#9E0D24',    // Darker shade for contrast & hover
-    lightRed: '#E11D48',   // Lighter shade for highlights
-    navy: '#C8102E',       // Main primary brand color
-    darkNavy: '#9E0D24',
-    lightNavy: '#E11D48',
+    red: '#74121c',        // Main burgundy from logo
+    darkRed: '#5a0e16',    // Darker shade for contrast & hover
+    lightRed: '#962028',   // Lighter shade for highlights
+    navy: '#273161',       // Secondary navy from logo
+    darkNavy: '#1d2549',
+    lightNavy: '#354278',
   },
   secondary: {
-    blue: '#1E366D',       // Royal Blue from logo
-    darkBlue: '#14254C',   // Dark blue
-    lightBlue: '#2B4C91',  // Light blue
+    blue: '#273161',       // Signature navy blue from logo
+    darkBlue: '#1d2549',
+    lightBlue: '#354278',
   },
   accent: {
-    red: '#C8102E',
-    darkRed: '#9E0D24',
-    lightRed: '#E11D48',
-    blue: '#1E366D',
+    red: '#74121c',
+    darkRed: '#5a0e16',
+    lightRed: '#962028',
+    blue: '#273161',
   },
   neutral: {
     white: '#ffffff',

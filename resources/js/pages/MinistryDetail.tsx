@@ -132,7 +132,7 @@ export const MinistryDetailPage: React.FC = () => {
             backgroundColor: ministry.featured_image ? undefined : '#0f172a',
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-primary-navy/30 via-primary-navy/60 to-primary-navy" />
+        <div className="absolute inset-0 bg-gradient-to-b from-primary-red/30 via-primary-red/60 to-primary-red" />
         <div className="relative max-w-6xl mx-auto w-full px-4 sm:px-6 pb-14 text-white space-y-5">
           <Link
             to="/ministries"
@@ -191,7 +191,7 @@ export const MinistryDetailPage: React.FC = () => {
               )}
             </Card>
 
-            <div className="bg-gradient-to-br from-primary-navy to-accent-blue rounded-3xl p-8 sm:p-10 text-white shadow-xl space-y-6">
+            <div className="bg-gradient-to-br from-primary-red to-primary-red rounded-3xl p-8 sm:p-10 text-white shadow-xl space-y-6">
               <div className="flex items-center gap-3">
                 <HandHeart className="w-8 h-8 text-primary-200" />
                 <h3 className="text-h4 font-bold">Ready to Join This Ministry?</h3>
@@ -203,7 +203,7 @@ export const MinistryDetailPage: React.FC = () => {
                 <Button
                   variant="primary"
                   size="lg"
-                  className="bg-white !text-primary-navy hover:bg-primary-100 transition-colors"
+                  className="bg-white !text-primary-red hover:bg-primary-100 transition-colors"
                   onClick={() => setJoining(true)}
                   disabled={joining}
                 >
@@ -241,8 +241,8 @@ export const MinistryDetailPage: React.FC = () => {
                 )}
                 {meetingSchedule && (
                   <li className="flex items-start gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-accent-blue/10 flex items-center justify-center shrink-0">
-                      <Clock className="w-4 h-4 text-accent-blue" />
+                    <div className="w-9 h-9 rounded-xl bg-primary-red/10 flex items-center justify-center shrink-0">
+                      <Clock className="w-4 h-4 text-primary-red" />
                     </div>
                     <div>
                       <p className="text-body-xs font-semibold text-neutral-500 uppercase tracking-wider">Meeting Time</p>
@@ -271,7 +271,7 @@ export const MinistryDetailPage: React.FC = () => {
                       {ministry.email && (
                         <a
                           href={`mailto:${ministry.email}`}
-                          className="text-body-sm font-semibold text-primary-navy hover:text-primary-red transition-colors flex items-center gap-1.5"
+                          className="text-body-sm font-semibold text-primary-red hover:text-primary-red transition-colors flex items-center gap-1.5"
                         >
                           <Mail className="w-3.5 h-3.5" /> {ministry.email}
                         </a>
@@ -279,7 +279,7 @@ export const MinistryDetailPage: React.FC = () => {
                       {ministry.phone && (
                         <a
                           href={`tel:${ministry.phone}`}
-                          className="text-body-sm font-semibold text-primary-navy hover:text-primary-red transition-colors flex items-center gap-1.5"
+                          className="text-body-sm font-semibold text-primary-red hover:text-primary-red transition-colors flex items-center gap-1.5"
                         >
                           <Phone className="w-3.5 h-3.5" /> {ministry.phone}
                         </a>
@@ -315,18 +315,18 @@ export const MinistryDetailPage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card padding="lg" className="text-center h-full border border-neutral-200 hover:border-primary-navy/30 hover:shadow-md transition-all">
-              <div className="w-14 h-14 rounded-2xl bg-primary-navy/10 text-primary-navy flex items-center justify-center mx-auto mb-4">
+            <Card padding="lg" className="text-center h-full border border-neutral-200 hover:border-primary-red/30 hover:shadow-md transition-all">
+              <div className="w-14 h-14 rounded-2xl bg-primary-red/10 text-primary-red flex items-center justify-center mx-auto mb-4">
                 <Search className="w-7 h-7" />
               </div>
-              <div className="text-body-xs font-bold text-primary-navy uppercase tracking-wider mb-2">Step 1</div>
+              <div className="text-body-xs font-bold text-primary-red uppercase tracking-wider mb-2">Step 1</div>
               <h4 className="text-h6 font-bold text-neutral-900 mb-3">Explore</h4>
               <p className="text-body-sm text-neutral-600 leading-relaxed">
                 Browse ministries and learn more about each one — their mission, values, and how they serve our church.
               </p>
             </Card>
 
-            <Card padding="lg" className="text-center h-full border border-neutral-200 hover:border-primary-navy/30 hover:shadow-md transition-all">
+            <Card padding="lg" className="text-center h-full border border-neutral-200 hover:border-primary-red/30 hover:shadow-md transition-all">
               <div className="w-14 h-14 rounded-2xl bg-primary-red/10 text-primary-red flex items-center justify-center mx-auto mb-4">
                 <MessageCircle className="w-7 h-7" />
               </div>
@@ -337,7 +337,7 @@ export const MinistryDetailPage: React.FC = () => {
               </p>
             </Card>
 
-            <Card padding="lg" className="text-center h-full border border-neutral-200 hover:border-primary-navy/30 hover:shadow-md transition-all">
+            <Card padding="lg" className="text-center h-full border border-neutral-200 hover:border-primary-red/30 hover:shadow-md transition-all">
               <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center mx-auto mb-4">
                 <HandHeart className="w-7 h-7" />
               </div>

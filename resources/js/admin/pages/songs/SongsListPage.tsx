@@ -200,20 +200,21 @@ const SongsListPage: React.FC = () => {
         ) : (
           <>
             {/* Table Header */}
-            <div className="hidden md:grid grid-cols-[30px_1fr_120px_100px_90px_120px_120px] gap-3 px-5 py-3 bg-neutral-50 border-b border-neutral-200 text-body-xs text-neutral-500 font-medium uppercase tracking-wide">
+            <div className="hidden md:grid grid-cols-[30px_1fr_120px_100px_90px_120px_110px_120px] gap-3 px-5 py-3 bg-neutral-50 border-b border-neutral-200 text-body-xs text-neutral-500 font-medium uppercase tracking-wide">
               <span></span>
               <span>Song Title & Artist</span>
               <span>Category</span>
               <span>Status</span>
               <span className="text-center">Featured</span>
-              <span>Author</span>
+              <span>Created By</span>
+              <span>Updated At</span>
               <span className="text-right">Actions</span>
             </div>
 
             {/* Rows */}
             <div className="divide-y divide-neutral-100">
               {songs.map((song) => (
-                <div key={song.id} className="grid grid-cols-1 md:grid-cols-[30px_1fr_120px_100px_90px_120px_120px] gap-3 items-center px-5 py-3.5 hover:bg-neutral-50/60 transition-colors">
+                <div key={song.id} className="grid grid-cols-1 md:grid-cols-[30px_1fr_120px_100px_90px_120px_110px_120px] gap-3 items-center px-5 py-3.5 hover:bg-neutral-50/60 transition-colors">
                   {/* Star icon */}
                   <div>
                     <button
@@ -273,12 +274,16 @@ const SongsListPage: React.FC = () => {
                     )}
                   </div>
 
-                  {/* Author */}
+                  {/* Created By */}
                   <div>
                     <span className="text-body-xs text-neutral-600 block truncate">
                       {song.created_by?.display_name || 'System'}
                     </span>
-                    <span className="text-body-xs text-neutral-400 block">
+                  </div>
+
+                  {/* Updated At */}
+                  <div>
+                    <span className="text-body-xs text-neutral-500 block">
                       {new Date(song.updated_at).toLocaleDateString()}
                     </span>
                   </div>

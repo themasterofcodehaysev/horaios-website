@@ -4,6 +4,7 @@ import { HeroSection } from '../components/sections';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 import { Target, Heart } from 'lucide-react';
+import { placeholderImage } from '../lib/placeholderImage';
 
 export const AboutPage: React.FC = () => {
   return (
@@ -42,7 +43,7 @@ export const AboutPage: React.FC = () => {
               </p>
             </div>
             <div className="bg-neutral-200 rounded-lg h-96 overflow-hidden">
-              <img src="https://via.placeholder.com/500x400" alt="Church building" className="w-full h-full object-cover" />
+              <img src={placeholderImage(500, 400, 'Church building')} alt="Church building" className="w-full h-full object-cover" />
             </div>
           </div>
         </div>
@@ -52,7 +53,7 @@ export const AboutPage: React.FC = () => {
       <section className="py-20 bg-neutral-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <p className="text-label-lg text-accent-red uppercase tracking-wide mb-3">
+            <p className="text-label-lg text-primary-red uppercase tracking-wide mb-3">
               Our Identity
             </p>
             <h2 className="text-h2 font-semibold text-neutral-900">
@@ -108,9 +109,9 @@ export const AboutPage: React.FC = () => {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <Card padding="lg" className="border-l-4 border-primary-navy">
+            <Card padding="lg" className="border-l-4 border-primary-red">
               <div className="flex items-start gap-4 mb-4">
-                <Target className="w-8 h-8 text-primary-navy flex-shrink-0 mt-1" />
+                <Target className="w-8 h-8 text-primary-red flex-shrink-0 mt-1" />
                 <div>
                   <h3 className="text-h5 font-semibold text-neutral-900 mb-3">
                     Our Vision
@@ -122,9 +123,9 @@ export const AboutPage: React.FC = () => {
               </div>
             </Card>
 
-            <Card padding="lg" className="border-l-4 border-accent-red">
+            <Card padding="lg" className="border-l-4 border-primary-red">
               <div className="flex items-start gap-4 mb-4">
-                <Heart className="w-8 h-8 text-accent-red flex-shrink-0 mt-1" />
+                <Heart className="w-8 h-8 text-primary-red flex-shrink-0 mt-1" />
                 <div>
                   <h3 className="text-h5 font-semibold text-neutral-900 mb-3">
                     Our Mission
@@ -143,7 +144,7 @@ export const AboutPage: React.FC = () => {
       <section className="py-20 bg-neutral-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <p className="text-label-lg text-accent-red uppercase tracking-wide mb-3">
+            <p className="text-label-lg text-primary-red uppercase tracking-wide mb-3">
               Our Leaders
             </p>
             <h2 className="text-h2 font-semibold text-neutral-900">
@@ -153,9 +154,9 @@ export const AboutPage: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
-              { name: 'Pastor John', role: 'Senior Pastor', image: 'https://via.placeholder.com/300x300' },
-              { name: 'Pastor Sarah', role: 'Associate Pastor', image: 'https://via.placeholder.com/300x300' },
-              { name: 'David Chen', role: 'Worship Leader', image: 'https://via.placeholder.com/300x300' },
+              { name: 'Pastor John', role: 'Senior Pastor', image: placeholderImage(300, 300, 'Pastor John') },
+              { name: 'Pastor Sarah', role: 'Associate Pastor', image: placeholderImage(300, 300, 'Pastor Sarah') },
+              { name: 'David Chen', role: 'Worship Leader', image: placeholderImage(300, 300, 'David Chen') },
             ].map((leader) => (
               <Card key={leader.name} padding="md" className="text-center">
                 <div className="mb-4 overflow-hidden rounded-lg h-48 bg-neutral-200">
@@ -164,7 +165,7 @@ export const AboutPage: React.FC = () => {
                 <h4 className="text-h6 font-semibold text-neutral-900 mb-1">
                   {leader.name}
                 </h4>
-                <p className="text-body-sm text-accent-red font-medium">
+                <p className="text-body-sm text-primary-red font-medium">
                   {leader.role}
                 </p>
               </Card>

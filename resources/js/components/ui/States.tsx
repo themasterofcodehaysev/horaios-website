@@ -65,7 +65,7 @@ export const Loading: React.FC<LoadingProps> = ({
         className
       )}
     >
-      <Loader2 className={clsx('animate-spin text-primary-navy', getSizeStyles(size))} />
+      <Loader2 className={clsx('animate-spin text-primary-red', getSizeStyles(size))} />
     </div>
   );
 };
@@ -103,7 +103,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       {action && (
         <button
           onClick={action.onClick}
-          className="px-4 py-2 bg-primary-navy text-white rounded-md hover:bg-primary-dark-navy transition-colors"
+          className="px-4 py-2 bg-primary-red text-white rounded-md hover:bg-primary-dark-red transition-colors"
         >
           {action.label}
         </button>

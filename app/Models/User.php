@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\PasswordReset;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -29,6 +30,8 @@ class User extends Authenticatable
         'email_verified_at',
         'last_login_at',
         'last_login_ip',
+        'failed_login_attempts',
+        'locked_until',
     ];
 
     protected $hidden = [
@@ -41,6 +44,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'last_login_at' => 'datetime',
+            'locked_until' => 'datetime',
             'password' => 'hashed',
         ];
     }
@@ -101,5 +105,10 @@ class User extends Authenticatable
         }
 
         return $this->role ? $this->role->hasPermission($permissionName) : false;
+    }
+
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new PasswordReset($token));
     }
 }

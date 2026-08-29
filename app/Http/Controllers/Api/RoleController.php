@@ -16,6 +16,8 @@ class RoleController extends BaseApiController
      */
     public function index(): JsonResponse
     {
+        $this->authorize('viewAny', Role::class);
+
         $roles = Role::with('permissions')->withCount('users')->get();
 
         return $this->success($roles->map(fn($r) => [
@@ -41,6 +43,7 @@ class RoleController extends BaseApiController
     public function show(int $id): JsonResponse
     {
         $role = Role::with('permissions')->withCount('users')->findOrFail($id);
+        $this->authorize('view', $role);
 
         return $this->success([
             'id'           => $role->id,
@@ -64,6 +67,8 @@ class RoleController extends BaseApiController
      */
     public function permissions(): JsonResponse
     {
+        $this->authorize('viewAny', Role::class);
+
         $permissions = Permission::all()->groupBy('group')->map(fn($items) =>
             $items->map(fn($p) => [
                 'id'           => $p->id,
@@ -82,6 +87,7 @@ class RoleController extends BaseApiController
     public function updatePermissions(Request $request, int $id): JsonResponse
     {
         $role = Role::findOrFail($id);
+        $this->authorize('update', $role);
 
         // Protect system SUPER_ADMIN role from modification
         if ($role->name === Role::SUPER_ADMIN) {

@@ -6,7 +6,7 @@ import {
   ArrowRight, Clock, ChevronRight,
 } from 'lucide-react';
 import { dashboardService } from '../services/dashboard.service';
-import type { DashboardData, RecentUser, RecentActivity } from '../types';
+import type { DashboardData, RecentUser, RecentActivity, RecentContentItem } from '../types';
 
 const statCardColors: Record<string, string> = {
   red: 'bg-red-50 text-red-600',
@@ -17,6 +17,14 @@ const statCardColors: Record<string, string> = {
   pink: 'bg-pink-50 text-pink-600',
   cyan: 'bg-cyan-50 text-cyan-600',
   gray: 'bg-neutral-100 text-neutral-600',
+};
+
+const contentTypeMeta: Record<RecentContentItem['type'], { label: string; href: string; icon: React.ReactNode; color: string }> = {
+  song: { label: 'Song', href: '/admin/songs', icon: <Music className="w-4 h-4" />, color: 'bg-purple-50 text-purple-600' },
+  sermon: { label: 'Sermon', href: '/admin/sermons', icon: <BookOpen className="w-4 h-4" />, color: 'bg-red-50 text-red-600' },
+  blog_post: { label: 'Blog Post', href: '/admin/blog', icon: <FileText className="w-4 h-4" />, color: 'bg-cyan-50 text-cyan-600' },
+  event: { label: 'Event', href: '/admin/events', icon: <Calendar className="w-4 h-4" />, color: 'bg-orange-50 text-orange-600' },
+  ministry: { label: 'Ministry', href: '/admin/ministries', icon: <Heart className="w-4 h-4" />, color: 'bg-pink-50 text-pink-600' },
 };
 
 const DashboardPage: React.FC = () => {
@@ -208,6 +216,84 @@ const DashboardPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Bottom Grid: Recently Published + Draft Content */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Recently Published Content */}
+        <div className="bg-white rounded-xl border border-neutral-200">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-neutral-100">
+            <h3 className="text-h6 text-neutral-900 font-semibold">Recently Published Content</h3>
+          </div>
+          <div className="divide-y divide-neutral-100">
+            {data.recently_published.length === 0 ? (
+              <div className="px-5 py-8 text-center text-body-sm text-neutral-400">Nothing published yet</div>
+            ) : (
+              data.recently_published.map((item: RecentContentItem) => {
+                const meta = contentTypeMeta[item.type];
+                return (
+                  <Link
+                    key={`${item.type}-${item.id}`}
+                    to={meta.href}
+                    className="flex items-center gap-3 px-5 py-3 hover:bg-neutral-50 transition-colors"
+                  >
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${meta.color}`}>
+                      {meta.icon}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-body-sm text-neutral-900 font-medium truncate">{item.title}</p>
+                      <p className="text-body-xs text-neutral-500">{meta.label}</p>
+                    </div>
+                    {item.date && (
+                      <span className="text-body-xs text-neutral-400 shrink-0">
+                        {new Date(item.date).toLocaleDateString()}
+                      </span>
+                    )}
+                  </Link>
+                );
+              })
+            )}
+          </div>
+        </div>
+
+        {/* Draft Content */}
+        <div className="bg-white rounded-xl border border-neutral-200">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-neutral-100">
+            <h3 className="text-h6 text-neutral-900 font-semibold">Draft Content</h3>
+            <span className="text-body-xs px-2 py-0.5 rounded-full font-medium bg-amber-50 text-amber-700">
+              {data.draft_content.total} awaiting publish
+            </span>
+          </div>
+          <div className="divide-y divide-neutral-100">
+            {data.draft_content.items.length === 0 ? (
+              <div className="px-5 py-8 text-center text-body-sm text-neutral-400">No drafts — everything is published</div>
+            ) : (
+              data.draft_content.items.map((item: RecentContentItem) => {
+                const meta = contentTypeMeta[item.type];
+                return (
+                  <Link
+                    key={`${item.type}-${item.id}`}
+                    to={meta.href}
+                    className="flex items-center gap-3 px-5 py-3 hover:bg-neutral-50 transition-colors"
+                  >
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${meta.color}`}>
+                      {meta.icon}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-body-sm text-neutral-900 font-medium truncate">{item.title}</p>
+                      <p className="text-body-xs text-neutral-500">{meta.label}</p>
+                    </div>
+                    {item.date && (
+                      <span className="text-body-xs text-neutral-400 shrink-0">
+                        {new Date(item.date).toLocaleDateString()}
+                      </span>
+                    )}
+                  </Link>
+                );
+              })
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
@@ -231,7 +317,7 @@ const DashboardSkeleton: React.FC = () => (
       ))}
     </div>
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      {[0, 1].map((i) => (
+      {[0, 1, 2, 3].map((i) => (
         <div key={i} className="bg-white rounded-xl border border-neutral-200 p-5 space-y-4">
           <div className="h-5 w-32 bg-neutral-200 rounded" />
           {Array.from({ length: 5 }).map((_, j) => (

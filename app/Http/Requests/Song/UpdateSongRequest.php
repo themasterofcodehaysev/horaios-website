@@ -14,7 +14,7 @@ class UpdateSongRequest extends FormRequest
 
     public function rules(): array
     {
-        $songId = $this->route('song') || $this->route('id');
+        $songId = $this->route('song') ?? $this->route('id');
 
         return [
             'title'         => ['sometimes', 'required', 'string', 'max:255'],

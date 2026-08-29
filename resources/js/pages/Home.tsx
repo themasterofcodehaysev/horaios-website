@@ -1,13 +1,44 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Layout } from '../components/layout';
-import { HeroSection, EventCard, SermonCard, BlogCard, FeatureBox } from '../components/sections';
+import { SectionDivider } from '../components/layout/SectionDivider';
+import { HeroSection, EventCard, SermonCard, BlogCard, FeatureBox, SongCard } from '../components/sections';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
+import { Gallery, type GalleryItem } from '../components/ui/Gallery';
+import { songService } from '../admin/services/song.service';
+import type { SongItem } from '../admin/types';
+import { placeholderImage } from '../lib/placeholderImage';
 import { Calendar, Music, BookOpen, Users, Heart, MapPin } from 'lucide-react';
+
+// Placeholder gallery content pending a real church gallery/media API endpoint.
+const GALLERY_ITEMS: GalleryItem[] = [
+  { id: 'gallery-1', url: placeholderImage(600, 400, 'Sunday Worship'), caption: 'Sunday Worship' },
+  { id: 'gallery-2', url: placeholderImage(600, 400, 'Community Outreach'), caption: 'Community Outreach' },
+  { id: 'gallery-3', url: placeholderImage(600, 400, 'Youth Fellowship'), caption: 'Youth Fellowship' },
+  { id: 'gallery-4', url: placeholderImage(600, 400, 'Baptism Service'), caption: 'Baptism Service' },
+  { id: 'gallery-5', url: placeholderImage(600, 400, 'Choir Practice'), caption: 'Choir Practice' },
+  { id: 'gallery-6', url: placeholderImage(600, 400, 'Church Picnic'), caption: 'Church Picnic' },
+];
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
+  const [featuredSongs, setFeaturedSongs] = useState<SongItem[]>([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    songService
+      .getPublicSongs({ featured: true, per_page: 4 })
+      .then((res) => {
+        if (isMounted) setFeaturedSongs(res.data);
+      })
+      .catch(() => {
+        if (isMounted) setFeaturedSongs([]);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <Layout>
@@ -28,11 +59,13 @@ export const HomePage: React.FC = () => {
         showScrollIndicator={true}
       />
 
+      <SectionDivider />
+
       {/* Service Times Section */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <p className="text-label-lg text-accent-red uppercase tracking-wide mb-3">
+            <p className="text-label-lg text-primary-red uppercase tracking-wide mb-3">
               Join Us For Worship
             </p>
             <h2 className="text-h2 font-semibold text-neutral-900">
@@ -46,7 +79,7 @@ export const HomePage: React.FC = () => {
               <h3 className="text-h6 font-semibold text-neutral-900 mb-2">
                 Sunday Morning
               </h3>
-              <p className="text-body-base text-primary-navy font-medium mb-2">
+              <p className="text-body-base text-primary-red font-medium mb-2">
                 09:00 AM & 11:00 AM
               </p>
               <p className="text-body-sm text-neutral-600">
@@ -59,7 +92,7 @@ export const HomePage: React.FC = () => {
               <h3 className="text-h6 font-semibold text-neutral-900 mb-2">
                 Wednesday Evening
               </h3>
-              <p className="text-body-base text-primary-navy font-medium mb-2">
+              <p className="text-body-base text-primary-red font-medium mb-2">
                 07:00 PM
               </p>
               <p className="text-body-sm text-neutral-600">
@@ -72,7 +105,7 @@ export const HomePage: React.FC = () => {
               <h3 className="text-h6 font-semibold text-neutral-900 mb-2">
                 Special Events
               </h3>
-              <p className="text-body-base text-primary-navy font-medium mb-2">
+              <p className="text-body-base text-primary-red font-medium mb-2">
                 See Calendar
               </p>
               <p className="text-body-sm text-neutral-600">
@@ -93,7 +126,7 @@ export const HomePage: React.FC = () => {
       <section className="py-20 bg-neutral-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <p className="text-label-lg text-accent-red uppercase tracking-wide mb-3">
+            <p className="text-label-lg text-primary-red uppercase tracking-wide mb-3">
               Our Story
             </p>
             <h2 className="text-h2 font-semibold text-neutral-900 mb-8">
@@ -145,7 +178,7 @@ export const HomePage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-12">
             <div>
-              <p className="text-label-lg text-accent-red uppercase tracking-wide mb-3">
+              <p className="text-label-lg text-primary-red uppercase tracking-wide mb-3">
                 What's Happening
               </p>
               <h2 className="text-h2 font-semibold text-neutral-900">
@@ -202,7 +235,7 @@ export const HomePage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-12">
             <div>
-              <p className="text-label-lg text-accent-red uppercase tracking-wide mb-3">
+              <p className="text-label-lg text-primary-red uppercase tracking-wide mb-3">
                 Spiritual Growth
               </p>
               <h2 className="text-h2 font-semibold text-neutral-900">
@@ -251,11 +284,44 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
+      {/* Featured Songs */}
+      {featuredSongs.length > 0 && (
+        <section className="py-20 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between mb-12">
+              <div>
+                <p className="text-label-lg text-primary-red uppercase tracking-wide mb-3">
+                  Worship With Us
+                </p>
+                <h2 className="text-h2 font-semibold text-neutral-900">
+                  Featured Songs
+                </h2>
+              </div>
+              <Button variant="default" className="hidden sm:inline-flex" onClick={() => navigate('/songs')}>
+                All Songs →
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {featuredSongs.map((song) => (
+                <SongCard key={song.id} song={song} />
+              ))}
+            </div>
+
+            <div className="text-center mt-8 sm:hidden">
+              <Button variant="default" onClick={() => navigate('/songs')}>
+                All Songs →
+              </Button>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Featured Ministries */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-neutral-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <p className="text-label-lg text-accent-red uppercase tracking-wide mb-3">
+            <p className="text-label-lg text-primary-red uppercase tracking-wide mb-3">
               Get Involved
             </p>
             <h2 className="text-h2 font-semibold text-neutral-900">
@@ -316,12 +382,28 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
+      {/* Church Gallery */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <p className="text-label-lg text-primary-red uppercase tracking-wide mb-3">
+              Life Together
+            </p>
+            <h2 className="text-h2 font-semibold text-neutral-900">
+              Church Gallery
+            </h2>
+          </div>
+
+          <Gallery items={GALLERY_ITEMS} columns={3} />
+        </div>
+      </section>
+
       {/* Latest News */}
       <section className="py-20 bg-neutral-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-12">
             <div>
-              <p className="text-label-lg text-accent-red uppercase tracking-wide mb-3">
+              <p className="text-label-lg text-primary-red uppercase tracking-wide mb-3">
                 Latest Updates
               </p>
               <h2 className="text-h2 font-semibold text-neutral-900">
@@ -339,7 +421,7 @@ export const HomePage: React.FC = () => {
               excerpt="Join us for an exciting week of Bible lessons, activities, and fun for children ages 3-12."
               author="Admin"
               date="Aug 8, 2025"
-              image="https://via.placeholder.com/400x250"
+              image={placeholderImage(400, 250, 'News')}
               category="Events"
               onClick={() => navigate('/news')}
             />
@@ -349,7 +431,7 @@ export const HomePage: React.FC = () => {
               excerpt="Introducing a new pathway for spiritual growth and leadership development in our church."
               author="Admin"
               date="Aug 6, 2025"
-              image="https://via.placeholder.com/400x250"
+              image={placeholderImage(400, 250, 'News')}
               category="Announcements"
               onClick={() => navigate('/news')}
             />
@@ -359,7 +441,7 @@ export const HomePage: React.FC = () => {
               excerpt="See how our team blessed communities and spread Christ's love during our recent mission work."
               author="Admin"
               date="Aug 1, 2025"
-              image="https://via.placeholder.com/400x250"
+              image={placeholderImage(400, 250, 'News')}
               category="Missions"
               featured={true}
               onClick={() => navigate('/news')}
@@ -375,7 +457,7 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* Prayer & Giving CTA */}
-      <section className="py-20 bg-gradient-to-r from-primary-navy to-primary-light-navy">
+      <section className="py-20 bg-gradient-hero">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Prayer CTA */}
@@ -386,7 +468,7 @@ export const HomePage: React.FC = () => {
               <p className="text-body-lg text-white/90 mb-6">
                 Share your prayer needs with our church family. We're here to support and intercede for you.
               </p>
-              <Button variant="default" className="border-2 border-white text-white hover:bg-white/10" onClick={() => navigate('/contact')}>
+              <Button variant="default" className="border-2 border-white bg-white text-primary-red hover:bg-white/10 hover:text-white" onClick={() => navigate('/contact')}>
                 Submit Prayer Request
               </Button>
             </div>
@@ -402,7 +484,7 @@ export const HomePage: React.FC = () => {
               <Button
                 variant="primary"
                 size="lg"
-                className="bg-accent-red hover:bg-accent-dark-red w-full md:w-auto"
+                className="bg-primary-red hover:bg-primary-dark-red w-full md:w-auto"
                 onClick={() => navigate('/give')}
               >
                 Give Now
@@ -416,7 +498,7 @@ export const HomePage: React.FC = () => {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <p className="text-label-lg text-accent-red uppercase tracking-wide mb-3">
+            <p className="text-label-lg text-primary-red uppercase tracking-wide mb-3">
               Stories of Faith
             </p>
             <h2 className="text-h2 font-semibold text-neutral-900">

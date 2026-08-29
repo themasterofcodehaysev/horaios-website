@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@config '../../tailwind.config.js';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -8,4 +9,137 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --color-brand-burgundy: #74121c;
+    --color-brand-burgundy-dark: #5a0e16;
+    --color-brand-burgundy-deep: #3f0a10;
+    --color-brand-burgundy-light: #962028;
+    --color-brand-burgundy-soft: #b82a36;
+
+    --color-brand-navy: #273161;
+    --color-brand-navy-dark: #1d2549;
+    --color-brand-navy-light: #354278;
+
+    --background-image-gradient-hero: linear-gradient(135deg, #74121c 0%, #962028 45%, #5a0e16 100%);
+    --background-image-gradient-hero-overlay: linear-gradient(to right, rgba(116, 18, 28, 0.96), rgba(90, 14, 22, 0.88));
+    --background-image-gradient-footer: linear-gradient(180deg, #74121c 0%, #3f0a10 100%);
+}
+
+@layer base {
+    html {
+        background-color: var(--color-brand-burgundy);
+    }
+
+    html.dark {
+        background-color: #0f172a;
+    }
+
+    body {
+        background-color: transparent;
+    }
+}
+
+@layer components {
+    /* Content sections: slight transparency so the burgundy backdrop shows through */
+    main section.bg-white {
+        background-color: rgb(255 255 255 / 0.97);
+    }
+
+    main section.bg-neutral-50 {
+        background-color: rgb(255 252 252 / 0.94);
+    }
+
+    /* Dark mode styles for admin interface */
+    .dark .bg-white {
+        background-color: #1e293b !important;
+    }
+
+    .dark .bg-neutral-50 {
+        background-color: #0f172a !important;
+    }
+
+    .dark .bg-neutral-100 {
+        background-color: #334155 !important;
+    }
+
+    .dark .text-neutral-900 {
+        color: #f1f5f9 !important;
+    }
+
+    .dark .text-neutral-700 {
+        color: #e2e8f0 !important;
+    }
+
+    .dark .text-neutral-600 {
+        color: #cbd5e1 !important;
+    }
+
+    .dark .text-neutral-500 {
+        color: #94a3b8 !important;
+    }
+
+    .dark .border-neutral-200 {
+        border-color: #334155 !important;
+    }
+
+    .dark .border-neutral-100 {
+        border-color: #1e293b !important;
+    }
+
+    .dark .hover\:bg-neutral-50:hover {
+        background-color: #334155 !important;
+    }
+
+    .dark .hover\:bg-neutral-100:hover {
+        background-color: #475569 !important;
+    }
+
+    .dark .shadow-lg {
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5) !important;
+    }
+
+    .dark .ring-black\/5 {
+        --tw-ring-color: rgba(0, 0, 0, 0.5) !important;
+    }
+
+    /* Admin-specific dark mode enhancements */
+    .dark .bg-slate-800 {
+        background-color: #1e293b !important;
+    }
+
+    .dark .bg-slate-700 {
+        background-color: #334155 !important;
+    }
+
+    .dark .bg-slate-900 {
+        background-color: #0f172a !important;
+    }
+
+    .dark .text-slate-200 {
+        color: #e2e8f0 !important;
+    }
+
+    .dark .text-slate-400 {
+        color: #94a3b8 !important;
+    }
+
+    .dark .text-slate-500 {
+        color: #64748b !important;
+    }
+
+    .dark .border-slate-600 {
+        border-color: #475569 !important;
+    }
+
+    .dark .border-slate-700 {
+        border-color: #334155 !important;
+    }
+
+    .dark .hover\:bg-slate-700:hover {
+        background-color: #334155 !important;
+    }
+
+    .dark .placeholder-slate-400::placeholder {
+        color: #94a3b8 !important;
+    }
 }

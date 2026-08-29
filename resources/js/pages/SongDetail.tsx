@@ -5,8 +5,43 @@ import {
   AArrowUp, AArrowDown, RefreshCw, Calendar, Music, Sparkles, ChevronRight,
 } from 'lucide-react';
 import { Layout } from '../components/layout';
+import { Seo } from '../components/common';
+import type { SeoStructuredData } from '../components/common/Seo';
 import { songService } from '../admin/services/song.service';
 import type { SongItem } from '../admin/types';
+
+const SITE_NAME = 'Horaios Baptist Church';
+
+/**
+ * NOTE: SongItem has no seo_title/seo_description/seo_image/canonical_url
+ * fields (unlike BlogItem/EventItem/MinistryItem) -- the songs table and
+ * SongResource simply don't carry them. These are sensible fallbacks built
+ * from data that actually exists, not a stand-in for those admin-editable
+ * SEO fields.
+ */
+function buildSongSeo(song: SongItem) {
+  const canonicalUrl = typeof window !== 'undefined'
+    ? `${window.location.origin}${window.location.pathname}`
+    : undefined;
+
+  const description = `"${song.title}"${song.artist ? ` by ${song.artist}` : ''} — worship song lyrics${
+    song.category?.name ? ` (${song.category.name})` : ''
+  } from ${SITE_NAME}.`;
+
+  const jsonLd: SeoStructuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'MusicComposition',
+    name: song.title,
+    description,
+    ...(song.category?.name ? { genre: song.category.name } : {}),
+    ...(song.composer ? { composer: { '@type': 'Person', name: song.composer } } : {}),
+    lyrics: { '@type': 'CreativeWork', text: song.lyrics },
+    dateModified: song.updated_at,
+    ...(canonicalUrl ? { url: canonicalUrl } : {}),
+  };
+
+  return { title: `${song.title} | ${SITE_NAME} Worship`, description, canonicalUrl, jsonLd };
+}
 
 export const SongDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -34,16 +69,6 @@ export const SongDetailPage: React.FC = () => {
   useEffect(() => {
     localStorage.setItem('song_font_size', String(fontSize));
   }, [fontSize]);
-
-  // Dynamic Page Title
-  useEffect(() => {
-    if (song) {
-      document.title = `${song.title} | Horaios Baptist Church Worship`;
-    }
-    return () => {
-      document.title = 'Horaios Baptist Church';
-    };
-  }, [song]);
 
   // Fetch Song Details & Related Songs
   useEffect(() => {
@@ -158,10 +183,18 @@ export const SongDetailPage: React.FC = () => {
     );
   }
 
+  const songSeo = buildSongSeo(song);
+
   // Render Worship Mode Fullscreen Shell
   if (worshipMode) {
     return (
       <div className="min-h-screen bg-neutral-950 text-neutral-50 flex flex-col justify-between p-4 sm:p-8 animate-fade-in select-none">
+        <Seo
+          title={songSeo.title}
+          description={songSeo.description}
+          canonicalUrl={songSeo.canonicalUrl}
+          jsonLd={songSeo.jsonLd}
+        />
         {/* Worship Mode Top Control Bar */}
         <header className="sticky top-0 z-50 bg-neutral-900/90 backdrop-blur-md border border-neutral-800 rounded-2xl p-3 sm:p-4 mb-8 flex flex-wrap items-center justify-between gap-3 shadow-2xl">
           <div className="flex items-center gap-3">
@@ -244,6 +277,12 @@ export const SongDetailPage: React.FC = () => {
   // Normal Layout View
   return (
     <Layout>
+      <Seo
+        title={songSeo.title}
+        description={songSeo.description}
+        canonicalUrl={songSeo.canonicalUrl}
+        jsonLd={songSeo.jsonLd}
+      />
       <article className="max-w-3xl mx-auto py-10 px-4 sm:px-6 space-y-8">
         {/* Top Navigation & Worship Mode Button */}
         <div className="flex items-center justify-between border-b border-neutral-200 pb-4">

@@ -14,7 +14,7 @@ export const QuickActionCard: React.FC<QuickActionCardProps> = ({
   description, 
   icon, 
   href, 
-  color = 'text-[#C8102E] bg-red-50' 
+  color = 'text-primary-red bg-red-50' 
 }) => {
   return (
     <Link 
@@ -26,7 +26,7 @@ export const QuickActionCard: React.FC<QuickActionCardProps> = ({
           {icon}
         </div>
         <div>
-          <h4 className="text-base font-semibold text-gray-900 group-hover:text-[#1E366D] transition-colors">{title}</h4>
+          <h4 className="text-base font-semibold text-gray-900 group-hover:text-primary-navy transition-colors">{title}</h4>
           <p className="text-sm text-gray-500 mt-0.5 line-clamp-1">{description}</p>
         </div>
       </div>

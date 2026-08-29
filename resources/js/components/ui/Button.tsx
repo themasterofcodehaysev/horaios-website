@@ -15,9 +15,11 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 const getVariantStyles = (variant: string) => {
   switch (variant) {
     case 'primary':
-      return 'bg-primary-navy text-white hover:bg-primary-dark-navy focus:ring-primary-navy active:bg-primary-dark-navy';
+      return 'bg-primary-red text-white hover:bg-primary-dark-red focus:ring-primary-red active:bg-primary-dark-red';
     case 'secondary':
-      return 'bg-neutral-100 text-primary-navy hover:bg-neutral-200 focus:ring-primary-navy active:bg-neutral-300';
+      return 'bg-neutral-100 text-primary-red hover:bg-neutral-200 focus:ring-primary-red active:bg-neutral-300';
+    case 'outline':
+      return 'bg-white text-primary-red hover:bg-neutral-50 focus:ring-primary-red active:bg-neutral-100 border border-neutral-300';
     case 'danger':
       return 'bg-error text-white hover:bg-red-700 focus:ring-error active:bg-red-800';
     case 'success':
@@ -25,7 +27,7 @@ const getVariantStyles = (variant: string) => {
     case 'warning':
       return 'bg-warning text-white hover:bg-amber-600 focus:ring-warning active:bg-amber-700';
     default:
-      return 'bg-white text-primary-navy hover:bg-neutral-50 focus:ring-primary-navy active:bg-neutral-100 border border-neutral-300';
+      return 'bg-white text-primary-red hover:bg-neutral-50 focus:ring-primary-red active:bg-neutral-100 border border-neutral-300';
   }
 };
 

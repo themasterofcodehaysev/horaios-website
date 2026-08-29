@@ -36,7 +36,7 @@ export const RegisterPage: React.FC = () => {
 
   return (
     <Layout hideNavigation hideFooter>
-      <div className="min-h-screen bg-gradient-to-br from-primary-navy to-primary-light-navy flex items-center justify-center px-4 py-12">
+      <div className="min-h-screen bg-gradient-to-br from-primary-red to-primary-light-red flex items-center justify-center px-4 py-12">
         <Card padding="lg" shadow="lg" className="w-full max-w-md">
           <div className="text-center mb-8">
             <img
@@ -102,11 +102,11 @@ export const RegisterPage: React.FC = () => {
               />
               <span className="text-body-sm text-neutral-600">
                 I agree to the{' '}
-                <a href="#" className="text-primary-navy hover:text-primary-dark-navy font-medium">
+                <a href="#" className="text-primary-red hover:text-primary-dark-red font-medium">
                   Terms of Service
                 </a>{' '}
                 and{' '}
-                <a href="#" className="text-primary-navy hover:text-primary-dark-navy font-medium">
+                <a href="#" className="text-primary-red hover:text-primary-dark-red font-medium">
                   Privacy Policy
                 </a>
               </span>
@@ -118,7 +118,7 @@ export const RegisterPage: React.FC = () => {
 
             <p className="text-center text-body-sm text-neutral-600">
               Already have an account?{' '}
-              <a href="/login" className="text-primary-navy hover:text-primary-dark-navy font-medium">
+              <a href="/login" className="text-primary-red hover:text-primary-dark-red font-medium">
                 Sign in
               </a>
             </p>

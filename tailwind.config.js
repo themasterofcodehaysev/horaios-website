@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   content: [
     './resources/**/*.{js,jsx,ts,tsx}',
     './resources/**/*.blade.php',
@@ -7,43 +8,36 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Primary brand colors (Church Red main)
-        primary: {
-          navy: '#C8102E',
-          'dark-navy': '#9E0D24',
-          'light-navy': '#E11D48',
-          red: '#C8102E',
-          'dark-red': '#9E0D24',
-          'light-red': '#E11D48',
-          50: '#fff1f2',
-          100: '#ffe4e6',
-          200: '#fecdd3',
-          300: '#fda4af',
-          400: '#fb7185',
-          500: '#f43f5e',
-          600: '#e11d48',
-          700: '#be123c',
-          800: '#9f1239',
-          900: '#881337',
+        // Brand burgundy — main site background (#74121c)
+        brand: {
+          burgundy: '#74121c',
+          'burgundy-dark': '#5a0e16',
+          'burgundy-deep': '#3f0a10',
+          'burgundy-light': '#962028',
+          'burgundy-soft': '#b82a36',
         },
-        // Secondary / Accent colors (Logo Royal Blue)
+        // Primary brand colors from the church logo (#74121c burgundy + #273161 navy)
+        primary: {
+          red: '#74121c',
+          'dark-red': '#5a0e16',
+          'light-red': '#962028',
+          navy: '#273161',
+          'dark-navy': '#1d2549',
+          'light-navy': '#354278',
+          50: '#fdf2f3',
+          100: '#fce4e6',
+          200: '#f9cdd2',
+          300: '#f0a3ad',
+          400: '#dc6a78',
+          500: '#74121c',
+          600: '#5a0e16',
+          700: '#4a0c12',
+          800: '#3f0a10',
+          900: '#2d070b',
+        },
+        // Alias kept for existing call sites that reference accent-blue.
         accent: {
-          blue: '#1E366D',
-          'dark-blue': '#14254C',
-          'light-blue': '#2B4C91',
-          red: '#1E366D',
-          'dark-red': '#14254C',
-          'light-red': '#2B4C91',
-          50: '#f0f4f9',
-          100: '#e0e9f3',
-          200: '#c2d3e7',
-          300: '#a3bddb',
-          400: '#5c8ac2',
-          500: '#1a5fa0',
-          600: '#1E366D',
-          700: '#14254C',
-          800: '#0f1c3a',
-          900: '#0a1327',
+          blue: '#273161',
         },
         // Neutral grays
         neutral: {
@@ -156,9 +150,9 @@ export default {
         'xl': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
         '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
         'inner': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.05)',
-        'elevation-sm': '0 2px 8px rgba(0, 31, 63, 0.08)',
-        'elevation-md': '0 4px 12px rgba(0, 31, 63, 0.12)',
-        'elevation-lg': '0 8px 24px rgba(0, 31, 63, 0.16)',
+        'elevation-sm': '0 2px 8px rgba(39, 49, 97, 0.08)',
+        'elevation-md': '0 4px 12px rgba(39, 49, 97, 0.12)',
+        'elevation-lg': '0 8px 24px rgba(39, 49, 97, 0.16)',
         'none': 'none',
       },
       transitionDuration: {
@@ -229,17 +223,20 @@ export default {
         'lg': '16px',
       },
       backgroundImage: {
-        'gradient-navy-red': 'linear-gradient(135deg, #001f3f, #d32f2f)',
-        'gradient-navy-white': 'linear-gradient(180deg, #001f3f, #ffffff)',
+        'gradient-navy-red': 'linear-gradient(135deg, #273161, #74121c)',
+        'gradient-navy-white': 'linear-gradient(180deg, #273161, #ffffff)',
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'gradient-hero': 'linear-gradient(135deg, #74121c 0%, #962028 45%, #5a0e16 100%)',
+        'gradient-hero-overlay': 'linear-gradient(to right, rgba(116, 18, 28, 0.96), rgba(90, 14, 22, 0.88))',
+        'gradient-footer': 'linear-gradient(180deg, #74121c 0%, #3f0a10 100%)',
       },
     },
   },
   plugins: [],
   safelist: [
     // Safelist specific patterns to prevent purging
-    /^text-(primary|accent|neutral|success|warning|error|info)/,
-    /^bg-(primary|accent|neutral|success|warning|error|info)/,
-    /^border-(primary|accent|neutral|success|warning|error|info)/,
+    /^text-(primary|neutral|success|warning|error|info)/,
+    /^bg-(primary|neutral|success|warning|error|info)/,
+    /^border-(primary|neutral|success|warning|error|info)/,
   ],
 };

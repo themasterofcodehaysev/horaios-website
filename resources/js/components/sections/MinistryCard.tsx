@@ -33,7 +33,7 @@ export const MinistryCard: React.FC<MinistryCardProps> = ({
           />
         </div>
       ) : icon ? (
-        <div className="mb-4 w-full h-40 bg-gradient-to-br from-primary-navy/10 to-accent-red/10 rounded-lg flex items-center justify-center">
+        <div className="mb-4 w-full h-40 bg-gradient-to-br from-primary-red/10 to-primary-red/10 rounded-lg flex items-center justify-center">
           <div className="text-neutral-400">
             {icon}
           </div>
@@ -52,7 +52,7 @@ export const MinistryCard: React.FC<MinistryCardProps> = ({
         {leader && (
           <div className="pt-3 border-t border-neutral-200">
             <p className="text-label-sm font-medium text-neutral-700">
-              Leader: <span className="text-primary-navy">{leader}</span>
+              Leader: <span className="text-primary-red">{leader}</span>
             </p>
           </div>
         )}
@@ -69,7 +69,7 @@ export const MinistryCard: React.FC<MinistryCardProps> = ({
           </p>
         )}
 
-        <button className="mt-auto pt-3 border-t border-neutral-200 text-accent-red font-medium text-body-sm hover:text-accent-dark-red transition-colors">
+        <button className="mt-auto pt-3 border-t border-neutral-200 text-primary-red font-medium text-body-sm hover:text-primary-dark-red transition-colors">
           Learn More →
         </button>
       </div>

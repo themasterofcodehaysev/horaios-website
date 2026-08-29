@@ -2,3 +2,5 @@
 export { default as Navigation } from './Navigation';
 export { default as Footer } from './Footer';
 export { Layout } from './Layout';
+export { MobileMenu } from './MobileMenu';
+export { PageBackground } from './PageBackground';

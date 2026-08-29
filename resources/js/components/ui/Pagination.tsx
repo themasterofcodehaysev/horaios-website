@@ -79,7 +79,7 @@ export const Pagination: React.FC<PaginationProps> = ({
               className={clsx(
                 'min-w-10 h-10 rounded-md text-body-sm font-medium transition-colors',
                 currentPage === page
-                  ? 'bg-primary-navy text-white'
+                  ? 'bg-primary-red text-white'
                   : 'border border-neutral-300 text-neutral-700 hover:bg-neutral-100'
               )}
             >

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\Auth\ChangePasswordRequest;
+use App\Http\Requests\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Resources\UserResource;
 use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
@@ -105,6 +107,37 @@ class AuthController extends BaseApiController
             return $this->noContent('Logged out from all devices');
         } catch (Throwable $e) {
             return $this->error('Logout failed', 500);
+        }
+    }
+
+    /**
+     * POST /api/auth/forgot-password
+     * Send a password reset link to the given email, if it exists.
+     */
+    public function forgotPassword(ForgotPasswordRequest $request): JsonResponse
+    {
+        $this->authService->sendPasswordResetLink($request->validated('email'));
+
+        // Always return success to avoid leaking which emails are registered.
+        return $this->success(null, 'If that email address is registered, a password reset link has been sent.');
+    }
+
+    /**
+     * POST /api/auth/reset-password
+     * Reset a user's password using a valid reset token.
+     */
+    public function resetPassword(ResetPasswordRequest $request): JsonResponse
+    {
+        try {
+            $this->authService->resetPassword(
+                $request->validated('token'),
+                $request->validated('email'),
+                $request->validated('password')
+            );
+
+            return $this->success(null, 'Password reset successfully. You can now sign in.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return $this->error($e->getMessage(), 422, $e->errors());
         }
     }
 }

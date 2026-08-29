@@ -24,17 +24,17 @@ export const blogService = {
     if (filters.sort_by) params.set('sort_by', filters.sort_by);
     if (filters.sort_dir) params.set('sort_dir', filters.sort_dir);
 
-    const { data } = await api.get<PaginatedResponse<BlogPostPublic>>(`/blog-posts?${params.toString()}`);
+    const { data } = await api.get<PaginatedResponse<BlogPostPublic>>(`/blogs?${params.toString()}`);
     return data;
   },
 
   async getPublicPostDetail(slug: string): Promise<BlogPostPublic> {
-    const { data } = await api.get<ApiResponse<BlogPostPublic>>(`/blog-posts/${slug}`);
+    const { data } = await api.get<ApiResponse<BlogPostPublic>>(`/blogs/${slug}`);
     return data.data;
   },
 
   async getRelatedPosts(slug: string): Promise<BlogPostPublic[]> {
-    const { data } = await api.get<ApiResponse<BlogPostPublic[]>>(`/blog-posts/${slug}/related`);
+    const { data } = await api.get<ApiResponse<BlogPostPublic[]>>(`/blogs/${slug}/related`);
     return data.data;
   },
 
@@ -105,6 +105,32 @@ export const ministryService = {
 
   async getPublicCategories(): Promise<MinistryCategoryPublic[]> {
     const { data } = await api.get<ApiResponse<MinistryCategoryPublic[]>>('/ministry-categories');
+    return data.data;
+  },
+};
+
+export const prayerService = {
+  async submitPrayerRequest(payload: any): Promise<any> {
+    const { data } = await api.post<ApiResponse<any>>('/prayer-requests', payload);
+    return data.data;
+  },
+
+  async getPublicPrayerRequests(filters: any = {}): Promise<PaginatedResponse<any>> {
+    const params = new URLSearchParams();
+    if (filters.search) params.set('search', filters.search);
+    if (filters.request_type) params.set('request_type', filters.request_type);
+    if (filters.urgency) params.set('urgency', filters.urgency);
+    if (filters.page) params.set('page', String(filters.page));
+    if (filters.per_page) params.set('per_page', String(filters.per_page));
+
+    const { data } = await api.get<PaginatedResponse<any>>(`/prayer-requests?${params.toString()}`);
+    return data;
+  },
+};
+
+export const contactService = {
+  async submitContactMessage(payload: any): Promise<any> {
+    const { data } = await api.post<ApiResponse<any>>('/contact', payload);
     return data.data;
   },
 };
