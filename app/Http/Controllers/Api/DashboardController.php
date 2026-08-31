@@ -162,7 +162,7 @@ class DashboardController extends BaseApiController
             'id'    => $m->id,
             'uuid'  => $m->uuid,
             'title' => $m->title,
-            'date'  => $m->date?->toIso8601String(),
+            'date'  => $m->date,
         ]);
 
         return $items;

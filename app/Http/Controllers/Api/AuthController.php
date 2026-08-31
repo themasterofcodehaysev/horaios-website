@@ -35,7 +35,7 @@ class AuthController extends BaseApiController
             return $this->success([
                 'token' => $result['token'],
                 'token_type' => 'Bearer',
-                'user' => new UserResource($result['user']->load('role')),
+                'user' => new UserResource($result['user']->load('role.permissions')),
             ], 'Login successful');
         } catch (\Illuminate\Validation\ValidationException $e) {
             return $this->error('Invalid credentials', 401);
