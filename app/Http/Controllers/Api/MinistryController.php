@@ -48,7 +48,8 @@ class MinistryController extends BaseApiController
 
     public function related(string $identifier): JsonResponse
     {
-        $ministry = Ministry::where('slug', $identifier)
+        $ministry = Ministry::with('category')
+            ->where('slug', $identifier)
             ->orWhere('uuid', $identifier)
             ->orWhere('id', $identifier)
             ->firstOrFail();

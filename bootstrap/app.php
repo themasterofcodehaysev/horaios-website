@@ -21,6 +21,11 @@ return Application::configure(basePath: dirname(__DIR__))
         
         // Apply security headers to all routes
         $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
+        
+        // Apply response compression to API routes
+        $middleware->alias([
+            'compress' => \App\Http\Middleware\CompressResponse::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         // Return JSON for unauthenticated API requests instead of redirect

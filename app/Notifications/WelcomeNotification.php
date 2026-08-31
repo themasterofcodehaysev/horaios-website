@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Channels\CustomDatabaseChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -17,7 +18,22 @@ class WelcomeNotification extends Notification implements ShouldQueue
 
     public function via($notifiable): array
     {
-        return ['mail'];
+        return ['mail', CustomDatabaseChannel::class];
+    }
+
+    public function toDatabase($notifiable): array
+    {
+        return [
+            'title' => 'Welcome to Horaios Baptist Church',
+            'message' => 'Your account has been created successfully. Please set your password to get started.',
+            'link' => '/reset-password/' . $this->resetToken . '?email=' . $notifiable->getEmailForPasswordReset(),
+            'type' => 'welcome',
+            'data' => [
+                'email' => $notifiable->email,
+                'reset_token' => $this->resetToken,
+            ],
+            'is_read' => false,
+        ];
     }
 
     protected function setupUrl($notifiable): string

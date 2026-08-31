@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Notifications\WelcomeNotification;
+use App\Notifications\NewUserRegistered;
 use App\Jobs\SendWelcomeNotification;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Hash;
@@ -38,6 +39,15 @@ class UserService
         // The admin-supplied password is never transmitted or persisted in plaintext beyond this request.
         $resetToken = Password::createToken($user);
         SendWelcomeNotification::dispatch($user->id, $resetToken);
+
+        // Notify admins about new user registration
+        $adminUsers = User::whereHas('role', function ($query) {
+            $query->whereIn('name', ['SUPER_ADMIN', 'ADMIN']);
+        })->get();
+
+        foreach ($adminUsers as $admin) {
+            $admin->notify(new NewUserRegistered($user->display_name, $user->email));
+        }
 
         return $user->load('role');
     }

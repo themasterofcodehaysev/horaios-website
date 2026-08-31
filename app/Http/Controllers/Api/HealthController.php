@@ -15,12 +15,16 @@ class HealthController extends BaseApiController
         $health = [
             'status' => 'healthy',
             'timestamp' => now()->toIso8601String(),
+            'environment' => config('app.env'),
+            'version' => config('app.version', '1.0.0'),
             'checks' => [
                 'database' => $this->checkDatabase(),
                 'cache' => $this->checkCache(),
                 'storage' => $this->checkStorage(),
                 'queue' => $this->checkQueue(),
                 'filesystem' => $this->checkFilesystem(),
+                'memory' => $this->checkMemory(),
+                'redis' => $this->checkRedis(),
             ],
         ];
 
@@ -86,5 +90,57 @@ class HealthController extends BaseApiController
             'free_space' => round($freeSpace / 1024 / 1024 / 1024, 2) . ' GB',
             'total_space' => round($totalSpace / 1024 / 1024 / 1024, 2) . ' GB',
         ];
+    }
+
+    private function checkMemory(): array
+    {
+        $memoryUsage = memory_get_usage(true);
+        $memoryLimit = ini_get('memory_limit');
+        $memoryLimitBytes = $this->convertToBytes($memoryLimit);
+        $usagePercent = ($memoryUsage / $memoryLimitBytes) * 100;
+
+        return [
+            'status' => $usagePercent < 80 ? 'ok' : 'warning',
+            'message' => 'Memory usage check',
+            'usage_percent' => round($usagePercent, 2),
+            'usage' => round($memoryUsage / 1024 / 1024, 2) . ' MB',
+            'limit' => $memoryLimit,
+        ];
+    }
+
+    private function checkRedis(): array
+    {
+        try {
+            $redis = Cache::getStore();
+            if (method_exists($redis, 'getConnection')) {
+                $connection = $redis->getConnection();
+                $ping = $connection->ping();
+                return ['status' => 'ok', 'message' => 'Redis connection successful', 'ping' => $ping];
+            }
+            return ['status' => 'ok', 'message' => 'Redis configured'];
+        } catch (\Exception $e) {
+            return ['status' => 'warning', 'message' => 'Redis not configured or failed: ' . $e->getMessage()];
+        }
+    }
+
+    private function convertToBytes($value): int
+    {
+        $value = trim($value);
+        $last = strtolower($value[strlen($value) - 1]);
+        $value = (int) $value;
+        
+        switch ($last) {
+            case 'g':
+                $value *= 1024 * 1024 * 1024;
+                break;
+            case 'm':
+                $value *= 1024 * 1024;
+                break;
+            case 'k':
+                $value *= 1024;
+                break;
+        }
+        
+        return $value;
     }
 }

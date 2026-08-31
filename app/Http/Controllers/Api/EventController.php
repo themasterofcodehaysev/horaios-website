@@ -51,7 +51,8 @@ class EventController extends BaseApiController
 
     public function related(string $identifier): JsonResponse
     {
-        $event = Event::where('slug', $identifier)
+        $event = Event::with('category')
+            ->where('slug', $identifier)
             ->orWhere('uuid', $identifier)
             ->orWhere('id', $identifier)
             ->firstOrFail();

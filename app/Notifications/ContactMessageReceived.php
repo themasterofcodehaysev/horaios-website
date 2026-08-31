@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Channels\CustomDatabaseChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -19,7 +20,23 @@ class ContactMessageReceived extends Notification implements ShouldQueue
 
     public function via($notifiable): array
     {
-        return ['mail'];
+        return ['mail', CustomDatabaseChannel::class];
+    }
+
+    public function toDatabase($notifiable): array
+    {
+        return [
+            'title' => 'New Contact Message Received',
+            'message' => "A new contact message '{$this->subject}' has been received from {$this->senderName}.",
+            'link' => '/admin/contact-messages',
+            'type' => 'contact_message',
+            'data' => [
+                'subject' => $this->subject,
+                'sender_name' => $this->senderName,
+                'sender_email' => $this->senderEmail,
+            ],
+            'is_read' => false,
+        ];
     }
 
     public function toMail($notifiable): MailMessage

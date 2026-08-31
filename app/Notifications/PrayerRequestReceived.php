@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Channels\CustomDatabaseChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -19,7 +20,23 @@ class PrayerRequestReceived extends Notification implements ShouldQueue
 
     public function via($notifiable): array
     {
-        return ['mail'];
+        return ['mail', CustomDatabaseChannel::class];
+    }
+
+    public function toDatabase($notifiable): array
+    {
+        return [
+            'title' => 'New Prayer Request Received',
+            'message' => "A new prayer request '{$this->prayerTitle}' has been submitted by {$this->requesterName}.",
+            'link' => '/admin/prayer-requests',
+            'type' => 'prayer_request',
+            'data' => [
+                'prayer_title' => $this->prayerTitle,
+                'requester_name' => $this->requesterName,
+                'urgency' => $this->urgency,
+            ],
+            'is_read' => false,
+        ];
     }
 
     public function toMail($notifiable): MailMessage

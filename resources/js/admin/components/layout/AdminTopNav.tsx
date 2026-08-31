@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { Search, Bell, Menu, User, KeyRound, LogOut, X, Moon, Sun, Globe, Check, Trash2 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { searchService } from '../../services/search.service';
@@ -39,7 +39,7 @@ export const AdminTopNav: React.FC<AdminTopNavProps> = ({ user, onLogout, onOpen
   const notificationRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
 
-  const toggleDarkMode = () => {
+  const toggleDarkMode = useCallback(() => {
     if (onToggleDarkMode) {
       onToggleDarkMode();
     } else {
@@ -47,9 +47,9 @@ export const AdminTopNav: React.FC<AdminTopNavProps> = ({ user, onLogout, onOpen
       localStorage.setItem('admin_theme', next ? 'dark' : 'light');
       document.documentElement.classList.toggle('dark', next);
     }
-  };
+  }, [darkMode, onToggleDarkMode]);
 
-  const loadNotifications = async () => {
+  const loadNotifications = useCallback(async () => {
     setLoadingNotifications(true);
     try {
       const data = await notificationService.getNotifications(5);
@@ -63,46 +63,46 @@ export const AdminTopNav: React.FC<AdminTopNavProps> = ({ user, onLogout, onOpen
     } finally {
       setLoadingNotifications(false);
     }
-  };
+  }, []);
 
-  const handleMarkAsRead = async (id: number) => {
+  const handleMarkAsRead = useCallback(async (id: number) => {
     try {
       await notificationService.markAsRead(id);
-      setNotifications(notifications.map(n => 
+      setNotifications(prev => prev.map(n => 
         n.id === id ? { ...n, read_at: new Date().toISOString() } : n
       ));
-      setUnreadCount(Math.max(0, unreadCount - 1));
+      setUnreadCount(prev => Math.max(0, prev - 1));
     } catch (err) {
       console.error('Failed to mark as read:', err);
     }
-  };
+  }, []);
 
-  const handleMarkAllAsRead = async () => {
+  const handleMarkAllAsRead = useCallback(async () => {
     try {
       await notificationService.markAllAsRead();
-      setNotifications(notifications.map(n => ({ ...n, read_at: new Date().toISOString() })));
+      setNotifications(prev => prev.map(n => ({ ...n, read_at: new Date().toISOString() })));
       setUnreadCount(0);
     } catch (err) {
       console.error('Failed to mark all as read:', err);
     }
-  };
+  }, []);
 
-  const handleDeleteNotification = async (id: number) => {
+  const handleDeleteNotification = useCallback(async (id: number) => {
     try {
       await notificationService.deleteNotification(id);
-      setNotifications(notifications.filter(n => n.id !== id));
+      setNotifications(prev => prev.filter(n => n.id !== id));
       const stats = await notificationService.getUnreadCount();
       setUnreadCount(stats.unread_count || 0);
     } catch (err) {
       console.error('Failed to delete notification:', err);
     }
-  };
+  }, []);
 
-  const selectLanguage = (lang: Language) => {
+  const selectLanguage = useCallback((lang: Language) => {
     setLanguage(lang);
     localStorage.setItem('admin_language', lang);
     setLangOpen(false);
-  };
+  }, []);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -131,32 +131,32 @@ export const AdminTopNav: React.FC<AdminTopNavProps> = ({ user, onLogout, onOpen
     }
   }, [notificationOpen]);
 
-  const handleSearch = async () => {
-    if (searchQuery.length < 2) return;
+  const handleSearch = useCallback(async (query: string) => {
+    if (query.length < 2) return;
     setSearching(true);
     try {
-      const results = await searchService.globalSearch(searchQuery);
+      const results = await searchService.globalSearch(query);
       setSearchResults(results);
     } catch (err) {
       console.error('Search failed:', err);
     } finally {
       setSearching(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       if (searchQuery.length >= 2) {
-        handleSearch();
+        handleSearch(searchQuery);
       } else {
         setSearchResults(null);
       }
     }, 300);
     return () => clearTimeout(timer);
-  }, [searchQuery]);
+  }, [searchQuery, handleSearch]);
 
-  // Simple breadcrumb generator
-  const getBreadcrumbs = () => {
+  // Simple breadcrumb generator - memoized
+  const breadcrumbs = useMemo(() => {
     const paths = location.pathname.split('/').filter(p => p && p !== 'admin');
     if (paths.length === 0) return [{ name: 'Dashboard', path: '/admin' }];
     
@@ -167,16 +167,16 @@ export const AdminTopNav: React.FC<AdminTopNavProps> = ({ user, onLogout, onOpen
         path: '/admin/' + paths.slice(0, i + 1).join('/')
       }))
     ];
-  };
+  }, [location.pathname]);
 
-  const breadcrumbs = getBreadcrumbs();
-
-  const getInitials = (name?: string) => {
+  const getInitials = useCallback((name?: string) => {
     if (!name) return 'A';
     return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-  };
+  }, []);
 
-  const displayName = user?.display_name || `${user?.first_name || ''} ${user?.last_name || ''}`.trim() || 'Admin User';
+  const displayName = useMemo(() => 
+    user?.display_name || `${user?.first_name || ''} ${user?.last_name || ''}`.trim() || 'Admin User'
+  , [user?.display_name, user?.first_name, user?.last_name]);
 
   return (
     <header className={`sticky top-0 z-30 flex h-16 w-full items-center justify-between px-4 sm:px-6 border-b ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-neutral-200'}`}>

@@ -50,7 +50,8 @@ class SermonController extends BaseApiController
 
     public function related(string $identifier): JsonResponse
     {
-        $sermon = Sermon::where('slug', $identifier)
+        $sermon = Sermon::with(['speaker', 'series', 'category'])
+            ->where('slug', $identifier)
             ->orWhere('uuid', $identifier)
             ->orWhere('id', $identifier)
             ->firstOrFail();

@@ -41,7 +41,7 @@ use Illuminate\Support\Facades\Route;
 // -----------------------------------------------------------------------
 // PUBLIC endpoints (no auth required)
 // -----------------------------------------------------------------------
-Route::prefix('v1')->group(function () {
+Route::middleware('compress')->prefix('v1')->group(function () {
 
     // Health check endpoint
     Route::get('health', [HealthController::class, 'check'])->name('health.check');
@@ -133,7 +133,7 @@ Route::prefix('v1')->group(function () {
     // -----------------------------------------------------------------------
     // PROTECTED — requires valid Sanctum token
     // -----------------------------------------------------------------------
-    Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
+    Route::middleware(['compress', 'auth:sanctum', 'throttle:api'])->group(function () {
 
         // Auth
         Route::prefix('auth')->name('auth.')->group(function () {
