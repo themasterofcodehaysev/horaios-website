@@ -71,7 +71,7 @@ const BlogsListPage: React.FC = () => {
   const handleDuplicate = async (blog: BlogItem) => {
     try {
       const duplicate = await blogService.duplicateBlog(blog.id);
-      navigate(`/admin/blog/${duplicate.id}/edit`);
+      navigate(`/admin/blogs/${duplicate.id}/edit`);
     } catch (err: any) {
       alert(err?.response?.data?.message || 'Failed to duplicate blog post');
     }
@@ -102,13 +102,13 @@ const BlogsListPage: React.FC = () => {
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Link
-            to="/admin/blog/categories"
+            to="/admin/blogs/categories"
             className="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-neutral-200 text-neutral-700 rounded-lg text-body-xs font-medium hover:bg-neutral-50 shadow-xs"
           >
             <Layers className="w-3.5 h-3.5 text-neutral-500" /> Categories
           </Link>
           <Link
-            to="/admin/blog/create"
+            to="/admin/blogs/create"
             className="inline-flex items-center gap-2 px-4 py-2 bg-primary-red text-white rounded-lg text-body-sm font-medium hover:bg-primary-dark-red shadow-sm"
           >
             <Plus className="w-4 h-4" /> Add Blog
@@ -190,7 +190,7 @@ const BlogsListPage: React.FC = () => {
             <FileText className="w-8 h-8 text-neutral-300 mx-auto mb-3" />
             <p className="text-body-sm text-neutral-500 mb-4">No blog posts found matching your criteria</p>
             <Link
-              to="/admin/blog/create"
+              to="/admin/blogs/create"
               className="inline-flex items-center gap-2 px-4 py-2 bg-primary-red text-white rounded-lg text-body-sm font-medium hover:bg-primary-dark-red"
             >
               <Plus className="w-4 h-4" /> Add First Blog Post
@@ -230,7 +230,7 @@ const BlogsListPage: React.FC = () => {
 
                   <div className="min-w-0">
                     <Link
-                      to={`/admin/blog/${blog.id}/edit`}
+                      to={`/admin/blogs/${blog.id}/edit`}
                       className="text-body-sm text-neutral-900 font-semibold hover:text-primary-red transition-colors truncate block"
                     >
                       {blog.title}
@@ -274,7 +274,7 @@ const BlogsListPage: React.FC = () => {
                       <Eye className="w-4 h-4" />
                     </a>
                     <Link
-                      to={`/admin/blog/${blog.id}/edit`}
+                      to={`/admin/blogs/${blog.id}/edit`}
                       className="p-1.5 text-neutral-500 hover:text-primary-red hover:bg-neutral-100 rounded-lg transition-colors"
                       title="Edit Post"
                     >

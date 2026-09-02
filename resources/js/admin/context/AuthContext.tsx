@@ -3,6 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { authService } from '../services/auth.service';
 import type { AuthUser } from '../types';
 
+const isSuperAdminRole = (roleName?: string | null): boolean => {
+  return !!roleName && String(roleName).toUpperCase() === 'SUPER_ADMIN';
+};
+
 interface AuthContextType {
   user: AuthUser | null;
   token: string | null;
@@ -69,18 +73,20 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const hasPermission = useCallback((permissionName: string): boolean => {
     if (!user || !user.role) return false;
-    // Super admin has all permissions
-    if (user.role.name === 'SUPER_ADMIN') return true;
+    if (isSuperAdminRole(user.role.name)) return true;
     if (!user.role.permissions) return false;
-    return user.role.permissions.some(p => p.name === permissionName);
+    return user.role.permissions.some((p: any) =>
+      typeof p === 'string' ? p === permissionName : p?.name === permissionName
+    );
   }, [user]);
 
   const isSuperAdmin = useCallback((): boolean => {
-    return user?.role?.name === 'SUPER_ADMIN';
+    return isSuperAdminRole(user?.role?.name);
   }, [user]);
 
   const isAdmin = useCallback((): boolean => {
-    return user?.role?.name === 'SUPER_ADMIN' || user?.role?.name === 'ADMIN';
+    const n = user?.role?.name ? String(user.role.name).toUpperCase() : '';
+    return n === 'SUPER_ADMIN' || n === 'ADMIN';
   }, [user]);
 
   return (

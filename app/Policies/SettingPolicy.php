@@ -8,11 +8,11 @@ class SettingPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->hasPermission('settings.manage');
+        return $user->isEditor() || $user->hasPermission('settings.manage');
     }
 
     public function manage(User $user): bool
     {
-        return $user->hasPermission('settings.manage');
+        return $user->isEditor() || $user->hasPermission('settings.manage');
     }
 }

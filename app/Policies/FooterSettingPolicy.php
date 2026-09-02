@@ -9,26 +9,26 @@ class FooterSettingPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->can('footer.manage');
+        return $user->isEditor() || $user->hasPermission('footer.manage');
     }
 
     public function view(User $user, FooterSetting $setting): bool
     {
-        return $user->can('footer.manage');
+        return $user->isEditor() || $user->hasPermission('footer.manage');
     }
 
     public function create(User $user): bool
     {
-        return $user->can('footer.manage');
+        return $user->isEditor() || $user->hasPermission('footer.manage');
     }
 
-    public function update(User $user, FooterSetting $setting): bool
+    public function update(User $user, ?FooterSetting $setting = null): bool
     {
-        return $user->can('footer.manage');
+        return $user->isEditor() || $user->hasPermission('footer.manage');
     }
 
     public function delete(User $user, FooterSetting $setting): bool
     {
-        return $user->can('footer.manage');
+        return $user->isAdmin() || $user->hasPermission('footer.manage');
     }
 }

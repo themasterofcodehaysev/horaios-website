@@ -288,6 +288,40 @@ Route::middleware('compress')->prefix('v1')->group(function () {
                 Route::patch('{id}/status', [ContactController::class, 'updateStatus'])->name('status');
                 Route::get('stats', [ContactController::class, 'stats'])->name('stats');
             });
+
+            // Navigation Management
+            Route::prefix('navigation')->name('navigation.')->group(function () {
+                Route::get('/', [NavigationController::class, 'index'])->name('index');
+                Route::post('/', [NavigationController::class, 'store'])->name('store');
+                Route::put('{id}', [NavigationController::class, 'update'])->name('update');
+                Route::delete('{id}', [NavigationController::class, 'destroy'])->name('destroy');
+                Route::post('items', [NavigationController::class, 'storeItem'])->name('items.store');
+                Route::put('items/{id}', [NavigationController::class, 'updateItem'])->name('items.update');
+                Route::delete('items/{id}', [NavigationController::class, 'destroyItem'])->name('items.destroy');
+                Route::post('{menuId}/reorder', [NavigationController::class, 'reorderItems'])->name('items.reorder');
+            });
+
+            // Homepage CMS
+            Route::prefix('homepage')->name('homepage.')->group(function () {
+                Route::get('/', [HomepageController::class, 'index'])->name('index');
+                Route::get('{key}', [HomepageController::class, 'show'])->name('show');
+                Route::post('/', [HomepageController::class, 'store'])->name('store');
+                Route::put('{id}', [HomepageController::class, 'update'])->name('update');
+                Route::delete('{id}', [HomepageController::class, 'destroy'])->name('destroy');
+                Route::post('reorder', [HomepageController::class, 'reorder'])->name('reorder');
+                Route::post('initialize', [HomepageController::class, 'initialize'])->name('initialize');
+            });
+
+            // Footer Management
+            Route::prefix('footer')->name('footer.')->group(function () {
+                Route::get('/', [FooterController::class, 'index'])->name('index');
+                Route::get('{key}', [FooterController::class, 'show'])->name('show');
+                Route::post('/', [FooterController::class, 'store'])->name('store');
+                Route::put('{id}', [FooterController::class, 'update'])->name('update');
+                Route::post('batch', [FooterController::class, 'updateBatch'])->name('batch');
+                Route::delete('{id}', [FooterController::class, 'destroy'])->name('destroy');
+                Route::post('initialize', [FooterController::class, 'initialize'])->name('initialize');
+            });
         });
 
         // Users
@@ -340,40 +374,6 @@ Route::middleware('compress')->prefix('v1')->group(function () {
             Route::patch('{id}/read', [NotificationController::class, 'markAsRead'])->name('mark-read');
             Route::post('mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('mark-all-read');
             Route::delete('{id}', [NotificationController::class, 'destroy'])->name('destroy');
-        });
-
-        // Navigation Management
-        Route::prefix('navigation')->name('navigation.')->group(function () {
-            Route::get('/', [NavigationController::class, 'index'])->name('index');
-            Route::post('/', [NavigationController::class, 'store'])->name('store');
-            Route::put('{id}', [NavigationController::class, 'update'])->name('update');
-            Route::delete('{id}', [NavigationController::class, 'destroy'])->name('destroy');
-            Route::post('items', [NavigationController::class, 'storeItem'])->name('items.store');
-            Route::put('items/{id}', [NavigationController::class, 'updateItem'])->name('items.update');
-            Route::delete('items/{id}', [NavigationController::class, 'destroyItem'])->name('items.destroy');
-            Route::post('{menuId}/reorder', [NavigationController::class, 'reorderItems'])->name('items.reorder');
-        });
-
-        // Homepage CMS
-        Route::prefix('homepage')->name('homepage.')->group(function () {
-            Route::get('/', [HomepageController::class, 'index'])->name('index');
-            Route::get('{key}', [HomepageController::class, 'show'])->name('show');
-            Route::post('/', [HomepageController::class, 'store'])->name('store');
-            Route::put('{id}', [HomepageController::class, 'update'])->name('update');
-            Route::delete('{id}', [HomepageController::class, 'destroy'])->name('destroy');
-            Route::post('reorder', [HomepageController::class, 'reorder'])->name('reorder');
-            Route::post('initialize', [HomepageController::class, 'initialize'])->name('initialize');
-        });
-
-        // Footer Management
-        Route::prefix('footer')->name('footer.')->group(function () {
-            Route::get('/', [FooterController::class, 'index'])->name('index');
-            Route::get('{key}', [FooterController::class, 'show'])->name('show');
-            Route::post('/', [FooterController::class, 'store'])->name('store');
-            Route::put('{id}', [FooterController::class, 'update'])->name('update');
-            Route::post('batch', [FooterController::class, 'updateBatch'])->name('batch');
-            Route::delete('{id}', [FooterController::class, 'destroy'])->name('destroy');
-            Route::post('initialize', [FooterController::class, 'initialize'])->name('initialize');
         });
 
         // Search

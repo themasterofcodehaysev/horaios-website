@@ -22,7 +22,7 @@ const statCardColors: Record<string, string> = {
 const contentTypeMeta: Record<RecentContentItem['type'], { label: string; href: string; icon: React.ReactNode; color: string }> = {
   song: { label: 'Song', href: '/admin/songs', icon: <Music className="w-4 h-4" />, color: 'bg-purple-50 text-purple-600' },
   sermon: { label: 'Sermon', href: '/admin/sermons', icon: <BookOpen className="w-4 h-4" />, color: 'bg-red-50 text-red-600' },
-  blog_post: { label: 'Blog Post', href: '/admin/blog', icon: <FileText className="w-4 h-4" />, color: 'bg-cyan-50 text-cyan-600' },
+  blog_post: { label: 'Blog Post', href: '/admin/blogs', icon: <FileText className="w-4 h-4" />, color: 'bg-cyan-50 text-cyan-600' },
   event: { label: 'Event', href: '/admin/events', icon: <Calendar className="w-4 h-4" />, color: 'bg-orange-50 text-orange-600' },
   ministry: { label: 'Ministry', href: '/admin/ministries', icon: <Heart className="w-4 h-4" />, color: 'bg-pink-50 text-pink-600' },
 };
@@ -67,7 +67,7 @@ const DashboardPage: React.FC = () => {
     { title: 'Songs', value: stats.content.songs, icon: <Music className="w-5 h-5" />, color: 'purple', href: '/admin/songs' },
     { title: 'Sermons', value: stats.content.sermons, icon: <BookOpen className="w-5 h-5" />, color: 'red', href: '/admin/sermons' },
     { title: 'Events', value: stats.content.events, icon: <Calendar className="w-5 h-5" />, color: 'orange', href: '/admin/events' },
-    { title: 'Blog Posts', value: stats.content.blog_posts, icon: <FileText className="w-5 h-5" />, color: 'cyan', href: '/admin/blog' },
+    { title: 'Blog Posts', value: stats.content.blog_posts, icon: <FileText className="w-5 h-5" />, color: 'cyan', href: '/admin/blogs' },
     { title: 'Ministries', value: stats.content.ministries, icon: <Heart className="w-5 h-5" />, color: 'pink', href: '/admin/ministries' },
     { title: 'Prayer Requests', value: stats.content.prayer_requests, icon: <MessageCircle className="w-5 h-5" />, color: 'green', href: '/admin/prayer-requests' },
     { title: 'Contact Messages', value: stats.content.contact_messages, icon: <Mail className="w-5 h-5" />, color: 'gray', href: '/admin/contact-messages' },
@@ -76,7 +76,7 @@ const DashboardPage: React.FC = () => {
   const quickActions = [
     { title: 'Create Song', icon: <Music className="w-5 h-5" />, href: '/admin/songs', color: 'bg-purple-500' },
     { title: 'Create Sermon', icon: <BookOpen className="w-5 h-5" />, href: '/admin/sermons', color: 'bg-red-500' },
-    { title: 'Create Blog Post', icon: <FileText className="w-5 h-5" />, href: '/admin/blog', color: 'bg-cyan-500' },
+    { title: 'Create Blog Post', icon: <FileText className="w-5 h-5" />, href: '/admin/blogs', color: 'bg-cyan-500' },
     { title: 'Create Event', icon: <Calendar className="w-5 h-5" />, href: '/admin/events', color: 'bg-orange-500' },
     { title: 'Create Ministry', icon: <Heart className="w-5 h-5" />, href: '/admin/ministries', color: 'bg-pink-500' },
     { title: 'Manage Users', icon: <Users className="w-5 h-5" />, href: '/admin/users', color: 'bg-blue-500' },

@@ -2,17 +2,17 @@
 
 namespace App\Policies;
 
-use App\Models\NavigationMenu;
+use App\Models\NavigationMenuItem;
 use App\Models\User;
 
-class NavigationPolicy
+class NavigationMenuItemPolicy
 {
     public function viewAny(User $user): bool
     {
         return $user->isEditor() || $user->hasPermission('navigation.manage');
     }
 
-    public function view(User $user, NavigationMenu $menu): bool
+    public function view(User $user, NavigationMenuItem $item): bool
     {
         return $user->isEditor() || $user->hasPermission('navigation.manage');
     }
@@ -22,12 +22,12 @@ class NavigationPolicy
         return $user->isEditor() || $user->hasPermission('navigation.manage');
     }
 
-    public function update(User $user, ?NavigationMenu $menu = null): bool
+    public function update(User $user, NavigationMenuItem $item): bool
     {
         return $user->isEditor() || $user->hasPermission('navigation.manage');
     }
 
-    public function delete(User $user, NavigationMenu $menu): bool
+    public function delete(User $user, NavigationMenuItem $item): bool
     {
         return $user->isAdmin() || $user->hasPermission('navigation.manage');
     }

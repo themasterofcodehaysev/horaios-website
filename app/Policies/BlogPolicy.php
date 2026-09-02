@@ -18,21 +18,37 @@ class BlogPolicy
             return true;
         }
 
+        if ($user !== null && $user->isSuperAdmin()) {
+            return true;
+        }
+
         return $user !== null && ($user->isEditor() || $user->hasPermission('blog.manage'));
     }
 
     public function create(User $user): bool
     {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         return $user->isEditor() || $user->hasPermission('blog.manage');
     }
 
     public function update(User $user, BlogPost $post): bool
     {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         return $user->isEditor() || $user->hasPermission('blog.manage');
     }
 
     public function delete(User $user, BlogPost $post): bool
     {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         return $user->isAdmin() || $user->hasPermission('blog.manage');
     }
 }

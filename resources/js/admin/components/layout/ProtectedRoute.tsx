@@ -1,55 +1,50 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import type { AuthUser } from '../../types';
+import { useAuth } from '../../context/AuthContext';
 
 interface ProtectedRouteProps {
   permission?: string;
 }
 
+const isSuperAdminRole = (roleName?: string | null): boolean => {
+  return !!roleName && String(roleName).toUpperCase() === 'SUPER_ADMIN';
+};
+
+const userHasPermission = (perms: any[] | undefined, permission: string): boolean => {
+  if (!perms || perms.length === 0) return false;
+  return perms.some((p: any) =>
+    typeof p === 'string' ? p === permission : p?.name === permission
+  );
+};
+
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ permission }) => {
   const location = useLocation();
-  const [isLoading, setIsLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isAuthorized, setIsAuthorized] = useState(false);
+  const { user, isAuthenticated, isLoading: authLoading, hasPermission } = useAuth();
+  const [localAuthorized, setLocalAuthorized] = useState<boolean | null>(null);
 
   useEffect(() => {
-    const checkAuth = () => {
-      try {
-        const token = localStorage.getItem('admin_token');
-        const userStr = localStorage.getItem('admin_user');
+    if (authLoading) return;
 
-        if (!token || !userStr) {
-          setIsAuthenticated(false);
-          setIsLoading(false);
-          return;
-        }
+    if (!isAuthenticated || !user) {
+      setLocalAuthorized(false);
+      return;
+    }
 
-        const user: AuthUser = JSON.parse(userStr);
-        setIsAuthenticated(true);
+    if (!permission) {
+      setLocalAuthorized(true);
+      return;
+    }
 
-        if (permission) {
-          // SUPER_ADMIN has all permissions
-          if (user.role?.name === 'SUPER_ADMIN') {
-            setIsAuthorized(true);
-          } else {
-            const hasPerm = user.role?.permissions?.some(p => p.name === permission);
-            setIsAuthorized(!!hasPerm);
-          }
-        } else {
-          setIsAuthorized(true);
-        }
-      } catch (e) {
-        console.error('Auth check failed', e);
-        setIsAuthenticated(false);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    if (isSuperAdminRole(user.role?.name)) {
+      setLocalAuthorized(true);
+      return;
+    }
 
-    checkAuth();
-  }, [permission, location.pathname]);
+    const ok = hasPermission(permission) || userHasPermission(user.role?.permissions, permission);
+    setLocalAuthorized(!!ok);
+  }, [authLoading, isAuthenticated, user, permission, hasPermission, location.pathname]);
 
-  if (isLoading) {
+  if (authLoading || localAuthorized === null) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-neutral-50">
         <div className="flex flex-col items-center">
@@ -64,7 +59,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ permission }) =>
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (!isAuthorized && permission) {
+  if (!localAuthorized && permission) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-neutral-50 p-4">
         <div className="bg-white p-8 rounded-2xl shadow-sm border border-neutral-200 max-w-md w-full text-center">

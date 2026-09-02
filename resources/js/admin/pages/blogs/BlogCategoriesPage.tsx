@@ -100,7 +100,7 @@ const BlogCategoriesPage: React.FC = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Link
-            to="/admin/blog"
+            to="/admin/blogs"
             className="p-2 text-neutral-500 hover:bg-neutral-100 rounded-lg transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />

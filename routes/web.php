@@ -27,7 +27,8 @@ Route::get('/robots.txt', function () {
     return response($content, 200)->header('Content-Type', 'text/plain');
 });
 
-// Serve the SPA for all routes — React Router handles client-side navigation
+// Serve the SPA for all non-API routes — React Router handles client-side navigation.
+// Exclude api/* so unmatched API paths return JSON 404 instead of the HTML shell.
 Route::get('/{any}', function () {
     return view('welcome');
-})->where('any', '.*');
+})->where('any', '^(?!api(?:/|$)).*');

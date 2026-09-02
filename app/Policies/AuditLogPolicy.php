@@ -8,6 +8,6 @@ class AuditLogPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->hasPermission('audit.view');
+        return $user->isEditor() || $user->hasPermission('audit.view');
     }
 }

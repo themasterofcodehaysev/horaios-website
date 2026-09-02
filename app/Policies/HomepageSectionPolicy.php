@@ -9,26 +9,26 @@ class HomepageSectionPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->can('homepage.manage');
+        return $user->isEditor() || $user->hasPermission('homepage.manage');
     }
 
     public function view(User $user, HomepageSection $section): bool
     {
-        return $user->can('homepage.manage');
+        return $user->isEditor() || $user->hasPermission('homepage.manage');
     }
 
     public function create(User $user): bool
     {
-        return $user->can('homepage.manage');
+        return $user->isEditor() || $user->hasPermission('homepage.manage');
     }
 
-    public function update(User $user, HomepageSection $section): bool
+    public function update(User $user, ?HomepageSection $section = null): bool
     {
-        return $user->can('homepage.manage');
+        return $user->isEditor() || $user->hasPermission('homepage.manage');
     }
 
     public function delete(User $user, HomepageSection $section): bool
     {
-        return $user->can('homepage.manage');
+        return $user->isAdmin() || $user->hasPermission('homepage.manage');
     }
 }

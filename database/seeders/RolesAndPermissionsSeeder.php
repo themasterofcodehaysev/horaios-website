@@ -21,12 +21,22 @@ class RolesAndPermissionsSeeder extends Seeder
             ['name' => 'users.edit', 'display_name' => 'Edit Users', 'group' => 'users'],
             ['name' => 'users.delete', 'display_name' => 'Delete Users', 'group' => 'users'],
 
-            // Future content management modules
+            // Content management modules
             ['name' => 'songs.manage', 'display_name' => 'Manage Songs', 'group' => 'content'],
             ['name' => 'sermons.manage', 'display_name' => 'Manage Sermons', 'group' => 'content'],
             ['name' => 'events.manage', 'display_name' => 'Manage Events', 'group' => 'content'],
             ['name' => 'ministries.manage', 'display_name' => 'Manage Ministries', 'group' => 'content'],
             ['name' => 'blog.manage', 'display_name' => 'Manage Blog', 'group' => 'content'],
+
+            // Communication management (keep existing group names)
+            ['name' => 'prayer_requests.view', 'display_name' => 'View Prayer Requests', 'group' => 'prayer_requests'],
+            ['name' => 'prayer_requests.create', 'display_name' => 'Create Prayer Requests', 'group' => 'prayer_requests'],
+            ['name' => 'prayer_requests.edit', 'display_name' => 'Edit Prayer Requests', 'group' => 'prayer_requests'],
+            ['name' => 'prayer_requests.delete', 'display_name' => 'Delete Prayer Requests', 'group' => 'prayer_requests'],
+            ['name' => 'contact_messages.view', 'display_name' => 'View Contact Messages', 'group' => 'contact_messages'],
+            ['name' => 'contact_messages.create', 'display_name' => 'Create Contact Messages', 'group' => 'contact_messages'],
+            ['name' => 'contact_messages.edit', 'display_name' => 'Edit Contact Messages', 'group' => 'contact_messages'],
+            ['name' => 'contact_messages.delete', 'display_name' => 'Delete Contact Messages', 'group' => 'contact_messages'],
 
             // Foundation management
             ['name' => 'media.manage', 'display_name' => 'Manage Media', 'group' => 'media'],
@@ -59,12 +69,12 @@ class RolesAndPermissionsSeeder extends Seeder
         );
 
         // Assign permissions to Admin & Editor.
-        // Per spec, ADMIN covers Dashboard, Content, and Settings — but not user
+        // Per spec, ADMIN covers Dashboard, Content, Communication, and Settings — but not user
         // management, which is reserved for SUPER_ADMIN.
         $adminPermissions = Permission::where('group', '!=', 'users')->get();
         $adminRole->permissions()->sync($adminPermissions->pluck('id'));
 
-        $editorPermissions = Permission::whereIn('group', ['content', 'media'])->get();
+        $editorPermissions = Permission::whereIn('group', ['content', 'media', 'prayer_requests', 'contact_messages'])->get();
         $editorRole->permissions()->sync($editorPermissions->pluck('id'));
 
         // Assign all permissions to Super Admin

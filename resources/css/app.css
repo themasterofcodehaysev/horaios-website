@@ -32,10 +32,23 @@
 
     html.dark {
         background-color: #0f172a;
+        color: #e2e8f0;
+        color-scheme: dark;
     }
 
     body {
         background-color: transparent;
+    }
+
+    html.dark input:not([type='checkbox']):not([type='radio']):not([type='file']):not([type='color']),
+    html.dark textarea,
+    html.dark select {
+        color: #f1f5f9;
+    }
+
+    html.dark input::placeholder,
+    html.dark textarea::placeholder {
+        color: #94a3b8;
     }
 }
 
@@ -62,20 +75,38 @@
         background-color: #334155 !important;
     }
 
-    .dark .text-neutral-900 {
+    .dark .text-black,
+    .dark .text-neutral-950,
+    .dark .text-neutral-900,
+    .dark .text-neutral-800,
+    .dark .text-gray-950,
+    .dark .text-gray-900,
+    .dark .text-gray-800,
+    .dark .text-slate-900,
+    .dark .text-slate-800 {
         color: #f1f5f9 !important;
     }
 
-    .dark .text-neutral-700 {
+    .dark .text-neutral-700,
+    .dark .text-gray-700,
+    .dark .text-slate-700 {
         color: #e2e8f0 !important;
     }
 
-    .dark .text-neutral-600 {
+    .dark .text-neutral-600,
+    .dark .text-gray-600,
+    .dark .text-slate-600 {
         color: #cbd5e1 !important;
     }
 
-    .dark .text-neutral-500 {
+    .dark .text-neutral-500,
+    .dark .text-gray-500 {
         color: #94a3b8 !important;
+    }
+
+    .dark .hover\:text-gray-900:hover,
+    .dark .hover\:text-neutral-900:hover {
+        color: #f8fafc !important;
     }
 
     .dark .border-neutral-200 {

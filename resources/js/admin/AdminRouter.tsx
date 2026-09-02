@@ -261,7 +261,11 @@ export const AdminRouter: React.FC = () => {
 
             {/* Navigation Management */}
             <Route path="navigation" element={<ProtectedRoute permission="navigation.manage" />}>
-              <Route index element={<NavigationManagementPage />} />
+              <Route index element={
+                <Suspense fallback={<PageLoader />}>
+                  <NavigationManagementPage />
+                </Suspense>
+              } />
             </Route>
 
             {/* Homepage CMS */}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Layout } from '../components/layout';
 import { HeroSection } from '../components/sections';
 import { Button } from '../components/ui/Button';
@@ -6,6 +6,28 @@ import { Card } from '../components/ui/Card';
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
 
 export const VisitPage: React.FC = () => {
+  const [churchSettings, setChurchSettings] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Fetch church settings
+    fetch('/api/v1/settings/church/public')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setChurchSettings(data.data);
+        }
+      })
+      .catch(error => console.error('Failed to fetch church settings:', error))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const googleMapUrl = churchSettings?.contact?.google_map_url || '';
+  const googleMapDirectionsUrl = churchSettings?.contact?.google_map_directions_url || '';
+  const address = churchSettings?.contact?.address || 'St 348, Boeung Kengkang 3, Boeung Kengkang Phnom Penh, Phnom Penh 12304, Cambodia';
+  const phone = churchSettings?.contact?.phone || '+855 (0) 23 XXX XXXX';
+  const email = churchSettings?.contact?.email || 'info@horaiosbaptist.org';
+
   return (
     <Layout>
       <div className="pt-20"></div>
@@ -83,11 +105,24 @@ export const VisitPage: React.FC = () => {
       <section className="py-20 bg-neutral-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Map Placeholder */}
+            {/* Google Map */}
             <div className="rounded-lg overflow-hidden h-96 bg-neutral-200">
-              <div className="w-full h-full flex items-center justify-center">
-                <p className="text-neutral-600">Map coming soon</p>
-              </div>
+              {googleMapUrl ? (
+                <iframe
+                  src={googleMapUrl}
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Horaios Baptist Church Location"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <p className="text-neutral-600">Map loading...</p>
+                </div>
+              )}
             </div>
 
             {/* Location Info */}
@@ -102,7 +137,7 @@ export const VisitPage: React.FC = () => {
                   <div>
                     <p className="font-semibold text-neutral-900">Address</p>
                     <p className="text-body-base text-neutral-600">
-                      Phnom Penh, Cambodia
+                      {address}
                     </p>
                   </div>
                 </div>
@@ -111,8 +146,8 @@ export const VisitPage: React.FC = () => {
                   <Phone className="w-6 h-6 text-primary-red flex-shrink-0 mt-1" />
                   <div>
                     <p className="font-semibold text-neutral-900">Phone</p>
-                    <a href="tel:+" className="text-body-base text-primary-red hover:text-primary-dark-red">
-                      +855 (0) 23 XXX XXXX
+                    <a href={`tel:${phone.replace(/[^0-9+]/g, '')}`} className="text-body-base text-primary-red hover:text-primary-dark-red">
+                      {phone}
                     </a>
                   </div>
                 </div>
@@ -121,16 +156,24 @@ export const VisitPage: React.FC = () => {
                   <Mail className="w-6 h-6 text-primary-red flex-shrink-0 mt-1" />
                   <div>
                     <p className="font-semibold text-neutral-900">Email</p>
-                    <a href="mailto:info@horaiosbaptist.org" className="text-body-base text-primary-red hover:text-primary-dark-red">
-                      info@horaiosbaptist.org
+                    <a href={`mailto:${email}`} className="text-body-base text-primary-red hover:text-primary-dark-red">
+                      {email}
                     </a>
                   </div>
                 </div>
               </div>
 
-              <Button variant="primary" size="lg" fullWidth className="mb-4">
-                Get Directions
-              </Button>
+              {googleMapDirectionsUrl && (
+                <Button
+                  variant="primary"
+                  size="lg"
+                  fullWidth
+                  className="mb-4"
+                  onClick={() => window.open(googleMapDirectionsUrl, '_blank')}
+                >
+                  Get Directions
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -289,6 +332,7 @@ export const VisitPage: React.FC = () => {
             variant="primary"
             size="lg"
             className="bg-primary-red hover:bg-primary-dark-red"
+            onClick={() => googleMapDirectionsUrl && window.open(googleMapDirectionsUrl, '_blank')}
           >
             Get Directions & More Info
           </Button>

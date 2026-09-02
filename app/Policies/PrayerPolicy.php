@@ -9,26 +9,26 @@ class PrayerPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->can('prayer_requests.view');
+        return $user->isEditor() || $user->hasPermission('prayer_requests.view');
     }
 
     public function view(User $user, PrayerRequest $prayer): bool
     {
-        return $user->can('prayer_requests.view');
+        return $user->isEditor() || $user->hasPermission('prayer_requests.view');
     }
 
     public function create(User $user): bool
     {
-        return $user->can('prayer_requests.create');
+        return $user->isEditor() || $user->hasPermission('prayer_requests.create');
     }
 
     public function update(User $user, PrayerRequest $prayer): bool
     {
-        return $user->can('prayer_requests.edit');
+        return $user->isEditor() || $user->hasPermission('prayer_requests.edit');
     }
 
     public function delete(User $user, PrayerRequest $prayer): bool
     {
-        return $user->can('prayer_requests.delete');
+        return $user->isAdmin() || $user->hasPermission('prayer_requests.delete');
     }
 }

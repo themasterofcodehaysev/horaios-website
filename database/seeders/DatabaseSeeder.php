@@ -11,8 +11,13 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RolesAndPermissionsSeeder::class,
             ChurchSettingsSeeder::class,
+            CategorySeeder::class,
+            BlogPostSeeder::class,
+            EventSeeder::class,
+            MinistrySeeder::class,
             SongSeeder::class,
             SermonSeeder::class,
+            NavigationMenuSeeder::class,
         ]);
     }
 }

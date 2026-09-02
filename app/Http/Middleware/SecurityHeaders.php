@@ -16,8 +16,8 @@ class SecurityHeaders
         // Prevent MIME type sniffing
         $response->headers->set('X-Content-Type-Options', 'nosniff');
 
-        // Prevent clickjacking
-        $response->headers->set('X-Frame-Options', 'DENY');
+        // Prevent clickjacking (allow same-origin iframes for maps)
+        $response->headers->set('X-Frame-Options', 'SAMEORIGIN');
 
         // Enable XSS protection
         $response->headers->set('X-XSS-Protection', '1; mode=block');
@@ -67,7 +67,7 @@ class SecurityHeaders
             $workerSrc,
             "media-src 'self'",
             "object-src 'none'",
-            "frame-src 'self'",
+            "frame-src 'self' https://www.google.com https://maps.google.com",
             "base-uri 'self'",
             "form-action 'self'",
         ]);

@@ -29,9 +29,9 @@ const NavigationManagementPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [selectedMenu]);
+  }, []); // Remove selectedMenu from dependencies to prevent infinite loops
 
-  useEffect(() => { fetchMenus(); }, [fetchMenus]);
+  useEffect(() => { fetchMenus(); }, []); // Only run on mount
 
   const handleCreateMenu = async (menuData: Partial<NavigationMenu>) => {
     try {

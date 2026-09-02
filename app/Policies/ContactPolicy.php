@@ -9,26 +9,26 @@ class ContactPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->can('contact_messages.view');
+        return $user->isEditor() || $user->hasPermission('contact_messages.view');
     }
 
     public function view(User $user, ContactMessage $message): bool
     {
-        return $user->can('contact_messages.view');
+        return $user->isEditor() || $user->hasPermission('contact_messages.view');
     }
 
     public function create(User $user): bool
     {
-        return $user->can('contact_messages.create');
+        return $user->isEditor() || $user->hasPermission('contact_messages.create');
     }
 
     public function update(User $user, ContactMessage $message): bool
     {
-        return $user->can('contact_messages.edit');
+        return $user->isEditor() || $user->hasPermission('contact_messages.edit');
     }
 
     public function delete(User $user, ContactMessage $message): bool
     {
-        return $user->can('contact_messages.delete');
+        return $user->isAdmin() || $user->hasPermission('contact_messages.delete');
     }
 }

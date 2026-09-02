@@ -59,7 +59,7 @@ const BlogFormPage: React.FC = () => {
         }
       } catch (err: any) {
         alert(err?.response?.data?.message || 'Failed to load blog details');
-        navigate('/admin/blog');
+        navigate('/admin/blogs');
       } finally {
         setFetching(false);
       }
@@ -96,7 +96,7 @@ const BlogFormPage: React.FC = () => {
       } else {
         await blogService.createBlog(formData);
       }
-      navigate('/admin/blog');
+      navigate('/admin/blogs');
     } catch (err: any) {
       alert(err?.response?.data?.message || 'Failed to save blog post');
     } finally {
@@ -123,7 +123,7 @@ const BlogFormPage: React.FC = () => {
         <div className="flex items-center gap-3">
           <button
             type="button"
-            onClick={() => navigate('/admin/blog')}
+            onClick={() => navigate('/admin/blogs')}
             className="p-2 text-neutral-500 hover:bg-neutral-100 rounded-lg transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -382,7 +382,7 @@ const BlogFormPage: React.FC = () => {
           <div className="flex items-center justify-end gap-3 pt-2">
             <button
               type="button"
-              onClick={() => navigate('/admin/blog')}
+              onClick={() => navigate('/admin/blogs')}
               className="px-5 py-2.5 border border-neutral-200 rounded-lg text-body-sm font-medium text-neutral-700 hover:bg-neutral-50"
             >
               Cancel
