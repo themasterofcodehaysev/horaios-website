@@ -296,7 +296,7 @@ export const EventDetailPage: React.FC = () => {
                   rel="noreferrer"
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#0A66C2] text-white rounded-lg text-body-xs font-medium hover:bg-[#0958a8] transition-colors"
                 >
-                  <Linkedin className="w-3.5 h-3.5" /> LinkedIn
+                  <LinkedinIcon className="w-3.5 h-3.5" /> LinkedIn
                 </a>
                 <a
                   href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`}
@@ -304,7 +304,7 @@ export const EventDetailPage: React.FC = () => {
                   rel="noreferrer"
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white rounded-lg text-body-xs font-medium hover:bg-blue-700 transition-colors"
                 >
-                  <Facebook className="w-3.5 h-3.5" /> Facebook
+                  <FacebookIcon className="w-3.5 h-3.5" /> Facebook
                 </a>
                 <a
                   href={`https://twitter.com/intent/tweet?url=${shareUrl}&text=${shareTitle}`}
@@ -312,7 +312,7 @@ export const EventDetailPage: React.FC = () => {
                   rel="noreferrer"
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-neutral-900 text-white rounded-lg text-body-xs font-medium hover:bg-neutral-800 transition-colors"
                 >
-                  <Twitter className="w-3.5 h-3.5" /> X
+                  <TwitterIcon className="w-3.5 h-3.5" /> X
                 </a>
                 <button
                   onClick={handleCopyLink}

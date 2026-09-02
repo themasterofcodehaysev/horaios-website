@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import MarkdownPreview from '@uiw/react-markdown-preview';
+import { Link } from 'react-router-dom';
 import { Layout } from '../components/layout';
 import { HeroSection, MinistryCard } from '../components/sections';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 import {
   Heart, MapPin, Calendar, Users, Music, BookOpen,
-  Search, X, ChevronLeft, ChevronRight, AlertTriangle, Loader2,
+  Search, X, ChevronLeft, ChevronRight, AlertTriangle,
 } from 'lucide-react';
 import { ministryService } from '../services/publicContent.service';
-import type { MinistryPublic, MinistryCategoryPublic, MinistryFilters, PaginatedResponse } from '../types';
+import type { MinistryPublic, MinistryCategoryPublic, MinistryFilters } from '../types';
 
 const iconMap: Record<string, React.ReactNode> = {
   worship: <Music className="w-8 h-8" />,
@@ -37,10 +37,9 @@ const formatSchedule = (m: MinistryPublic): string => {
 };
 
 export const MinistriesPage: React.FC = () => {
-  const [activeMinistry, setActiveMinistry] = useState<number | string | null>(null);
   const [ministries, setMinistries] = useState<MinistryPublic[]>([]);
   const [categories, setCategories] = useState<MinistryCategoryPublic[]>([]);
-  const [meta, setMeta] = useState<PaginatedResponse<MinistryPublic>['meta'] | null>(null);
+  const [meta, setMeta] = useState<{ current_page: number; last_page: number; per_page: number; total: number; from: number | null; to: number | null } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState<MinistryFilters>({ page: 1, per_page: 9 });
@@ -84,12 +83,8 @@ export const MinistriesPage: React.FC = () => {
     setFilters(f => ({ ...f, page: 1 }));
   }, [activeCategory]);
 
-  const active = ministries.find(m => m.id === activeMinistry || m.slug === activeMinistry);
-
   return (
     <Layout>
-      <div className="pt-20"></div>
-
       <HeroSection
         title="Our Ministries"
         subtitle="Get Involved"
@@ -97,7 +92,7 @@ export const MinistriesPage: React.FC = () => {
         minHeight="md"
       />
 
-      <section className="py-20 bg-white">
+      <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           <div className="flex flex-col lg:flex-row gap-4">
             <div className="relative flex-1">
@@ -173,16 +168,20 @@ export const MinistriesPage: React.FC = () => {
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {ministries.map((ministry) => (
-                  <MinistryCard
+                  <Link
                     key={ministry.id}
-                    name={ministry.name}
-                    description={ministry.description || ''}
-                    icon={getIconFor(ministry.category)}
-                    image={ministry.featured_image || undefined}
-                    leader={ministry.leader || undefined}
-                    schedule={formatSchedule(ministry)}
-                    onClick={() => setActiveMinistry(ministry.id)}
-                  />
+                    to={`/ministries/${ministry.slug}`}
+                    className="group h-full block"
+                  >
+                    <MinistryCard
+                      name={ministry.name}
+                      description={ministry.description || ''}
+                      icon={getIconFor(ministry.category)}
+                      image={ministry.featured_image || undefined}
+                      leader={ministry.leader || undefined}
+                      schedule={formatSchedule(ministry)}
+                    />
+                  </Link>
                 ))}
               </div>
 
@@ -193,9 +192,9 @@ export const MinistriesPage: React.FC = () => {
                   </span>
                   <div className="flex items-center gap-1">
                     <button
-                      disabled={meta.current_page <= 1}
+                      disabled={meta.current_page <= 1 || loading}
                       onClick={() => setFilters(f => ({ ...f, page: (f.page || 1) - 1 }))}
-                      className="p-2 rounded-lg hover:bg-neutral-100 disabled:opacity-40 disabled:cursor-not-allowed border border-neutral-200"
+                      className="p-2 rounded-lg hover:bg-neutral-100 disabled:opacity-40 disabled:cursor-not-allowed border border-neutral-200 transition-colors"
                     >
                       <ChevronLeft className="w-4 h-4" />
                     </button>
@@ -203,9 +202,9 @@ export const MinistriesPage: React.FC = () => {
                       Page {meta.current_page} of {meta.last_page}
                     </span>
                     <button
-                      disabled={meta.current_page >= meta.last_page}
+                      disabled={meta.current_page >= meta.last_page || loading}
                       onClick={() => setFilters(f => ({ ...f, page: (f.page || 1) + 1 }))}
-                      className="p-2 rounded-lg hover:bg-neutral-100 disabled:opacity-40 disabled:cursor-not-allowed border border-neutral-200"
+                      className="p-2 rounded-lg hover:bg-neutral-100 disabled:opacity-40 disabled:cursor-not-allowed border border-neutral-200 transition-colors"
                     >
                       <ChevronRight className="w-4 h-4" />
                     </button>
@@ -217,117 +216,50 @@ export const MinistriesPage: React.FC = () => {
         </div>
       </section>
 
-      {active && (
-        <section className="py-20 bg-neutral-50">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <Card padding="lg" shadow="lg">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="overflow-hidden rounded-lg h-64 bg-neutral-200 flex items-center justify-center">
-                  {active.featured_image ? (
-                    <img src={active.featured_image} alt={active.name} className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="text-neutral-300">{getIconFor(active.category)}</div>
-                  )}
-                </div>
-                <div>
-                  {active.category && (
-                    <span className="inline-block mb-3 text-body-xs font-semibold px-2.5 py-1 rounded-full bg-primary-red/10 text-primary-red">
-                      {active.category.name}
-                    </span>
-                  )}
-                  <h2 className="text-h3 font-semibold text-neutral-900 mb-4">
-                    {active.name}
-                  </h2>
-                  {active.description && (
-                    <div data-color-mode="light" className="prose prose-neutral max-w-none mb-6 text-body-base text-neutral-700">
-                      <MarkdownPreview source={active.description} style={{ backgroundColor: 'transparent', color: 'inherit' }} />
-                    </div>
-                  )}
-                  <div className="space-y-2 mb-6">
-                    {active.leader && (
-                      <p className="text-body-base text-neutral-700">
-                        <span className="font-semibold">Leader:</span> {active.leader}
-                      </p>
-                    )}
-                    {active.meeting_day && (
-                      <p className="text-body-base text-neutral-700">
-                        <span className="font-semibold">Meeting:</span> {formatSchedule(active)}
-                      </p>
-                    )}
-                    {active.email && (
-                      <p className="text-body-base text-neutral-700">
-                        <span className="font-semibold">Email:</span>{' '}
-                        <a href={`mailto:${active.email}`} className="text-primary-red hover:underline">
-                          {active.email}
-                        </a>
-                      </p>
-                    )}
-                    {active.phone && (
-                      <p className="text-body-base text-neutral-700">
-                        <span className="font-semibold">Phone:</span>{' '}
-                        <a href={`tel:${active.phone}`} className="text-primary-red hover:underline">
-                          {active.phone}
-                        </a>
-                      </p>
-                    )}
-                  </div>
-                  <div className="flex gap-3">
-                    <Button variant="primary" size="lg">
-                      Join {active.name}
-                    </Button>
-                    <Button variant="outline" size="lg" onClick={() => setActiveMinistry(null)}>
-                      Close
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </Card>
-          </div>
-        </section>
-      )}
-
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-neutral-50 border-t border-neutral-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-h2 font-semibold text-neutral-900 text-center mb-12">
             How to Get Involved
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card padding="lg" className="text-center">
+            <Card padding="lg" className="text-center h-full">
               <div className="text-4xl mb-4">🔍</div>
               <h4 className="text-h6 font-semibold text-neutral-900 mb-3">
                 Explore
               </h4>
               <p className="text-body-sm text-neutral-600 mb-4">
-                Learn about different ministries and find one that aligns with your interests and gifts.
+                Browse our ministries, click to learn more about each one, and find where your passions align.
               </p>
             </Card>
 
-            <Card padding="lg" className="text-center">
+            <Card padding="lg" className="text-center h-full">
               <div className="text-4xl mb-4">💬</div>
               <h4 className="text-h6 font-semibold text-neutral-900 mb-3">
                 Connect
               </h4>
               <p className="text-body-sm text-neutral-600 mb-4">
-                Talk with ministry leaders to understand how you can contribute and grow.
+                Reach out to ministry leaders directly through their detail page to ask questions and express interest.
               </p>
             </Card>
 
-            <Card padding="lg" className="text-center">
+            <Card padding="lg" className="text-center h-full">
               <div className="text-4xl mb-4">🙌</div>
               <h4 className="text-h6 font-semibold text-neutral-900 mb-3">
                 Serve
               </h4>
               <p className="text-body-sm text-neutral-600 mb-4">
-                Use your talents and passion to make a difference in the lives of others.
+                Use your talents and passion to make a difference in the lives of others and grow in your faith.
               </p>
             </Card>
           </div>
 
           <div className="text-center mt-12">
-            <Button variant="primary" size="lg">
-              Get Connected
-            </Button>
+            <Link to="/contact">
+              <Button variant="primary" size="lg">
+                Get Connected
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

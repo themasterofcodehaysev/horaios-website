@@ -172,7 +172,7 @@ export const Seo: React.FC<SeoProps> = ({
   // Cleanup breadcrumb schema when breadcrumbs prop changes or becomes null
   useEffect(() => {
     return () => {
-      cleanupJsonLd('breadcrumbs');
+      upsertJsonLd(null, 'breadcrumbs');
     };
   }, [breadcrumbs]);
 

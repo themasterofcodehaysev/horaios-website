@@ -4,12 +4,15 @@ import {
   HomePage,
   AboutPage,
   MinistriesPage,
+  MinistryDetailPage,
   SermonsPage,
   SermonDetailPage,
   SongsPage,
   SongDetailPage,
   EventsPage,
+  EventDetailPage,
   NewsPage,
+  BlogDetailPage,
   VisitPage,
   GivePage,
   ContactPage,
@@ -28,12 +31,15 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/ministries" element={<MinistriesPage />} />
+        <Route path="/ministries/:slug" element={<MinistryDetailPage />} />
         <Route path="/sermons" element={<SermonsPage />} />
         <Route path="/sermons/:slug" element={<SermonDetailPage />} />
         <Route path="/songs" element={<SongsPage />} />
         <Route path="/songs/:slug" element={<SongDetailPage />} />
         <Route path="/events" element={<EventsPage />} />
+        <Route path="/events/:slug" element={<EventDetailPage />} />
         <Route path="/news" element={<NewsPage />} />
+        <Route path="/news/:slug" element={<BlogDetailPage />} />
         <Route path="/visit" element={<VisitPage />} />
         <Route path="/give" element={<GivePage />} />
         <Route path="/contact" element={<ContactPage />} />

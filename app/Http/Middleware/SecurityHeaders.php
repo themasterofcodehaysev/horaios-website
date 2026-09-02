@@ -67,7 +67,7 @@ class SecurityHeaders
             $workerSrc,
             "media-src 'self'",
             "object-src 'none'",
-            "frame-src 'self' https://www.google.com https://maps.google.com",
+            "frame-src 'self' https://www.google.com https://maps.google.com https://www.youtube.com https://youtube.com https://player.vimeo.com",
             "base-uri 'self'",
             "form-action 'self'",
         ]);
