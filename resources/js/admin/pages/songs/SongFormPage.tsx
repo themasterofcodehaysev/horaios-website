@@ -36,7 +36,7 @@ const SongFormPage: React.FC = () => {
         setCategories(cats);
 
         if (isEdit && id) {
-          const song = await songService.getSong(id);
+          const song = await songService.getAdminSong(id);
           setFormData({
             title: song.title,
             slug: song.slug,

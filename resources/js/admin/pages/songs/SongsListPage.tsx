@@ -71,8 +71,8 @@ const SongsListPage: React.FC = () => {
 
   const handleDuplicate = async (song: SongItem) => {
     try {
-      const duplicate = await songService.duplicateSong(song.id);
-      navigate(`/admin/songs/${duplicate.id}/edit`);
+      await songService.duplicateSong(song.id);
+      fetchSongs(); // Refresh the list to show the duplicated song
     } catch (err: any) {
       alert(err?.response?.data?.message || 'Failed to duplicate song');
     }

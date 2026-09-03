@@ -57,6 +57,11 @@ export const songService = {
     return data;
   },
 
+  async getAdminSong(idOrSlug: string | number): Promise<SongItem> {
+    const { data } = await api.get<ApiResponse<SongItem>>(`/admin/songs/${idOrSlug}`);
+    return data.data;
+  },
+
   async getSong(idOrSlug: string | number): Promise<SongItem> {
     const { data } = await api.get<ApiResponse<SongItem>>(`/songs/${idOrSlug}`);
     return data.data;

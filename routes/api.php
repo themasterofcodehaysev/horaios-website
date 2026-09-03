@@ -152,6 +152,7 @@ Route::middleware('compress')->prefix('v1')->group(function () {
             // Admin Songs management
             Route::prefix('songs')->name('songs.')->group(function () {
                 Route::get('/', [SongController::class, 'adminIndex'])->name('index');
+                Route::get('{id}', [SongController::class, 'adminShow'])->name('show');
                 Route::post('/', [SongController::class, 'store'])->name('store');
                 Route::put('{id}', [SongController::class, 'update'])->name('update');
                 Route::delete('{id}', [SongController::class, 'destroy'])->name('destroy');

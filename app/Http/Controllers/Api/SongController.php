@@ -99,6 +99,18 @@ class SongController extends BaseApiController
     }
 
     /**
+     * GET /api/v1/admin/songs/{id}
+     * Admin detail for a single song, including drafts.
+     */
+    public function adminShow(int $id): JsonResponse
+    {
+        $song = Song::with(['category', 'creator', 'updater'])->findOrFail($id);
+        $this->authorize('update', $song);
+
+        return $this->success(new SongResource($song), 'Admin song retrieved');
+    }
+
+    /**
      * POST /api/v1/admin/songs
      * Create a new song.
      */

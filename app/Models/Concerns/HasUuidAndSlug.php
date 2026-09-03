@@ -2,6 +2,7 @@
 
 namespace App\Models\Concerns;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 trait HasUuidAndSlug
@@ -33,7 +34,13 @@ trait HasUuidAndSlug
         $originalSlug = $slug;
         $counter = 1;
 
-        while (static::query()
+        $query = static::query();
+
+        if (in_array(SoftDeletes::class, class_uses_recursive(static::class), true)) {
+            $query->withTrashed();
+        }
+
+        while ((clone $query)
             ->where('slug', $slug)
             ->when($ignoreId, fn($query) => $query->where('id', '!=', $ignoreId))
             ->exists()) {

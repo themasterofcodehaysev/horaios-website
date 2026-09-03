@@ -57,7 +57,13 @@ class SermonSeries extends Model
         $originalSlug = $slug;
         $count = 1;
 
-        while (static::where('slug', $slug)->when($ignoreId, fn($q) => $q->where('id', '!=', $ignoreId))->exists()) {
+        $query = static::query();
+
+        if (in_array(SoftDeletes::class, class_uses_recursive(static::class), true)) {
+            $query->withTrashed();
+        }
+
+        while ((clone $query)->where('slug', $slug)->when($ignoreId, fn($q) => $q->where('id', '!=', $ignoreId))->exists()) {
             $slug = "{$originalSlug}-{$count}";
             $count++;
         }
