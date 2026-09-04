@@ -13,7 +13,6 @@ class EventResource extends JsonResource
             'id'                    => $this->id,
             'uuid'                  => $this->uuid,
             'title'                 => $this->title,
-            'slug'                  => $this->slug,
             'description'           => $this->description,
             'featured_image'        => $this->featured_image,
             'category_id'           => $this->category_id,
@@ -30,10 +29,6 @@ class EventResource extends JsonResource
             'status'                => $this->status,
             'event_status'          => $this->event_status,
             'published_at'          => $this->published_at?->toISOString(),
-            'seo_title'             => $this->seo_title,
-            'seo_description'       => $this->seo_description,
-            'seo_image'             => $this->seo_image,
-            'canonical_url'         => $this->canonical_url,
             'created_by'            => $this->whenLoaded('creator', fn() => [
                 'id'           => $this->creator->id,
                 'display_name' => $this->creator->display_name,

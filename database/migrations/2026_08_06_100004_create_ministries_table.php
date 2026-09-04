@@ -12,7 +12,6 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
             $table->string('name');
-            $table->string('slug')->unique();
             $table->longText('description');
             $table->string('leader')->nullable();
             $table->string('email')->nullable();
@@ -24,10 +23,6 @@ return new class extends Migration
             $table->boolean('featured')->default(false)->index();
             $table->enum('status', ['draft', 'published'])->default('draft')->index();
             $table->unsignedInteger('display_order')->default(0)->index();
-            $table->string('seo_title')->nullable();
-            $table->text('seo_description')->nullable();
-            $table->string('seo_image')->nullable();
-            $table->string('canonical_url')->nullable();
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();

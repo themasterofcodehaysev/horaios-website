@@ -13,18 +13,6 @@ trait HasUuidAndSlug
             if (empty($model->uuid)) {
                 $model->uuid = (string) Str::uuid();
             }
-
-            if (empty($model->slug) && !empty($model->{static::slugSourceColumn()})) {
-                $model->slug = static::generateUniqueSlug($model->{static::slugSourceColumn()});
-            }
-        });
-
-        static::updating(function ($model) {
-            $sourceColumn = static::slugSourceColumn();
-
-            if ($model->isDirty($sourceColumn) && !$model->isDirty('slug') && !empty($model->{$sourceColumn})) {
-                $model->slug = static::generateUniqueSlug($model->{$sourceColumn}, $model->id);
-            }
         });
     }
 

@@ -2,6 +2,7 @@ import React from 'react';
 import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
 import { Play } from 'lucide-react';
+import { getImageUrl } from '../../utils/imageUrl';
 
 interface SermonCardProps {
   title: string;
@@ -30,7 +31,7 @@ export const SermonCard: React.FC<SermonCardProps> = ({
         {image ? (
           <>
             <img
-              src={image}
+              src={getImageUrl(image)}
               alt={title}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />

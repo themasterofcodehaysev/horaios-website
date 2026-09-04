@@ -15,7 +15,6 @@ class Speaker extends Model
     protected $fillable = [
         'uuid',
         'name',
-        'slug',
         'photo',
         'biography',
         'position',
@@ -40,36 +39,7 @@ class Speaker extends Model
             if (empty($speaker->uuid)) {
                 $speaker->uuid = (string) Str::uuid();
             }
-            if (empty($speaker->slug)) {
-                $speaker->slug = static::generateUniqueSlug($speaker->name);
-            }
         });
-
-        static::updating(function ($speaker) {
-            if ($speaker->isDirty('name') && !$speaker->isDirty('slug')) {
-                $speaker->slug = static::generateUniqueSlug($speaker->name, $speaker->id);
-            }
-        });
-    }
-
-    public static function generateUniqueSlug(string $name, ?int $ignoreId = null): string
-    {
-        $slug = Str::slug($name);
-        $originalSlug = $slug;
-        $count = 1;
-
-        $query = static::query();
-
-        if (in_array(SoftDeletes::class, class_uses_recursive(static::class), true)) {
-            $query->withTrashed();
-        }
-
-        while ((clone $query)->where('slug', $slug)->when($ignoreId, fn($q) => $q->where('id', '!=', $ignoreId))->exists()) {
-            $slug = "{$originalSlug}-{$count}";
-            $count++;
-        }
-
-        return $slug;
     }
 
     public function sermons(): HasMany

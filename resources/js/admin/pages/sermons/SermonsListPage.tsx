@@ -5,10 +5,13 @@ import {
   XCircle, ChevronLeft, ChevronRight, X, Video, AlertTriangle, Layers, UserCheck, BookOpen,
 } from 'lucide-react';
 import { sermonService } from '../../services/sermon.service';
+import { useToast } from '../../hooks/useToast';
+import { getImageUrl } from '../../utils/imageUrl';
 import type { SermonItem, Speaker, SermonSeries, SermonCategory, PaginatedResponse, SermonFilters } from '../../types';
 
 const SermonsListPage: React.FC = () => {
   const navigate = useNavigate();
+  const { addToast } = useToast();
   const [sermons, setSermons] = useState<SermonItem[]>([]);
   const [speakers, setSpeakers] = useState<Speaker[]>([]);
   const [seriesList, setSeriesList] = useState<SermonSeries[]>([]);
@@ -63,8 +66,17 @@ const SermonsListPage: React.FC = () => {
     try {
       const updated = await sermonService.togglePublish(sermon.id);
       setSermons(prev => prev.map(s => s.id === sermon.id ? updated : s));
+      addToast({
+        title: updated.status === 'published' ? 'Sermon Published' : 'Sermon Unpublished',
+        message: `"${sermon.title}" is now ${updated.status}.`,
+        type: 'success',
+      });
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to toggle status');
+      addToast({
+        title: 'Update Failed',
+        message: err?.response?.data?.message || 'Failed to toggle status',
+        type: 'error',
+      });
     }
   };
 
@@ -72,17 +84,35 @@ const SermonsListPage: React.FC = () => {
     try {
       const updated = await sermonService.toggleFeatured(sermon.id);
       setSermons(prev => prev.map(s => s.id === sermon.id ? updated : s));
+      addToast({
+        title: updated.is_featured ? 'Sermon Featured' : 'Sermon Unfeatured',
+        message: `"${sermon.title}" has been updated.`,
+        type: 'success',
+      });
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to toggle featured state');
+      addToast({
+        title: 'Update Failed',
+        message: err?.response?.data?.message || 'Failed to toggle featured state',
+        type: 'error',
+      });
     }
   };
 
   const handleDuplicate = async (sermon: SermonItem) => {
     try {
-      const duplicate = await sermonService.duplicateSermon(sermon.id);
-      navigate(`/admin/sermons/${duplicate.id}/edit`);
+      await sermonService.duplicateSermon(sermon.id);
+      addToast({
+        title: 'Sermon Duplicated',
+        message: `"${sermon.title}" was duplicated successfully.`,
+        type: 'success',
+      });
+      fetchSermons();
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to duplicate sermon');
+      addToast({
+        title: 'Duplicate Failed',
+        message: err?.response?.data?.message || 'Failed to duplicate sermon',
+        type: 'error',
+      });
     }
   };
 
@@ -91,10 +121,19 @@ const SermonsListPage: React.FC = () => {
     try {
       setDeleting(true);
       await sermonService.deleteSermon(deleteModal.sermon.id);
+      addToast({
+        title: 'Sermon Deleted',
+        message: `"${deleteModal.sermon.title}" was deleted.`,
+        type: 'success',
+      });
       setDeleteModal({ open: false, sermon: null });
       fetchSermons();
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to delete sermon');
+      addToast({
+        title: 'Delete Failed',
+        message: err?.response?.data?.message || 'Failed to delete sermon',
+        type: 'error',
+      });
     } finally {
       setDeleting(false);
     }
@@ -252,7 +291,14 @@ const SermonsListPage: React.FC = () => {
 
                   <div className="w-12 h-9 rounded bg-neutral-900 text-white flex items-center justify-center relative overflow-hidden shrink-0">
                     {sermon.thumbnail ? (
-                      <img src={sermon.thumbnail} alt={sermon.title} className="w-full h-full object-cover" />
+                      <img
+                        src={getImageUrl(sermon.thumbnail)}
+                        alt={sermon.title}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = 'none';
+                        }}
+                      />
                     ) : (
                       <Video className="w-4 h-4 text-neutral-400" />
                     )}
@@ -315,7 +361,7 @@ const SermonsListPage: React.FC = () => {
 
                   <div className="flex items-center justify-end gap-1">
                     <a
-                      href={`/sermons/${sermon.slug}`}
+                      href={`/sermons/${sermon.id}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="p-1.5 text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 rounded-lg transition-colors"

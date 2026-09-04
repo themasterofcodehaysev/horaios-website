@@ -14,6 +14,7 @@ class ChurchSetting extends Model
         'value',
         'type',
         'group',
+        'is_public',
     ];
 
     public static function get(string $key, mixed $default = null): mixed
@@ -31,13 +32,26 @@ class ChurchSetting extends Model
         };
     }
 
-    public static function set(string $key, mixed $value, string $type = 'string', string $group = 'general'): self
+    public static function set(string $key, mixed $value, string $type = 'string', ?string $group = null): self
     {
         $stringValue = is_array($value) || is_object($value) ? json_encode($value) : (string) $value;
 
-        return static::updateOrCreate(
-            ['key' => $key],
-            ['value' => $stringValue, 'type' => $type, 'group' => $group]
-        );
+        $setting = static::where('key', $key)->first();
+        if ($setting) {
+            $data = ['value' => $stringValue, 'type' => $type];
+            if ($group !== null) {
+                $data['group'] = $group;
+            }
+            $setting->update($data);
+            return $setting;
+        }
+
+        return static::create([
+            'key' => $key,
+            'value' => $stringValue,
+            'type' => $type,
+            'group' => $group ?? 'general',
+            'is_public' => true,
+        ]);
     }
 }

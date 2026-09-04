@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Save, Loader2, RefreshCw, Sparkles, Calendar, Mail, Phone, MapPin, Users } from 'lucide-react';
+import { ArrowLeft, Save, Loader2, Sparkles, Calendar, Mail, Phone, MapPin, Users } from 'lucide-react';
 import MDEditor from '@uiw/react-md-editor';
 import { ministryService } from '../../services/ministry.service';
 import type { MinistryCategory, CreateMinistryPayload } from '../../types';
+import ImageUpload from '../../components/ui/ImageUpload';
 
 const MinistryFormPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -13,11 +14,9 @@ const MinistryFormPage: React.FC = () => {
   const [categories, setCategories] = useState<MinistryCategory[]>([]);
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(isEdit);
-  const [autoSlug, setAutoSlug] = useState(!isEdit);
 
   const [formData, setFormData] = useState<CreateMinistryPayload>({
     name: '',
-    slug: '',
     description: '',
     leader: '',
     email: '',
@@ -31,10 +30,6 @@ const MinistryFormPage: React.FC = () => {
     status: 'published',
     display_order: 0,
     published_at: new Date().toISOString().slice(0, 16),
-    seo_title: '',
-    seo_description: '',
-    seo_image: '',
-    canonical_url: '',
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -42,14 +37,13 @@ const MinistryFormPage: React.FC = () => {
   useEffect(() => {
     const initData = async () => {
       try {
-        const catData = await ministryService.getPublicMinistryCategories();
+        const catData = await ministryService.getAdminMinistryCategories();
         setCategories(catData);
 
         if (isEdit && id) {
-          const m = await ministryService.getMinistry(id);
+          const m = await ministryService.getAdminMinistry(id);
           setFormData({
             name: m.name,
-            slug: m.slug,
             description: m.description || '',
             leader: m.leader || '',
             email: m.email || '',
@@ -63,10 +57,6 @@ const MinistryFormPage: React.FC = () => {
             status: m.status,
             display_order: m.display_order,
             published_at: m.published_at ? new Date(m.published_at).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16),
-            seo_title: m.seo_title || '',
-            seo_description: m.seo_description || '',
-            seo_image: m.seo_image || '',
-            canonical_url: m.canonical_url || '',
           });
         }
       } catch (err: any) {
@@ -84,7 +74,6 @@ const MinistryFormPage: React.FC = () => {
     setFormData(prev => ({
       ...prev,
       name: newName,
-      slug: autoSlug ? newName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') : prev.slug,
     }));
     if (errors.name) setErrors(prev => ({ ...prev, name: '' }));
   };
@@ -146,7 +135,7 @@ const MinistryFormPage: React.FC = () => {
               {isEdit ? 'Edit Ministry' : 'Create New Ministry'}
             </h1>
             <p className="text-body-xs text-neutral-500">
-              {isEdit ? 'Update ministry details, leader, and meeting schedule' : 'Add a new church ministry team to the website'}
+              {isEdit ? 'Update ministry leadership, details, and schedules' : 'Introduce a new church department, outreach group, or ministry program'}
             </p>
           </div>
         </div>
@@ -167,43 +156,12 @@ const MinistryFormPage: React.FC = () => {
                 type="text"
                 value={formData.name}
                 onChange={handleNameChange}
-                placeholder="e.g. Youth Ministry, Worship Team"
+                placeholder="e.g. Youth Ministry"
                 className={`w-full px-3.5 py-2.5 border rounded-lg text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 ${
                   errors.name ? 'border-red-500 focus:border-red-500' : 'border-neutral-200 focus:border-primary-red'
                 }`}
               />
               {errors.name && <p className="text-body-xs text-red-500 mt-1">{errors.name}</p>}
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <label className="block text-body-xs font-semibold text-neutral-700">
-                  URL Slug
-                </label>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setAutoSlug(true);
-                    setFormData(p => ({
-                      ...p,
-                      slug: p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
-                    }));
-                  }}
-                  className="text-body-xs text-primary-red hover:underline flex items-center gap-1 font-medium"
-                >
-                  <RefreshCw className="w-3 h-3" /> Auto Generate
-                </button>
-              </div>
-              <input
-                type="text"
-                value={formData.slug || ''}
-                onChange={(e) => {
-                  setAutoSlug(false);
-                  setFormData({ ...formData, slug: e.target.value });
-                }}
-                placeholder="youth-ministry"
-                className="w-full px-3.5 py-2 border border-neutral-200 rounded-lg text-body-xs font-mono bg-neutral-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-              />
             </div>
           </div>
 
@@ -218,69 +176,6 @@ const MinistryFormPage: React.FC = () => {
                 onChange={(val) => setFormData({ ...formData, description: val || '' })}
                 height={400}
               />
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl border border-neutral-200 p-6 space-y-4 shadow-xs">
-            <h2 className="text-h6 text-neutral-900 font-semibold border-b border-neutral-100 pb-3">
-              SEO Meta Tags
-            </h2>
-
-            <div>
-              <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                SEO Title
-              </label>
-              <input
-                type="text"
-                value={formData.seo_title || ''}
-                onChange={(e) => setFormData({ ...formData, seo_title: e.target.value })}
-                placeholder="Custom title for search engines (defaults to ministry name)"
-                className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-              />
-            </div>
-
-            <div>
-              <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                SEO Description
-              </label>
-              <textarea
-                rows={3}
-                maxLength={300}
-                value={formData.seo_description || ''}
-                onChange={(e) => setFormData({ ...formData, seo_description: e.target.value })}
-                placeholder="Custom description for search engines and social sharing..."
-                className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-              />
-              <span className="text-body-xs text-neutral-400 block text-right">
-                {(formData.seo_description || '').length}/300
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                  SEO Social Image URL
-                </label>
-                <input
-                  type="url"
-                  value={formData.seo_image || ''}
-                  onChange={(e) => setFormData({ ...formData, seo_image: e.target.value })}
-                  placeholder="https://example.com/og-image.jpg"
-                  className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                  Canonical URL
-                </label>
-                <input
-                  type="url"
-                  value={formData.canonical_url || ''}
-                  onChange={(e) => setFormData({ ...formData, canonical_url: e.target.value })}
-                  placeholder="https://church.com/ministries/original"
-                  className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm"
-                />
-              </div>
             </div>
           </div>
         </div>
@@ -339,7 +234,7 @@ const MinistryFormPage: React.FC = () => {
                   className="w-4 h-4 text-primary-red rounded border-neutral-300 focus:ring-primary-red"
                 />
                 <div>
-                  <span className="text-body-sm font-semibold text-neutral-900 block flex items-center gap-1">
+                  <span className="text-body-sm font-semibold text-neutral-900 flex items-center gap-1">
                     <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Featured Ministry
                   </span>
                   <span className="text-body-xs text-neutral-500 block">
@@ -370,21 +265,13 @@ const MinistryFormPage: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Banner / Featured Image URL
-              </label>
-              <input
-                type="url"
-                value={formData.featured_image || ''}
-                onChange={(e) => setFormData({ ...formData, featured_image: e.target.value })}
-                placeholder="https://example.com/ministry-cover.jpg"
-                className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm"
+              <ImageUpload
+                value={formData.featured_image}
+                onChange={(url) => setFormData({ ...formData, featured_image: url })}
+                folder="ministries"
+                label="Featured Image"
+                helperText="Upload a banner or cover image for this ministry."
               />
-              {formData.featured_image && (
-                <div className="mt-2 rounded-lg overflow-hidden border border-neutral-200 h-32 bg-neutral-900 flex items-center justify-center">
-                  <img src={formData.featured_image} alt="Featured preview" className="w-full h-full object-cover" />
-                </div>
-              )}
             </div>
           </div>
 

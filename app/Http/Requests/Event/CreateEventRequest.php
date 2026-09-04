@@ -15,14 +15,13 @@ class CreateEventRequest extends FormRequest
     {
         return [
             'title'                => ['required', 'string', 'max:255'],
-            'slug'                 => ['nullable', 'string', 'max:255', 'unique:events,slug'],
             'description'          => ['required', 'string'],
             'featured_image'       => ['nullable', 'string', 'max:500'],
             'category_id'          => ['nullable', 'integer', 'exists:event_categories,id'],
             'location'             => ['nullable', 'string', 'max:500'],
-            'google_map_url'       => ['nullable', 'url', 'max:500'],
+            'google_map_url'       => ['nullable', 'string', 'max:2000'],
             'start_date'           => ['required', 'date'],
-            'end_date'             => ['nullable', 'date', 'after:start_date'],
+            'end_date'             => ['nullable', 'date', 'after_or_equal:start_date'],
             'start_time'           => ['nullable', 'string', 'max:20'],
             'end_time'             => ['nullable', 'string', 'max:20'],
             'registration_required' => ['nullable', 'boolean'],
@@ -30,10 +29,22 @@ class CreateEventRequest extends FormRequest
             'featured'             => ['nullable', 'boolean'],
             'status'               => ['nullable', 'in:draft,published,cancelled'],
             'published_at'         => ['nullable', 'date'],
-            'seo_title'            => ['nullable', 'string', 'max:255'],
-            'seo_description'      => ['nullable', 'string', 'max:500'],
-            'seo_image'            => ['nullable', 'string', 'max:500'],
-            'canonical_url'        => ['nullable', 'url', 'max:500'],
         ];
+    }
+
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator) {
+            $startDate = $this->input('start_date');
+            $endDate = $this->input('end_date');
+            $startTime = $this->input('start_time');
+            $endTime = $this->input('end_time');
+
+            if ($startDate && $endDate && $startDate === $endDate && $startTime && $endTime) {
+                if (strtotime($endTime) <= strtotime($startTime)) {
+                    $validator->errors()->add('end_time', 'The end time must be after the start time for same-day events.');
+                }
+            }
+        });
     }
 }

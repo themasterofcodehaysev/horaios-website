@@ -13,7 +13,6 @@ class NavigationMenuResource extends JsonResource
             'id' => $this->id,
             'uuid' => $this->uuid,
             'name' => $this->name,
-            'slug' => $this->slug,
             'location' => $this->location,
             'description' => $this->description,
             'is_active' => $this->is_active,

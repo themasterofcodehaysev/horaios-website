@@ -22,35 +22,43 @@ class BlogController extends BaseApiController
         $posts = $this->blogService->getPublicPosts([
             'search'        => $request->input('search'),
             'category_id'   => $request->input('category_id'),
-            'category_slug' => $request->input('category_slug'),
             'featured'      => $request->input('featured'),
         ], $request->input('per_page', 12));
 
         return $this->paginated(BlogResource::collection($posts), 'Published blog posts retrieved');
     }
 
-    public function show(string $identifier): JsonResponse
+    public function show(Request $request, string $identifier): JsonResponse
     {
         $post = BlogPost::with(['category', 'creator', 'updater'])
             ->where(function ($q) use ($identifier) {
-                $q->where('slug', $identifier)
-                  ->orWhere('uuid', $identifier)
-                  ->orWhere('id', $identifier);
+                $q->where('id', $identifier)
+                  ->orWhere('uuid', $identifier);
             })
             ->firstOrFail();
 
         if ($post->status !== 'published') {
-            $this->authorize('view', $post);
+            $user = $request->user() ?: auth('sanctum')->user();
+            if (! $user || ! $user->can('view', $post)) {
+                throw new \Illuminate\Auth\Access\AuthorizationException();
+            }
         }
 
         return $this->success(new BlogResource($post), 'Blog post retrieved');
     }
 
+    public function adminShow(int $id): JsonResponse
+    {
+        $post = BlogPost::with(['category', 'creator', 'updater'])->findOrFail($id);
+        $this->authorize('update', $post);
+
+        return $this->success(new BlogResource($post), 'Admin blog post retrieved');
+    }
+
     public function related(string $identifier): JsonResponse
     {
-        $post = BlogPost::where('slug', $identifier)
+        $post = BlogPost::where('id', $identifier)
             ->orWhere('uuid', $identifier)
-            ->orWhere('id', $identifier)
             ->firstOrFail();
 
         $related = $this->blogService->getRelatedPosts($post, 5);

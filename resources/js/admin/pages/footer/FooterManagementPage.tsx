@@ -5,8 +5,12 @@ import {
 } from 'lucide-react';
 import { footerService } from '../../services/footer.service';
 import type { FooterSetting } from '../../types';
+import { useConfirm } from '../../context/ConfirmContext';
+import { useToast } from '../../hooks/useToast';
 
 const FooterManagementPage: React.FC = () => {
+  const confirm = useConfirm();
+  const { addToast } = useToast();
   const [settings, setSettings] = useState<Record<string, Record<string, FooterSetting>>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -62,12 +66,29 @@ const FooterManagementPage: React.FC = () => {
   };
 
   const handleInitialize = async () => {
-    if (!confirm('This will create default footer settings. Continue?')) return;
+    const ok = await confirm({
+      title: 'Initialize Settings',
+      message: 'This will create default footer settings. Continue?',
+      confirmLabel: 'Initialize',
+      variant: 'primary',
+      icon: 'info',
+    });
+    if (!ok) return;
+
     try {
       await footerService.initializeDefaultSettings();
       fetchSettings();
+      addToast({
+        type: 'success',
+        title: 'Settings Initialized',
+        message: 'Default footer settings have been created.',
+      });
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to initialize settings');
+      addToast({
+        type: 'error',
+        title: 'Failed to initialize settings',
+        message: err?.response?.data?.message || 'Please try again.',
+      });
     }
   };
 

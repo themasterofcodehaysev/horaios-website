@@ -12,7 +12,7 @@ class NavigationMenuSeeder extends Seeder
     {
         // Create Header Navigation Menu
         $headerMenu = NavigationMenu::firstOrCreate(
-            ['slug' => 'main-header'],
+            ['location' => 'header'],
             [
                 'uuid' => (string) \Illuminate\Support\Str::uuid(),
                 'name' => 'Main Header Navigation',
@@ -132,7 +132,7 @@ class NavigationMenuSeeder extends Seeder
 
         // Create Footer Navigation Menu
         $footerMenu = NavigationMenu::firstOrCreate(
-            ['slug' => 'main-footer'],
+            ['location' => 'footer'],
             [
                 'uuid' => (string) \Illuminate\Support\Str::uuid(),
                 'name' => 'Main Footer Navigation',
@@ -216,7 +216,7 @@ class NavigationMenuSeeder extends Seeder
 
         // Create Quick Links Menu
         $quickLinksMenu = NavigationMenu::firstOrCreate(
-            ['slug' => 'quick-links'],
+            ['location' => 'quick_links'],
             [
                 'uuid' => (string) \Illuminate\Support\Str::uuid(),
                 'name' => 'Quick Links',

@@ -12,7 +12,7 @@ use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\FooterController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\HomepageController;
-use App\Http\Controllers\Api\MediaController;
+use App\Http\Controllers\Api\UploadController;
 use App\Http\Controllers\Api\MinistryCategoryController;
 use App\Http\Controllers\Api\MinistryController;
 use App\Http\Controllers\Api\NavigationController;
@@ -124,7 +124,7 @@ Route::middleware('compress')->prefix('v1')->group(function () {
     // -----------------------------------------------------------------------
     // AUTH — throttled at 10 attempts/minute to prevent brute force
     // -----------------------------------------------------------------------
-    Route::prefix('auth')->middleware('throttle:5,1')->group(function () {
+    Route::prefix('auth')->middleware('throttle:60,1')->group(function () {
         Route::post('login', [AuthController::class, 'login'])->name('auth.login');
         Route::post('forgot-password', [AuthController::class, 'forgotPassword'])->name('auth.forgot-password');
         Route::post('reset-password', [AuthController::class, 'resetPassword'])->name('auth.reset-password');
@@ -172,6 +172,7 @@ Route::middleware('compress')->prefix('v1')->group(function () {
             // Admin Sermons management
             Route::prefix('sermons')->name('sermons.')->group(function () {
                 Route::get('/', [SermonController::class, 'adminIndex'])->name('index');
+                Route::get('{id}', [SermonController::class, 'adminShow'])->name('show');
                 Route::post('/', [SermonController::class, 'store'])->name('store');
                 Route::put('{id}', [SermonController::class, 'update'])->name('update');
                 Route::delete('{id}', [SermonController::class, 'destroy'])->name('destroy');
@@ -211,6 +212,7 @@ Route::middleware('compress')->prefix('v1')->group(function () {
             // Admin Blog management
             Route::prefix('blogs')->name('blogs.')->group(function () {
                 Route::get('/', [BlogController::class, 'adminIndex'])->name('index');
+                Route::get('{id}', [BlogController::class, 'adminShow'])->name('show');
                 Route::post('/', [BlogController::class, 'store'])->name('store');
                 Route::put('{id}', [BlogController::class, 'update'])->name('update');
                 Route::delete('{id}', [BlogController::class, 'destroy'])->name('destroy');
@@ -231,6 +233,7 @@ Route::middleware('compress')->prefix('v1')->group(function () {
             // Admin Events management
             Route::prefix('events')->name('events.')->group(function () {
                 Route::get('/', [EventController::class, 'adminIndex'])->name('index');
+                Route::get('{id}', [EventController::class, 'adminShow'])->name('show');
                 Route::post('/', [EventController::class, 'store'])->name('store');
                 Route::put('{id}', [EventController::class, 'update'])->name('update');
                 Route::delete('{id}', [EventController::class, 'destroy'])->name('destroy');
@@ -252,6 +255,7 @@ Route::middleware('compress')->prefix('v1')->group(function () {
             // Admin Ministries management
             Route::prefix('ministries')->name('ministries.')->group(function () {
                 Route::get('/', [MinistryController::class, 'adminIndex'])->name('index');
+                Route::get('{id}', [MinistryController::class, 'adminShow'])->name('show');
                 Route::post('/', [MinistryController::class, 'store'])->name('store');
                 Route::put('{id}', [MinistryController::class, 'update'])->name('update');
                 Route::delete('{id}', [MinistryController::class, 'destroy'])->name('destroy');
@@ -323,6 +327,9 @@ Route::middleware('compress')->prefix('v1')->group(function () {
                 Route::delete('{id}', [FooterController::class, 'destroy'])->name('destroy');
                 Route::post('initialize', [FooterController::class, 'initialize'])->name('initialize');
             });
+
+            // Direct Image Upload
+            Route::post('upload/image', [UploadController::class, 'uploadImage'])->name('upload.image');
         });
 
         // Users
@@ -354,18 +361,6 @@ Route::middleware('compress')->prefix('v1')->group(function () {
         // Audit Logs
         Route::prefix('audit-logs')->name('audit-logs.')->group(function () {
             Route::get('/', [AuditLogController::class, 'index'])->name('index');
-            Route::get('{id}', [AuditLogController::class, 'show'])->name('show');
-        });
-
-        // Media
-        Route::prefix('media')->name('media.')->group(function () {
-            Route::get('/', [MediaController::class, 'index'])->name('index');
-            Route::post('/', [MediaController::class, 'store'])->name('store');
-            Route::get('{uuid}', [MediaController::class, 'show'])->name('show');
-            Route::get('{uuid}/signed-url', [MediaController::class, 'getSignedUrl'])->name('signed-url');
-            Route::put('{uuid}', [MediaController::class, 'update'])->name('update');
-            Route::delete('{uuid}', [MediaController::class, 'destroy'])->name('destroy');
-            Route::get('stats', [MediaController::class, 'stats'])->name('stats');
         });
 
         // Notifications

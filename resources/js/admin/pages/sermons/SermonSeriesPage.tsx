@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { sermonService } from '../../services/sermon.service';
 import type { SermonSeries } from '../../types';
+import ImageUpload from '../../components/ui/ImageUpload';
 
 const SermonSeriesPage: React.FC = () => {
   const [seriesList, setSeriesList] = useState<SermonSeries[]>([]);
@@ -20,7 +21,6 @@ const SermonSeriesPage: React.FC = () => {
 
   const [formData, setFormData] = useState({
     name: '',
-    slug: '',
     description: '',
     thumbnail: '',
     display_order: 0,
@@ -47,14 +47,13 @@ const SermonSeriesPage: React.FC = () => {
   useEffect(() => { fetchSeries(); }, [fetchSeries]);
 
   const openCreateModal = () => {
-    setFormData({ name: '', slug: '', description: '', thumbnail: '', display_order: seriesList.length + 1, status: 'active' });
+    setFormData({ name: '', description: '', thumbnail: '', display_order: seriesList.length + 1, status: 'active' });
     setModal({ open: true, mode: 'create', series: null });
   };
 
   const openEditModal = (se: SermonSeries) => {
     setFormData({
       name: se.name,
-      slug: se.slug,
       description: se.description || '',
       thumbnail: se.thumbnail || '',
       display_order: se.display_order,
@@ -257,13 +256,12 @@ const SermonSeriesPage: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-body-xs font-semibold text-neutral-700 mb-1">Thumbnail URL</label>
-              <input
-                type="url"
+              <ImageUpload
                 value={formData.thumbnail}
-                onChange={(e) => setFormData({ ...formData, thumbnail: e.target.value })}
-                placeholder="https://example.com/series-banner.jpg"
-                className="w-full px-3.5 py-2 border border-neutral-200 rounded-lg text-body-sm"
+                onChange={(url) => setFormData({ ...formData, thumbnail: url })}
+                folder="sermons"
+                label="Thumbnail Image"
+                helperText="Upload a series cover image."
               />
             </div>
 

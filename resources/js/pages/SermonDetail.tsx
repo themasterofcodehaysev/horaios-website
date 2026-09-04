@@ -9,6 +9,7 @@ import { Layout } from '../components/layout';
 import { Seo } from '../components/common';
 import type { SeoStructuredData } from '../components/common/Seo';
 import { sermonService } from '../admin/services/sermon.service';
+import { getImageUrl } from '../utils/imageUrl';
 import type { SermonItem } from '../admin/types';
 
 const SITE_NAME = 'Horaios Baptist Church';
@@ -51,7 +52,7 @@ function buildSermonSeo(sermon: SermonItem) {
     ...(sermon.published_at ? { datePublished: sermon.published_at } : {}),
     dateModified: sermon.updated_at,
     ...(sermon.speaker ? { author: { '@type': 'Person', name: sermon.speaker.name } } : {}),
-    ...(sermon.thumbnail ? { image: sermon.thumbnail } : {}),
+    ...(sermon.thumbnail ? { image: getImageUrl(sermon.thumbnail) } : {}),
     publisher: { '@type': 'Organization', name: SITE_NAME },
     ...(canonicalUrl ? { url: canonicalUrl } : {}),
   };
@@ -60,13 +61,13 @@ function buildSermonSeo(sermon: SermonItem) {
     title: `${sermon.title} | ${SITE_NAME} Sermons`,
     description,
     canonicalUrl,
-    image: sermon.thumbnail,
+    image: getImageUrl(sermon.thumbnail),
     jsonLd,
   };
 }
 
 export const SermonDetailPage: React.FC = () => {
-  const { slug } = useParams<{ slug: string }>();
+  const { id } = useParams<{ id: string }>();
   const [sermon, setSermon] = useState<SermonItem | null>(null);
   const [relatedSermons, setRelatedSermons] = useState<SermonItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -75,15 +76,15 @@ export const SermonDetailPage: React.FC = () => {
 
   useEffect(() => {
     const fetchSermon = async () => {
-      if (!slug) return;
+      if (!id) return;
       try {
         setLoading(true);
         setError(null);
-        const data = await sermonService.getPublicSermonDetail(slug);
+        const data = await sermonService.getPublicSermonDetail(id);
         setSermon(data);
 
         try {
-          const related = await sermonService.getRelatedSermons(slug);
+          const related = await sermonService.getRelatedSermons(id);
           setRelatedSermons(related);
         } catch {
           setRelatedSermons([]);
@@ -95,7 +96,7 @@ export const SermonDetailPage: React.FC = () => {
       }
     };
     fetchSermon();
-  }, [slug]);
+  }, [id]);
 
   // Extract YouTube Video ID
   const getYouTubeId = (url: string | null): string | null => {
@@ -219,7 +220,7 @@ export const SermonDetailPage: React.FC = () => {
           </div>
         ) : sermon.thumbnail ? (
           <div className="aspect-video bg-neutral-900 rounded-3xl overflow-hidden shadow-xl border border-neutral-200">
-            <img src={sermon.thumbnail} alt={sermon.title} className="w-full h-full object-cover" />
+            <img src={getImageUrl(sermon.thumbnail)} alt={sermon.title} className="w-full h-full object-cover" />
           </div>
         ) : null}
 
@@ -311,7 +312,7 @@ export const SermonDetailPage: React.FC = () => {
               {relatedSermons.map((rel) => (
                 <Link
                   key={rel.id}
-                  to={`/sermons/${rel.slug}`}
+                  to={`/sermons/${rel.id}`}
                   className="group bg-neutral-50 hover:bg-white rounded-2xl p-4 border border-neutral-200 hover:border-neutral-300 hover:shadow-md transition-all flex items-center justify-between"
                 >
                   <div className="space-y-1 pr-2">

@@ -13,7 +13,6 @@ class SermonResource extends JsonResource
             'id'                  => $this->id,
             'uuid'                => $this->uuid,
             'title'               => $this->title,
-            'slug'                => $this->slug,
             'summary'             => $this->summary,
             'description'         => $this->description,
             'scripture_reference' => $this->scripture_reference,

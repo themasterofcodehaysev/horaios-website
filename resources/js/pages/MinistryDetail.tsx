@@ -15,7 +15,7 @@ import { ministryService } from '../services/publicContent.service';
 import type { MinistryPublic } from '../types';
 
 export const MinistryDetailPage: React.FC = () => {
-  const { slug } = useParams<{ slug: string }>();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [ministry, setMinistry] = useState<MinistryPublic | null>(null);
   const [relatedMinistries, setRelatedMinistries] = useState<MinistryPublic[]>([]);
@@ -36,15 +36,15 @@ export const MinistryDetailPage: React.FC = () => {
 
   useEffect(() => {
     const fetchMinistry = async () => {
-      if (!slug) return;
+      if (!id) return;
       try {
         setLoading(true);
         setError(null);
-        const data = await ministryService.getPublicMinistryDetail(slug);
+        const data = await ministryService.getPublicMinistryDetail(id);
         setMinistry(data);
 
         try {
-          const related = await ministryService.getRelatedMinistries(slug);
+          const related = await ministryService.getRelatedMinistries(id);
           setRelatedMinistries(related.slice(0, 3));
         } catch {
           setRelatedMinistries([]);
@@ -61,7 +61,7 @@ export const MinistryDetailPage: React.FC = () => {
       }
     };
     fetchMinistry();
-  }, [slug]);
+  }, [id]);
 
   useEffect(() => {
     if (ministry) {
@@ -381,7 +381,7 @@ export const MinistryDetailPage: React.FC = () => {
               {relatedMinistries.map((rel) => (
                 <Link
                   key={rel.id}
-                  to={`/ministries/${rel.slug}`}
+                  to={`/ministries/${rel.id}`}
                   className="group h-full"
                 >
                   <MinistryCard

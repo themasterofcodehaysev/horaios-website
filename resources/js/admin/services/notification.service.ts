@@ -22,15 +22,6 @@ export const notificationService = {
     }
   },
 
-  async getUnreadCount(): Promise<NotificationStats> {
-    try {
-      const { data } = await api.get<ApiResponse<NotificationStats>>('/notifications/unread-count');
-      return data.data;
-    } catch (error) {
-      // If the endpoint doesn't exist, return default values
-      return { count: 0, unread_count: 0 };
-    }
-  },
 
   async markAsRead(id: number): Promise<Notification> {
     const { data } = await api.patch<ApiResponse<Notification>>(`/notifications/${id}/read`);

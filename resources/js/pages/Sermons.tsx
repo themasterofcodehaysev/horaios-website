@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Search, Video, Sparkles, ChevronRight, Star, ChevronLeft, Calendar, User, BookOpen } from 'lucide-react';
 import { Layout } from '../components/layout';
 import { sermonService } from '../admin/services/sermon.service';
+import { getImageUrl } from '../utils/imageUrl';
 import type { SermonItem, SermonCategory, SermonSeries, Speaker, PaginatedResponse } from '../admin/types';
 
 export const SermonsPage: React.FC = () => {
@@ -37,7 +38,7 @@ export const SermonsPage: React.FC = () => {
       setLoading(true);
       const res = await sermonService.getPublicSermons({
         search,
-        category_slug: selectedCategory || undefined,
+        category_id: selectedCategory ? Number(selectedCategory) : undefined,
         series_id: selectedSeries ? Number(selectedSeries) : undefined,
         speaker_id: selectedSpeaker ? Number(selectedSpeaker) : undefined,
         page,
@@ -102,9 +103,9 @@ export const SermonsPage: React.FC = () => {
             {categories.map((cat) => (
               <button
                 key={cat.id}
-                onClick={() => { setSelectedCategory(cat.slug); setPage(1); }}
+                onClick={() => { setSelectedCategory(String(cat.id)); setPage(1); }}
                 className={`px-4 py-2 rounded-full text-body-sm font-medium transition-all whitespace-nowrap ${
-                  selectedCategory === cat.slug ? 'bg-primary-red text-white shadow-md' : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
+                  selectedCategory === String(cat.id) ? 'bg-primary-red text-white shadow-md' : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
                 }`}
               >
                 {cat.name}
@@ -158,12 +159,12 @@ export const SermonsPage: React.FC = () => {
               {featuredSermons.slice(0, 3).map((sermon) => (
                 <Link
                   key={sermon.id}
-                  to={`/sermons/${sermon.slug}`}
+                  to={`/sermons/${sermon.id}`}
                   className="group relative bg-neutral-900 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col justify-between"
                 >
                   <div className="aspect-video bg-neutral-800 relative overflow-hidden">
                     {sermon.thumbnail ? (
-                      <img src={sermon.thumbnail} alt={sermon.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90" />
+                      <img src={getImageUrl(sermon.thumbnail)} alt={sermon.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-neutral-800 to-neutral-900">
                         <Video className="w-10 h-10 text-neutral-500" />
@@ -211,7 +212,7 @@ export const SermonsPage: React.FC = () => {
         <div>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-h4 font-bold text-neutral-900">
-              {selectedCategory ? `${categories.find(c => c.slug === selectedCategory)?.name || 'Category'} Sermons` : 'All Sermons & Messages'}
+              {selectedCategory ? `${categories.find(c => String(c.id) === selectedCategory)?.name || 'Category'} Sermons` : 'All Sermons & Messages'}
             </h2>
             {meta && (
               <span className="text-body-xs text-neutral-500 font-medium">
@@ -249,14 +250,14 @@ export const SermonsPage: React.FC = () => {
               {sermons.map((sermon) => (
                 <Link
                   key={sermon.id}
-                  to={`/sermons/${sermon.slug}`}
+                  to={`/sermons/${sermon.id}`}
                   className="group bg-white rounded-2xl border border-neutral-200 overflow-hidden hover:shadow-lg hover:border-neutral-300 transition-all duration-200 flex flex-col justify-between"
                 >
                   <div>
                     {/* Card Media Preview */}
                     <div className="aspect-video bg-neutral-900 relative overflow-hidden">
                       {sermon.thumbnail ? (
-                        <img src={sermon.thumbnail} alt={sermon.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                        <img src={getImageUrl(sermon.thumbnail)} alt={sermon.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-neutral-800 to-neutral-900">
                           <Video className="w-10 h-10 text-neutral-600" />

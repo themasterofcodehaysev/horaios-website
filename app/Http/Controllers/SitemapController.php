@@ -141,7 +141,7 @@ class SitemapController extends Controller
                 ->get()
                 ->map(function ($post) {
                     return [
-                        'loc' => route('blog.show', $post->slug),
+                        'loc' => route('blog.show', $post->id),
                         'lastmod' => $post->updated_at->toIso8601String(),
                         'changefreq' => 'weekly',
                         'priority' => '0.8',

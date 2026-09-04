@@ -73,10 +73,6 @@ class User extends Authenticatable
         return $this->hasMany(AuditLog::class);
     }
 
-    public function media(): HasMany
-    {
-        return $this->hasMany(Media::class, 'uploaded_by');
-    }
 
     public function hasRole(string $roleName): bool
     {

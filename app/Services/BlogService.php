@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\BlogPost;
 use App\Models\User;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Str;
 
 class BlogService
@@ -23,9 +23,6 @@ class BlogService
                 });
             })
             ->when(!empty($filters['category_id']), fn($q) => $q->where('category_id', $filters['category_id']))
-            ->when(!empty($filters['category_slug']), function ($q) use ($filters) {
-                $q->whereHas('category', fn($catQ) => $catQ->where('slug', $filters['category_slug']));
-            })
             ->when(isset($filters['featured']) && $filters['featured'] !== '', fn($q) => $q->where('featured', filter_var($filters['featured'], FILTER_VALIDATE_BOOLEAN)))
             ->orderBy('featured', 'desc')
             ->orderBy('published_at', 'desc')
@@ -59,10 +56,6 @@ class BlogService
         $data['created_by'] = $actingUser?->id;
         $data['updated_by'] = $actingUser?->id;
 
-        if (empty($data['slug'])) {
-            $data['slug'] = BlogPost::generateUniqueSlug($data['title']);
-        }
-
         if (($data['status'] ?? 'draft') === 'published' && empty($data['published_at'])) {
             $data['published_at'] = now();
         }
@@ -74,7 +67,7 @@ class BlogService
             'BlogPost',
             (string) $post->id,
             null,
-            $post->only(['id', 'title', 'slug', 'status', 'featured']),
+            $post->only(['id', 'title', 'status', 'featured']),
             $actingUser?->id
         );
 
@@ -83,12 +76,8 @@ class BlogService
 
     public function updatePost(BlogPost $post, array $data, ?User $actingUser = null): BlogPost
     {
-        $oldValues = $post->only(['title', 'slug', 'category_id', 'status', 'featured']);
+        $oldValues = $post->only(['title', 'category_id', 'status', 'featured']);
         $data['updated_by'] = $actingUser?->id;
-
-        if (!empty($data['title']) && empty($data['slug']) && $data['title'] !== $post->title) {
-            $data['slug'] = BlogPost::generateUniqueSlug($data['title'], $post->id);
-        }
 
         if (isset($data['status']) && $data['status'] === 'published' && empty($post->published_at) && empty($data['published_at'])) {
             $data['published_at'] = now();
@@ -101,7 +90,7 @@ class BlogService
             'BlogPost',
             (string) $post->id,
             $oldValues,
-            $post->only(['title', 'slug', 'category_id', 'status', 'featured']),
+            $post->only(['title', 'category_id', 'status', 'featured']),
             $actingUser?->id
         );
 
@@ -114,7 +103,7 @@ class BlogService
             'delete',
             'BlogPost',
             (string) $post->id,
-            $post->only(['title', 'slug', 'status']),
+            $post->only(['title', 'status']),
             null,
             $actingUser?->id
         );
@@ -175,12 +164,10 @@ class BlogService
     public function duplicatePost(BlogPost $post, ?User $actingUser = null): BlogPost
     {
         $newTitle = $post->title . ' (Copy)';
-        $newSlug = BlogPost::generateUniqueSlug($newTitle);
 
         $duplicate = BlogPost::create([
             'uuid'           => (string) Str::uuid(),
             'title'          => $newTitle,
-            'slug'           => $newSlug,
             'excerpt'        => $post->excerpt,
             'content'        => $post->content,
             'featured_image' => $post->featured_image,

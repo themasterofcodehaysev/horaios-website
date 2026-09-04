@@ -18,6 +18,7 @@ export default function UserEditPage() {
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
+    display_name: '',
     email: '',
     phone: '',
     password: '',
@@ -28,6 +29,7 @@ export default function UserEditPage() {
   
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const [isCustomDisplayName, setIsCustomDisplayName] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,9 +40,17 @@ export default function UserEditPage() {
         ]);
         
         const userData = userRes;
+        const initialFirst = userData.first_name || '';
+        const initialLast = userData.last_name || '';
+        const initialDisplay = userData.display_name || '';
+        const defaultCombined = `${initialFirst} ${initialLast}`.trim();
+        
+        setIsCustomDisplayName(Boolean(initialDisplay && initialDisplay !== defaultCombined));
+
         setFormData({
-          first_name: userData.first_name || '',
-          last_name: userData.last_name || '',
+          first_name: initialFirst,
+          last_name: initialLast,
+          display_name: initialDisplay,
           email: userData.email || '',
           phone: userData.phone || '',
           password: '',
@@ -80,9 +90,28 @@ export default function UserEditPage() {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    if (errors[e.target.name]) {
-      setErrors({ ...errors, [e.target.name]: '' });
+    const { name, value } = e.target;
+    
+    if (name === 'display_name') {
+      const defaultCombined = `${formData.first_name} ${formData.last_name}`.trim();
+      setIsCustomDisplayName(value.trim().length > 0 && value.trim() !== defaultCombined);
+      setFormData(prev => ({ ...prev, display_name: value }));
+    } else if (name === 'first_name' || name === 'last_name') {
+      setFormData(prev => {
+        const nextFirst = name === 'first_name' ? value : prev.first_name;
+        const nextLast = name === 'last_name' ? value : prev.last_name;
+        return {
+          ...prev,
+          [name]: value,
+          display_name: !isCustomDisplayName ? `${nextFirst} ${nextLast}`.trim() : prev.display_name
+        };
+      });
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
+
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
     }
   };
 
@@ -190,6 +219,19 @@ export default function UserEditPage() {
                 className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-primary-navy focus:border-transparent outline-none transition-all ${errors.last_name ? 'border-red-500' : 'border-gray-200'}`}
               />
               {errors.last_name && <p className="text-red-500 text-xs mt-1">{errors.last_name}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Display Name</label>
+              <input
+                type="text"
+                name="display_name"
+                placeholder="Leave blank to use First + Last name"
+                value={formData.display_name}
+                onChange={handleChange}
+                className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-primary-navy focus:border-transparent outline-none transition-all ${errors.display_name ? 'border-red-500' : 'border-gray-200'}`}
+              />
+              {errors.display_name && <p className="text-red-500 text-xs mt-1">{errors.display_name}</p>}
             </div>
 
             <div>

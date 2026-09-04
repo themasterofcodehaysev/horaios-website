@@ -6,9 +6,10 @@ import { Input } from '../components/ui/Input';
 import { Alert } from '../components/ui/Alert';
 import { Send, CheckCircle, AlertTriangle } from 'lucide-react';
 import { contactService } from '../services/publicContent.service';
-import { CHURCH_INFO } from '../constants';
+import { useSiteSettings } from '../context/SiteSettingsContext';
 
 export const ContactPage: React.FC = () => {
+  const { settings } = useSiteSettings();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -151,38 +152,44 @@ export const ContactPage: React.FC = () => {
               </h2>
 
               <div className="space-y-8">
-                <div>
-                  <h4 className="text-h6 font-semibold text-neutral-900 mb-3">
-                    📍 Address
-                  </h4>
-                  <p className="text-body-base text-neutral-700">
-                    Phnom Penh, Cambodia
-                  </p>
-                </div>
+                {settings.address && (
+                  <div>
+                    <h4 className="text-h6 font-semibold text-neutral-900 mb-3">
+                      📍 Address
+                    </h4>
+                    <p className="text-body-base text-neutral-700">
+                      {settings.address}
+                    </p>
+                  </div>
+                )}
 
-                <div>
-                  <h4 className="text-h6 font-semibold text-neutral-900 mb-3">
-                    📞 Phone
-                  </h4>
-                  <a
-                    href="tel:+"
-                    className="text-body-base text-primary-red hover:text-primary-dark-red font-medium"
-                  >
-                    +855 (0) 23 XXX XXXX
-                  </a>
-                </div>
+                {settings.phone && (
+                  <div>
+                    <h4 className="text-h6 font-semibold text-neutral-900 mb-3">
+                      📞 Phone
+                    </h4>
+                    <a
+                      href={`tel:${settings.phone.replace(/[^0-9+]/g, '')}`}
+                      className="text-body-base text-primary-red hover:text-primary-dark-red font-medium"
+                    >
+                      {settings.phone}
+                    </a>
+                  </div>
+                )}
 
-                <div>
-                  <h4 className="text-h6 font-semibold text-neutral-900 mb-3">
-                    ✉️ Email
-                  </h4>
-                  <a
-                    href="mailto:info@horaiosbaptist.org"
-                    className="text-body-base text-primary-red hover:text-primary-dark-red font-medium"
-                  >
-                    info@horaiosbaptist.org
-                  </a>
-                </div>
+                {settings.email && (
+                  <div>
+                    <h4 className="text-h6 font-semibold text-neutral-900 mb-3">
+                      ✉️ Email
+                    </h4>
+                    <a
+                      href={`mailto:${settings.email}`}
+                      className="text-body-base text-primary-red hover:text-primary-dark-red font-medium"
+                    >
+                      {settings.email}
+                    </a>
+                  </div>
+                )}
 
                 <div>
                   <h4 className="text-h6 font-semibold text-neutral-900 mb-3">
@@ -195,32 +202,6 @@ export const ContactPage: React.FC = () => {
                     <span className="font-medium">Saturday - Sunday:</span> Available during services
                   </p>
                 </div>
-
-                <div>
-                  <h4 className="text-h6 font-semibold text-neutral-900 mb-3">
-                    🌐 Departments
-                  </h4>
-                  <ul className="space-y-2">
-                    <li>
-                      <span className="font-medium text-neutral-900">Pastoral:</span>{' '}
-                      <a href="mailto:" className="text-primary-red hover:text-primary-dark-red">
-                        pastoral@horaiosbaptist.org
-                      </a>
-                    </li>
-                    <li>
-                      <span className="font-medium text-neutral-900">Worship:</span>{' '}
-                      <a href="mailto:" className="text-primary-red hover:text-primary-dark-red">
-                        worship@horaiosbaptist.org
-                      </a>
-                    </li>
-                    <li>
-                      <span className="font-medium text-neutral-900">Youth:</span>{' '}
-                      <a href="mailto:" className="text-primary-red hover:text-primary-dark-red">
-                        youth@horaiosbaptist.org
-                      </a>
-                    </li>
-                  </ul>
-                </div>
               </div>
             </div>
           </div>
@@ -228,36 +209,66 @@ export const ContactPage: React.FC = () => {
       </section>
 
       {/* Connect */}
-      <section className="py-20 bg-neutral-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-h3 font-semibold text-neutral-900 mb-6">
-            Other Ways to Connect
-          </h2>
+      {(settings.facebook || settings.youtube || settings.telegram || settings.instagram) && (
+        <section className="py-20 bg-neutral-50">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 className="text-h3 font-semibold text-neutral-900 mb-6">
+              Other Ways to Connect
+            </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
-            <a
-              href={CHURCH_INFO.socialMedia.facebook}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex"
-            >
-              <Button variant="default" fullWidth>
-                Follow on Facebook
-              </Button>
-            </a>
-            <a
-              href={CHURCH_INFO.socialMedia.youtube}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex"
-            >
-              <Button variant="default" fullWidth>
-                Subscribe on YouTube
-              </Button>
-            </a>
+            <div className="flex flex-wrap justify-center gap-4 max-w-2xl mx-auto">
+              {settings.facebook && (
+                <a
+                  href={settings.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex"
+                >
+                  <Button variant="default">
+                    Follow on Facebook
+                  </Button>
+                </a>
+              )}
+              {settings.youtube && (
+                <a
+                  href={settings.youtube}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex"
+                >
+                  <Button variant="default">
+                    Subscribe on YouTube
+                  </Button>
+                </a>
+              )}
+              {settings.telegram && (
+                <a
+                  href={settings.telegram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex"
+                >
+                  <Button variant="default">
+                    Join Telegram Channel
+                  </Button>
+                </a>
+              )}
+              {settings.instagram && (
+                <a
+                  href={settings.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex"
+                >
+                  <Button variant="default">
+                    Follow on Instagram
+                  </Button>
+                </a>
+              )}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </Layout>
   );
 };

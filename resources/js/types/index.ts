@@ -177,6 +177,7 @@ export interface BlogPostPublic {
 
 export interface BlogFilters {
   search?: string;
+  category_id?: number | string;
   category_slug?: string;
   featured?: boolean | string;
   page?: number;
@@ -231,6 +232,7 @@ export interface EventPublic {
 
 export interface EventFilters {
   search?: string;
+  category_id?: number | string;
   category_slug?: string;
   featured?: boolean | string;
   start_date_from?: string;
@@ -283,6 +285,7 @@ export interface MinistryPublic {
 
 export interface MinistryFilters {
   search?: string;
+  category_id?: number | string;
   category_slug?: string;
   featured?: boolean | string;
   page?: number;

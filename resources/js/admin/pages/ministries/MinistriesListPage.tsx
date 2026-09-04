@@ -6,9 +6,11 @@ import {
 } from 'lucide-react';
 import { ministryService } from '../../services/ministry.service';
 import type { MinistryItem, MinistryCategory, PaginatedResponse, MinistryFilters } from '../../types';
+import { useToast } from '../../hooks/useToast';
 
 const MinistriesListPage: React.FC = () => {
   const navigate = useNavigate();
+  const { addToast } = useToast();
   const [ministries, setMinistries] = useState<MinistryItem[]>([]);
   const [categories, setCategories] = useState<MinistryCategory[]>([]);
   const [meta, setMeta] = useState<PaginatedResponse<MinistryItem>['meta'] | null>(null);
@@ -56,8 +58,17 @@ const MinistriesListPage: React.FC = () => {
     try {
       const updated = await ministryService.togglePublishMinistry(m.id);
       setMinistries(prev => prev.map(x => x.id === m.id ? updated : x));
+      addToast({
+        type: 'success',
+        title: updated.status === 'published' ? 'Ministry Published' : 'Ministry Set to Draft',
+        message: `"${m.name}" is now ${updated.status}.`,
+      });
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to toggle status');
+      addToast({
+        type: 'error',
+        title: 'Failed to update status',
+        message: err?.response?.data?.message || 'Please try again.',
+      });
     }
   };
 
@@ -65,17 +76,35 @@ const MinistriesListPage: React.FC = () => {
     try {
       const updated = await ministryService.toggleFeaturedMinistry(m.id);
       setMinistries(prev => prev.map(x => x.id === m.id ? updated : x));
+      addToast({
+        type: 'success',
+        title: updated.featured ? 'Ministry Featured' : 'Ministry Unfeatured',
+        message: `"${m.name}" is now ${updated.featured ? 'featured' : 'unfeatured'}.`,
+      });
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to toggle featured state');
+      addToast({
+        type: 'error',
+        title: 'Failed to update ministry',
+        message: err?.response?.data?.message || 'Failed to toggle featured state',
+      });
     }
   };
 
   const handleDuplicate = async (m: MinistryItem) => {
     try {
-      const duplicate = await ministryService.duplicateMinistry(m.id);
-      navigate(`/admin/ministries/${duplicate.id}/edit`);
+      await ministryService.duplicateMinistry(m.id);
+      fetchMinistries();
+      addToast({
+        type: 'success',
+        title: 'Ministry Duplicated',
+        message: `A draft copy of "${m.name}" has been created.`,
+      });
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to duplicate ministry');
+      addToast({
+        type: 'error',
+        title: 'Failed to duplicate ministry',
+        message: err?.response?.data?.message || 'Please try again.',
+      });
     }
   };
 
@@ -84,20 +113,39 @@ const MinistriesListPage: React.FC = () => {
       const updated = await ministryService.reorderMinistry(m.id, reorderValue);
       setMinistries(prev => prev.map(x => x.id === m.id ? updated : x));
       setReorderId(null);
+      addToast({
+        type: 'success',
+        title: 'Order Updated',
+        message: `Display order for "${m.name}" set to ${reorderValue}.`,
+      });
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to reorder ministry');
+      addToast({
+        type: 'error',
+        title: 'Failed to reorder ministry',
+        message: err?.response?.data?.message || 'Please try again.',
+      });
     }
   };
 
   const handleDelete = async () => {
     if (!deleteModal.ministry) return;
+    const name = deleteModal.ministry.name;
     try {
       setDeleting(true);
       await ministryService.deleteMinistry(deleteModal.ministry.id);
       setDeleteModal({ open: false, ministry: null });
       fetchMinistries();
+      addToast({
+        type: 'success',
+        title: 'Ministry Deleted',
+        message: `"${name}" has been deleted.`,
+      });
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to delete ministry');
+      addToast({
+        type: 'error',
+        title: 'Failed to delete ministry',
+        message: err?.response?.data?.message || 'Please try again.',
+      });
     } finally {
       setDeleting(false);
     }
@@ -315,7 +363,7 @@ const MinistriesListPage: React.FC = () => {
 
                   <div className="flex items-center justify-end gap-1">
                     <a
-                      href={`/ministries/${m.slug}`}
+                      href={`/ministries/${m.id}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="p-1.5 text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 rounded-lg transition-colors"

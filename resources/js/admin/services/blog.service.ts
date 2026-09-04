@@ -54,6 +54,11 @@ export const blogService = {
     return data;
   },
 
+  async getAdminBlog(idOrSlug: string | number): Promise<BlogItem> {
+    const { data } = await api.get<ApiResponse<BlogItem>>(`/admin/blogs/${idOrSlug}`);
+    return data.data;
+  },
+
   async getBlog(idOrSlug: string | number): Promise<BlogItem> {
     const { data } = await api.get<ApiResponse<BlogItem>>(`/blogs/${idOrSlug}`);
     return data.data;

@@ -54,20 +54,6 @@ class CacheService
         });
     }
 
-    public function rememberMediaStats()
-    {
-        return Cache::remember('media_stats', $this->cacheTimes['medium'], function () {
-            return \App\Models\Media::selectRaw('
-                COUNT(*) as total_files,
-                SUM(file_size) as total_size,
-                COUNT(CASE WHEN mime_type LIKE "image%" THEN 1 END) as image_count,
-                COUNT(CASE WHEN mime_type LIKE "audio%" THEN 1 END) as audio_count,
-                COUNT(CASE WHEN mime_type LIKE "video%" THEN 1 END) as video_count,
-                COUNT(CASE WHEN mime_type LIKE "application/pdf" THEN 1 END) as document_count
-            ')->first();
-        });
-    }
-
     public function rememberPrayerRequestStats()
     {
         return Cache::remember('prayer_request_stats', $this->cacheTimes['short'], function () {
@@ -113,11 +99,6 @@ class CacheService
     {
         Cache::forget('church_settings');
         Cache::forget('public_church_settings');
-    }
-
-    public function clearMediaStatsCache()
-    {
-        Cache::forget('media_stats');
     }
 
     public function clearAllCaches()

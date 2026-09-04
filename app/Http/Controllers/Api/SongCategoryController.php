@@ -36,7 +36,6 @@ class SongCategoryController extends BaseApiController
 
         $validated = $request->validate([
             'name'          => ['required', 'string', 'max:255'],
-            'slug'          => ['nullable', 'string', 'max:255', 'unique:song_categories,slug'],
             'description'   => ['nullable', 'string'],
             'display_order' => ['nullable', 'integer'],
             'status'        => ['nullable', 'in:active,inactive'],
@@ -67,7 +66,6 @@ class SongCategoryController extends BaseApiController
 
         $validated = $request->validate([
             'name'          => ['sometimes', 'required', 'string', 'max:255'],
-            'slug'          => ['nullable', 'string', 'max:255', "unique:song_categories,slug,{$id}"],
             'description'   => ['nullable', 'string'],
             'display_order' => ['nullable', 'integer'],
             'status'        => ['nullable', 'in:active,inactive'],

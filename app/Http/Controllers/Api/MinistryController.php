@@ -22,36 +22,44 @@ class MinistryController extends BaseApiController
         $ministries = $this->ministryService->getPublicMinistries([
             'search'        => $request->input('search'),
             'category_id'   => $request->input('category_id'),
-            'category_slug' => $request->input('category_slug'),
             'featured'      => $request->input('featured'),
         ], $request->input('per_page', 12));
 
         return $this->paginated(MinistryResource::collection($ministries), 'Published ministries retrieved');
     }
 
-    public function show(string $identifier): JsonResponse
+    public function show(Request $request, string $identifier): JsonResponse
     {
         $ministry = Ministry::with(['category', 'creator', 'updater'])
             ->where(function ($q) use ($identifier) {
-                $q->where('slug', $identifier)
-                  ->orWhere('uuid', $identifier)
-                  ->orWhere('id', $identifier);
+                $q->where('id', $identifier)
+                  ->orWhere('uuid', $identifier);
             })
             ->firstOrFail();
 
         if ($ministry->status !== 'published') {
-            $this->authorize('view', $ministry);
+            $user = $request->user() ?: auth('sanctum')->user();
+            if (! $user || ! $user->can('view', $ministry)) {
+                throw new \Illuminate\Auth\Access\AuthorizationException();
+            }
         }
 
         return $this->success(new MinistryResource($ministry), 'Ministry retrieved');
     }
 
+    public function adminShow(int $id): JsonResponse
+    {
+        $ministry = Ministry::with(['category', 'creator', 'updater'])->findOrFail($id);
+        $this->authorize('update', $ministry);
+
+        return $this->success(new MinistryResource($ministry), 'Admin ministry retrieved');
+    }
+
     public function related(string $identifier): JsonResponse
     {
         $ministry = Ministry::with('category')
-            ->where('slug', $identifier)
+            ->where('id', $identifier)
             ->orWhere('uuid', $identifier)
-            ->orWhere('id', $identifier)
             ->firstOrFail();
 
         $related = $this->ministryService->getRelatedMinistries($ministry, 5);

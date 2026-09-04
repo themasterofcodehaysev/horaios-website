@@ -23,37 +23,40 @@ import {
   ResetPasswordPage,
 } from './pages';
 import AdminRouter from './admin/AdminRouter';
+import { SiteSettingsProvider } from './context/SiteSettingsContext';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/ministries" element={<MinistriesPage />} />
-        <Route path="/ministries/:slug" element={<MinistryDetailPage />} />
-        <Route path="/sermons" element={<SermonsPage />} />
-        <Route path="/sermons/:slug" element={<SermonDetailPage />} />
-        <Route path="/songs" element={<SongsPage />} />
-        <Route path="/songs/:slug" element={<SongDetailPage />} />
-        <Route path="/events" element={<EventsPage />} />
-        <Route path="/events/:slug" element={<EventDetailPage />} />
-        <Route path="/news" element={<NewsPage />} />
-        <Route path="/news/:slug" element={<BlogDetailPage />} />
-        <Route path="/visit" element={<VisitPage />} />
-        <Route path="/give" element={<GivePage />} />
-        <Route path="/contact" element={<ContactPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
-        
-        {/* Admin Dashboard Routes */}
-        <Route path="/admin/*" element={<AdminRouter />} />
+    <SiteSettingsProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/ministries" element={<MinistriesPage />} />
+          <Route path="/ministries/:id" element={<MinistryDetailPage />} />
+          <Route path="/sermons" element={<SermonsPage />} />
+          <Route path="/sermons/:id" element={<SermonDetailPage />} />
+          <Route path="/songs" element={<SongsPage />} />
+          <Route path="/songs/:id" element={<SongDetailPage />} />
+          <Route path="/events" element={<EventsPage />} />
+          <Route path="/events/:id" element={<EventDetailPage />} />
+          <Route path="/news" element={<NewsPage />} />
+          <Route path="/news/:id" element={<BlogDetailPage />} />
+          <Route path="/visit" element={<VisitPage />} />
+          <Route path="/give" element={<GivePage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+          
+          {/* Admin Dashboard Routes */}
+          <Route path="/admin/*" element={<AdminRouter />} />
 
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </BrowserRouter>
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </BrowserRouter>
+    </SiteSettingsProvider>
   );
 }
 

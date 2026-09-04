@@ -24,7 +24,6 @@ class CreateMinistryRequest extends FormRequest
     {
         return [
             'name'           => ['required', 'string', 'max:255'],
-            'slug'           => ['nullable', 'string', 'max:255', 'unique:ministries,slug'],
             'description'    => ['required', 'string'],
             'leader'         => ['nullable', 'string', 'max:255'],
             'email'          => ['nullable', 'email', 'max:255'],
@@ -38,10 +37,6 @@ class CreateMinistryRequest extends FormRequest
             'status'         => ['nullable', 'in:draft,published'],
             'display_order'  => ['nullable', 'integer', 'min:0'],
             'published_at'   => ['nullable', 'date'],
-            'seo_title'      => ['nullable', 'string', 'max:255'],
-            'seo_description' => ['nullable', 'string', 'max:500'],
-            'seo_image'      => ['nullable', 'string', 'max:500'],
-            'canonical_url'  => ['nullable', 'url', 'max:500'],
         ];
     }
 

@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ToastProvider, useToast } from './hooks/useToast';
+import { ConfirmProvider } from './context/ConfirmContext';
 import { AdminLayout } from './components/layout/AdminLayout';
 import { ProtectedRoute } from './components/layout/ProtectedRoute';
 import { SkeletonLoader } from './components/ui/SkeletonLoader';
@@ -53,9 +54,6 @@ const PrayerRequestsListPage = lazy(() => import('./pages/prayer/PrayerRequestsL
 // Contact Messages Module Admin Pages
 const ContactMessagesListPage = lazy(() => import('./pages/contact/ContactMessagesListPage'));
 
-// Media Library Module Admin Pages
-const MediaLibraryPage = lazy(() => import('./pages/media/MediaLibraryPage'));
-
 // Notification Center Admin Pages
 const NotificationsPage = lazy(() => import('./pages/notifications/NotificationsPage'));
 
@@ -94,7 +92,8 @@ const AdminLayoutWrapper: React.FC = () => {
 export const AdminRouter: React.FC = () => {
   return (
     <ToastProvider>
-    <AuthProvider>
+      <ConfirmProvider>
+        <AuthProvider>
       <Routes>
         <Route element={<ProtectedRoute />}>
           <Route element={<AdminLayoutWrapper />}>
@@ -231,10 +230,6 @@ export const AdminRouter: React.FC = () => {
               <Route index element={<ContactMessagesListPage />} />
             </Route>
 
-            {/* Media Library Module */}
-            <Route path="media" element={<ProtectedRoute permission="media.view" />}>
-              <Route index element={<MediaLibraryPage />} />
-            </Route>
 
             {/* Notification Center */}
             <Route path="notifications" element={<ProtectedRoute />}>
@@ -304,7 +299,8 @@ export const AdminRouter: React.FC = () => {
           </Route>
         </Route>
       </Routes>
-    </AuthProvider>
+        </AuthProvider>
+      </ConfirmProvider>
     </ToastProvider>
   );
 };

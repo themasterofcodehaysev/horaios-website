@@ -20,13 +20,6 @@ return new class extends Migration
             $table->index(['status', 'created_at'], 'idx_contact_status_created');
         });
 
-        // Media indexes
-        Schema::table('media', function (Blueprint $table) {
-            $table->index(['mime_type', 'uploaded_by'], 'idx_media_type_uploader');
-            $table->index('created_at', 'idx_media_created');
-            $table->index(['mime_type', 'created_at'], 'idx_media_type_created');
-        });
-
         // Notifications indexes
         Schema::table('notifications', function (Blueprint $table) {
             $table->index(['user_id', 'is_read', 'created_at'], 'idx_notif_user_read_created');
@@ -56,7 +49,6 @@ return new class extends Migration
         Schema::table('blog_posts', function (Blueprint $table) {
             $table->index(['status', 'created_at'], 'idx_blog_status_created');
             $table->index(['featured', 'created_at'], 'idx_blog_featured_created');
-            $table->index('slug', 'idx_blog_slug');
         });
 
         // Sermons indexes
@@ -92,13 +84,6 @@ return new class extends Migration
             $table->dropIndex('idx_contact_status_created');
         });
 
-        // Media indexes
-        Schema::table('media', function (Blueprint $table) {
-            $table->dropIndex('idx_media_type_uploader');
-            $table->dropIndex('idx_media_created');
-            $table->dropIndex('idx_media_type_created');
-        });
-
         // Notifications indexes
         Schema::table('notifications', function (Blueprint $table) {
             $table->dropIndex('idx_notif_user_read_created');
@@ -128,7 +113,6 @@ return new class extends Migration
         Schema::table('blog_posts', function (Blueprint $table) {
             $table->dropIndex('idx_blog_status_created');
             $table->dropIndex('idx_blog_featured_created');
-            $table->dropIndex('idx_blog_slug');
         });
 
         // Sermons indexes

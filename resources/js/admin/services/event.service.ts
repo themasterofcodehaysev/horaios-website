@@ -58,6 +58,11 @@ export const eventService = {
     return data;
   },
 
+  async getAdminEvent(idOrSlug: string | number): Promise<EventItem> {
+    const { data } = await api.get<ApiResponse<EventItem>>(`/admin/events/${idOrSlug}`);
+    return data.data;
+  },
+
   async getEvent(idOrSlug: string | number): Promise<EventItem> {
     const { data } = await api.get<ApiResponse<EventItem>>(`/events/${idOrSlug}`);
     return data.data;

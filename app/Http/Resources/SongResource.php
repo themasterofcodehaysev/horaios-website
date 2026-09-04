@@ -13,7 +13,6 @@ class SongResource extends JsonResource
             'id'            => $this->id,
             'uuid'          => $this->uuid,
             'title'         => $this->title,
-            'slug'          => $this->slug,
             'artist'        => $this->artist,
             'composer'      => $this->composer,
             'category_id'   => $this->category_id,

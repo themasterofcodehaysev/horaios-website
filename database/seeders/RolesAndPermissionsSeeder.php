@@ -39,7 +39,6 @@ class RolesAndPermissionsSeeder extends Seeder
             ['name' => 'contact_messages.delete', 'display_name' => 'Delete Contact Messages', 'group' => 'contact_messages'],
 
             // Foundation management
-            ['name' => 'media.manage', 'display_name' => 'Manage Media', 'group' => 'media'],
             ['name' => 'settings.manage', 'display_name' => 'Manage Settings', 'group' => 'settings'],
             ['name' => 'audit.view', 'display_name' => 'View Audit Logs', 'group' => 'audit'],
         ];

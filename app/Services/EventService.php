@@ -4,15 +4,16 @@ namespace App\Services;
 
 use App\Models\Event;
 use App\Models\User;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Carbon\Carbon;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Str;
 
 class EventService
 {
     public function getPublicEvents(array $filters = [], int $perPage = 12): LengthAwarePaginator
     {
-        $today = now()->toDateString();
-        $now = now();
+        $today = Carbon::today()->toDateString();
+        $now = Carbon::now();
 
         $query = Event::with(['category'])
             ->where('status', 'published')
@@ -26,9 +27,6 @@ class EventService
                 });
             })
             ->when(!empty($filters['category_id']), fn($q) => $q->where('category_id', $filters['category_id']))
-            ->when(!empty($filters['category_slug']), function ($q) use ($filters) {
-                $q->whereHas('category', fn($catQ) => $catQ->where('slug', $filters['category_slug']));
-            })
             ->when(isset($filters['featured']) && $filters['featured'] !== '', fn($q) => $q->where('featured', filter_var($filters['featured'], FILTER_VALIDATE_BOOLEAN)))
             ->when(!empty($filters['start_date_from']), fn($q) => $q->whereDate('start_date', '>=', $filters['start_date_from']))
             ->when(!empty($filters['start_date_to']), fn($q) => $q->whereDate('start_date', '<=', $filters['start_date_to']))
@@ -86,10 +84,6 @@ class EventService
         $data['created_by'] = $actingUser?->id;
         $data['updated_by'] = $actingUser?->id;
 
-        if (empty($data['slug'])) {
-            $data['slug'] = Event::generateUniqueSlug($data['title']);
-        }
-
         if (($data['status'] ?? 'draft') === 'published' && empty($data['published_at'])) {
             $data['published_at'] = now();
         }
@@ -101,7 +95,7 @@ class EventService
             'Event',
             (string) $event->id,
             null,
-            $event->only(['id', 'title', 'slug', 'status', 'featured']),
+            $event->only(['id', 'title', 'status', 'featured']),
             $actingUser?->id
         );
 
@@ -110,12 +104,8 @@ class EventService
 
     public function updateEvent(Event $event, array $data, ?User $actingUser = null): Event
     {
-        $oldValues = $event->only(['title', 'slug', 'category_id', 'status', 'featured', 'start_date', 'end_date']);
+        $oldValues = $event->only(['title', 'category_id', 'status', 'featured', 'start_date', 'end_date']);
         $data['updated_by'] = $actingUser?->id;
-
-        if (!empty($data['title']) && empty($data['slug']) && $data['title'] !== $event->title) {
-            $data['slug'] = Event::generateUniqueSlug($data['title'], $event->id);
-        }
 
         if (isset($data['status']) && $data['status'] === 'published' && empty($event->published_at) && empty($data['published_at'])) {
             $data['published_at'] = now();
@@ -128,7 +118,7 @@ class EventService
             'Event',
             (string) $event->id,
             $oldValues,
-            $event->only(['title', 'slug', 'category_id', 'status', 'featured', 'start_date', 'end_date']),
+            $event->only(['title', 'category_id', 'status', 'featured', 'start_date', 'end_date']),
             $actingUser?->id
         );
 
@@ -141,7 +131,7 @@ class EventService
             'delete',
             'Event',
             (string) $event->id,
-            $event->only(['title', 'slug', 'status']),
+            $event->only(['title', 'status']),
             null,
             $actingUser?->id
         );
@@ -202,12 +192,10 @@ class EventService
     public function duplicateEvent(Event $event, ?User $actingUser = null): Event
     {
         $newTitle = $event->title . ' (Copy)';
-        $newSlug = Event::generateUniqueSlug($newTitle);
 
         $duplicate = Event::create([
             'uuid'                => (string) Str::uuid(),
             'title'               => $newTitle,
-            'slug'                => $newSlug,
             'description'         => $event->description,
             'featured_image'      => $event->featured_image,
             'category_id'         => $event->category_id,
@@ -240,6 +228,7 @@ class EventService
     public function cancelEvent(Event $event, ?User $actingUser = null): Event
     {
         $oldStatus = $event->status;
+
         $event->update([
             'status'     => 'cancelled',
             'updated_by' => $actingUser?->id,

@@ -22,7 +22,6 @@ class EventController extends BaseApiController
         $events = $this->eventService->getPublicEvents([
             'search'          => $request->input('search'),
             'category_id'     => $request->input('category_id'),
-            'category_slug'   => $request->input('category_slug'),
             'featured'        => $request->input('featured'),
             'start_date_from' => $request->input('start_date_from'),
             'start_date_to'   => $request->input('start_date_to'),
@@ -32,29 +31,38 @@ class EventController extends BaseApiController
         return $this->paginated(EventResource::collection($events), 'Published events retrieved');
     }
 
-    public function show(string $identifier): JsonResponse
+    public function show(Request $request, string $identifier): JsonResponse
     {
         $event = Event::with(['category', 'creator', 'updater'])
             ->where(function ($q) use ($identifier) {
-                $q->where('slug', $identifier)
-                  ->orWhere('uuid', $identifier)
-                  ->orWhere('id', $identifier);
+                $q->where('id', $identifier)
+                  ->orWhere('uuid', $identifier);
             })
             ->firstOrFail();
 
         if ($event->status !== 'published') {
-            $this->authorize('view', $event);
+            $user = $request->user() ?: auth('sanctum')->user();
+            if (! $user || ! $user->can('view', $event)) {
+                throw new \Illuminate\Auth\Access\AuthorizationException();
+            }
         }
 
         return $this->success(new EventResource($event), 'Event retrieved');
     }
 
+    public function adminShow(int $id): JsonResponse
+    {
+        $event = Event::with(['category', 'creator', 'updater'])->findOrFail($id);
+        $this->authorize('update', $event);
+
+        return $this->success(new EventResource($event), 'Admin event retrieved');
+    }
+
     public function related(string $identifier): JsonResponse
     {
         $event = Event::with('category')
-            ->where('slug', $identifier)
+            ->where('id', $identifier)
             ->orWhere('uuid', $identifier)
-            ->orWhere('id', $identifier)
             ->firstOrFail();
 
         $related = $this->eventService->getRelatedEvents($event, 5);

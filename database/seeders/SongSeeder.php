@@ -29,7 +29,7 @@ class SongSeeder extends Seeder
         $createdCategories = [];
         foreach ($categories as $cat) {
             $createdCategories[$cat['name']] = SongCategory::firstOrCreate(
-                ['slug' => Str::slug($cat['name'])],
+                ['name' => $cat['name']],
                 [
                     'uuid' => (string) Str::uuid(),
                     'name' => $cat['name'],
@@ -100,7 +100,7 @@ class SongSeeder extends Seeder
         foreach ($sampleSongs as $i => $s) {
             $cat = $createdCategories[$s['category']] ?? null;
             Song::firstOrCreate(
-                ['slug' => Str::slug($s['title'])],
+                ['title' => $s['title']],
                 [
                     'uuid' => (string) Str::uuid(),
                     'title' => $s['title'],

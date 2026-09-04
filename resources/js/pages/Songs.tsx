@@ -27,7 +27,7 @@ export const SongsPage: React.FC = () => {
       setLoading(true);
       const res = await songService.getPublicSongs({
         search,
-        category_slug: selectedCategory || undefined,
+        category_id: selectedCategory ? Number(selectedCategory) : undefined,
         page,
         per_page: 12,
       });
@@ -105,9 +105,9 @@ export const SongsPage: React.FC = () => {
           {categories.map((cat) => (
             <button
               key={cat.id}
-              onClick={() => { setSelectedCategory(cat.slug); setPage(1); }}
+              onClick={() => { setSelectedCategory(String(cat.id)); setPage(1); }}
               className={`px-4 py-2 rounded-full text-body-sm font-medium transition-all whitespace-nowrap ${
-                selectedCategory === cat.slug ? 'bg-primary-red text-white shadow-md' : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
+                selectedCategory === String(cat.id) ? 'bg-primary-red text-white shadow-md' : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
               }`}
             >
               {cat.name}
@@ -147,7 +147,7 @@ export const SongsPage: React.FC = () => {
         <div>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-h4 font-bold text-neutral-900">
-              {selectedCategory ? `${categories.find(c => c.slug === selectedCategory)?.name || 'Category'} Songs` : 'All Worship Songs'}
+              {selectedCategory ? `${categories.find(c => String(c.id) === selectedCategory)?.name || 'Category'} Songs` : 'All Worship Songs'}
             </h2>
             {meta && (
               <span className="text-body-xs text-neutral-500 font-medium">

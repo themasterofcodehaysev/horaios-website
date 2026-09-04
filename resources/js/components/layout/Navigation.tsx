@@ -4,6 +4,7 @@ import { Menu, X, Search } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '../ui/Button';
 import { MobileMenu } from './MobileMenu';
+import { useSiteSettings } from '../../context/SiteSettingsContext';
 
 interface NavigationProps {
   onLinkClick?: (href: string) => void;
@@ -13,6 +14,7 @@ export const Navigation: React.FC<NavigationProps> = ({ onLinkClick }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
+  const { settings } = useSiteSettings();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -55,8 +57,8 @@ export const Navigation: React.FC<NavigationProps> = ({ onLinkClick }) => {
             {/* Logo */}
             <Link to="/" className="flex-shrink-0 flex items-center gap-3">
               <img
-                src="/images/logo.png"
-                alt="Horaios Baptist Church Logo"
+                src={settings.logo || '/images/logo.png'}
+                alt={`${settings.church_name} Logo`}
                 className="w-12 h-12 rounded-full object-contain drop-shadow-md"
               />
               <div className="hidden sm:block">
@@ -64,7 +66,7 @@ export const Navigation: React.FC<NavigationProps> = ({ onLinkClick }) => {
                   'text-body-base font-bold tracking-wide transition-colors',
                   isScrolled || location.pathname !== '/' ? 'text-neutral-900' : 'text-white'
                 )}>
-                  HORAIOS BAPTIST CHURCH
+                  {settings.church_name.toUpperCase()}
                 </p>
                 <p className={clsx(
                   'text-label-sm transition-colors tracking-widest uppercase font-semibold',

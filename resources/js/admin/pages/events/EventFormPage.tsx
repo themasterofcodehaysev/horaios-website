@@ -1,23 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Save, Loader2, RefreshCw, Sparkles, MapPin, Calendar } from 'lucide-react';
+import { ArrowLeft, Save, Loader2, Sparkles, MapPin, Calendar } from 'lucide-react';
 import MDEditor from '@uiw/react-md-editor';
 import { eventService } from '../../services/event.service';
 import type { EventCategory, CreateEventPayload } from '../../types';
+import ImageUpload from '../../components/ui/ImageUpload';
+import { useToast } from '../../hooks/useToast';
 
 const EventFormPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { addToast } = useToast();
   const isEdit = Boolean(id);
 
   const [categories, setCategories] = useState<EventCategory[]>([]);
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(isEdit);
-  const [autoSlug, setAutoSlug] = useState(!isEdit);
 
   const [formData, setFormData] = useState<CreateEventPayload>({
     title: '',
-    slug: '',
     description: '',
     featured_image: '',
     category_id: null,
@@ -32,10 +33,6 @@ const EventFormPage: React.FC = () => {
     featured: false,
     status: 'published',
     published_at: new Date().toISOString().slice(0, 16),
-    seo_title: '',
-    seo_description: '',
-    seo_image: '',
-    canonical_url: '',
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -43,14 +40,13 @@ const EventFormPage: React.FC = () => {
   useEffect(() => {
     const initData = async () => {
       try {
-        const catData = await eventService.getPublicEventCategories();
+        const catData = await eventService.getAdminEventCategories();
         setCategories(catData);
 
         if (isEdit && id) {
-          const ev = await eventService.getEvent(id);
+          const ev = await eventService.getAdminEvent(id);
           setFormData({
             title: ev.title,
-            slug: ev.slug,
             description: ev.description || '',
             featured_image: ev.featured_image || '',
             category_id: ev.category_id,
@@ -65,28 +61,27 @@ const EventFormPage: React.FC = () => {
             featured: ev.featured,
             status: ev.status,
             published_at: ev.published_at ? new Date(ev.published_at).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16),
-            seo_title: ev.seo_title || '',
-            seo_description: ev.seo_description || '',
-            seo_image: ev.seo_image || '',
-            canonical_url: ev.canonical_url || '',
           });
         }
       } catch (err: any) {
-        alert(err?.response?.data?.message || 'Failed to load event details');
+        addToast({
+          title: 'Error',
+          message: err?.response?.data?.message || 'Failed to load event details',
+          type: 'error',
+        });
         navigate('/admin/events');
       } finally {
         setFetching(false);
       }
     };
     initData();
-  }, [id, isEdit, navigate]);
+  }, [id, isEdit, navigate, addToast]);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTitle = e.target.value;
     setFormData(prev => ({
       ...prev,
       title: newTitle,
-      slug: autoSlug ? newTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') : prev.slug,
     }));
     if (errors.title) setErrors(prev => ({ ...prev, title: '' }));
   };
@@ -95,8 +90,25 @@ const EventFormPage: React.FC = () => {
     const newErrors: Record<string, string> = {};
     if (!formData.title.trim()) newErrors.title = 'Event title is required';
     if (!formData.start_date) newErrors.start_date = 'Start date is required';
+    if (formData.end_date && formData.start_date) {
+      if (formData.end_date < formData.start_date) {
+        newErrors.end_date = 'End date cannot be before start date';
+      } else if (formData.end_date === formData.start_date && formData.start_time && formData.end_time) {
+        if (formData.end_time <= formData.start_time) {
+          newErrors.end_time = 'End time must be after start time for same-day events';
+        }
+      }
+    }
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    if (Object.keys(newErrors).length > 0) {
+      addToast({
+        title: 'Validation Error',
+        message: Object.values(newErrors)[0],
+        type: 'error',
+      });
+      return false;
+    }
+    return true;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -110,9 +122,37 @@ const EventFormPage: React.FC = () => {
       } else {
         await eventService.createEvent(formData);
       }
+      addToast({
+        title: 'Success',
+        message: isEdit ? 'Event updated successfully' : 'Event created successfully',
+        type: 'success',
+      });
       navigate('/admin/events');
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to save event');
+      const serverErrors = err?.response?.data?.errors;
+      const message = err?.response?.data?.message || 'Failed to save event';
+
+      if (serverErrors && typeof serverErrors === 'object') {
+        const fieldErrors: Record<string, string> = {};
+        const errorList: string[] = [];
+        Object.entries(serverErrors).forEach(([field, msgs]: [string, any]) => {
+          const firstMsg = Array.isArray(msgs) ? msgs[0] : String(msgs);
+          fieldErrors[field] = firstMsg;
+          errorList.push(firstMsg);
+        });
+        setErrors(prev => ({ ...prev, ...fieldErrors }));
+        addToast({
+          title: 'Validation Error',
+          message: errorList[0] || message,
+          type: 'error',
+        });
+      } else {
+        addToast({
+          title: 'Error',
+          message,
+          type: 'error',
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -147,7 +187,7 @@ const EventFormPage: React.FC = () => {
               {isEdit ? 'Edit Event' : 'Create New Event'}
             </h1>
             <p className="text-body-xs text-neutral-500">
-              {isEdit ? 'Update event details, schedule, location, or status' : 'Schedule a new church event, conference, or gathering'}
+              {isEdit ? 'Update event schedule, location, and registration settings' : 'Schedule a new event, service, or gathering for the community'}
             </p>
           </div>
         </div>
@@ -162,7 +202,7 @@ const EventFormPage: React.FC = () => {
 
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Event Title <span className="text-red-500">*</span>
+                Title <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -174,37 +214,6 @@ const EventFormPage: React.FC = () => {
                 }`}
               />
               {errors.title && <p className="text-body-xs text-red-500 mt-1">{errors.title}</p>}
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <label className="block text-body-xs font-semibold text-neutral-700">
-                  URL Slug
-                </label>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setAutoSlug(true);
-                    setFormData(p => ({
-                      ...p,
-                      slug: p.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
-                    }));
-                  }}
-                  className="text-body-xs text-primary-red hover:underline flex items-center gap-1 font-medium"
-                >
-                  <RefreshCw className="w-3 h-3" /> Auto Generate
-                </button>
-              </div>
-              <input
-                type="text"
-                value={formData.slug || ''}
-                onChange={(e) => {
-                  setAutoSlug(false);
-                  setFormData({ ...formData, slug: e.target.value });
-                }}
-                placeholder="annual-church-conference-2026"
-                className="w-full px-3.5 py-2 border border-neutral-200 rounded-lg text-body-xs font-mono bg-neutral-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-              />
             </div>
           </div>
 
@@ -235,9 +244,16 @@ const EventFormPage: React.FC = () => {
                 <input
                   type="date"
                   value={formData.end_date || ''}
-                  onChange={(e) => setFormData({ ...formData, end_date: e.target.value || null })}
-                  className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm bg-white"
+                  min={formData.start_date || undefined}
+                  onChange={(e) => {
+                    setFormData({ ...formData, end_date: e.target.value || null });
+                    if (errors.end_date) setErrors(prev => ({ ...prev, end_date: '' }));
+                  }}
+                  className={`w-full px-3.5 py-2.5 border rounded-lg text-body-sm bg-white ${
+                    errors.end_date ? 'border-red-500' : 'border-neutral-200'
+                  }`}
                 />
+                {errors.end_date && <p className="text-body-xs text-red-500 mt-1">{errors.end_date}</p>}
               </div>
             </div>
 
@@ -249,7 +265,10 @@ const EventFormPage: React.FC = () => {
                 <input
                   type="time"
                   value={formData.start_time || ''}
-                  onChange={(e) => setFormData({ ...formData, start_time: e.target.value || null })}
+                  onChange={(e) => {
+                    setFormData({ ...formData, start_time: e.target.value || null });
+                    if (errors.end_time) setErrors(prev => ({ ...prev, end_time: '' }));
+                  }}
                   className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm bg-white"
                 />
               </div>
@@ -260,9 +279,15 @@ const EventFormPage: React.FC = () => {
                 <input
                   type="time"
                   value={formData.end_time || ''}
-                  onChange={(e) => setFormData({ ...formData, end_time: e.target.value || null })}
-                  className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm bg-white"
+                  onChange={(e) => {
+                    setFormData({ ...formData, end_time: e.target.value || null });
+                    if (errors.end_time) setErrors(prev => ({ ...prev, end_time: '' }));
+                  }}
+                  className={`w-full px-3.5 py-2.5 border rounded-lg text-body-sm bg-white ${
+                    errors.end_time ? 'border-red-500' : 'border-neutral-200'
+                  }`}
                 />
+                {errors.end_time && <p className="text-body-xs text-red-500 mt-1">{errors.end_time}</p>}
               </div>
             </div>
           </div>
@@ -287,15 +312,28 @@ const EventFormPage: React.FC = () => {
 
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Google Maps URL
+                Google Maps Embed URL
               </label>
               <input
-                type="url"
+                type="text"
                 value={formData.google_map_url || ''}
-                onChange={(e) => setFormData({ ...formData, google_map_url: e.target.value })}
-                placeholder="https://maps.google.com/..."
+                onChange={(e) => {
+                  let val = e.target.value.trim();
+                  // Auto-extract the src URL if the user pastes the full <iframe> embed code
+                  const srcMatch = val.match(/src="([^"]+)"/);
+                  if (srcMatch) {
+                    val = srcMatch[1];
+                  }
+                  setFormData({ ...formData, google_map_url: val });
+                }}
+                placeholder="https://www.google.com/maps/embed?pb=..."
                 className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm"
               />
+              <p className="text-body-xs text-neutral-400 mt-1">
+                Go to Google Maps → Share → Embed a map → copy only the{' '}
+                <code className="text-neutral-600 bg-neutral-100 px-1 rounded">src="..."</code>{' '}
+                URL inside the iframe code. You can also paste the full iframe code and it will be extracted automatically.
+              </p>
             </div>
           </div>
 
@@ -309,69 +347,6 @@ const EventFormPage: React.FC = () => {
                 onChange={(val) => setFormData({ ...formData, description: val || '' })}
                 height={350}
               />
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl border border-neutral-200 p-6 space-y-4 shadow-xs">
-            <h2 className="text-h6 text-neutral-900 font-semibold border-b border-neutral-100 pb-3">
-              SEO Meta Tags
-            </h2>
-
-            <div>
-              <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                SEO Title
-              </label>
-              <input
-                type="text"
-                value={formData.seo_title || ''}
-                onChange={(e) => setFormData({ ...formData, seo_title: e.target.value })}
-                placeholder="Custom title for search engines"
-                className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-              />
-            </div>
-
-            <div>
-              <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                SEO Description
-              </label>
-              <textarea
-                rows={3}
-                maxLength={300}
-                value={formData.seo_description || ''}
-                onChange={(e) => setFormData({ ...formData, seo_description: e.target.value })}
-                placeholder="Custom description for search engines..."
-                className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-              />
-              <span className="text-body-xs text-neutral-400 block text-right">
-                {(formData.seo_description || '').length}/300
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                  SEO Social Image URL
-                </label>
-                <input
-                  type="url"
-                  value={formData.seo_image || ''}
-                  onChange={(e) => setFormData({ ...formData, seo_image: e.target.value })}
-                  placeholder="https://example.com/og-image.jpg"
-                  className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                  Canonical URL
-                </label>
-                <input
-                  type="url"
-                  value={formData.canonical_url || ''}
-                  onChange={(e) => setFormData({ ...formData, canonical_url: e.target.value })}
-                  placeholder="https://church.com/events/original"
-                  className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm"
-                />
-              </div>
             </div>
           </div>
         </div>
@@ -418,7 +393,7 @@ const EventFormPage: React.FC = () => {
                   className="w-4 h-4 text-primary-red rounded border-neutral-300 focus:ring-primary-red"
                 />
                 <div>
-                  <span className="text-body-sm font-semibold text-neutral-900 block flex items-center gap-1">
+                  <span className="text-body-sm font-semibold text-neutral-900 flex items-center gap-1">
                     <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Featured Event
                   </span>
                   <span className="text-body-xs text-neutral-500 block">
@@ -490,21 +465,13 @@ const EventFormPage: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Featured Image URL
-              </label>
-              <input
-                type="url"
-                value={formData.featured_image || ''}
-                onChange={(e) => setFormData({ ...formData, featured_image: e.target.value })}
-                placeholder="https://example.com/event-cover.jpg"
-                className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm"
+              <ImageUpload
+                value={formData.featured_image}
+                onChange={(url) => setFormData({ ...formData, featured_image: url })}
+                folder="events"
+                label="Featured Image"
+                helperText="Upload a banner or promotional image for this event."
               />
-              {formData.featured_image && (
-                <div className="mt-2 rounded-lg overflow-hidden border border-neutral-200 h-32 bg-neutral-900 flex items-center justify-center">
-                  <img src={formData.featured_image} alt="Featured preview" className="w-full h-full object-cover" />
-                </div>
-              )}
             </div>
           </div>
 

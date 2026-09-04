@@ -24,7 +24,6 @@ class CreateBlogPostRequest extends FormRequest
     {
         return [
             'title'           => ['required', 'string', 'max:255'],
-            'slug'            => ['nullable', 'string', 'max:255', 'unique:blog_posts,slug'],
             'excerpt'         => ['nullable', 'string', 'max:1000'],
             'content'         => ['required', 'string'],
             'featured_image'  => ['nullable', 'string', 'max:500'],
@@ -32,10 +31,6 @@ class CreateBlogPostRequest extends FormRequest
             'featured'        => ['nullable', 'boolean'],
             'status'          => ['nullable', 'in:draft,published'],
             'published_at'    => ['nullable', 'date'],
-            'seo_title'       => ['nullable', 'string', 'max:255'],
-            'seo_description' => ['nullable', 'string', 'max:500'],
-            'seo_image'       => ['nullable', 'string', 'max:500'],
-            'canonical_url'   => ['nullable', 'url', 'max:500'],
         ];
     }
 

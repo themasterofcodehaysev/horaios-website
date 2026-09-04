@@ -5,10 +5,12 @@ import {
   XCircle, ChevronLeft, ChevronRight, X, Music, AlertTriangle, Layers,
 } from 'lucide-react';
 import { songService } from '../../services/song.service';
+import { useToast } from '../../hooks/useToast';
 import type { SongItem, SongCategory, PaginatedResponse, SongFilters } from '../../types';
 
 const SongsListPage: React.FC = () => {
   const navigate = useNavigate();
+  const { addToast } = useToast();
   const [songs, setSongs] = useState<SongItem[]>([]);
   const [categories, setCategories] = useState<SongCategory[]>([]);
   const [meta, setMeta] = useState<PaginatedResponse<SongItem>['meta'] | null>(null);
@@ -55,8 +57,17 @@ const SongsListPage: React.FC = () => {
     try {
       const updated = await songService.togglePublish(song.id);
       setSongs(prev => prev.map(s => s.id === song.id ? updated : s));
+      addToast({
+        title: updated.status === 'published' ? 'Song Published' : 'Song Unpublished',
+        message: `"${song.title}" is now ${updated.status}.`,
+        type: 'success',
+      });
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to toggle status');
+      addToast({
+        title: 'Update Failed',
+        message: err?.response?.data?.message || 'Failed to toggle status',
+        type: 'error',
+      });
     }
   };
 
@@ -64,17 +75,35 @@ const SongsListPage: React.FC = () => {
     try {
       const updated = await songService.toggleFeatured(song.id);
       setSongs(prev => prev.map(s => s.id === song.id ? updated : s));
+      addToast({
+        title: updated.is_featured ? 'Song Featured' : 'Song Unfeatured',
+        message: `"${song.title}" has been updated.`,
+        type: 'success',
+      });
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to toggle featured state');
+      addToast({
+        title: 'Update Failed',
+        message: err?.response?.data?.message || 'Failed to toggle featured state',
+        type: 'error',
+      });
     }
   };
 
   const handleDuplicate = async (song: SongItem) => {
     try {
       await songService.duplicateSong(song.id);
+      addToast({
+        title: 'Song Duplicated',
+        message: `"${song.title}" was duplicated successfully.`,
+        type: 'success',
+      });
       fetchSongs(); // Refresh the list to show the duplicated song
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to duplicate song');
+      addToast({
+        title: 'Duplicate Failed',
+        message: err?.response?.data?.message || 'Failed to duplicate song',
+        type: 'error',
+      });
     }
   };
 
@@ -83,10 +112,19 @@ const SongsListPage: React.FC = () => {
     try {
       setDeleting(true);
       await songService.deleteSong(deleteModal.song.id);
+      addToast({
+        title: 'Song Deleted',
+        message: `"${deleteModal.song.title}" was deleted.`,
+        type: 'success',
+      });
       setDeleteModal({ open: false, song: null });
       fetchSongs();
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to delete song');
+      addToast({
+        title: 'Delete Failed',
+        message: err?.response?.data?.message || 'Failed to delete song',
+        type: 'error',
+      });
     } finally {
       setDeleting(false);
     }
@@ -291,7 +329,7 @@ const SongsListPage: React.FC = () => {
                   {/* Actions */}
                   <div className="flex items-center justify-end gap-1">
                     <a
-                      href={`/songs/${song.slug}`}
+                      href={`/songs/${song.id}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="p-1.5 text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 rounded-lg transition-colors"

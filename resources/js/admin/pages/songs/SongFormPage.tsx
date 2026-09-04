@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Save, Loader2, Eye, EyeOff, Sparkles, RefreshCw } from 'lucide-react';
+import { ArrowLeft, Save, Loader2, Eye, EyeOff, Sparkles } from 'lucide-react';
 import { songService } from '../../services/song.service';
 import type { SongCategory, CreateSongPayload } from '../../types';
 
@@ -13,11 +13,8 @@ const SongFormPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(isEdit);
   const [showPreview, setShowPreview] = useState(false);
-  const [autoSlug, setAutoSlug] = useState(!isEdit);
-
   const [formData, setFormData] = useState<CreateSongPayload>({
     title: '',
-    slug: '',
     artist: '',
     composer: '',
     category_id: null,
@@ -39,7 +36,6 @@ const SongFormPage: React.FC = () => {
           const song = await songService.getAdminSong(id);
           setFormData({
             title: song.title,
-            slug: song.slug,
             artist: song.artist || '',
             composer: song.composer || '',
             category_id: song.category_id,
@@ -64,15 +60,8 @@ const SongFormPage: React.FC = () => {
     setFormData(prev => ({
       ...prev,
       title: newTitle,
-      slug: autoSlug ? newTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') : prev.slug,
     }));
     if (errors.title) setErrors(prev => ({ ...prev, title: '' }));
-  };
-
-  const handleSlugChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAutoSlug(false);
-    setFormData(prev => ({ ...prev, slug: e.target.value }));
-    if (errors.slug) setErrors(prev => ({ ...prev, slug: '' }));
   };
 
   const validate = (): boolean => {
@@ -171,35 +160,6 @@ const SongFormPage: React.FC = () => {
                 }`}
               />
               {errors.title && <p className="text-body-xs text-red-500 mt-1">{errors.title}</p>}
-            </div>
-
-            {/* Slug */}
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <label className="block text-body-xs font-semibold text-neutral-700">
-                  URL Slug
-                </label>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setAutoSlug(true);
-                    setFormData(p => ({
-                      ...p,
-                      slug: p.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
-                    }));
-                  }}
-                  className="text-body-xs text-primary-red hover:underline flex items-center gap-1 font-medium"
-                >
-                  <RefreshCw className="w-3 h-3" /> Auto Generate
-                </button>
-              </div>
-              <input
-                type="text"
-                value={formData.slug || ''}
-                onChange={handleSlugChange}
-                placeholder="amazing-grace"
-                className="w-full px-3.5 py-2 border border-neutral-200 rounded-lg text-body-xs font-mono bg-neutral-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-              />
             </div>
 
             {/* Artist & Composer Grid */}

@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\Song;
 use App\Models\User;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Str;
 
 class SongService
@@ -23,9 +23,6 @@ class SongService
                 });
             })
             ->when(!empty($filters['category_id']), fn($q) => $q->where('category_id', $filters['category_id']))
-            ->when(!empty($filters['category_slug']), function ($q) use ($filters) {
-                $q->whereHas('category', fn($catQ) => $catQ->where('slug', $filters['category_slug']));
-            })
             ->when(isset($filters['featured']) && $filters['featured'] !== '', fn($q) => $q->where('featured', filter_var($filters['featured'], FILTER_VALIDATE_BOOLEAN)))
             ->orderBy('featured', 'desc')
             ->orderBy('display_order', 'asc')
@@ -60,10 +57,6 @@ class SongService
         $data['created_by'] = $actingUser?->id;
         $data['updated_by'] = $actingUser?->id;
 
-        if (empty($data['slug'])) {
-            $data['slug'] = Song::generateUniqueSlug($data['title']);
-        }
-
         $song = Song::create($data);
 
         AuditLogService::log(
@@ -71,7 +64,7 @@ class SongService
             'Song',
             (string) $song->id,
             null,
-            $song->only(['id', 'title', 'slug', 'status', 'featured']),
+            $song->only(['id', 'title', 'status', 'featured']),
             $actingUser?->id
         );
 
@@ -80,12 +73,8 @@ class SongService
 
     public function updateSong(Song $song, array $data, ?User $actingUser = null): Song
     {
-        $oldValues = $song->only(['title', 'slug', 'artist', 'composer', 'category_id', 'status', 'featured']);
+        $oldValues = $song->only(['title', 'artist', 'composer', 'category_id', 'status', 'featured']);
         $data['updated_by'] = $actingUser?->id;
-
-        if (!empty($data['title']) && empty($data['slug']) && $data['title'] !== $song->title) {
-            $data['slug'] = Song::generateUniqueSlug($data['title'], $song->id);
-        }
 
         $song->update($data);
 
@@ -94,7 +83,7 @@ class SongService
             'Song',
             (string) $song->id,
             $oldValues,
-            $song->only(['title', 'slug', 'artist', 'composer', 'category_id', 'status', 'featured']),
+            $song->only(['title', 'artist', 'composer', 'category_id', 'status', 'featured']),
             $actingUser?->id
         );
 
@@ -107,7 +96,7 @@ class SongService
             'delete',
             'Song',
             (string) $song->id,
-            $song->only(['title', 'slug', 'status']),
+            $song->only(['title', 'status']),
             null,
             $actingUser?->id
         );
@@ -162,12 +151,10 @@ class SongService
     public function duplicateSong(Song $song, ?User $actingUser = null): Song
     {
         $newTitle = $song->title . ' (Copy)';
-        $newSlug = Song::generateUniqueSlug($newTitle);
 
         $duplicate = Song::create([
             'uuid' => (string) Str::uuid(),
             'title' => $newTitle,
-            'slug' => $newSlug,
             'artist' => $song->artist,
             'composer' => $song->composer,
             'category_id' => $song->category_id,

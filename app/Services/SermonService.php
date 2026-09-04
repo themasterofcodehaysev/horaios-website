@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\Sermon;
 use App\Models\User;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Str;
 
 class SermonService
@@ -18,7 +18,6 @@ class SermonService
                 $q->where(function ($sub) use ($term) {
                     $sub->where('title', 'like', $term)
                         ->orWhere('summary', 'like', $term)
-                        ->orWhere('description', 'like', $term)
                         ->orWhere('scripture_reference', 'like', $term)
                         ->orWhereHas('speaker', fn($sp) => $sp->where('name', 'like', $term))
                         ->orWhereHas('series', fn($se) => $se->where('name', 'like', $term))
@@ -28,9 +27,6 @@ class SermonService
             ->when(!empty($filters['speaker_id']), fn($q) => $q->where('speaker_id', $filters['speaker_id']))
             ->when(!empty($filters['series_id']), fn($q) => $q->where('series_id', $filters['series_id']))
             ->when(!empty($filters['category_id']), fn($q) => $q->where('category_id', $filters['category_id']))
-            ->when(!empty($filters['category_slug']), function ($q) use ($filters) {
-                $q->whereHas('category', fn($catQ) => $catQ->where('slug', $filters['category_slug']));
-            })
             ->when(isset($filters['featured']) && $filters['featured'] !== '', fn($q) => $q->where('featured', filter_var($filters['featured'], FILTER_VALIDATE_BOOLEAN)))
             ->orderBy('featured', 'desc')
             ->orderBy('published_at', 'desc')
@@ -69,10 +65,6 @@ class SermonService
         $data['created_by'] = $actingUser?->id;
         $data['updated_by'] = $actingUser?->id;
 
-        if (empty($data['slug'])) {
-            $data['slug'] = Sermon::generateUniqueSlug($data['title']);
-        }
-
         if (($data['status'] ?? 'draft') === 'published' && empty($data['published_at'])) {
             $data['published_at'] = now();
         }
@@ -84,7 +76,7 @@ class SermonService
             'Sermon',
             (string) $sermon->id,
             null,
-            $sermon->only(['id', 'title', 'slug', 'status', 'featured']),
+            $sermon->only(['id', 'title', 'status', 'featured']),
             $actingUser?->id
         );
 
@@ -93,12 +85,8 @@ class SermonService
 
     public function updateSermon(Sermon $sermon, array $data, ?User $actingUser = null): Sermon
     {
-        $oldValues = $sermon->only(['title', 'slug', 'speaker_id', 'series_id', 'category_id', 'status', 'featured']);
+        $oldValues = $sermon->only(['title', 'speaker_id', 'series_id', 'category_id', 'status', 'featured']);
         $data['updated_by'] = $actingUser?->id;
-
-        if (!empty($data['title']) && empty($data['slug']) && $data['title'] !== $sermon->title) {
-            $data['slug'] = Sermon::generateUniqueSlug($data['title'], $sermon->id);
-        }
 
         if (isset($data['status']) && $data['status'] === 'published' && empty($sermon->published_at) && empty($data['published_at'])) {
             $data['published_at'] = now();
@@ -111,7 +99,7 @@ class SermonService
             'Sermon',
             (string) $sermon->id,
             $oldValues,
-            $sermon->only(['title', 'slug', 'speaker_id', 'series_id', 'category_id', 'status', 'featured']),
+            $sermon->only(['title', 'speaker_id', 'series_id', 'category_id', 'status', 'featured']),
             $actingUser?->id
         );
 
@@ -124,7 +112,7 @@ class SermonService
             'delete',
             'Sermon',
             (string) $sermon->id,
-            $sermon->only(['title', 'slug', 'status']),
+            $sermon->only(['title', 'status']),
             null,
             $actingUser?->id
         );
@@ -185,12 +173,10 @@ class SermonService
     public function duplicateSermon(Sermon $sermon, ?User $actingUser = null): Sermon
     {
         $newTitle = $sermon->title . ' (Copy)';
-        $newSlug = Sermon::generateUniqueSlug($newTitle);
 
         $duplicate = Sermon::create([
             'uuid'                => (string) Str::uuid(),
             'title'               => $newTitle,
-            'slug'                => $newSlug,
             'summary'             => $sermon->summary,
             'description'         => $sermon->description,
             'speaker_id'          => $sermon->speaker_id,
@@ -227,11 +213,11 @@ class SermonService
                 if ($sermon->series_id) {
                     $q->orWhere('series_id', $sermon->series_id);
                 }
-                if ($sermon->category_id) {
-                    $q->orWhere('category_id', $sermon->category_id);
-                }
                 if ($sermon->speaker_id) {
                     $q->orWhere('speaker_id', $sermon->speaker_id);
+                }
+                if ($sermon->category_id) {
+                    $q->orWhere('category_id', $sermon->category_id);
                 }
             })
             ->orderBy('featured', 'desc')

@@ -14,7 +14,7 @@ interface SongCardProps {
 }
 
 export const SongCard: React.FC<SongCardProps> = ({ song, variant = 'grid', className }) => {
-  const href = `/songs/${song.slug}`;
+  const href = `/songs/${song.id}`;
 
   if (variant === 'spotlight') {
     return (

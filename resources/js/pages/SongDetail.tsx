@@ -44,7 +44,7 @@ function buildSongSeo(song: SongItem) {
 }
 
 export const SongDetailPage: React.FC = () => {
-  const { slug } = useParams<{ slug: string }>();
+  const { id } = useParams<{ id: string }>();
 
   const [song, setSong] = useState<SongItem | null>(null);
   const [relatedSongs, setRelatedSongs] = useState<SongItem[]>([]);
@@ -73,16 +73,16 @@ export const SongDetailPage: React.FC = () => {
   // Fetch Song Details & Related Songs
   useEffect(() => {
     const fetchDetail = async () => {
-      if (!slug) return;
+      if (!id) return;
       try {
         setLoading(true);
         setError(null);
-        const data = await songService.getPublicSongDetail(slug);
+        const data = await songService.getPublicSongDetail(id);
         setSong(data);
 
         // Fetch related songs
         try {
-          const related = await songService.getRelatedSongs(slug);
+          const related = await songService.getRelatedSongs(id);
           setRelatedSongs(related);
         } catch {
           setRelatedSongs([]);
@@ -98,7 +98,7 @@ export const SongDetailPage: React.FC = () => {
     // Reset worship mode & scrolling on route change
     setWorshipMode(false);
     setIsAutoScrolling(false);
-  }, [slug]);
+  }, [id]);
 
   // Auto Scroll Mechanism
   const startAutoScroll = useCallback(() => {
@@ -414,7 +414,7 @@ export const SongDetailPage: React.FC = () => {
               {relatedSongs.map((rel) => (
                 <Link
                   key={rel.id}
-                  to={`/songs/${rel.slug}`}
+                  to={`/songs/${rel.id}`}
                   className="group bg-neutral-50 hover:bg-white rounded-2xl p-4 border border-neutral-200 hover:border-neutral-300 hover:shadow-md transition-all flex items-center justify-between"
                 >
                   <div>

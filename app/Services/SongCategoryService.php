@@ -23,9 +23,6 @@ class SongCategoryService
     public function createCategory(array $data, ?User $actingUser = null): SongCategory
     {
         $data['uuid'] = (string) Str::uuid();
-        if (empty($data['slug'])) {
-            $data['slug'] = Str::slug($data['name']);
-        }
 
         $category = SongCategory::create($data);
 

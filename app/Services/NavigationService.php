@@ -30,7 +30,6 @@ class NavigationService
     public function createMenu(array $data, ?User $actingUser = null): NavigationMenu
     {
         $data['uuid'] = (string) Str::uuid();
-        $data['slug'] = Str::slug($data['name']);
 
         $menu = NavigationMenu::create($data);
 
@@ -39,7 +38,7 @@ class NavigationService
             'NavigationMenu',
             (string) $menu->id,
             null,
-            $menu->only(['name', 'slug', 'location']),
+            $menu->only(['name', 'location']),
             $actingUser?->id
         );
 
@@ -48,11 +47,7 @@ class NavigationService
 
     public function updateMenu(NavigationMenu $menu, array $data, ?User $actingUser = null): NavigationMenu
     {
-        $oldValues = $menu->only(['name', 'slug', 'location', 'is_active', 'display_order']);
-
-        if (!empty($data['name']) && $data['name'] !== $menu->name) {
-            $data['slug'] = Str::slug($data['name']);
-        }
+        $oldValues = $menu->only(['name', 'location', 'is_active', 'display_order']);
 
         $menu->update($data);
 
@@ -61,7 +56,7 @@ class NavigationService
             'NavigationMenu',
             (string) $menu->id,
             $oldValues,
-            $menu->only(['name', 'slug', 'location', 'is_active', 'display_order']),
+            $menu->only(['name', 'location', 'is_active', 'display_order']),
             $actingUser?->id
         );
 
@@ -74,7 +69,7 @@ class NavigationService
             'delete',
             'NavigationMenu',
             (string) $menu->id,
-            $menu->only(['name', 'slug', 'location']),
+            $menu->only(['name', 'location']),
             null,
             $actingUser?->id
         );

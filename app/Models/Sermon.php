@@ -15,7 +15,6 @@ class Sermon extends Model
     protected $fillable = [
         'uuid',
         'title',
-        'slug',
         'summary',
         'description',
         'speaker_id',
@@ -41,6 +40,19 @@ class Sermon extends Model
             'display_order' => 'integer',
             'published_at'  => 'datetime',
         ];
+    }
+
+    public function getThumbnailAttribute($value): ?string
+    {
+        if (empty($value)) {
+            return null;
+        }
+
+        if (str_starts_with($value, 'http://localhost/storage/')) {
+            return str_replace('http://localhost/storage/', '/storage/', $value);
+        }
+
+        return $value;
     }
 
     protected static function boot(): void

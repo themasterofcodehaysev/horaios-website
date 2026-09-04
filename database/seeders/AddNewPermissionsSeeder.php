@@ -24,12 +24,6 @@ class AddNewPermissionsSeeder extends Seeder
             ['name' => 'contact_messages.edit', 'display_name' => 'Edit Contact Messages', 'group' => 'contact_messages', 'description' => 'Edit contact messages'],
             ['name' => 'contact_messages.delete', 'display_name' => 'Delete Contact Messages', 'group' => 'contact_messages', 'description' => 'Delete contact messages'],
             
-            // Media
-            ['name' => 'media.view', 'display_name' => 'View Media', 'group' => 'media', 'description' => 'View media library'],
-            ['name' => 'media.upload', 'display_name' => 'Upload Media', 'group' => 'media', 'description' => 'Upload new media files'],
-            ['name' => 'media.edit', 'display_name' => 'Edit Media', 'group' => 'media', 'description' => 'Edit media metadata'],
-            ['name' => 'media.delete', 'display_name' => 'Delete Media', 'group' => 'media', 'description' => 'Delete media files'],
-            
             // Homepage
             ['name' => 'homepage.manage', 'display_name' => 'Manage Homepage', 'group' => 'homepage', 'description' => 'Manage homepage sections and content'],
             
@@ -72,7 +66,6 @@ class AddNewPermissionsSeeder extends Seeder
             $editorPermissions = [
                 'prayer_requests.view', 'prayer_requests.edit',
                 'contact_messages.view', 'contact_messages.edit',
-                'media.view', 'media.upload', 'media.edit',
                 'homepage.manage',
                 'navigation.manage',
                 'footer.manage',

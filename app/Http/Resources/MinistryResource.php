@@ -13,7 +13,6 @@ class MinistryResource extends JsonResource
             'id'              => $this->id,
             'uuid'            => $this->uuid,
             'name'            => $this->name,
-            'slug'            => $this->slug,
             'description'     => $this->description,
             'leader'          => $this->leader,
             'email'           => $this->email,
@@ -28,10 +27,6 @@ class MinistryResource extends JsonResource
             'status'          => $this->status,
             'display_order'   => $this->display_order,
             'published_at'    => $this->published_at?->toISOString(),
-            'seo_title'       => $this->seo_title,
-            'seo_description' => $this->seo_description,
-            'seo_image'       => $this->seo_image,
-            'canonical_url'   => $this->canonical_url,
             'created_by'      => $this->whenLoaded('creator', fn() => [
                 'id'           => $this->creator->id,
                 'display_name' => $this->creator->display_name,

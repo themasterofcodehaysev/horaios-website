@@ -12,7 +12,6 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
             $table->string('title');
-            $table->string('slug')->unique();
             $table->string('artist')->nullable()->index();
             $table->string('composer')->nullable();
             $table->foreignId('category_id')->nullable()->constrained('song_categories')->nullOnDelete();

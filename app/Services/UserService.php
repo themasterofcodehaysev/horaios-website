@@ -22,7 +22,10 @@ class UserService
     {
         $data['uuid'] = (string) Str::uuid();
         $data['password'] = Hash::make($data['password']);
-        $data['display_name'] = $data['display_name'] ?? trim(($data['first_name'] ?? '') . ' ' . ($data['last_name'] ?? ''));
+        $displayName = trim((string) ($data['display_name'] ?? ''));
+        $data['display_name'] = $displayName !== '' 
+            ? $displayName 
+            : trim(($data['first_name'] ?? '') . ' ' . ($data['last_name'] ?? ''));
 
         $user = User::create($data);
 
@@ -54,7 +57,7 @@ class UserService
 
     public function updateUser(User $user, array $data, ?User $actingUser = null): User
     {
-        $oldValues = $user->only(['first_name', 'last_name', 'email', 'role_id', 'status', 'phone']);
+        $oldValues = $user->only(['first_name', 'last_name', 'display_name', 'email', 'role_id', 'status', 'phone']);
         $roleChanged = array_key_exists('role_id', $data) && (int) $data['role_id'] !== (int) $user->role_id;
 
         if (!empty($data['password'])) {
@@ -63,9 +66,31 @@ class UserService
             unset($data['password']);
         }
 
+        $oldFullName = trim(($user->first_name ?? '') . ' ' . ($user->last_name ?? ''));
+        $newFirstName = $data['first_name'] ?? $user->first_name;
+        $newLastName = $data['last_name'] ?? $user->last_name;
+        $newFullName = trim(($newFirstName ?? '') . ' ' . ($newLastName ?? ''));
+
+        if (array_key_exists('display_name', $data) && trim((string) $data['display_name']) === '') {
+            // User cleared display_name or sent empty string -> auto-generate from names
+            $data['display_name'] = $newFullName;
+        } elseif (array_key_exists('display_name', $data) && $data['display_name'] !== null) {
+            // If the submitted display_name was identical to the old full name and names changed, sync to new full name
+            if ($data['display_name'] === $oldFullName && $newFullName !== $oldFullName) {
+                $data['display_name'] = $newFullName;
+            } else {
+                $data['display_name'] = trim((string) $data['display_name']);
+            }
+        } elseif (array_key_exists('first_name', $data) || array_key_exists('last_name', $data)) {
+            // No display_name in payload, but first/last name changed: sync if display_name was default
+            if (empty($user->display_name) || $user->display_name === $oldFullName) {
+                $data['display_name'] = $newFullName;
+            }
+        }
+
         $user->update($data);
 
-        $newValues = $user->only(['first_name', 'last_name', 'email', 'role_id', 'status', 'phone']);
+        $newValues = $user->only(['first_name', 'last_name', 'display_name', 'email', 'role_id', 'status', 'phone']);
 
         AuditLogService::log(
             'update',

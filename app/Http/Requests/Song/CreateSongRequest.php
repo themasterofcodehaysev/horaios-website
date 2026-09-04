@@ -15,7 +15,6 @@ class CreateSongRequest extends FormRequest
     {
         return [
             'title'         => ['required', 'string', 'max:255'],
-            'slug'          => ['nullable', 'string', 'max:255', 'unique:songs,slug'],
             'artist'        => ['nullable', 'string', 'max:255'],
             'composer'      => ['nullable', 'string', 'max:255'],
             'category_id'   => ['nullable', 'integer', 'exists:song_categories,id'],

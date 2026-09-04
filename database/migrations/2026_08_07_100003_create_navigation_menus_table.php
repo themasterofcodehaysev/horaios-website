@@ -12,7 +12,6 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
             $table->string('name');
-            $table->string('slug')->unique();
             $table->string('location')->default('header'); // header, footer, quick_links
             $table->text('description')->nullable();
             $table->boolean('is_active')->default(true)->index();

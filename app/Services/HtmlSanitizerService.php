@@ -22,10 +22,10 @@ class HtmlSanitizerService
     protected function applyBaseConfig(HTMLPurifier_Config $config): void
     {
         // Allow only safe HTML tags
-        $config->set('HTML.Allowed', 'p,a[href|title],strong,em,u,ul,ol,li,h1,h2,h3,h4,h5,h6,br,span,div,blockquote,code,pre');
+        $config->set('HTML.Allowed', 'p,a[href|title],strong,em,u,ul,ol,li,h1,h2,h3,h4,h5,h6,br,span,div,blockquote,code,pre,img[src|alt|title]');
 
         // Allow safe attributes
-        $config->set('HTML.AllowedAttributes', 'a.href,a.title,*.class,*.id');
+        $config->set('HTML.AllowedAttributes', 'a.href,a.title,img.src,img.alt,img.title,*.class,*.id');
 
         // Allow safe protocols
         $config->set('URI.AllowedSchemes', ['http' => true, 'https' => true, 'mailto' => true]);

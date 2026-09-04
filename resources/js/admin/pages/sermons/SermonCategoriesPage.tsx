@@ -20,7 +20,6 @@ const SermonCategoriesPage: React.FC = () => {
 
   const [formData, setFormData] = useState({
     name: '',
-    slug: '',
     description: '',
     display_order: 0,
     status: 'active' as 'active' | 'inactive',
@@ -34,7 +33,7 @@ const SermonCategoriesPage: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      const data = await sermonService.getAdminCategories();
+      const data = await sermonService.getPublicCategories();
       setCategories(data);
     } catch (err: any) {
       setError(err?.response?.data?.message || 'Failed to load sermon categories');
@@ -46,19 +45,18 @@ const SermonCategoriesPage: React.FC = () => {
   useEffect(() => { fetchCategories(); }, [fetchCategories]);
 
   const openCreateModal = () => {
-    setFormData({ name: '', slug: '', description: '', display_order: categories.length + 1, status: 'active' });
+    setFormData({ name: '', description: '', display_order: categories.length + 1, status: 'active' });
     setModal({ open: true, mode: 'create', category: null });
   };
 
-  const openEditModal = (cat: SermonCategory) => {
+  const openEditModal = (ca: SermonCategory) => {
     setFormData({
-      name: cat.name,
-      slug: cat.slug,
-      description: cat.description || '',
-      display_order: cat.display_order,
-      status: cat.status,
+      name: ca.name,
+      description: ca.description || '',
+      display_order: ca.display_order,
+      status: ca.status,
     });
-    setModal({ open: true, mode: 'edit', category: cat });
+    setModal({ open: true, mode: 'edit', category: ca });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

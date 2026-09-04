@@ -21,9 +21,9 @@ const iconMap: Record<string, React.ReactNode> = {
 
 const getIconFor = (category?: MinistryCategoryPublic | null) => {
   if (!category) return <Users className="w-8 h-8" />;
-  const slug = category.slug?.toLowerCase() || '';
+  const name = category.name?.toLowerCase() || '';
   for (const key of Object.keys(iconMap)) {
-    if (slug.includes(key)) return iconMap[key];
+    if (name.includes(key)) return iconMap[key];
   }
   return <Users className="w-8 h-8" />;
 };
@@ -51,7 +51,7 @@ export const MinistriesPage: React.FC = () => {
       setLoading(true);
       setError(null);
       const f: MinistryFilters = { ...filters };
-      if (activeCategory !== 'all') f.category_slug = activeCategory;
+      if (activeCategory !== 'all') f.category_id = Number(activeCategory);
       const result = await ministryService.getPublicMinistries(f);
       setMinistries(result.data);
       setMeta(result.meta);
@@ -125,9 +125,9 @@ export const MinistriesPage: React.FC = () => {
               {categories.map((c) => (
                 <button
                   key={c.id}
-                  onClick={() => setActiveCategory(c.slug)}
+                  onClick={() => setActiveCategory(String(c.id))}
                   className={`px-4 py-2 rounded-full text-body-xs font-medium transition-colors border ${
-                    activeCategory === c.slug
+                    activeCategory === String(c.id)
                       ? 'bg-primary-red text-white border-primary-red'
                       : 'bg-white text-neutral-700 border-neutral-200 hover:bg-neutral-50'
                   }`}
@@ -170,7 +170,7 @@ export const MinistriesPage: React.FC = () => {
                 {ministries.map((ministry) => (
                   <Link
                     key={ministry.id}
-                    to={`/ministries/${ministry.slug}`}
+                    to={`/ministries/${ministry.id}`}
                     className="group h-full block"
                   >
                     <MinistryCard

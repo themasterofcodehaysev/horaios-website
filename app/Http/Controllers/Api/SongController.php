@@ -26,7 +26,6 @@ class SongController extends BaseApiController
         $songs = $this->songService->getPublicSongs([
             'search'        => $request->input('search'),
             'category_id'   => $request->input('category_id'),
-            'category_slug' => $request->input('category_slug'),
             'featured'      => $request->input('featured'),
         ], $request->input('per_page', 12));
 
@@ -34,16 +33,15 @@ class SongController extends BaseApiController
     }
 
     /**
-     * GET /api/v1/songs/{slug}
-     * Public detail of a published song (or by ID).
+     * GET /api/v1/songs/{id}
+     * Public detail of a published song (or by UUID).
      */
     public function show(string $identifier): JsonResponse
     {
         $song = Song::with('category')
             ->where(function ($q) use ($identifier) {
-                $q->where('slug', $identifier)
-                  ->orWhere('uuid', $identifier)
-                  ->orWhere('id', $identifier);
+                $q->where('id', $identifier)
+                  ->orWhere('uuid', $identifier);
             })
             ->firstOrFail();
 
@@ -56,14 +54,13 @@ class SongController extends BaseApiController
     }
 
     /**
-     * GET /api/v1/songs/{slug}/related
+     * GET /api/v1/songs/{id}/related
      * Public list of up to 5 related songs in the same category.
      */
     public function related(string $identifier): JsonResponse
     {
-        $song = Song::where('slug', $identifier)
+        $song = Song::where('id', $identifier)
             ->orWhere('uuid', $identifier)
-            ->orWhere('id', $identifier)
             ->firstOrFail();
 
         $related = Song::with('category')

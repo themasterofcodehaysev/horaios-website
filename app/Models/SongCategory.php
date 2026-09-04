@@ -15,7 +15,6 @@ class SongCategory extends Model
     protected $fillable = [
         'uuid',
         'name',
-        'slug',
         'description',
         'display_order',
         'status',
@@ -28,15 +27,6 @@ class SongCategory extends Model
         static::creating(function ($category) {
             if (empty($category->uuid)) {
                 $category->uuid = (string) Str::uuid();
-            }
-            if (empty($category->slug)) {
-                $category->slug = Str::slug($category->name);
-            }
-        });
-
-        static::updating(function ($category) {
-            if ($category->isDirty('name') && !$category->isDirty('slug')) {
-                $category->slug = Str::slug($category->name);
             }
         });
     }

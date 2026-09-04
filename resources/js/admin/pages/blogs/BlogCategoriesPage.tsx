@@ -20,7 +20,6 @@ const BlogCategoriesPage: React.FC = () => {
 
   const [formData, setFormData] = useState({
     name: '',
-    slug: '',
     description: '',
     display_order: 0,
     status: 'active' as 'active' | 'inactive',
@@ -46,14 +45,13 @@ const BlogCategoriesPage: React.FC = () => {
   useEffect(() => { fetchCategories(); }, [fetchCategories]);
 
   const openCreateModal = () => {
-    setFormData({ name: '', slug: '', description: '', display_order: categories.length + 1, status: 'active' });
+    setFormData({ name: '', description: '', display_order: categories.length + 1, status: 'active' });
     setModal({ open: true, mode: 'create', category: null });
   };
 
   const openEditModal = (cat: BlogCategory) => {
     setFormData({
       name: cat.name,
-      slug: cat.slug,
       description: cat.description || '',
       display_order: cat.display_order,
       status: cat.status,

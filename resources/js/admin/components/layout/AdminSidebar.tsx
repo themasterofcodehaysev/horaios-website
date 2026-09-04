@@ -9,7 +9,6 @@ import {
   Heart,
   MessageCircleHeart,
   Mail,
-  Image as ImageIcon,
   Users,
   Shield,
   Settings,
@@ -68,7 +67,6 @@ const navGroups: NavGroupDef[] = [
   {
     label: 'MANAGEMENT',
     items: [
-      { name: 'Media Library', path: '/admin/media', icon: ImageIcon },
       { name: 'Navigation', path: '/admin/navigation', icon: LayoutDashboard },
       { name: 'Homepage', path: '/admin/homepage', icon: LayoutDashboard },
       { name: 'Footer', path: '/admin/footer', icon: LayoutDashboard },

@@ -17,6 +17,7 @@ export const blogService = {
   async getPublicPosts(filters: BlogFilters = {}): Promise<PaginatedResponse<BlogPostPublic>> {
     const params = new URLSearchParams();
     if (filters.search) params.set('search', filters.search);
+    if (filters.category_id) params.set('category_id', String(filters.category_id));
     if (filters.category_slug) params.set('category_slug', filters.category_slug);
     if (filters.featured !== undefined && filters.featured !== '') params.set('featured', String(filters.featured));
     if (filters.page) params.set('page', String(filters.page));
@@ -48,6 +49,7 @@ export const eventService = {
   async getPublicEvents(filters: EventFilters = {}): Promise<PaginatedResponse<EventPublic>> {
     const params = new URLSearchParams();
     if (filters.search) params.set('search', filters.search);
+    if (filters.category_id) params.set('category_id', String(filters.category_id));
     if (filters.category_slug) params.set('category_slug', filters.category_slug);
     if (filters.featured !== undefined && filters.featured !== '') params.set('featured', String(filters.featured));
     if (filters.start_date_from) params.set('start_date_from', filters.start_date_from);
@@ -82,6 +84,7 @@ export const ministryService = {
   async getPublicMinistries(filters: MinistryFilters = {}): Promise<PaginatedResponse<MinistryPublic>> {
     const params = new URLSearchParams();
     if (filters.search) params.set('search', filters.search);
+    if (filters.category_id) params.set('category_id', String(filters.category_id));
     if (filters.category_slug) params.set('category_slug', filters.category_slug);
     if (filters.featured !== undefined && filters.featured !== '') params.set('featured', String(filters.featured));
     if (filters.page) params.set('page', String(filters.page));

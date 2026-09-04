@@ -17,7 +17,6 @@ class SermonCategory extends Model
     protected $fillable = [
         'uuid',
         'name',
-        'slug',
         'description',
         'display_order',
         'status',
@@ -30,7 +29,6 @@ class SermonCategory extends Model
         ];
     }
 
-    protected static string $slugSourceColumn = 'name';
 
     public function sermons(): HasMany
     {

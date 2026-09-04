@@ -12,12 +12,9 @@ class Ministry extends Model
 {
     use HasFactory, HasUuidAndSlug, SoftDeletes;
 
-    protected static string $slugSourceColumn = 'name';
-
     protected $fillable = [
         'uuid',
         'name',
-        'slug',
         'description',
         'leader',
         'email',
@@ -31,10 +28,6 @@ class Ministry extends Model
         'status',
         'published_at',
         'display_order',
-        'seo_title',
-        'seo_description',
-        'seo_image',
-        'canonical_url',
         'created_by',
         'updated_by',
     ];

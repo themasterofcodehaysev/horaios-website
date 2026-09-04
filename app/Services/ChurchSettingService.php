@@ -34,6 +34,8 @@ class ChurchSettingService
             $actingUser?->id
         );
 
+        app(CacheService::class)->clearChurchSettingsCache();
+
         // Return the updated records for the affected keys
         return ChurchSetting::whereIn('key', array_keys($settings))->get();
     }

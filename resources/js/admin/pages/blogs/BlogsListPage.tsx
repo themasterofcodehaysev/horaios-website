@@ -6,9 +6,11 @@ import {
 } from 'lucide-react';
 import { blogService } from '../../services/blog.service';
 import type { BlogItem, BlogCategory, PaginatedResponse, BlogFilters } from '../../types';
+import { useToast } from '../../hooks/useToast';
 
 const BlogsListPage: React.FC = () => {
   const navigate = useNavigate();
+  const { addToast } = useToast();
   const [blogs, setBlogs] = useState<BlogItem[]>([]);
   const [categories, setCategories] = useState<BlogCategory[]>([]);
   const [meta, setMeta] = useState<PaginatedResponse<BlogItem>['meta'] | null>(null);
@@ -54,8 +56,17 @@ const BlogsListPage: React.FC = () => {
     try {
       const updated = await blogService.togglePublishBlog(blog.id);
       setBlogs(prev => prev.map(b => b.id === blog.id ? updated : b));
+      addToast({
+        type: 'success',
+        title: updated.status === 'published' ? 'Post Published' : 'Post Set to Draft',
+        message: `"${blog.title}" is now ${updated.status}.`,
+      });
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to toggle status');
+      addToast({
+        type: 'error',
+        title: 'Failed to update status',
+        message: err?.response?.data?.message || 'Please try again.',
+      });
     }
   };
 
@@ -63,29 +74,57 @@ const BlogsListPage: React.FC = () => {
     try {
       const updated = await blogService.toggleFeaturedBlog(blog.id);
       setBlogs(prev => prev.map(b => b.id === blog.id ? updated : b));
+      addToast({
+        type: 'success',
+        title: updated.featured ? 'Post Featured' : 'Post Unfeatured',
+        message: `"${blog.title}" is now ${updated.featured ? 'featured' : 'unfeatured'}.`,
+      });
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to toggle featured state');
+      addToast({
+        type: 'error',
+        title: 'Failed to update post',
+        message: err?.response?.data?.message || 'Failed to toggle featured state',
+      });
     }
   };
 
   const handleDuplicate = async (blog: BlogItem) => {
     try {
-      const duplicate = await blogService.duplicateBlog(blog.id);
-      navigate(`/admin/blogs/${duplicate.id}/edit`);
+      await blogService.duplicateBlog(blog.id);
+      fetchBlogs();
+      addToast({
+        type: 'success',
+        title: 'Post Duplicated',
+        message: `A draft copy of "${blog.title}" has been created.`,
+      });
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to duplicate blog post');
+      addToast({
+        type: 'error',
+        title: 'Failed to duplicate post',
+        message: err?.response?.data?.message || 'Please try again.',
+      });
     }
   };
 
   const handleDelete = async () => {
     if (!deleteModal.blog) return;
+    const title = deleteModal.blog.title;
     try {
       setDeleting(true);
       await blogService.deleteBlog(deleteModal.blog.id);
       setDeleteModal({ open: false, blog: null });
       fetchBlogs();
+      addToast({
+        type: 'success',
+        title: 'Post Deleted',
+        message: `"${title}" has been deleted.`,
+      });
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to delete blog post');
+      addToast({
+        type: 'error',
+        title: 'Failed to delete post',
+        message: err?.response?.data?.message || 'Please try again.',
+      });
     } finally {
       setDeleting(false);
     }
@@ -265,7 +304,7 @@ const BlogsListPage: React.FC = () => {
 
                   <div className="flex items-center justify-end gap-1">
                     <a
-                      href={`/news/${blog.slug}`}
+                      href={`/news/${blog.id}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="p-1.5 text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 rounded-lg transition-colors"

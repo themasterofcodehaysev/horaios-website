@@ -23,11 +23,8 @@ class UpdateMinistryRequest extends FormRequest
 
     public function rules(): array
     {
-        $id = $this->route('id');
-
         return [
             'name'           => ['sometimes', 'required', 'string', 'max:255'],
-            'slug'           => ['nullable', 'string', 'max:255', Rule::unique('ministries', 'slug')->ignore($id)],
             'description'    => ['sometimes', 'required', 'string'],
             'leader'         => ['nullable', 'string', 'max:255'],
             'email'          => ['nullable', 'email', 'max:255'],
@@ -41,10 +38,6 @@ class UpdateMinistryRequest extends FormRequest
             'status'         => ['nullable', 'in:draft,published'],
             'display_order'  => ['nullable', 'integer', 'min:0'],
             'published_at'   => ['nullable', 'date'],
-            'seo_title'      => ['nullable', 'string', 'max:255'],
-            'seo_description' => ['nullable', 'string', 'max:500'],
-            'seo_image'      => ['nullable', 'string', 'max:500'],
-            'canonical_url'  => ['nullable', 'url', 'max:500'],
         ];
     }
 

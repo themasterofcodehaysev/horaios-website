@@ -13,7 +13,6 @@ class NavigationMenu extends Model
     protected $fillable = [
         'uuid',
         'name',
-        'slug',
         'location',
         'description',
         'is_active',

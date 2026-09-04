@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Save, Loader2, CheckCircle2, AlertCircle, Upload } from 'lucide-react';
+import { Save, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { settingsService } from '../../services/settings.service';
+import ImageUpload from '../../components/ui/ImageUpload';
 
-const TABS = ['General', 'Contact', 'Social Media', 'Service Times', 'SEO', 'System', 'Advanced'];
+const TABS = ['General', 'Contact', 'Social Media', 'Service Times', 'System', 'Advanced'];
 
 export default function ChurchSettingsPage() {
   const [activeTab, setActiveTab] = useState('General');
@@ -83,30 +84,22 @@ export default function ChurchSettingsPage() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Logo</label>
-          <div className="flex items-center gap-4">
-             <div className="w-16 h-16 bg-gray-50 rounded-lg flex items-center justify-center border border-gray-200 overflow-hidden">
-               {settings.general?.logo ? (
-                 <img src={settings.general.logo} alt="Logo" className="w-full h-full object-cover" />
-               ) : (
-                 <Upload className="w-6 h-6 text-gray-400" />
-               )}
-             </div>
-             <input type="file" className="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 cursor-pointer" />
-          </div>
+          <ImageUpload
+            value={settings.general?.logo || ''}
+            onChange={url => handleInputChange('general', 'logo', url)}
+            folder="general"
+            label="Logo"
+            helperText="Upload the church logo (PNG/SVG recommended)."
+          />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Favicon</label>
-          <div className="flex items-center gap-4">
-             <div className="w-16 h-16 bg-gray-50 rounded-lg flex items-center justify-center border border-gray-200 overflow-hidden">
-               {settings.general?.favicon ? (
-                 <img src={settings.general.favicon} alt="Favicon" className="w-full h-full object-cover" />
-               ) : (
-                 <Upload className="w-6 h-6 text-gray-400" />
-               )}
-             </div>
-             <input type="file" className="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 cursor-pointer" />
-          </div>
+          <ImageUpload
+            value={settings.general?.favicon || ''}
+            onChange={url => handleInputChange('general', 'favicon', url)}
+            folder="general"
+            label="Favicon"
+            helperText="Upload the favicon (ICO or PNG, 32×32)."
+          />
         </div>
       </div>
       <div>
@@ -184,13 +177,18 @@ export default function ChurchSettingsPage() {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Google Maps Embed URL</label>
           <input
-            type="url"
+            type="text"
             className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
             value={settings.contact?.google_map_url || ''}
-            onChange={e => handleInputChange('contact', 'google_map_url', e.target.value)}
+            onChange={e => {
+              let val = e.target.value.trim();
+              const srcMatch = val.match(/src="([^"]+)"/);
+              if (srcMatch) val = srcMatch[1];
+              handleInputChange('contact', 'google_map_url', val);
+            }}
             placeholder="https://www.google.com/maps/embed?pb=..."
           />
-          <p className="text-xs text-gray-500 mt-1">Use the embed URL from Google Maps Share &gt; Embed a map</p>
+          <p className="text-xs text-gray-500 mt-1">Use the embed URL or paste the full iframe code from Google Maps Share &gt; Embed a map</p>
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Google Maps Directions URL</label>
@@ -311,60 +309,6 @@ export default function ChurchSettingsPage() {
     </div>
   );
 
-  const renderSeoTab = () => (
-    <div className="space-y-6">
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">SEO Title</label>
-        <input
-          type="text"
-          className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
-          value={settings.seo?.seo_title || ''}
-          onChange={e => handleInputChange('seo', 'seo_title', e.target.value)}
-          placeholder="Default meta title for website"
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">SEO Description</label>
-        <textarea
-          rows={3}
-          className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
-          value={settings.seo?.seo_description || ''}
-          onChange={e => handleInputChange('seo', 'seo_description', e.target.value)}
-          placeholder="Default meta description for SEO"
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">SEO Keywords</label>
-        <input
-          type="text"
-          className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
-          value={settings.seo?.seo_keywords || ''}
-          onChange={e => handleInputChange('seo', 'seo_keywords', e.target.value)}
-          placeholder="church, christian, worship, community"
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">OG Image</label>
-        <input
-          type="text"
-          className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
-          value={settings.seo?.og_image || ''}
-          onChange={e => handleInputChange('seo', 'og_image', e.target.value)}
-          placeholder="/images/og-image.jpg"
-        />
-      </div>
-      <div className="flex justify-end pt-4 border-t border-gray-100">
-        <button
-          onClick={() => handleSave('seo')}
-          disabled={saving}
-          className="bg-accent-blue hover:bg-[#152752] text-white px-5 py-2.5 rounded-lg flex items-center gap-2 transition-colors shadow-sm disabled:opacity-50 font-medium"
-        >
-          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-          Save Changes
-        </button>
-      </div>
-    </div>
-  );
 
   const renderLocalizationTab = () => (
     <div className="space-y-6">
@@ -510,7 +454,6 @@ export default function ChurchSettingsPage() {
           {activeTab === 'Contact' && renderContactTab()}
           {activeTab === 'Social Media' && renderSocialTab()}
           {activeTab === 'Service Times' && renderServicesTab()}
-          {activeTab === 'SEO' && renderSeoTab()}
           {activeTab === 'System' && renderLocalizationTab()}
           {activeTab === 'Advanced' && renderAdvancedTab()}
         </div>

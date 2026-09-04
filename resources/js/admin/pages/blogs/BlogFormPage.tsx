@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Save, Loader2, RefreshCw, Sparkles } from 'lucide-react';
+import { ArrowLeft, Save, Loader2, Sparkles } from 'lucide-react';
 import MDEditor from '@uiw/react-md-editor';
 import { blogService } from '../../services/blog.service';
 import type { BlogCategory, CreateBlogPayload } from '../../types';
+import ImageUpload from '../../components/ui/ImageUpload';
 
 const BlogFormPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -13,11 +14,9 @@ const BlogFormPage: React.FC = () => {
   const [categories, setCategories] = useState<BlogCategory[]>([]);
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(isEdit);
-  const [autoSlug, setAutoSlug] = useState(!isEdit);
 
   const [formData, setFormData] = useState<CreateBlogPayload>({
     title: '',
-    slug: '',
     excerpt: '',
     content: '',
     featured_image: '',
@@ -25,10 +24,6 @@ const BlogFormPage: React.FC = () => {
     featured: false,
     status: 'published',
     published_at: new Date().toISOString().slice(0, 16),
-    seo_title: '',
-    seo_description: '',
-    seo_image: '',
-    canonical_url: '',
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -36,14 +31,13 @@ const BlogFormPage: React.FC = () => {
   useEffect(() => {
     const initData = async () => {
       try {
-        const catData = await blogService.getPublicBlogCategories();
+        const catData = await blogService.getAdminBlogCategories();
         setCategories(catData);
 
         if (isEdit && id) {
-          const blog = await blogService.getBlog(id);
+          const blog = await blogService.getAdminBlog(id);
           setFormData({
             title: blog.title,
-            slug: blog.slug,
             excerpt: blog.excerpt || '',
             content: blog.content || '',
             featured_image: blog.featured_image || '',
@@ -51,10 +45,6 @@ const BlogFormPage: React.FC = () => {
             featured: blog.featured,
             status: blog.status,
             published_at: blog.published_at ? new Date(blog.published_at).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16),
-            seo_title: blog.seo_title || '',
-            seo_description: blog.seo_description || '',
-            seo_image: blog.seo_image || '',
-            canonical_url: blog.canonical_url || '',
           });
         }
       } catch (err: any) {
@@ -72,7 +62,6 @@ const BlogFormPage: React.FC = () => {
     setFormData(prev => ({
       ...prev,
       title: newTitle,
-      slug: autoSlug ? newTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') : prev.slug,
     }));
     if (errors.title) setErrors(prev => ({ ...prev, title: '' }));
   };
@@ -163,37 +152,6 @@ const BlogFormPage: React.FC = () => {
             </div>
 
             <div>
-              <div className="flex items-center justify-between mb-1">
-                <label className="block text-body-xs font-semibold text-neutral-700">
-                  URL Slug
-                </label>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setAutoSlug(true);
-                    setFormData(p => ({
-                      ...p,
-                      slug: p.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
-                    }));
-                  }}
-                  className="text-body-xs text-primary-red hover:underline flex items-center gap-1 font-medium"
-                >
-                  <RefreshCw className="w-3 h-3" /> Auto Generate
-                </button>
-              </div>
-              <input
-                type="text"
-                value={formData.slug || ''}
-                onChange={(e) => {
-                  setAutoSlug(false);
-                  setFormData({ ...formData, slug: e.target.value });
-                }}
-                placeholder="annual-church-retreat-recap"
-                className="w-full px-3.5 py-2 border border-neutral-200 rounded-lg text-body-xs font-mono bg-neutral-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-              />
-            </div>
-
-            <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
                 Excerpt (Short Summary)
               </label>
@@ -202,7 +160,7 @@ const BlogFormPage: React.FC = () => {
                 maxLength={500}
                 value={formData.excerpt || ''}
                 onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
-                placeholder="Brief summary displayed on blog cards and social shares..."
+                placeholder="Brief summary displayed on blog cards..."
                 className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20"
               />
               <span className="text-body-xs text-neutral-400 block text-right">
@@ -222,69 +180,6 @@ const BlogFormPage: React.FC = () => {
                 onChange={(val) => setFormData({ ...formData, content: val || '' })}
                 height={400}
               />
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl border border-neutral-200 p-6 space-y-4 shadow-xs">
-            <h2 className="text-h6 text-neutral-900 font-semibold border-b border-neutral-100 pb-3">
-              SEO Meta Tags
-            </h2>
-
-            <div>
-              <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                SEO Title
-              </label>
-              <input
-                type="text"
-                value={formData.seo_title || ''}
-                onChange={(e) => setFormData({ ...formData, seo_title: e.target.value })}
-                placeholder="Custom title for search engines (defaults to post title)"
-                className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-              />
-            </div>
-
-            <div>
-              <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                SEO Description
-              </label>
-              <textarea
-                rows={3}
-                maxLength={300}
-                value={formData.seo_description || ''}
-                onChange={(e) => setFormData({ ...formData, seo_description: e.target.value })}
-                placeholder="Custom description for search engines and social sharing..."
-                className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-              />
-              <span className="text-body-xs text-neutral-400 block text-right">
-                {(formData.seo_description || '').length}/300
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                  SEO Social Image URL
-                </label>
-                <input
-                  type="url"
-                  value={formData.seo_image || ''}
-                  onChange={(e) => setFormData({ ...formData, seo_image: e.target.value })}
-                  placeholder="https://example.com/og-image.jpg"
-                  className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                  Canonical URL
-                </label>
-                <input
-                  type="url"
-                  value={formData.canonical_url || ''}
-                  onChange={(e) => setFormData({ ...formData, canonical_url: e.target.value })}
-                  placeholder="https://church.com/news/original-post"
-                  className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm"
-                />
-              </div>
             </div>
           </div>
         </div>
@@ -330,7 +225,7 @@ const BlogFormPage: React.FC = () => {
                   className="w-4 h-4 text-primary-red rounded border-neutral-300 focus:ring-primary-red"
                 />
                 <div>
-                  <span className="text-body-sm font-semibold text-neutral-900 block flex items-center gap-1">
+                  <span className="text-body-sm font-semibold text-neutral-900 flex items-center gap-1">
                     <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Featured Post
                   </span>
                   <span className="text-body-xs text-neutral-500 block">
@@ -361,21 +256,13 @@ const BlogFormPage: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Featured Image URL
-              </label>
-              <input
-                type="url"
-                value={formData.featured_image || ''}
-                onChange={(e) => setFormData({ ...formData, featured_image: e.target.value })}
-                placeholder="https://example.com/blog-cover.jpg"
-                className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm"
+              <ImageUpload
+                value={formData.featured_image}
+                onChange={(url) => setFormData({ ...formData, featured_image: url })}
+                folder="blogs"
+                label="Featured Image"
+                helperText="Upload a cover image for this blog post."
               />
-              {formData.featured_image && (
-                <div className="mt-2 rounded-lg overflow-hidden border border-neutral-200 h-32 bg-neutral-900 flex items-center justify-center">
-                  <img src={formData.featured_image} alt="Featured preview" className="w-full h-full object-cover" />
-                </div>
-              )}
             </div>
           </div>
 

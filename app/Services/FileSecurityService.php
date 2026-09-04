@@ -57,8 +57,8 @@ class FileSecurityService
             $errors[] = "File has multiple extensions which is not allowed";
         }
 
-        // Check for suspicious characters in filename
-        if (preg_match('/[^a-zA-Z0-9._-]/', $filename)) {
+        // Check for directory traversal and null bytes in filename
+        if (str_contains($filename, '..') || str_contains($filename, '/') || str_contains($filename, '\\') || str_contains($filename, "\0")) {
             $errors[] = "Filename contains invalid characters";
         }
 

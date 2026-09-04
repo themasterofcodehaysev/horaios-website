@@ -18,21 +18,37 @@ class SongPolicy
             return true;
         }
 
+        if ($user !== null && $user->isSuperAdmin()) {
+            return true;
+        }
+
         return $user !== null && ($user->isEditor() || $user->hasPermission('songs.manage'));
     }
 
     public function create(User $user): bool
     {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         return $user->isEditor() || $user->hasPermission('songs.manage');
     }
 
     public function update(User $user, Song $song): bool
     {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         return $user->isEditor() || $user->hasPermission('songs.manage');
     }
 
     public function delete(User $user, Song $song): bool
     {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         return $user->isAdmin() || $user->hasPermission('songs.manage');
     }
 }

@@ -12,7 +12,6 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
             $table->string('title');
-            $table->string('slug')->unique();
             $table->text('summary')->nullable();
             $table->longText('description')->nullable();
             $table->foreignId('speaker_id')->nullable()->constrained('speakers')->nullOnDelete();

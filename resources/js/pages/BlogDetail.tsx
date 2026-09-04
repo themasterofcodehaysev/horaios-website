@@ -16,7 +16,7 @@ import { placeholderImage } from '../lib/placeholderImage';
 import type { BlogPostPublic } from '../types';
 
 export const BlogDetailPage: React.FC = () => {
-  const { slug } = useParams<{ slug: string }>();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [post, setPost] = useState<BlogPostPublic | null>(null);
   const [relatedPosts, setRelatedPosts] = useState<BlogPostPublic[]>([]);
@@ -44,15 +44,15 @@ export const BlogDetailPage: React.FC = () => {
 
   useEffect(() => {
     const fetchPost = async () => {
-      if (!slug) return;
+      if (!id) return;
       try {
         setLoading(true);
         setError(null);
-        const data = await blogService.getPublicPostDetail(slug);
+        const data = await blogService.getPublicPostDetail(id);
         setPost(data);
 
         try {
-          const related = await blogService.getRelatedPosts(slug);
+          const related = await blogService.getRelatedPosts(id);
           setRelatedPosts(related.slice(0, 3));
         } catch {
           setRelatedPosts([]);
@@ -69,7 +69,7 @@ export const BlogDetailPage: React.FC = () => {
       }
     };
     fetchPost();
-  }, [slug]);
+  }, [id]);
 
   useEffect(() => {
     if (post) {
@@ -149,7 +149,7 @@ export const BlogDetailPage: React.FC = () => {
           <Breadcrumb
             items={[
               { label: 'News', href: '/news' },
-              ...(post.category ? [{ label: post.category.name, href: `/news?category=${post.category.slug}` }] : []),
+              ...(post.category ? [{ label: post.category.name, href: `/news?category=${post.category.id}` }] : []),
               { label: post.title },
             ]}
           />
@@ -252,7 +252,7 @@ export const BlogDetailPage: React.FC = () => {
               {relatedPosts.map((rel) => (
                 <Link
                   key={rel.id}
-                  to={`/news/${rel.slug}`}
+                  to={`/news/${rel.id}`}
                   className="group h-full"
                 >
                   <BlogCard

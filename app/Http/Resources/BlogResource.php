@@ -13,7 +13,6 @@ class BlogResource extends JsonResource
             'id'             => $this->id,
             'uuid'           => $this->uuid,
             'title'          => $this->title,
-            'slug'           => $this->slug,
             'excerpt'        => $this->excerpt,
             'content'        => $this->content,
             'featured_image' => $this->featured_image,
@@ -22,10 +21,6 @@ class BlogResource extends JsonResource
             'published_at'   => $this->published_at?->toISOString(),
             'category_id'    => $this->category_id,
             'category'       => new BlogCategoryResource($this->whenLoaded('category')),
-            'seo_title'       => $this->seo_title,
-            'seo_description' => $this->seo_description,
-            'seo_image'       => $this->seo_image,
-            'canonical_url'   => $this->canonical_url,
             'created_by'      => $this->whenLoaded('creator', fn() => [
                 'id'           => $this->creator->id,
                 'display_name' => $this->creator->display_name,

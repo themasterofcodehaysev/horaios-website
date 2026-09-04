@@ -10,6 +10,7 @@ import { songService } from '../admin/services/song.service';
 import type { SongItem } from '../admin/types';
 import { placeholderImage } from '../lib/placeholderImage';
 import { Calendar, Music, BookOpen, Users, Heart, MapPin } from 'lucide-react';
+import { useSiteSettings } from '../context/SiteSettingsContext';
 
 // Placeholder gallery content pending a real church gallery/media API endpoint.
 const GALLERY_ITEMS: GalleryItem[] = [
@@ -23,6 +24,7 @@ const GALLERY_ITEMS: GalleryItem[] = [
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
+  const { settings } = useSiteSettings();
   const [featuredSongs, setFeaturedSongs] = useState<SongItem[]>([]);
 
   useEffect(() => {
@@ -74,44 +76,20 @@ export const HomePage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <Card padding="lg" className="text-center">
-              <div className="text-5xl mb-4">⛪</div>
-              <h3 className="text-h6 font-semibold text-neutral-900 mb-2">
-                Sunday Morning
-              </h3>
-              <p className="text-body-base text-primary-red font-medium mb-2">
-                09:00 AM & 11:00 AM
-              </p>
-              <p className="text-body-sm text-neutral-600">
-                Main Worship Service
-              </p>
-            </Card>
-
-            <Card padding="lg" className="text-center">
-              <div className="text-5xl mb-4">🙏</div>
-              <h3 className="text-h6 font-semibold text-neutral-900 mb-2">
-                Wednesday Evening
-              </h3>
-              <p className="text-body-base text-primary-red font-medium mb-2">
-                07:00 PM
-              </p>
-              <p className="text-body-sm text-neutral-600">
-                Prayer & Bible Study
-              </p>
-            </Card>
-
-            <Card padding="lg" className="text-center">
-              <div className="text-5xl mb-4">🎵</div>
-              <h3 className="text-h6 font-semibold text-neutral-900 mb-2">
-                Special Events
-              </h3>
-              <p className="text-body-base text-primary-red font-medium mb-2">
-                See Calendar
-              </p>
-              <p className="text-body-sm text-neutral-600">
-                Seasonal celebrations & gatherings
-              </p>
-            </Card>
+            {settings.parsedServiceTimes.map((item, idx) => (
+              <Card key={idx} padding="lg" className="text-center">
+                <div className="text-5xl mb-4">{idx === 0 ? '⛪' : idx === 1 ? '🙏' : '🎵'}</div>
+                <h3 className="text-h6 font-semibold text-neutral-900 mb-2">
+                  {item.day}
+                </h3>
+                <p className="text-body-base text-primary-red font-medium mb-2">
+                  {item.time}
+                </p>
+                <p className="text-body-sm text-neutral-600">
+                  {item.type}
+                </p>
+              </Card>
+            ))}
           </div>
 
           <div className="text-center">

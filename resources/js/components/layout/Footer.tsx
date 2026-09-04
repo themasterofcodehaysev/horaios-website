@@ -1,13 +1,14 @@
 import React from 'react';
 import { Mail, MapPin, Phone } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { CHURCH_INFO } from '../../constants';
-import { FacebookIcon, YoutubeIcon } from '../common/SocialIcons';
+import { FacebookIcon, YoutubeIcon, TelegramIcon, InstagramIcon } from '../common/SocialIcons';
+import { useSiteSettings } from '../../context/SiteSettingsContext';
 
 interface FooterProps {}
 
 const Footer: React.FC<FooterProps> = () => {
   const currentYear = new Date().getFullYear();
+  const { settings } = useSiteSettings();
 
   const quickLinks = [
     { label: 'Home', href: '/' },
@@ -22,6 +23,10 @@ const Footer: React.FC<FooterProps> = () => {
     { label: 'Contact', href: '/contact' },
   ];
 
+  const copyrightText = settings.copyright
+    ? `© ${currentYear} ${settings.copyright}`
+    : `© ${currentYear} ${settings.church_name}. All rights reserved.`;
+
   return (
     <footer className="relative z-10 bg-gradient-footer text-white border-t border-white/10">
       {/* Main Footer */}
@@ -31,37 +36,63 @@ const Footer: React.FC<FooterProps> = () => {
           <div>
             <Link to="/" className="flex items-center gap-3 mb-4">
               <img
-                src="/images/logo.png"
-                alt="Horaios Baptist Church Logo"
+                src={settings.logo || '/images/logo.png'}
+                alt={`${settings.church_name} Logo`}
                 className="w-12 h-12 rounded-full object-contain bg-white p-0.5"
               />
               <div>
-                <h3 className="text-h6 font-bold tracking-wide">HORAIOS BAPTIST CHURCH</h3>
+                <h3 className="text-h6 font-bold tracking-wide">{settings.church_name.toUpperCase()}</h3>
                 <p className="text-label-sm tracking-widest text-primary-light-red uppercase">CAMBODIA</p>
               </div>
             </Link>
             <p className="text-body-sm text-white/80 mb-6">
-              A community of faith serving God and loving our neighbors in Phnom Penh, Cambodia.
+              {settings.footer_text}
             </p>
             <div className="flex gap-3">
-              <a
-                href={CHURCH_INFO.socialMedia.facebook}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Follow Horaios Baptist Church on Facebook"
-                className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors"
-              >
-                <FacebookIcon className="w-5 h-5" />
-              </a>
-              <a
-                href={CHURCH_INFO.socialMedia.youtube}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Subscribe to Horaios Ministry Cambodia on YouTube"
-                className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors"
-              >
-                <YoutubeIcon className="w-5 h-5" />
-              </a>
+              {settings.facebook && (
+                <a
+                  href={settings.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Follow ${settings.church_name} on Facebook`}
+                  className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors"
+                >
+                  <FacebookIcon className="w-5 h-5" />
+                </a>
+              )}
+              {settings.youtube && (
+                <a
+                  href={settings.youtube}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Subscribe to ${settings.church_name} on YouTube`}
+                  className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors"
+                >
+                  <YoutubeIcon className="w-5 h-5" />
+                </a>
+              )}
+              {settings.telegram && (
+                <a
+                  href={settings.telegram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Join ${settings.church_name} on Telegram`}
+                  className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors"
+                >
+                  <TelegramIcon className="w-5 h-5" />
+                </a>
+              )}
+              {settings.instagram && (
+                <a
+                  href={settings.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Follow ${settings.church_name} on Instagram`}
+                  className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors"
+                >
+                  <InstagramIcon className="w-5 h-5" />
+                </a>
+              )}
             </div>
           </div>
 
@@ -103,22 +134,34 @@ const Footer: React.FC<FooterProps> = () => {
           <div>
             <h4 className="text-h6 font-semibold mb-4">Get In Touch</h4>
             <ul className="space-y-3">
-              <li className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 mt-0.5 flex-shrink-0" />
-                <span className="text-body-sm text-white/80">Phnom Penh, Cambodia</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <Phone className="w-5 h-5 mt-0.5 flex-shrink-0" />
-                <a href="tel:+" className="text-body-sm text-white/80 hover:text-white transition-colors">
-                  +855 (0) 23 XXX XXXX
-                </a>
-              </li>
-              <li className="flex items-start gap-3">
-                <Mail className="w-5 h-5 mt-0.5 flex-shrink-0" />
-                <a href="mailto:info@horaiosbaptist.org" className="text-body-sm text-white/80 hover:text-white transition-colors">
-                  info@horaiosbaptist.org
-                </a>
-              </li>
+              {settings.address && (
+                <li className="flex items-start gap-3">
+                  <MapPin className="w-5 h-5 mt-0.5 flex-shrink-0" />
+                  <span className="text-body-sm text-white/80">{settings.address}</span>
+                </li>
+              )}
+              {settings.phone && (
+                <li className="flex items-start gap-3">
+                  <Phone className="w-5 h-5 mt-0.5 flex-shrink-0" />
+                  <a
+                    href={`tel:${settings.phone.replace(/[^0-9+]/g, '')}`}
+                    className="text-body-sm text-white/80 hover:text-white transition-colors"
+                  >
+                    {settings.phone}
+                  </a>
+                </li>
+              )}
+              {settings.email && (
+                <li className="flex items-start gap-3">
+                  <Mail className="w-5 h-5 mt-0.5 flex-shrink-0" />
+                  <a
+                    href={`mailto:${settings.email}`}
+                    className="text-body-sm text-white/80 hover:text-white transition-colors"
+                  >
+                    {settings.email}
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
         </div>
@@ -130,9 +173,7 @@ const Footer: React.FC<FooterProps> = () => {
       {/* Bottom Footer */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-body-sm text-white/60">
-            &copy; {currentYear} Horaios Baptist Church. All rights reserved.
-          </p>
+          <p className="text-body-sm text-white/60">{copyrightText}</p>
           <div className="flex gap-4">
             <Link to="#" className="text-body-sm text-white/60 hover:text-white transition-colors">
               Privacy Policy
@@ -148,3 +189,4 @@ const Footer: React.FC<FooterProps> = () => {
 };
 
 export default Footer;
+

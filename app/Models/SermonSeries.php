@@ -17,7 +17,6 @@ class SermonSeries extends Model
     protected $fillable = [
         'uuid',
         'name',
-        'slug',
         'description',
         'thumbnail',
         'display_order',
@@ -39,36 +38,7 @@ class SermonSeries extends Model
             if (empty($series->uuid)) {
                 $series->uuid = (string) Str::uuid();
             }
-            if (empty($series->slug)) {
-                $series->slug = static::generateUniqueSlug($series->name);
-            }
         });
-
-        static::updating(function ($series) {
-            if ($series->isDirty('name') && !$series->isDirty('slug')) {
-                $series->slug = static::generateUniqueSlug($series->name, $series->id);
-            }
-        });
-    }
-
-    public static function generateUniqueSlug(string $name, ?int $ignoreId = null): string
-    {
-        $slug = Str::slug($name);
-        $originalSlug = $slug;
-        $count = 1;
-
-        $query = static::query();
-
-        if (in_array(SoftDeletes::class, class_uses_recursive(static::class), true)) {
-            $query->withTrashed();
-        }
-
-        while ((clone $query)->where('slug', $slug)->when($ignoreId, fn($q) => $q->where('id', '!=', $ignoreId))->exists()) {
-            $slug = "{$originalSlug}-{$count}";
-            $count++;
-        }
-
-        return $slug;
     }
 
     public function sermons(): HasMany

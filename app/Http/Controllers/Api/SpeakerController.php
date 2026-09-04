@@ -34,7 +34,6 @@ class SpeakerController extends BaseApiController
 
         $validated = $request->validate([
             'name'          => 'required|string|max:255',
-            'slug'          => 'nullable|string|max:255|unique:speakers,slug',
             'photo'         => 'nullable|string|max:500',
             'biography'     => 'nullable|string',
             'position'      => 'nullable|string|max:255',
@@ -65,7 +64,6 @@ class SpeakerController extends BaseApiController
 
         $validated = $request->validate([
             'name'          => 'sometimes|required|string|max:255',
-            'slug'          => 'nullable|string|max:255|unique:speakers,slug,' . $id,
             'photo'         => 'nullable|string|max:500',
             'biography'     => 'nullable|string',
             'position'      => 'nullable|string|max:255',

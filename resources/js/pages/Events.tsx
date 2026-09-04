@@ -82,7 +82,7 @@ export const EventsPage: React.FC = () => {
       setLoading(true);
       const res = await eventService.getPublicEvents({
         search: searchDebounced || undefined,
-        category_slug: selectedCategory || undefined,
+        category_id: selectedCategory ? Number(selectedCategory) : undefined,
         scope,
         page,
         per_page: 9,
@@ -176,9 +176,9 @@ export const EventsPage: React.FC = () => {
               {categories.map((cat) => (
                 <button
                   key={cat.id}
-                  onClick={() => { setSelectedCategory(cat.slug); setPage(1); }}
+                  onClick={() => { setSelectedCategory(String(cat.id)); setPage(1); }}
                   className={`px-4 py-2 rounded-full text-body-sm font-medium transition-all whitespace-nowrap ${
-                    selectedCategory === cat.slug
+                    selectedCategory === String(cat.id)
                       ? 'bg-primary-red text-white shadow-md'
                       : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
                   }`}
@@ -229,7 +229,7 @@ export const EventsPage: React.FC = () => {
                   {featuredEvents.map((ev) => (
                     <Link
                       key={ev.id}
-                      to={`/events/${ev.slug}`}
+                      to={`/events/${ev.id}`}
                       className="group h-full relative"
                     >
                       <div className="h-full">
@@ -264,7 +264,7 @@ export const EventsPage: React.FC = () => {
               <h2 className="text-h4 font-bold text-neutral-900 flex items-center gap-2">
                 <CalendarDays className="w-5 h-5 text-primary-red" />
                 {scope === 'upcoming' ? 'Upcoming Events' : scope === 'past' ? 'Past Events' : 'All Events'}
-                {selectedCategory && ` — ${categories.find(c => c.slug === selectedCategory)?.name || 'Category'}`}
+                {selectedCategory && ` — ${categories.find(c => String(c.id) === selectedCategory)?.name || 'Category'}`}
                 {searchDebounced && ` matching "${searchDebounced}"`}
               </h2>
               {meta && (
@@ -329,7 +329,7 @@ export const EventsPage: React.FC = () => {
                       {monthEvents.map((ev) => (
                         <Link
                           key={ev.id}
-                          to={`/events/${ev.slug}`}
+                          to={`/events/${ev.id}`}
                           className="group h-full"
                         >
                           <EventCard

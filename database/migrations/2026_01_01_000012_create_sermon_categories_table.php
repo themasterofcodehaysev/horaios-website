@@ -12,7 +12,6 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
             $table->string('name');
-            $table->string('slug')->unique();
             $table->text('description')->nullable();
             $table->unsignedInteger('display_order')->default(0);
             $table->enum('status', ['active', 'inactive'])->default('active');

@@ -5,8 +5,12 @@ import {
 } from 'lucide-react';
 import { homepageService } from '../../services/homepage.service';
 import type { HomepageSection } from '../../types';
+import { useConfirm } from '../../context/ConfirmContext';
+import { useToast } from '../../hooks/useToast';
 
 const HomepageCmsPage: React.FC = () => {
+  const confirm = useConfirm();
+  const { addToast } = useToast();
   const [sections, setSections] = useState<HomepageSection[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -69,12 +73,29 @@ const HomepageCmsPage: React.FC = () => {
   };
 
   const handleInitialize = async () => {
-    if (!confirm('This will create default homepage sections. Continue?')) return;
+    const ok = await confirm({
+      title: 'Initialize Sections',
+      message: 'This will create default homepage sections. Continue?',
+      confirmLabel: 'Initialize',
+      variant: 'primary',
+      icon: 'info',
+    });
+    if (!ok) return;
+
     try {
       await homepageService.initializeDefaultSections();
       fetchSections();
+      addToast({
+        type: 'success',
+        title: 'Sections Initialized',
+        message: 'Default homepage sections have been created.',
+      });
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to initialize sections');
+      addToast({
+        type: 'error',
+        title: 'Failed to initialize sections',
+        message: err?.response?.data?.message || 'Please try again.',
+      });
     }
   };
 

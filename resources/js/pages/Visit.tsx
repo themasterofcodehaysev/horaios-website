@@ -1,32 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Layout } from '../components/layout';
 import { HeroSection } from '../components/sections';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
+import { useSiteSettings } from '../context/SiteSettingsContext';
 
 export const VisitPage: React.FC = () => {
-  const [churchSettings, setChurchSettings] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const { settings } = useSiteSettings();
 
-  useEffect(() => {
-    // Fetch church settings
-    fetch('/api/v1/settings/church/public')
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          setChurchSettings(data.data);
-        }
-      })
-      .catch(error => console.error('Failed to fetch church settings:', error))
-      .finally(() => setLoading(false));
-  }, []);
-
-  const googleMapUrl = churchSettings?.contact?.google_map_url || '';
-  const googleMapDirectionsUrl = churchSettings?.contact?.google_map_directions_url || '';
-  const address = churchSettings?.contact?.address || 'St 348, Boeung Kengkang 3, Boeung Kengkang Phnom Penh, Phnom Penh 12304, Cambodia';
-  const phone = churchSettings?.contact?.phone || '+855 (0) 23 XXX XXXX';
-  const email = churchSettings?.contact?.email || 'info@horaiosbaptist.org';
+  const googleMapUrl = settings.google_map_url || '';
+  const googleMapDirectionsUrl = settings.google_map_directions_url || '';
+  const address = settings.address || 'Phnom Penh, Cambodia';
+  const phone = settings.phone || '';
+  const email = settings.email || '';
 
   return (
     <Layout>
@@ -47,56 +34,24 @@ export const VisitPage: React.FC = () => {
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card padding="lg" className="border-l-4 border-primary-red">
-              <div className="flex items-start gap-4">
-                <Clock className="w-6 h-6 text-primary-red flex-shrink-0 mt-1" />
-                <div>
-                  <h3 className="text-h6 font-semibold text-neutral-900 mb-2">
-                    Sunday Morning
-                  </h3>
-                  <p className="text-body-base font-medium text-primary-red mb-2">
-                    9:00 AM & 11:00 AM
-                  </p>
-                  <p className="text-body-sm text-neutral-600">
-                    Main Worship Service with childcare provided
-                  </p>
+            {settings.parsedServiceTimes.map((item, idx) => (
+              <Card key={idx} padding="lg" className="border-l-4 border-primary-red">
+                <div className="flex items-start gap-4">
+                  <Clock className="w-6 h-6 text-primary-red flex-shrink-0 mt-1" />
+                  <div>
+                    <h3 className="text-h6 font-semibold text-neutral-900 mb-2">
+                      {item.day}
+                    </h3>
+                    <p className="text-body-base font-medium text-primary-red mb-2">
+                      {item.time}
+                    </p>
+                    <p className="text-body-sm text-neutral-600">
+                      {item.type}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </Card>
-
-            <Card padding="lg" className="border-l-4 border-primary-red">
-              <div className="flex items-start gap-4">
-                <Clock className="w-6 h-6 text-primary-red flex-shrink-0 mt-1" />
-                <div>
-                  <h3 className="text-h6 font-semibold text-neutral-900 mb-2">
-                    Wednesday Evening
-                  </h3>
-                  <p className="text-body-base font-medium text-primary-red mb-2">
-                    7:00 PM
-                  </p>
-                  <p className="text-body-sm text-neutral-600">
-                    Prayer Meeting & Bible Study
-                  </p>
-                </div>
-              </div>
-            </Card>
-
-            <Card padding="lg" className="border-l-4 border-success">
-              <div className="flex items-start gap-4">
-                <Clock className="w-6 h-6 text-success flex-shrink-0 mt-1" />
-                <div>
-                  <h3 className="text-h6 font-semibold text-neutral-900 mb-2">
-                    Special Events
-                  </h3>
-                  <p className="text-body-base font-medium text-success mb-2">
-                    Various Times
-                  </p>
-                  <p className="text-body-sm text-neutral-600">
-                    Check calendar for seasonal events
-                  </p>
-                </div>
-              </div>
-            </Card>
+              </Card>
+            ))}
           </div>
         </div>
       </section>

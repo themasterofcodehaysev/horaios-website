@@ -24,36 +24,44 @@ class SermonController extends BaseApiController
             'speaker_id'    => $request->input('speaker_id'),
             'series_id'     => $request->input('series_id'),
             'category_id'   => $request->input('category_id'),
-            'category_slug' => $request->input('category_slug'),
             'featured'      => $request->input('featured'),
         ], $request->input('per_page', 12));
 
         return $this->paginated(SermonResource::collection($sermons), 'Published sermons retrieved');
     }
 
-    public function show(string $identifier): JsonResponse
+    public function show(Request $request, string $identifier): JsonResponse
     {
         $sermon = Sermon::with(['speaker', 'series', 'category'])
             ->where(function ($q) use ($identifier) {
-                $q->where('slug', $identifier)
-                  ->orWhere('uuid', $identifier)
-                  ->orWhere('id', $identifier);
+                $q->where('id', $identifier)
+                  ->orWhere('uuid', $identifier);
             })
             ->firstOrFail();
 
         if ($sermon->status !== 'published') {
-            $this->authorize('view', $sermon);
+            $user = $request->user() ?: auth('sanctum')->user();
+            if (! $user || ! $user->can('view', $sermon)) {
+                throw new \Illuminate\Auth\Access\AuthorizationException();
+            }
         }
 
         return $this->success(new SermonResource($sermon), 'Sermon retrieved');
     }
 
+    public function adminShow(int $id): JsonResponse
+    {
+        $sermon = Sermon::with(['speaker', 'series', 'category'])->findOrFail($id);
+        $this->authorize('update', $sermon);
+
+        return $this->success(new SermonResource($sermon), 'Admin sermon retrieved');
+    }
+
     public function related(string $identifier): JsonResponse
     {
         $sermon = Sermon::with(['speaker', 'series', 'category'])
-            ->where('slug', $identifier)
+            ->where('id', $identifier)
             ->orWhere('uuid', $identifier)
-            ->orWhere('id', $identifier)
             ->firstOrFail();
 
         $related = $this->sermonService->getRelatedSermons($sermon, 5);

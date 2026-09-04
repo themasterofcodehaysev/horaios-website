@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\Ministry;
 use App\Models\User;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Str;
 
 class MinistryService
@@ -25,9 +25,6 @@ class MinistryService
                 });
             })
             ->when(!empty($filters['category_id']), fn($q) => $q->where('category_id', $filters['category_id']))
-            ->when(!empty($filters['category_slug']), function ($q) use ($filters) {
-                $q->whereHas('category', fn($catQ) => $catQ->where('slug', $filters['category_slug']));
-            })
             ->when(isset($filters['featured']) && $filters['featured'] !== '', fn($q) => $q->where('featured', filter_var($filters['featured'], FILTER_VALIDATE_BOOLEAN)))
             ->orderBy('featured', 'desc')
             ->orderBy('display_order', 'asc')
@@ -63,10 +60,6 @@ class MinistryService
         $data['created_by'] = $actingUser?->id;
         $data['updated_by'] = $actingUser?->id;
 
-        if (empty($data['slug'])) {
-            $data['slug'] = Ministry::generateUniqueSlug($data['name']);
-        }
-
         if (($data['status'] ?? 'draft') === 'published' && empty($data['published_at'])) {
             $data['published_at'] = now();
         }
@@ -78,7 +71,7 @@ class MinistryService
             'Ministry',
             (string) $ministry->id,
             null,
-            $ministry->only(['id', 'name', 'slug', 'status', 'featured']),
+            $ministry->only(['id', 'name', 'status', 'featured']),
             $actingUser?->id
         );
 
@@ -87,12 +80,8 @@ class MinistryService
 
     public function updateMinistry(Ministry $ministry, array $data, ?User $actingUser = null): Ministry
     {
-        $oldValues = $ministry->only(['name', 'slug', 'category_id', 'status', 'featured', 'display_order']);
+        $oldValues = $ministry->only(['name', 'category_id', 'status', 'featured', 'display_order']);
         $data['updated_by'] = $actingUser?->id;
-
-        if (!empty($data['name']) && empty($data['slug']) && $data['name'] !== $ministry->name) {
-            $data['slug'] = Ministry::generateUniqueSlug($data['name'], $ministry->id);
-        }
 
         if (isset($data['status']) && $data['status'] === 'published' && empty($ministry->published_at) && empty($data['published_at'])) {
             $data['published_at'] = now();
@@ -105,7 +94,7 @@ class MinistryService
             'Ministry',
             (string) $ministry->id,
             $oldValues,
-            $ministry->only(['name', 'slug', 'category_id', 'status', 'featured', 'display_order']),
+            $ministry->only(['name', 'category_id', 'status', 'featured', 'display_order']),
             $actingUser?->id
         );
 
@@ -118,7 +107,7 @@ class MinistryService
             'delete',
             'Ministry',
             (string) $ministry->id,
-            $ministry->only(['name', 'slug', 'status']),
+            $ministry->only(['name', 'status']),
             null,
             $actingUser?->id
         );
@@ -156,11 +145,11 @@ class MinistryService
 
     public function toggleFeatured(Ministry $ministry, ?User $actingUser = null): Ministry
     {
-        $newFeatured = !$ministry->featured;
-        $action = $newFeatured ? 'feature' : 'unfeature';
+        $newFeatured = !$postFeatured = $ministry->featured;
+        $action = !$postFeatured ? 'feature' : 'unfeature';
 
         $ministry->update([
-            'featured'   => $newFeatured,
+            'featured'   => !$postFeatured,
             'updated_by' => $actingUser?->id,
         ]);
 
@@ -168,8 +157,8 @@ class MinistryService
             $action,
             'Ministry',
             (string) $ministry->id,
-            ['featured' => !$newFeatured],
-            ['featured' => $newFeatured],
+            ['featured' => $postFeatured],
+            ['featured' => !$postFeatured],
             $actingUser?->id
         );
 
@@ -179,12 +168,10 @@ class MinistryService
     public function duplicateMinistry(Ministry $ministry, ?User $actingUser = null): Ministry
     {
         $newName = $ministry->name . ' (Copy)';
-        $newSlug = Ministry::generateUniqueSlug($newName);
 
         $duplicate = Ministry::create([
             'uuid'           => (string) Str::uuid(),
             'name'           => $newName,
-            'slug'           => $newSlug,
             'description'    => $ministry->description,
             'leader'         => $ministry->leader,
             'email'          => $ministry->email,
@@ -231,7 +218,7 @@ class MinistryService
             $actingUser?->id
         );
 
-        return $ministry->fresh(['category']);
+        return $ministry;
     }
 
     public function getRelatedMinistries(Ministry $ministry, int $limit = 5)
@@ -246,7 +233,6 @@ class MinistryService
             })
             ->orderBy('featured', 'desc')
             ->orderBy('display_order', 'asc')
-            ->orderBy('published_at', 'desc')
             ->limit($limit)
             ->get();
     }

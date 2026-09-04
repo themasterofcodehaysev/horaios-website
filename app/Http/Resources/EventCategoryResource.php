@@ -13,7 +13,6 @@ class EventCategoryResource extends JsonResource
             'id'                   => $this->id,
             'uuid'                 => $this->uuid,
             'name'                 => $this->name,
-            'slug'                 => $this->slug,
             'description'          => $this->description,
             'display_order'        => $this->display_order,
             'status'               => $this->status,

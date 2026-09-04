@@ -13,7 +13,6 @@ class SpeakerResource extends JsonResource
             'id'            => $this->id,
             'uuid'          => $this->uuid,
             'name'          => $this->name,
-            'slug'          => $this->slug,
             'photo'         => $this->photo,
             'biography'     => $this->biography,
             'position'      => $this->position,

@@ -6,9 +6,13 @@ import {
 } from 'lucide-react';
 import { eventService } from '../../services/event.service';
 import type { EventItem, EventCategory, PaginatedResponse, EventFilters } from '../../types';
+import { useConfirm } from '../../context/ConfirmContext';
+import { useToast } from '../../hooks/useToast';
 
 const EventsListPage: React.FC = () => {
   const navigate = useNavigate();
+  const confirm = useConfirm();
+  const { addToast } = useToast();
   const [events, setEvents] = useState<EventItem[]>([]);
   const [categories, setCategories] = useState<EventCategory[]>([]);
   const [meta, setMeta] = useState<PaginatedResponse<EventItem>['meta'] | null>(null);
@@ -54,39 +58,90 @@ const EventsListPage: React.FC = () => {
     try {
       const updated = await eventService.toggleFeaturedEvent(ev.id);
       setEvents(prev => prev.map(e => e.id === ev.id ? updated : e));
+      addToast({
+        type: 'success',
+        title: updated.featured ? 'Event Featured' : 'Event Unfeatured',
+        message: `"${ev.title}" has been ${updated.featured ? 'featured' : 'unfeatured'}.`,
+      });
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to toggle featured state');
+      addToast({
+        type: 'error',
+        title: 'Failed to update event',
+        message: err?.response?.data?.message || 'Failed to toggle featured state',
+      });
     }
   };
 
   const handleDuplicate = async (ev: EventItem) => {
     try {
-      const duplicate = await eventService.duplicateEvent(ev.id);
-      navigate(`/admin/events/${duplicate.id}/edit`);
+      await eventService.duplicateEvent(ev.id);
+      fetchEvents();
+      addToast({
+        type: 'success',
+        title: 'Event Duplicated',
+        message: `A draft copy of "${ev.title}" has been created.`,
+      });
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to duplicate event');
+      addToast({
+        type: 'error',
+        title: 'Failed to duplicate event',
+        message: err?.response?.data?.message || 'Please try again.',
+      });
     }
   };
 
   const handleCancel = async (ev: EventItem) => {
-    if (!confirm(`Are you sure you want to cancel "${ev.title}"?`)) return;
+    const ok = await confirm({
+      title: 'Cancel Event',
+      message: (
+        <span>
+          Are you sure you want to cancel <strong>"{ev.title}"</strong>?
+          <br />
+          This will update the event status to cancelled.
+        </span>
+      ),
+      confirmLabel: 'Cancel Event',
+      variant: 'warning',
+      icon: 'ban',
+    });
+    if (!ok) return;
+
     try {
       const updated = await eventService.cancelEvent(ev.id);
       setEvents(prev => prev.map(e => e.id === ev.id ? updated : e));
+      addToast({
+        type: 'success',
+        title: 'Event Cancelled',
+        message: `"${ev.title}" has been marked as cancelled.`,
+      });
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to cancel event');
+      addToast({
+        type: 'error',
+        title: 'Failed to cancel event',
+        message: err?.response?.data?.message || 'Please try again.',
+      });
     }
   };
 
   const handleDelete = async () => {
     if (!deleteModal.event) return;
+    const title = deleteModal.event.title;
     try {
       setDeleting(true);
       await eventService.deleteEvent(deleteModal.event.id);
       setDeleteModal({ open: false, event: null });
       fetchEvents();
+      addToast({
+        type: 'success',
+        title: 'Event Deleted',
+        message: `"${title}" has been deleted.`,
+      });
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to delete event');
+      addToast({
+        type: 'error',
+        title: 'Failed to delete event',
+        message: err?.response?.data?.message || 'Please try again.',
+      });
     } finally {
       setDeleting(false);
     }
@@ -310,7 +365,7 @@ const EventsListPage: React.FC = () => {
 
                   <div className="flex items-center justify-end gap-1">
                     <a
-                      href={`/events/${ev.slug}`}
+                      href={`/events/${ev.id}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="p-1.5 text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 rounded-lg transition-colors"

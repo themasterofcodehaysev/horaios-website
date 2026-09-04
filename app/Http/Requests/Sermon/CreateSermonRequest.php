@@ -24,7 +24,6 @@ class CreateSermonRequest extends FormRequest
     {
         return [
             'title'               => ['required', 'string', 'max:255'],
-            'slug'                => ['nullable', 'string', 'max:255', 'unique:sermons,slug'],
             'summary'             => ['nullable', 'string', 'max:1000'],
             'description'         => ['nullable', 'string'],
             'speaker_id'          => ['nullable', 'integer', 'exists:speakers,id'],

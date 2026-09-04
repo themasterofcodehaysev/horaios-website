@@ -12,7 +12,6 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
             $table->string('name');
-            $table->string('slug')->unique();
             $table->string('photo')->nullable();
             $table->text('biography')->nullable();
             $table->string('position')->nullable();

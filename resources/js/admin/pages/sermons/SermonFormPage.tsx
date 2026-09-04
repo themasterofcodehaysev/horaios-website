@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Save, Loader2, RefreshCw, Sparkles } from 'lucide-react';
+import { ArrowLeft, Save, Loader2, Sparkles } from 'lucide-react';
 import MDEditor from '@uiw/react-md-editor';
 import { sermonService } from '../../services/sermon.service';
 import type { Speaker, SermonSeries, SermonCategory, CreateSermonPayload } from '../../types';
+import ImageUpload from '../../components/ui/ImageUpload';
 
 const SermonFormPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -16,11 +17,9 @@ const SermonFormPage: React.FC = () => {
 
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(isEdit);
-  const [autoSlug, setAutoSlug] = useState(!isEdit);
 
   const [formData, setFormData] = useState<CreateSermonPayload>({
     title: '',
-    slug: '',
     summary: '',
     description: '',
     speaker_id: null,
@@ -43,17 +42,16 @@ const SermonFormPage: React.FC = () => {
         const [spData, seData, caData] = await Promise.all([
           sermonService.getAdminSpeakers(),
           sermonService.getAdminSeries(),
-          sermonService.getPublicCategories(),
+          sermonService.getAdminCategories(),
         ]);
         setSpeakers(spData);
         setSeriesList(seData);
         setCategories(caData);
 
         if (isEdit && id) {
-          const sermon = await sermonService.getSermon(id);
+          const sermon = await sermonService.getAdminSermon(id);
           setFormData({
             title: sermon.title,
-            slug: sermon.slug,
             summary: sermon.summary || '',
             description: sermon.description || '',
             speaker_id: sermon.speaker_id,
@@ -83,7 +81,6 @@ const SermonFormPage: React.FC = () => {
     setFormData(prev => ({
       ...prev,
       title: newTitle,
-      slug: autoSlug ? newTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') : prev.slug,
     }));
     if (errors.title) setErrors(prev => ({ ...prev, title: '' }));
   };
@@ -132,7 +129,6 @@ const SermonFormPage: React.FC = () => {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6 animate-fade-in pb-12">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
@@ -144,7 +140,7 @@ const SermonFormPage: React.FC = () => {
           </button>
           <div>
             <h1 className="text-h3 text-neutral-900 font-bold">
-              {isEdit ? 'Edit Sermon' : 'Create New Sermon'}
+              {isEdit ? 'Edit Sermon' : 'Add New Sermon'}
             </h1>
             <p className="text-body-xs text-neutral-500">
               {isEdit ? 'Update sermon details, scripture notes, video links, or status' : 'Publish a new sermon message to the church website'}
@@ -177,38 +173,6 @@ const SermonFormPage: React.FC = () => {
                 }`}
               />
               {errors.title && <p className="text-body-xs text-red-500 mt-1">{errors.title}</p>}
-            </div>
-
-            {/* Slug */}
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <label className="block text-body-xs font-semibold text-neutral-700">
-                  URL Slug
-                </label>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setAutoSlug(true);
-                    setFormData(p => ({
-                      ...p,
-                      slug: p.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
-                    }));
-                  }}
-                  className="text-body-xs text-primary-red hover:underline flex items-center gap-1 font-medium"
-                >
-                  <RefreshCw className="w-3 h-3" /> Auto Generate
-                </button>
-              </div>
-              <input
-                type="text"
-                value={formData.slug || ''}
-                onChange={(e) => {
-                  setAutoSlug(false);
-                  setFormData({ ...formData, slug: e.target.value });
-                }}
-                placeholder="unashamed-of-the-gospel"
-                className="w-full px-3.5 py-2 border border-neutral-200 rounded-lg text-body-xs font-mono bg-neutral-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-              />
             </div>
 
             {/* Summary */}
@@ -320,7 +284,7 @@ const SermonFormPage: React.FC = () => {
               </label>
               <input
                 type="number"
-                min="0"
+                min={0}
                 value={formData.display_order || 0}
                 onChange={(e) => setFormData({ ...formData, display_order: Number(e.target.value) })}
                 className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm"
@@ -396,21 +360,13 @@ const SermonFormPage: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Thumbnail Image URL
-              </label>
-              <input
-                type="url"
-                value={formData.thumbnail || ''}
-                onChange={(e) => setFormData({ ...formData, thumbnail: e.target.value })}
-                placeholder="https://example.com/thumbnail.jpg"
-                className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm"
+              <ImageUpload
+                value={formData.thumbnail}
+                onChange={(url) => setFormData({ ...formData, thumbnail: url })}
+                folder="sermons"
+                label="Thumbnail Image"
+                helperText="Upload a sermon cover or video thumbnail."
               />
-              {formData.thumbnail && (
-                <div className="mt-2 rounded-lg overflow-hidden border border-neutral-200 h-28 bg-neutral-900 flex items-center justify-center">
-                  <img src={formData.thumbnail} alt="Thumbnail preview" className="w-full h-full object-cover" />
-                </div>
-              )}
             </div>
           </div>
 

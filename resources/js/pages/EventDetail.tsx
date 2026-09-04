@@ -61,7 +61,7 @@ const eventStatusConfig: Record<EventStatus, { label: string; className: string;
 };
 
 export const EventDetailPage: React.FC = () => {
-  const { slug } = useParams<{ slug: string }>();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [event, setEvent] = useState<EventPublic | null>(null);
   const [relatedEvents, setRelatedEvents] = useState<EventPublic[]>([]);
@@ -123,15 +123,15 @@ export const EventDetailPage: React.FC = () => {
 
   useEffect(() => {
     const fetchEvent = async () => {
-      if (!slug) return;
+      if (!id) return;
       try {
         setLoading(true);
         setError(null);
-        const data = await eventService.getPublicEventDetail(slug);
+        const data = await eventService.getPublicEventDetail(id);
         setEvent(data);
 
         try {
-          const related = await eventService.getRelatedEvents(slug);
+          const related = await eventService.getRelatedEvents(id);
           setRelatedEvents(related.slice(0, 3));
         } catch {
           setRelatedEvents([]);
@@ -148,7 +148,7 @@ export const EventDetailPage: React.FC = () => {
       }
     };
     fetchEvent();
-  }, [slug]);
+  }, [id]);
 
   useEffect(() => {
     if (event) {
@@ -457,7 +457,7 @@ export const EventDetailPage: React.FC = () => {
               {relatedEvents.map((rel) => (
                 <Link
                   key={rel.id}
-                  to={`/events/${rel.slug}`}
+                  to={`/events/${rel.id}`}
                   className="group h-full"
                 >
                   <EventCard

@@ -2,20 +2,44 @@
 
 namespace App\Http\Requests\User;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
 class UpdateUserRequest extends FormRequest
 {
+    protected ?User $targetUser = null;
+
+    protected function getTargetUser(): ?User
+    {
+        if ($this->targetUser !== null) {
+            return $this->targetUser;
+        }
+
+        $param = $this->route('uuid') ?? $this->route('user');
+
+        if ($param instanceof User) {
+            return $this->targetUser = $param;
+        }
+
+        if (is_string($param)) {
+            return $this->targetUser = User::where('uuid', $param)->orWhere('id', $param)->first();
+        }
+
+        return null;
+    }
+
     public function authorize(): bool
     {
-        return $this->user()->can('update', $this->route('user'));
+        $target = $this->getTargetUser();
+
+        return $target ? $this->user()->can('update', $target) : true;
     }
 
     public function rules(): array
     {
-        $userId = $this->route('user')?->id;
+        $userId = $this->getTargetUser()?->id;
 
         return [
             'first_name' => ['sometimes', 'required', 'string', 'max:255'],

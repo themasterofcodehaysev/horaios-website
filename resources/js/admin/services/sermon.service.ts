@@ -71,6 +71,11 @@ export const sermonService = {
     return data;
   },
 
+  async getAdminSermon(idOrSlug: string | number): Promise<SermonItem> {
+    const { data } = await api.get<ApiResponse<SermonItem>>(`/admin/sermons/${idOrSlug}`);
+    return data.data;
+  },
+
   async getSermon(idOrSlug: string | number): Promise<SermonItem> {
     const { data } = await api.get<ApiResponse<SermonItem>>(`/sermons/${idOrSlug}`);
     return data.data;

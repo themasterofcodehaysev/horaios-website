@@ -63,7 +63,7 @@ export const NewsPage: React.FC = () => {
       setLoading(true);
       const res = await blogService.getPublicPosts({
         search: searchDebounced || undefined,
-        category_slug: selectedCategory || undefined,
+        category_id: selectedCategory ? Number(selectedCategory) : undefined,
         page,
         per_page: 6,
       });
@@ -116,9 +116,9 @@ export const NewsPage: React.FC = () => {
             {categories.map((cat) => (
               <button
                 key={cat.id}
-                onClick={() => { setSelectedCategory(cat.slug); setPage(1); }}
+                onClick={() => { setSelectedCategory(String(cat.id)); setPage(1); }}
                 className={`px-4 py-2 rounded-full text-body-sm font-medium transition-all whitespace-nowrap ${
-                  selectedCategory === cat.slug
+                  selectedCategory === String(cat.id)
                     ? 'bg-primary-red text-white shadow-md'
                     : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
                 }`}
@@ -167,7 +167,7 @@ export const NewsPage: React.FC = () => {
                   {featuredPosts.map((post) => (
                     <Link
                       key={post.id}
-                      to={`/news/${post.slug}`}
+                      to={`/news/${post.id}`}
                       className="group h-full relative"
                     >
                       <div className="h-full">
@@ -198,7 +198,7 @@ export const NewsPage: React.FC = () => {
               <h2 className="text-h4 font-bold text-neutral-900 flex items-center gap-2">
                 <Newspaper className="w-5 h-5 text-primary-red" />
                 {selectedCategory
-                  ? `${categories.find(c => c.slug === selectedCategory)?.name || 'Category'} Articles`
+                  ? `${categories.find(c => String(c.id) === selectedCategory)?.name || 'Category'} Articles`
                   : searchDebounced
                     ? `Search Results for "${searchDebounced}"`
                     : 'Latest News'}
@@ -248,7 +248,7 @@ export const NewsPage: React.FC = () => {
                 {posts.map((post) => (
                   <Link
                     key={post.id}
-                    to={`/news/${post.slug}`}
+                    to={`/news/${post.id}`}
                     className="group h-full"
                   >
                     <BlogCard

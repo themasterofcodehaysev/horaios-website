@@ -34,7 +34,6 @@ class SermonCategoryController extends BaseApiController
 
         $validated = $request->validate([
             'name'          => 'required|string|max:255',
-            'slug'          => 'nullable|string|max:255|unique:sermon_categories,slug',
             'description'   => 'nullable|string',
             'display_order' => 'nullable|integer|min:0',
             'status'        => 'nullable|in:active,inactive',
@@ -61,7 +60,6 @@ class SermonCategoryController extends BaseApiController
 
         $validated = $request->validate([
             'name'          => 'sometimes|required|string|max:255',
-            'slug'          => 'nullable|string|max:255|unique:sermon_categories,slug,' . $id,
             'description'   => 'nullable|string',
             'display_order' => 'nullable|integer|min:0',
             'status'        => 'nullable|in:active,inactive',

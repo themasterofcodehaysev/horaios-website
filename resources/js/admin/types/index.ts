@@ -268,6 +268,7 @@ export interface Toast {
 export interface CreateUserPayload {
   first_name: string;
   last_name: string;
+  display_name?: string;
   email: string;
   phone?: string;
   password: string;
@@ -278,6 +279,7 @@ export interface CreateUserPayload {
 export interface UpdateUserPayload {
   first_name?: string;
   last_name?: string;
+  display_name?: string;
   email?: string;
   phone?: string;
   password?: string;

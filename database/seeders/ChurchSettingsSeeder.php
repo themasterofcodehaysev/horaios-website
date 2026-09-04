@@ -42,12 +42,6 @@ class ChurchSettingsSeeder extends Seeder
             ['key' => 'service_location', 'value' => 'Main Sanctuary', 'type' => 'string', 'group' => 'service_times', 'is_public' => true],
             ['key' => 'pastor_name', 'value' => 'Senior Pastor', 'type' => 'string', 'group' => 'service_times', 'is_public' => true],
 
-            // SEO Settings
-            ['key' => 'seo_title', 'value' => 'Horaios Baptist Church - Phnom Penh, Cambodia', 'type' => 'string', 'group' => 'seo', 'is_public' => true],
-            ['key' => 'seo_description', 'value' => 'Welcome to Horaios Baptist Church in Phnom Penh, Cambodia. Join us for worship, fellowship, and community service.', 'type' => 'string', 'group' => 'seo', 'is_public' => true],
-            ['key' => 'seo_keywords', 'value' => 'church, baptist, phnom penh, cambodia, worship, christian, community', 'type' => 'string', 'group' => 'seo', 'is_public' => true],
-            ['key' => 'og_image', 'value' => '/images/og-image.jpg', 'type' => 'string', 'group' => 'seo', 'is_public' => true],
-
             // Advanced Settings
             ['key' => 'maintenance_mode', 'value' => 'false', 'type' => 'boolean', 'group' => 'advanced', 'is_public' => false],
             ['key' => 'maintenance_message', 'value' => 'We are currently under maintenance. Please check back soon.', 'type' => 'text', 'group' => 'advanced', 'is_public' => false],

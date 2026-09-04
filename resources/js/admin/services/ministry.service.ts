@@ -49,6 +49,11 @@ export const ministryService = {
     return data;
   },
 
+  async getAdminMinistry(idOrSlug: string | number): Promise<MinistryItem> {
+    const { data } = await api.get<ApiResponse<MinistryItem>>(`/admin/ministries/${idOrSlug}`);
+    return data.data;
+  },
+
   async getMinistry(idOrSlug: string | number): Promise<MinistryItem> {
     const { data } = await api.get<ApiResponse<MinistryItem>>(`/ministries/${idOrSlug}`);
     return data.data;

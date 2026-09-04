@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { sermonService } from '../../services/sermon.service';
 import type { Speaker } from '../../types';
+import ImageUpload from '../../components/ui/ImageUpload';
 
 const SpeakersPage: React.FC = () => {
   const [speakers, setSpeakers] = useState<Speaker[]>([]);
@@ -20,7 +21,6 @@ const SpeakersPage: React.FC = () => {
 
   const [formData, setFormData] = useState({
     name: '',
-    slug: '',
     position: '',
     biography: '',
     email: '',
@@ -52,7 +52,6 @@ const SpeakersPage: React.FC = () => {
   const openCreateModal = () => {
     setFormData({
       name: '',
-      slug: '',
       position: '',
       biography: '',
       email: '',
@@ -67,7 +66,6 @@ const SpeakersPage: React.FC = () => {
   const openEditModal = (sp: Speaker) => {
     setFormData({
       name: sp.name,
-      slug: sp.slug,
       position: sp.position || '',
       biography: sp.biography || '',
       email: sp.email || '',
@@ -329,13 +327,12 @@ const SpeakersPage: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-body-xs font-semibold text-neutral-700 mb-1">Photo Image URL</label>
-              <input
-                type="url"
+              <ImageUpload
                 value={formData.photo}
-                onChange={(e) => setFormData({ ...formData, photo: e.target.value })}
-                placeholder="https://example.com/photo.jpg"
-                className="w-full px-3.5 py-2 border border-neutral-200 rounded-lg text-body-sm"
+                onChange={(url) => setFormData({ ...formData, photo: url })}
+                folder="speakers"
+                label="Photo Image"
+                helperText="Upload a speaker profile portrait."
               />
             </div>
 

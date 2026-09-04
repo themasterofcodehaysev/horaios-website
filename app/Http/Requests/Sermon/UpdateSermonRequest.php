@@ -23,11 +23,8 @@ class UpdateSermonRequest extends FormRequest
 
     public function rules(): array
     {
-        $id = $this->route('id');
-
         return [
             'title'               => ['sometimes', 'required', 'string', 'max:255'],
-            'slug'                => ['nullable', 'string', 'max:255', Rule::unique('sermons', 'slug')->ignore($id)],
             'summary'             => ['nullable', 'string', 'max:1000'],
             'description'         => ['nullable', 'string'],
             'speaker_id'          => ['nullable', 'integer', 'exists:speakers,id'],

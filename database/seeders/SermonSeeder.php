@@ -51,7 +51,6 @@ class SermonSeeder extends Seeder
         $speakers = [];
         foreach ($speakersData as $sp) {
             $sp['uuid'] = (string) Str::uuid();
-            $sp['slug'] = Speaker::generateUniqueSlug($sp['name']);
             $speakers[] = Speaker::create($sp);
         }
 
@@ -68,7 +67,6 @@ class SermonSeeder extends Seeder
         $seriesList = [];
         foreach ($seriesData as $se) {
             $se['uuid'] = (string) Str::uuid();
-            $se['slug'] = SermonSeries::generateUniqueSlug($se['name']);
             $se['status'] = 'active';
             $seriesList[] = SermonSeries::create($se);
         }
@@ -85,7 +83,6 @@ class SermonSeeder extends Seeder
         $categories = [];
         foreach ($categoriesData as $ca) {
             $ca['uuid'] = (string) Str::uuid();
-            $ca['slug'] = SermonCategory::generateUniqueSlug($ca['name']);
             $ca['status'] = 'active';
             $categories[] = SermonCategory::create($ca);
         }
@@ -196,7 +193,6 @@ class SermonSeeder extends Seeder
 
         foreach ($sermonsData as $se) {
             $se['uuid'] = (string) Str::uuid();
-            $se['slug'] = Sermon::generateUniqueSlug($se['title']);
             Sermon::create($se);
         }
     }
