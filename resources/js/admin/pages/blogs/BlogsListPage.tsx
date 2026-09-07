@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { blogService } from '../../services/blog.service';
 import type { BlogItem, BlogCategory, PaginatedResponse, BlogFilters } from '../../types';
+import { getImageUrl } from '../../utils/imageUrl';
 import { useToast } from '../../hooks/useToast';
 
 const BlogsListPage: React.FC = () => {
@@ -259,9 +260,9 @@ const BlogsListPage: React.FC = () => {
                     </button>
                   </div>
 
-                  <div className="w-12 h-9 rounded bg-neutral-100 text-white flex items-center justify-center relative overflow-hidden shrink-0">
+                  <div className="w-12 h-9 rounded bg-neutral-100 flex items-center justify-center relative overflow-hidden shrink-0">
                     {blog.featured_image ? (
-                      <img src={blog.featured_image} alt={blog.title} className="w-full h-full object-cover" />
+                      <img src={getImageUrl(blog.featured_image)} alt={blog.title} className="w-full h-full object-cover" />
                     ) : (
                       <FileText className="w-4 h-4 text-neutral-400" />
                     )}

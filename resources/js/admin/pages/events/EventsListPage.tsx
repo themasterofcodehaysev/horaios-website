@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { eventService } from '../../services/event.service';
 import type { EventItem, EventCategory, PaginatedResponse, EventFilters } from '../../types';
+import { getImageUrl } from '../../utils/imageUrl';
 import { useConfirm } from '../../context/ConfirmContext';
 import { useToast } from '../../hooks/useToast';
 
@@ -319,7 +320,7 @@ const EventsListPage: React.FC = () => {
 
                   <div className="w-12 h-9 rounded bg-neutral-100 flex items-center justify-center relative overflow-hidden shrink-0">
                     {ev.featured_image ? (
-                      <img src={ev.featured_image} alt={ev.title} className="w-full h-full object-cover" />
+                      <img src={getImageUrl(ev.featured_image)} alt={ev.title} className="w-full h-full object-cover" />
                     ) : (
                       <Calendar className="w-4 h-4 text-neutral-400" />
                     )}

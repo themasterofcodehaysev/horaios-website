@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { sermonService } from '../../services/sermon.service';
 import type { SermonSeries } from '../../types';
+import { getImageUrl } from '../../utils/imageUrl';
 import ImageUpload from '../../components/ui/ImageUpload';
 
 const SermonSeriesPage: React.FC = () => {
@@ -166,9 +167,9 @@ const SermonSeriesPage: React.FC = () => {
                   {se.display_order}
                 </div>
 
-                <div className="w-12 h-9 rounded bg-neutral-900 text-white flex items-center justify-center overflow-hidden shrink-0">
+                <div className="w-12 h-9 rounded bg-neutral-100 flex items-center justify-center relative overflow-hidden shrink-0">
                   {se.thumbnail ? (
-                    <img src={se.thumbnail} alt={se.name} className="w-full h-full object-cover" />
+                    <img src={getImageUrl(se.thumbnail)} alt={se.name} className="w-full h-full object-cover" />
                   ) : (
                     <ImageIcon className="w-4 h-4 text-neutral-400" />
                   )}

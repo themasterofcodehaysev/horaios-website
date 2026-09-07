@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { ministryService } from '../../services/ministry.service';
 import type { MinistryItem, MinistryCategory, PaginatedResponse, MinistryFilters } from '../../types';
+import { getImageUrl } from '../../utils/imageUrl';
 import { useToast } from '../../hooks/useToast';
 
 const MinistriesListPage: React.FC = () => {
@@ -283,7 +284,7 @@ const MinistriesListPage: React.FC = () => {
 
                   <div className="w-12 h-9 rounded bg-neutral-100 flex items-center justify-center relative overflow-hidden shrink-0">
                     {m.featured_image ? (
-                      <img src={m.featured_image} alt={m.name} className="w-full h-full object-cover" />
+                      <img src={getImageUrl(m.featured_image)} alt={m.name} className="w-full h-full object-cover" />
                     ) : (
                       <Heart className="w-4 h-4 text-neutral-400" />
                     )}

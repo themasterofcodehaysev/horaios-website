@@ -28,15 +28,16 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [localPreview, setLocalPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const blobUrlRef = useRef<string | null>(null);
 
-  // Clean up any generated blob URL on unmount or replace
+  // Clean up blob URL on unmount
   useEffect(() => {
     return () => {
-      if (localPreview && localPreview.startsWith('blob:')) {
-        URL.revokeObjectURL(localPreview);
+      if (blobUrlRef.current && blobUrlRef.current.startsWith('blob:')) {
+        URL.revokeObjectURL(blobUrlRef.current);
       }
     };
-  }, [localPreview]);
+  }, []);
 
   const handleFile = async (file: File) => {
     if (!file) return;
@@ -56,10 +57,11 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
     setProgress(0);
 
     // Create an instant local preview so the user sees the selected image immediately
-    const objectUrl = URL.createObjectURL(file);
-    if (localPreview && localPreview.startsWith('blob:')) {
-      URL.revokeObjectURL(localPreview);
+    if (blobUrlRef.current && blobUrlRef.current.startsWith('blob:')) {
+      URL.revokeObjectURL(blobUrlRef.current);
     }
+    const objectUrl = URL.createObjectURL(file);
+    blobUrlRef.current = objectUrl;
     setLocalPreview(objectUrl);
 
     try {
@@ -67,11 +69,16 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
         setProgress(percent);
       });
       onChange(url);
+      setLocalPreview(url);
     } catch (err: any) {
       console.error('Upload failed:', err);
       const message = err.response?.data?.message || 'Failed to upload image. Please try again.';
       setError(message);
       // Revert preview on failure
+      if (blobUrlRef.current && blobUrlRef.current.startsWith('blob:')) {
+        URL.revokeObjectURL(blobUrlRef.current);
+        blobUrlRef.current = null;
+      }
       setLocalPreview(null);
     } finally {
       setUploading(false);
@@ -112,8 +119,9 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
 
   const handleRemove = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (localPreview && localPreview.startsWith('blob:')) {
-      URL.revokeObjectURL(localPreview);
+    if (blobUrlRef.current && blobUrlRef.current.startsWith('blob:')) {
+      URL.revokeObjectURL(blobUrlRef.current);
+      blobUrlRef.current = null;
     }
     setLocalPreview(null);
     onChange('');
@@ -123,7 +131,8 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
     }
   };
 
-  const displaySrc = localPreview || (value ? getImageUrl(value) : null);
+  const rawSrc = localPreview || value;
+  const displaySrc = rawSrc ? (rawSrc.startsWith('blob:') || rawSrc.startsWith('data:') ? rawSrc : getImageUrl(rawSrc)) : null;
 
   return (
     <div className={`space-y-1.5 ${className}`}>
@@ -144,15 +153,18 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
       />
 
       {displaySrc ? (
-        <div className="relative group rounded-xl border border-gray-200 overflow-hidden bg-gray-50 flex items-center justify-center max-w-md">
+        <div className="relative group rounded-xl border border-gray-200 overflow-hidden bg-gray-50 flex items-center justify-center max-w-md shadow-xs">
           <img
+            key={displaySrc}
             src={displaySrc}
             alt="Uploaded preview"
             className="max-h-56 w-full object-cover rounded-xl"
             onError={(e) => {
-              // Fallback if image fails to load
-              (e.target as HTMLImageElement).src =
-                'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="%239ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>';
+              const target = e.target as HTMLImageElement;
+              if (!target.src.startsWith('data:image/svg+xml')) {
+                target.src =
+                  'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="%239ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>';
+              }
             }}
           />
 

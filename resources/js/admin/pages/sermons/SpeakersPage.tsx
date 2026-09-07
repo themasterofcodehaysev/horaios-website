@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { sermonService } from '../../services/sermon.service';
 import type { Speaker } from '../../types';
+import { getImageUrl } from '../../utils/imageUrl';
 import ImageUpload from '../../components/ui/ImageUpload';
 
 const SpeakersPage: React.FC = () => {
@@ -188,7 +189,7 @@ const SpeakersPage: React.FC = () => {
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-full bg-neutral-100 border border-neutral-200 flex items-center justify-center overflow-hidden shrink-0">
                       {sp.photo ? (
-                        <img src={sp.photo} alt={sp.name} className="w-full h-full object-cover" />
+                        <img src={getImageUrl(sp.photo)} alt={sp.name} className="w-full h-full object-cover" />
                       ) : (
                         <User className="w-6 h-6 text-neutral-400" />
                       )}
