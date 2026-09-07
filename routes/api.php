@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\FooterController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\HomepageController;
+use App\Http\Controllers\Api\LeaderController;
 use App\Http\Controllers\Api\UploadController;
 use App\Http\Controllers\Api\MinistryCategoryController;
 use App\Http\Controllers\Api\MinistryController;
@@ -72,15 +73,24 @@ Route::middleware('compress')->prefix('v1')->group(function () {
     Route::get('sermon-series', [SermonSeriesController::class, 'index'])->name('sermon-series.index');
     Route::get('sermon-categories', [SermonCategoryController::class, 'index'])->name('sermon-categories.index');
 
-    // Public blog posts endpoints
+    // Public leadership team
+    Route::get('leaders', [LeaderController::class, 'index'])->name('leaders.index');
+
+    // Public blog / news posts endpoints
     Route::prefix('blogs')->name('blogs.')->group(function () {
         Route::get('/', [BlogController::class, 'index'])->name('index');
         Route::get('{identifier}', [BlogController::class, 'show'])->name('show');
         Route::get('{identifier}/related', [BlogController::class, 'related'])->name('related');
     });
+    Route::prefix('news')->name('news.')->group(function () {
+        Route::get('/', [BlogController::class, 'index'])->name('index');
+        Route::get('{identifier}', [BlogController::class, 'show'])->name('show');
+        Route::get('{identifier}/related', [BlogController::class, 'related'])->name('related');
+    });
 
-    // Public blog categories endpoint
+    // Public blog / news categories endpoint
     Route::get('blog-categories', [BlogCategoryController::class, 'index'])->name('blog-categories.index');
+    Route::get('news-categories', [BlogCategoryController::class, 'index'])->name('news-categories.index');
 
     // Public events endpoints
     Route::prefix('events')->name('events.')->group(function () {
@@ -272,6 +282,17 @@ Route::middleware('compress')->prefix('v1')->group(function () {
                 Route::get('{id}', [MinistryCategoryController::class, 'show'])->name('show');
                 Route::put('{id}', [MinistryCategoryController::class, 'update'])->name('update');
                 Route::delete('{id}', [MinistryCategoryController::class, 'destroy'])->name('destroy');
+            });
+
+            // Admin Leadership Team management
+            Route::prefix('leaders')->name('leaders.')->group(function () {
+                Route::get('/', [LeaderController::class, 'adminIndex'])->name('index');
+                Route::post('/', [LeaderController::class, 'store'])->name('store');
+                Route::get('{id}', [LeaderController::class, 'show'])->name('show');
+                Route::put('{id}', [LeaderController::class, 'update'])->name('update');
+                Route::delete('{id}', [LeaderController::class, 'destroy'])->name('destroy');
+                Route::patch('{id}/status', [LeaderController::class, 'toggleStatus'])->name('status');
+                Route::post('reorder', [LeaderController::class, 'reorder'])->name('reorder');
             });
 
             // Admin Prayer Requests management

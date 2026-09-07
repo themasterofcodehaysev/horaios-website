@@ -52,9 +52,10 @@ const navGroups: NavGroupDef[] = [
     items: [
       { name: 'Songs', path: '/admin/songs', icon: Music },
       { name: 'Sermons', path: '/admin/sermons', icon: BookOpen },
-      { name: 'Blog', path: '/admin/blogs', icon: FileText },
+      { name: 'News', path: '/admin/news', icon: FileText },
       { name: 'Events', path: '/admin/events', icon: Calendar },
       { name: 'Ministries', path: '/admin/ministries', icon: Heart },
+      { name: 'Leadership Team', path: '/admin/leadership', icon: Users },
     ],
   },
   {

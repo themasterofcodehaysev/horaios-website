@@ -1050,3 +1050,35 @@ export interface SearchResult {
   ministries?: MinistrySearchItem[];
 }
 
+// ============================================================
+// Leadership Team Types
+// ============================================================
+
+export interface Leader {
+  id: number;
+  name: string;
+  role: string;
+  bio: string | null;
+  photo: string | null;
+  email: string | null;
+  phone: string | null;
+  facebook: string | null;
+  display_order: number;
+  status: 'active' | 'inactive';
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateLeaderPayload {
+  name: string;
+  role: string;
+  bio?: string | null;
+  photo?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  facebook?: string | null;
+  display_order?: number;
+  status?: 'active' | 'inactive';
+}
+
+

@@ -48,6 +48,9 @@ const MinistriesListPage = lazy(() => import('./pages/ministries/MinistriesListP
 const MinistryFormPage = lazy(() => import('./pages/ministries/MinistryFormPage'));
 const MinistryCategoriesPage = lazy(() => import('./pages/ministries/MinistryCategoriesPage'));
 
+// Leadership Team Admin Page
+const LeadershipPage = lazy(() => import('./pages/leadership/LeadershipPage'));
+
 // Prayer Requests Module Admin Pages
 const PrayerRequestsListPage = lazy(() => import('./pages/prayer/PrayerRequestsListPage'));
 
@@ -190,6 +193,25 @@ export const AdminRouter: React.FC = () => {
             </Route>
             <Route path="blogs/categories" element={<ProtectedRoute permission="blog.manage" />}>
               <Route index element={<BlogCategoriesPage />} />
+            </Route>
+
+            {/* News Aliases */}
+            <Route path="news" element={<ProtectedRoute permission="blog.manage" />}>
+              <Route index element={<BlogsListPage />} />
+            </Route>
+            <Route path="news/create" element={<ProtectedRoute permission="blog.manage" />}>
+              <Route index element={<BlogFormPage />} />
+            </Route>
+            <Route path="news/:id/edit" element={<ProtectedRoute permission="blog.manage" />}>
+              <Route index element={<BlogFormPage />} />
+            </Route>
+            <Route path="news/categories" element={<ProtectedRoute permission="blog.manage" />}>
+              <Route index element={<BlogCategoriesPage />} />
+            </Route>
+
+            {/* Leadership Team Module */}
+            <Route path="leadership" element={<ProtectedRoute />}>
+              <Route index element={<LeadershipPage />} />
             </Route>
 
             {/* Events Calendar Module */}
