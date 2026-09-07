@@ -115,7 +115,7 @@ export const SermonDetailPage: React.FC = () => {
   if (loading) {
     return (
       <Layout>
-        <div className="max-w-4xl mx-auto py-16 px-4 animate-pulse space-y-6">
+        <div className="max-w-4xl mx-auto pt-28 sm:pt-32 pb-16 px-4 animate-pulse space-y-6">
           <div className="h-6 w-32 bg-neutral-200 rounded" />
           <div className="h-10 w-3/4 bg-neutral-200 rounded" />
           <div className="aspect-video bg-neutral-200 rounded-2xl" />
@@ -128,7 +128,7 @@ export const SermonDetailPage: React.FC = () => {
   if (error || !sermon) {
     return (
       <Layout>
-        <div className="max-w-md mx-auto py-20 px-4 text-center">
+        <div className="max-w-md mx-auto pt-32 pb-20 px-4 text-center">
           <Video className="w-12 h-12 text-neutral-300 mx-auto mb-4" />
           <h2 className="text-h4 font-bold text-neutral-800 mb-2">Sermon Not Found</h2>
           <p className="text-body-sm text-neutral-500 mb-6">{error || 'The requested sermon does not exist or has been removed.'}</p>
@@ -153,7 +153,7 @@ export const SermonDetailPage: React.FC = () => {
         type="article"
         jsonLd={sermonSeo.jsonLd}
       />
-      <article className="max-w-4xl mx-auto py-10 px-4 sm:px-6 space-y-8 animate-fade-in">
+      <article className="max-w-4xl mx-auto pt-28 sm:pt-32 pb-16 px-4 sm:px-6 space-y-8 animate-fade-in">
         {/* Back Link */}
         <div>
           <Link

@@ -64,7 +64,7 @@ export const SongsPage: React.FC = () => {
   return (
     <Layout>
       {/* Hero Header */}
-      <section className="bg-gradient-to-br from-primary-red via-primary-dark-red to-primary-red py-16 px-4 text-white">
+      <section className="bg-gradient-to-br from-primary-red via-primary-dark-red to-primary-red pt-28 sm:pt-32 pb-16 sm:pb-20 px-4 text-white">
         <div className="max-w-5xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-body-xs font-semibold uppercase tracking-wider text-primary-100 mb-4 border border-white/10">
             <Music className="w-3.5 h-3.5 text-primary-300" /> Digital Worship Songbook

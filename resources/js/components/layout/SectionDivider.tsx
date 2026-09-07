@@ -1,15 +1,16 @@
 import React from 'react';
 
 interface SectionDividerProps {
-  /** Flip the wave so it blends from content above into the burgundy background below */
+  /** Flip the wave so it blends from content above into the background below */
   flip?: boolean;
   className?: string;
+  fill?: string;
 }
 
 /**
- * Soft wave transition between content sections and the brand burgundy backdrop.
+ * Solid wave transition between content sections and backgrounds.
  */
-export const SectionDivider: React.FC<SectionDividerProps> = ({ flip = false, className = '' }) => (
+export const SectionDivider: React.FC<SectionDividerProps> = ({ flip = false, className = '', fill = '#FFFFFF' }) => (
   <div className={`relative h-12 md:h-16 overflow-hidden ${className}`} aria-hidden="true">
     <svg
       viewBox="0 0 1440 80"
@@ -18,7 +19,7 @@ export const SectionDivider: React.FC<SectionDividerProps> = ({ flip = false, cl
     >
       <path
         d="M0,32 C240,80 480,0 720,32 C960,64 1200,16 1440,48 L1440,80 L0,80 Z"
-        fill="rgba(255,255,255,0.97)"
+        fill={fill}
       />
     </svg>
   </div>

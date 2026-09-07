@@ -154,7 +154,7 @@ export const SongDetailPage: React.FC = () => {
   if (loading) {
     return (
       <Layout>
-        <div className="max-w-3xl mx-auto py-16 px-4 animate-pulse space-y-6">
+        <div className="max-w-3xl mx-auto pt-28 sm:pt-32 pb-16 px-4 animate-pulse space-y-6">
           <div className="h-6 w-32 bg-neutral-200 rounded" />
           <div className="h-10 w-3/4 bg-neutral-200 rounded" />
           <div className="h-4 w-1/2 bg-neutral-100 rounded" />
@@ -171,7 +171,7 @@ export const SongDetailPage: React.FC = () => {
   if (error || !song) {
     return (
       <Layout>
-        <div className="max-w-md mx-auto py-20 px-4 text-center">
+        <div className="max-w-md mx-auto pt-32 pb-20 px-4 text-center">
           <Music className="w-12 h-12 text-neutral-300 mx-auto mb-4" />
           <h2 className="text-h4 font-bold text-neutral-800 mb-2">Song Not Found</h2>
           <p className="text-body-sm text-neutral-500 mb-6">{error || 'The requested song does not exist or has been removed.'}</p>
@@ -188,75 +188,106 @@ export const SongDetailPage: React.FC = () => {
   // Render Worship Mode Fullscreen Shell
   if (worshipMode) {
     return (
-      <div className="min-h-screen bg-neutral-950 text-neutral-50 flex flex-col justify-between p-4 sm:p-8 animate-fade-in select-none">
+      <div className="fixed inset-0 z-50 bg-neutral-950 text-neutral-100 overflow-y-auto min-h-screen px-4 py-6 sm:px-8 select-none flex flex-col justify-between">
         <Seo
           title={songSeo.title}
           description={songSeo.description}
           canonicalUrl={songSeo.canonicalUrl}
           jsonLd={songSeo.jsonLd}
         />
-        {/* Worship Mode Top Control Bar */}
-        <header className="sticky top-0 z-50 bg-neutral-900/90 backdrop-blur-md border border-neutral-800 rounded-2xl p-3 sm:p-4 mb-8 flex flex-wrap items-center justify-between gap-3 shadow-2xl">
-          <div className="flex items-center gap-3">
+        {/* Worship Mode Sticky Control Bar */}
+        <header className="sticky top-0 z-20 bg-neutral-900/90 backdrop-blur-md border border-neutral-800 rounded-2xl p-3 shadow-2xl mb-8">
+          <div className="flex items-center justify-between gap-2 max-w-4xl mx-auto flex-wrap">
+            {/* Exit button */}
             <button
-              onClick={() => setWorshipMode(false)}
-              className="inline-flex items-center gap-2 px-3.5 py-2 bg-neutral-800 hover:bg-neutral-700 text-white text-body-xs font-bold rounded-xl transition-colors"
+              onClick={() => { setWorshipMode(false); stopAutoScroll(); }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white text-body-xs font-semibold transition-colors"
             >
-              <Minimize2 className="w-4 h-4 text-amber-400" />
-              Exit Worship Mode
+              <Minimize2 className="w-4 h-4 text-amber-400" /> Exit
             </button>
-            <span className="hidden sm:inline-block text-body-xs font-semibold text-amber-400 bg-amber-400/10 px-2.5 py-1 rounded-md">
-              ★ Worship Mode Active
-            </span>
-          </div>
 
-          {/* Reading & Scroll Options in Worship Mode */}
-          <div className="flex items-center gap-2 sm:gap-4">
-            {/* Font Size Controls */}
-            <div className="flex items-center bg-neutral-800 rounded-xl p-1 border border-neutral-700">
-              <button onClick={decreaseFontSize} className="p-1.5 hover:bg-neutral-700 rounded-lg text-neutral-300" title="Decrease Font Size">
-                <AArrowDown className="w-4 h-4" />
-              </button>
-              <span className="text-body-xs font-mono px-2 font-bold text-neutral-200">{fontSize}px</span>
-              <button onClick={increaseFontSize} className="p-1.5 hover:bg-neutral-700 rounded-lg text-neutral-300" title="Increase Font Size">
-                <AArrowUp className="w-4 h-4" />
-              </button>
+            {/* Song title */}
+            <div className="text-center font-bold text-body-sm text-white truncate max-w-[200px] sm:max-w-xs">
+              {song.title} {(song as any).khmer_title && <span className="text-neutral-400 font-normal">({(song as any).khmer_title})</span>}
             </div>
 
-            {/* Auto Scroll Toggle */}
-            <div className="flex items-center gap-1.5 bg-neutral-800 rounded-xl p-1 border border-neutral-700">
-              <button
-                onClick={toggleAutoScroll}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-body-xs font-bold transition-colors ${
-                  isAutoScrolling ? 'bg-amber-500 text-neutral-950' : 'bg-neutral-700 text-white hover:bg-neutral-600'
-                }`}
-              >
-                {isAutoScrolling ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
-                {isAutoScrolling ? 'Pause' : 'Auto Scroll'}
-              </button>
+            {/* Controls */}
+            <div className="flex items-center gap-2">
+              {/* Auto scroll speed controls */}
+              <div className="flex items-center bg-neutral-800 rounded-lg p-0.5 text-body-xs border border-neutral-700">
+                <button
+                  onClick={toggleAutoScroll}
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-md font-semibold transition-all ${
+                    isAutoScrolling
+                      ? 'bg-amber-500 text-neutral-950 shadow-sm'
+                      : 'text-neutral-300 hover:text-white'
+                  }`}
+                  title={isAutoScrolling ? 'Pause auto-scroll' : 'Start auto-scroll'}
+                >
+                  {isAutoScrolling ? <Pause className="w-3.5 h-3.5 fill-current" /> : <Play className="w-3.5 h-3.5 fill-current" />}
+                  <span className="hidden sm:inline">{isAutoScrolling ? 'Pause' : 'Scroll'}</span>
+                </button>
 
-              {/* Speed Buttons */}
-              <button
-                onClick={() => setScrollSpeed(s => (s === 1 ? 1.5 : s === 1.5 ? 2 : 1))}
-                className="px-2 py-1 bg-neutral-700 text-neutral-300 hover:bg-neutral-600 rounded-lg text-body-xs font-mono font-bold"
-                title="Change scroll speed"
-              >
-                {scrollSpeed}x
-              </button>
+                {isAutoScrolling && (
+                  <div className="flex items-center gap-1 px-1 border-l border-neutral-700 ml-1">
+                    <button
+                      onClick={() => setScrollSpeed(s => Math.max(0.5, s - 0.25))}
+                      className="p-1 text-neutral-400 hover:text-white"
+                      title="Slower"
+                    >
+                      -
+                    </button>
+                    <span className="text-[10px] text-amber-400 font-mono w-6 text-center">{scrollSpeed}x</span>
+                    <button
+                      onClick={() => setScrollSpeed(s => Math.min(3, s + 0.25))}
+                      className="p-1 text-neutral-400 hover:text-white"
+                      title="Faster"
+                    >
+                      +
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Font controls */}
+              <div className="flex items-center bg-neutral-800 rounded-lg p-0.5 border border-neutral-700">
+                <button
+                  onClick={decreaseFontSize}
+                  className="p-1.5 text-neutral-400 hover:text-white"
+                  title="Smaller font"
+                >
+                  <Type className="w-3.5 h-3.5" />
+                </button>
+                <span className="text-[10px] text-neutral-400 font-mono px-1">{fontSize}px</span>
+                <button
+                  onClick={increaseFontSize}
+                  className="p-1.5 text-neutral-400 hover:text-white"
+                  title="Larger font"
+                >
+                  <Type className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           </div>
         </header>
 
-        {/* Immersion Lyrics Area */}
-        <main className="max-w-3xl mx-auto w-full flex-1 flex flex-col justify-center py-6 px-2 text-center">
-          <h1 className="text-display-md sm:text-display-xl font-black text-white tracking-tight mb-2">
-            {song.title}
-          </h1>
-          {song.artist && (
-            <p className="text-body-base text-neutral-400 font-medium mb-8">
-              {song.artist}
-            </p>
-          )}
+        {/* Worship Mode Lyrics Content */}
+        <main className="max-w-2xl mx-auto w-full flex-1 flex flex-col justify-center py-4">
+          <div className="text-center mb-8">
+            <h1 className="text-display-md font-bold text-white tracking-tight mb-1">
+              {song.title}
+            </h1>
+            {(song as any).khmer_title && (
+              <h2 className="text-h3 text-primary-200 font-semibold mb-2">
+                {(song as any).khmer_title}
+              </h2>
+            )}
+            <div className="flex items-center justify-center gap-4 text-body-xs text-neutral-400 mt-2">
+              {song.key && <span className="bg-neutral-800 px-2 py-0.5 rounded text-amber-300 font-mono">Key: {song.key}</span>}
+              {song.tempo && <span>Tempo: {song.tempo} BPM</span>}
+              {song.author && <span>By: {song.author}</span>}
+            </div>
+          </div>
 
           <div
             style={{ fontSize: `${fontSize}px`, lineHeight: '1.8' }}
@@ -265,11 +296,6 @@ export const SongDetailPage: React.FC = () => {
             {song.lyrics}
           </div>
         </main>
-
-        {/* Worship Mode Footer */}
-        <footer className="mt-12 text-center text-body-xs text-neutral-500 border-t border-neutral-800 pt-4">
-          Horaios Baptist Church &bull; Worship Mode Active &bull; Phone Screen Optimized
-        </footer>
       </div>
     );
   }
@@ -283,7 +309,7 @@ export const SongDetailPage: React.FC = () => {
         canonicalUrl={songSeo.canonicalUrl}
         jsonLd={songSeo.jsonLd}
       />
-      <article className="max-w-3xl mx-auto py-10 px-4 sm:px-6 space-y-8">
+      <article className="max-w-3xl mx-auto pt-28 sm:pt-32 pb-16 px-4 sm:px-6 space-y-8">
         {/* Top Navigation & Worship Mode Button */}
         <div className="flex items-center justify-between border-b border-neutral-200 pb-4">
           <Link
