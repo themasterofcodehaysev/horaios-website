@@ -18,6 +18,7 @@ const Footer: React.FC<FooterProps> = () => {
     { label: 'Songs', href: '/songs' },
     { label: 'Events', href: '/events' },
     { label: 'News', href: '/news' },
+    { label: 'Prayer Request', href: '/prayer' },
     { label: 'Visit', href: '/visit' },
     { label: 'Give', href: '/give' },
     { label: 'Contact', href: '/contact' },

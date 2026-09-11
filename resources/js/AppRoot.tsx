@@ -16,6 +16,7 @@ import {
   VisitPage,
   GivePage,
   ContactPage,
+  PrayerPage,
   NotFoundPage,
   LoginPage,
   RegisterPage,
@@ -49,6 +50,8 @@ function App() {
           <Route path="/visit" element={<VisitPage />} />
           <Route path="/give" element={<GivePage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/prayer" element={<PrayerPage />} />
+          <Route path="/prayer-requests" element={<PrayerPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />

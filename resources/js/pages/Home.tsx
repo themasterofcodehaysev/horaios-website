@@ -446,7 +446,7 @@ export const HomePage: React.FC = () => {
               <p className="text-body-lg text-white/90 mb-6">
                 Share your prayer needs with our church family. We're here to support and intercede for you.
               </p>
-              <Button variant="default" className="border-2 border-white bg-white text-primary-red hover:bg-white/10 hover:text-white" onClick={() => navigate('/contact')}>
+              <Button variant="default" className="border-2 border-white bg-white text-primary-red hover:bg-white/10 hover:text-white" onClick={() => navigate('/prayer')}>
                 Submit Prayer Request
               </Button>
             </div>

@@ -14,6 +14,7 @@ export { default as BlogDetailPage } from './BlogDetail';
 export { default as VisitPage } from './Visit';
 export { default as GivePage } from './Give';
 export { default as ContactPage } from './Contact';
+export { default as PrayerPage } from './Prayer';
 export { default as NotFoundPage } from './NotFound';
 export { default as LoginPage } from './Login';
 export { default as RegisterPage } from './Register';
