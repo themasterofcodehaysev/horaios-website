@@ -25,11 +25,13 @@ import {
 } from './pages';
 import AdminRouter from './admin/AdminRouter';
 import { SiteSettingsProvider } from './context/SiteSettingsContext';
+import { ScrollToTop } from './components/common/ScrollToTop';
 
 function App() {
   return (
     <SiteSettingsProvider>
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
