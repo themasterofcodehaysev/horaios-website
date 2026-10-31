@@ -11,6 +11,7 @@ import {
   MapPin, 
   Gift, 
   Mail,
+  Music,
   LucideIcon 
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
@@ -63,16 +64,16 @@ export const Navigation: React.FC<NavigationProps> = ({ onLinkClick }) => {
     { label: 'About', href: '/about' },
     { label: 'Ministries', href: '/ministries' },
     { label: 'Sermons', href: '/sermons' },
-    { label: 'Songs', href: '/songs' },
+    { label: 'Events', href: '/events' },
   ];
 
   const moreNavItems: NavItem[] = [
-    { label: 'Events', href: '/events', icon: Calendar, description: 'Upcoming gatherings & services' },
-    { label: 'News', href: '/news', icon: Newspaper, description: 'Church articles & announcements' },
-    { label: 'Prayer Request', href: '/prayer', icon: Heart, description: 'Submit prayer needs to pastoral team' },
-    { label: 'Visit', href: '/visit', icon: MapPin, description: 'Service times & directions' },
-    { label: 'Give', href: '/give', icon: Gift, description: 'Tithe & offering stewardship' },
-    { label: 'Contact', href: '/contact', icon: Mail, description: 'Reach our church office' },
+    { label: 'News & Stories', href: '/news', icon: Newspaper, description: 'Church articles & announcements' },
+    { label: 'Worship & Songs', href: '/songs', icon: Music, description: 'Hymns, lyrics & chords' },
+    { label: 'Plan Your Visit', href: '/visit', icon: MapPin, description: 'Sunday service times & directions to BKK3' },
+    { label: 'Prayer Requests', href: '/prayer', icon: Heart, description: 'Submit confidential prayer needs' },
+    { label: 'Give Online', href: '/give', icon: Gift, description: 'Faithful stewardship & offerings' },
+    { label: 'Contact Us', href: '/contact', icon: Mail, description: 'Reach our church office in BKK3' },
   ];
 
   const [hoveredHref, setHoveredHref] = useState<string | null>(null);

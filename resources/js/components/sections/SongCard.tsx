@@ -31,10 +31,16 @@ export const SongCard: React.FC<SongCardProps> = ({ song, variant = 'grid', clas
               {song.category.name}
             </span>
           )}
-          <h3 className="text-h4 font-bold leading-tight group-hover:text-primary-100 transition-colors mb-2">
+          <h3 
+            className="text-h4 font-bold leading-tight group-hover:text-primary-100 transition-colors mb-2 truncate"
+            title={song.title}
+          >
             {song.title}
           </h3>
-          <p className="text-body-xs text-neutral-300">
+          <p 
+            className="text-body-xs text-neutral-300 line-clamp-2"
+            title={song.artist ? `${song.artist}${song.composer ? ` • ${song.composer}` : ''}` : 'Traditional Worship'}
+          >
             {song.artist || 'Traditional Worship'}
           </p>
         </div>
@@ -65,10 +71,16 @@ export const SongCard: React.FC<SongCardProps> = ({ song, variant = 'grid', clas
             <Star className="w-4 h-4 fill-amber-400 text-amber-400 shrink-0" />
           )}
         </div>
-        <h3 className="text-h5 font-bold text-neutral-900 group-hover:text-primary-red transition-colors leading-snug mb-1">
+        <h3 
+          className="text-h5 font-bold text-neutral-900 group-hover:text-primary-red transition-colors leading-snug mb-1 truncate"
+          title={song.title}
+        >
           {song.title}
         </h3>
-        <p className="text-body-xs text-neutral-500">
+        <p 
+          className="text-body-xs text-neutral-500 line-clamp-2"
+          title={`${song.artist || 'Traditional'}${song.composer ? ` • ${song.composer}` : ''}`}
+        >
           {song.artist || 'Traditional'} {song.composer && `• ${song.composer}`}
         </p>
       </div>

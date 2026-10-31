@@ -2,21 +2,22 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasUuidAndSlug;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Str;
 
 class SermonSeries extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, HasUuidAndSlug, SoftDeletes;
 
     protected $table = 'sermon_series';
 
     protected $fillable = [
         'uuid',
         'name',
+        'slug',
         'description',
         'thumbnail',
         'display_order',
@@ -28,17 +29,6 @@ class SermonSeries extends Model
         return [
             'display_order' => 'integer',
         ];
-    }
-
-    protected static function boot(): void
-    {
-        parent::boot();
-
-        static::creating(function ($series) {
-            if (empty($series->uuid)) {
-                $series->uuid = (string) Str::uuid();
-            }
-        });
     }
 
     public function sermons(): HasMany

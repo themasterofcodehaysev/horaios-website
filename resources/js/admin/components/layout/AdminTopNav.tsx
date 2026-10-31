@@ -1,5 +1,8 @@
 import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
-import { Search, Bell, Menu, User, KeyRound, LogOut, X, Moon, Sun, Globe, Check, Trash2 } from 'lucide-react';
+import {
+  Search, Bell, Menu, User, KeyRound, LogOut, X, Moon, Sun, Globe, Check, Trash2,
+  Music, BookOpen, FileText, Calendar, Heart, Clock, Users as UsersIcon, MessageCircleHeart, Mail
+} from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { searchService } from '../../services/search.service';
 import { notificationService } from '../../services/notification.service';
@@ -11,6 +14,73 @@ type Language = 'en' | 'km';
 const LANGUAGES: Record<Language, string> = {
   en: 'English',
   km: 'ភាសាខ្មែរ',
+};
+
+const SEARCH_TYPE_CONFIG: Record<string, {
+  label: string;
+  icon: React.ReactNode;
+  getUrl: (item: any) => string;
+  getTitle: (item: any) => string;
+  getSubtitle?: (item: any) => string | undefined;
+}> = {
+  songs: {
+    label: 'Songs',
+    icon: <Music className="w-3.5 h-3.5 text-purple-500" />,
+    getUrl: (item) => `/admin/songs/${item.id}/edit`,
+    getTitle: (item) => item.title,
+    getSubtitle: (item) => item.artist,
+  },
+  sermons: {
+    label: 'Sermons',
+    icon: <BookOpen className="w-3.5 h-3.5 text-red-500" />,
+    getUrl: (item) => `/admin/sermons/${item.id}/edit`,
+    getTitle: (item) => item.title,
+  },
+  blogs: {
+    label: 'News Articles',
+    icon: <FileText className="w-3.5 h-3.5 text-cyan-500" />,
+    getUrl: (item) => `/admin/news/${item.id}/edit`,
+    getTitle: (item) => item.title,
+  },
+  events: {
+    label: 'Events',
+    icon: <Calendar className="w-3.5 h-3.5 text-orange-500" />,
+    getUrl: (item) => `/admin/events/${item.id}/edit`,
+    getTitle: (item) => item.title,
+  },
+  ministries: {
+    label: 'Ministries',
+    icon: <Heart className="w-3.5 h-3.5 text-pink-500" />,
+    getUrl: (item) => `/admin/ministries/${item.id}/edit`,
+    getTitle: (item) => item.name,
+  },
+  services: {
+    label: 'Services',
+    icon: <Clock className="w-3.5 h-3.5 text-amber-500" />,
+    getUrl: () => `/admin/services`,
+    getTitle: (item) => item.title,
+    getSubtitle: (item) => item.day ? `${item.day}${item.time ? ' • ' + item.time : ''}` : item.time,
+  },
+  users: {
+    label: 'Users',
+    icon: <UsersIcon className="w-3.5 h-3.5 text-blue-500" />,
+    getUrl: (item) => `/admin/users/${item.id}/edit`,
+    getTitle: (item) => item.display_name || `${item.first_name || ''} ${item.last_name || ''}`.trim() || item.email,
+    getSubtitle: (item) => item.email,
+  },
+  prayer_requests: {
+    label: 'Prayer Requests',
+    icon: <MessageCircleHeart className="w-3.5 h-3.5 text-emerald-500" />,
+    getUrl: () => `/admin/prayer-requests`,
+    getTitle: (item) => item.title,
+  },
+  contact_messages: {
+    label: 'Contact Messages',
+    icon: <Mail className="w-3.5 h-3.5 text-neutral-500" />,
+    getUrl: () => `/admin/contact-messages`,
+    getTitle: (item) => item.subject || 'Contact Inquiry',
+    getSubtitle: (item) => item.name,
+  },
 };
 
 interface AdminTopNavProps {
@@ -219,48 +289,97 @@ export const AdminTopNav: React.FC<AdminTopNavProps> = ({ user, onLogout, onOpen
           </button>
           
           {searchOpen && (
-            <div className={`absolute right-0 mt-2 w-80 rounded-xl p-3 shadow-lg ring-1 ring-black ring-opacity-5 z-50 ${darkMode ? 'bg-slate-800' : 'bg-white'}`}>
+            <div className={`absolute right-0 mt-2 w-80 sm:w-96 rounded-xl p-3 shadow-xl ring-1 ring-black/10 z-50 animate-fade-in ${darkMode ? 'bg-slate-800 border border-slate-700' : 'bg-white border border-neutral-200'}`}>
               <div className="relative">
                 <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${darkMode ? 'text-slate-400' : 'text-neutral-400'}`} />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search everything..."
+                  placeholder="Search songs, sermons, news, users..."
                   className={`w-full pl-9 pr-8 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 ${darkMode ? 'bg-slate-700 border-slate-600 text-white placeholder-slate-400' : 'bg-white border-neutral-300'}`}
                   autoFocus
                 />
                 {searchQuery && (
                   <button
-                    onClick={() => setSearchQuery('')}
-                    className="absolute right-3 top-1/2 -translate-y-1/2"
+                    onClick={() => {
+                      setSearchQuery('');
+                      setSearchResults(null);
+                    }}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-0.5"
                   >
                     <X className={`w-4 h-4 ${darkMode ? 'text-slate-400 hover:text-slate-200' : 'text-neutral-400 hover:text-neutral-600'}`} />
                   </button>
                 )}
               </div>
               {searching && (
-                <div className="mt-2 text-center text-xs text-neutral-500">Searching...</div>
+                <div className="py-4 text-center text-xs text-neutral-500 flex items-center justify-center gap-2">
+                  <div className="w-3.5 h-3.5 border-2 border-primary-red border-t-transparent rounded-full animate-spin" />
+                  <span>Searching everything...</span>
+                </div>
               )}
               {searchResults && !searching && (
-                <div className="mt-2 max-h-64 overflow-y-auto">
+                <div className="mt-2 max-h-80 overflow-y-auto divide-y divide-neutral-100 dark:divide-slate-700">
                   {Object.entries(searchResults).map(([type, items]) => {
-                    const typedItems = items as Array<{ id: number; title?: string; subject?: string; name?: string }>;
-                    if (typedItems.length === 0) return null;
-                    
+                    const typedItems = (items || []) as any[];
+                    if (!Array.isArray(typedItems) || typedItems.length === 0) return null;
+                    const config = SEARCH_TYPE_CONFIG[type];
+                    const label = config?.label || type.replace('_', ' ');
+
                     return (
-                      <div key={type} className="mb-2">
-                        <div className="text-xs font-semibold text-neutral-500 uppercase mb-1">{type}</div>
-                        {typedItems.map((item) => (
-                          <div key={item.id} className="px-2 py-1 hover:bg-neutral-50 rounded text-sm text-neutral-700">
-                            {item.title || item.subject || item.name}
-                          </div>
-                        ))}
+                      <div key={type} className="py-2 first:pt-1 last:pb-1">
+                        <div className="flex items-center gap-1.5 px-2 py-1 text-[11px] font-bold text-neutral-400 uppercase tracking-wider">
+                          {config?.icon}
+                          <span>{label}</span>
+                          <span className="text-[10px] text-neutral-400 font-normal">({typedItems.length})</span>
+                        </div>
+                        <div className="space-y-0.5 mt-0.5">
+                          {typedItems.map((item) => {
+                            const title = config ? config.getTitle(item) : (item.title || item.name || item.subject);
+                            const subtitle = config?.getSubtitle ? config.getSubtitle(item) : undefined;
+                            const url = config ? config.getUrl(item) : `/admin/${type}`;
+
+                            return (
+                              <Link
+                                key={item.id}
+                                to={url}
+                                onClick={() => {
+                                  setSearchOpen(false);
+                                  setSearchQuery('');
+                                }}
+                                className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg text-sm transition-colors ${
+                                  darkMode
+                                    ? 'hover:bg-slate-700/80 text-slate-200'
+                                    : 'hover:bg-neutral-100 text-neutral-800'
+                                }`}
+                              >
+                                <div className="min-w-0 flex-1 pr-2">
+                                  <div className="font-medium truncate text-xs sm:text-sm">{title}</div>
+                                  {subtitle && (
+                                    <div className="text-[11px] text-neutral-400 truncate">{subtitle}</div>
+                                  )}
+                                </div>
+                                {item.status && (
+                                  <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded shrink-0 uppercase ${
+                                    item.status === 'published' || item.status === 'active'
+                                      ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400'
+                                      : 'bg-neutral-100 text-neutral-600 dark:bg-slate-700 dark:text-slate-300'
+                                  }`}>
+                                    {item.status}
+                                  </span>
+                                )}
+                              </Link>
+                            );
+                          })}
+                        </div>
                       </div>
                     );
                   })}
-                  {Object.values(searchResults).every(arr => (arr as unknown[]).length === 0) && (
-                    <div className="text-center text-sm text-neutral-500 py-4">No results found</div>
+                  {Object.values(searchResults).every(arr => !Array.isArray(arr) || arr.length === 0) && (
+                    <div className="text-center text-sm text-neutral-500 py-6">
+                      <p className="font-medium">No results found</p>
+                      <p className="text-xs text-neutral-400 mt-1">Try searching for songs, sermons, news, or users</p>
+                    </div>
                   )}
                 </div>
               )}

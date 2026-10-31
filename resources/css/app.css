@@ -9,6 +9,8 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-serif: 'Lora', 'Playfair Display', Georgia, Cambria, serif;
+    --font-display: 'Playfair Display', 'Lora', Georgia, serif;
 
     --color-brand-burgundy: #74121c;
     --color-brand-burgundy-dark: #5a0e16;
@@ -27,7 +29,7 @@
 
 @layer base {
     html {
-        background-color: var(--color-brand-burgundy);
+        background-color: #f8fafc;
     }
 
     html.dark {
@@ -53,13 +55,13 @@
 }
 
 @layer components {
-    /* Content sections: slight transparency so the burgundy backdrop shows through */
+    /* Clean, solid content sections without pink color bleed */
     main section.bg-white {
-        background-color: rgb(255 255 255 / 0.97);
+        background-color: #ffffff;
     }
 
     main section.bg-neutral-50 {
-        background-color: rgb(255 252 252 / 0.94);
+        background-color: #f8fafc;
     }
 
     /* Dark mode styles for admin interface */
@@ -173,4 +175,42 @@
     .dark .placeholder-slate-400::placeholder {
         color: #94a3b8 !important;
     }
+}
+
+/* Explicit FontAwesome 6 icon display rules to prevent any font reset conflicts */
+.fa,
+.fas,
+.fa-solid {
+    font-family: 'Font Awesome 6 Free', 'FontAwesome', sans-serif !important;
+    font-weight: 900 !important;
+    font-style: normal !important;
+    font-variant: normal !important;
+    text-rendering: auto !important;
+    line-height: 1 !important;
+    display: inline-block !important;
+    -webkit-font-smoothing: antialiased !important;
+}
+
+.far,
+.fa-regular {
+    font-family: 'Font Awesome 6 Free', 'FontAwesome', sans-serif !important;
+    font-weight: 400 !important;
+    font-style: normal !important;
+    font-variant: normal !important;
+    text-rendering: auto !important;
+    line-height: 1 !important;
+    display: inline-block !important;
+    -webkit-font-smoothing: antialiased !important;
+}
+
+.fab,
+.fa-brands {
+    font-family: 'Font Awesome 6 Brands', 'FontAwesome', sans-serif !important;
+    font-weight: 400 !important;
+    font-style: normal !important;
+    font-variant: normal !important;
+    text-rendering: auto !important;
+    line-height: 1 !important;
+    display: inline-block !important;
+    -webkit-font-smoothing: antialiased !important;
 }

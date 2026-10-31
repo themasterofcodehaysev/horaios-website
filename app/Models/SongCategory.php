@@ -15,10 +15,26 @@ class SongCategory extends Model
     protected $fillable = [
         'uuid',
         'name',
+        'slug',
         'description',
         'display_order',
         'status',
     ];
+
+    protected static ?bool $hasSlugColumn = null;
+
+    public static function hasSlugColumn(): bool
+    {
+        if (static::$hasSlugColumn === null) {
+            try {
+                static::$hasSlugColumn = \Illuminate\Support\Facades\Schema::hasColumn('song_categories', 'slug');
+            } catch (\Throwable) {
+                static::$hasSlugColumn = false;
+            }
+        }
+
+        return static::$hasSlugColumn;
+    }
 
     protected static function boot(): void
     {
@@ -28,7 +44,41 @@ class SongCategory extends Model
             if (empty($category->uuid)) {
                 $category->uuid = (string) Str::uuid();
             }
+
+            if (static::hasSlugColumn() && empty($category->slug) && !empty($category->name)) {
+                $category->slug = static::generateUniqueSlug($category->name);
+            }
         });
+
+        static::updating(function ($category) {
+            if (static::hasSlugColumn() && $category->isDirty('name') && !$category->isDirty('slug') && !empty($category->name)) {
+                $category->slug = static::generateUniqueSlug($category->name, $category->id);
+            }
+        });
+    }
+
+    public static function generateUniqueSlug(string $name, ?int $ignoreId = null): string
+    {
+        $slug = Str::slug($name);
+        $originalSlug = $slug ?: 'category';
+        $slug = $originalSlug;
+        $counter = 1;
+
+        $query = static::query();
+
+        if (in_array(SoftDeletes::class, class_uses_recursive(static::class), true)) {
+            $query->withTrashed();
+        }
+
+        while ((clone $query)
+            ->where('slug', $slug)
+            ->when($ignoreId, fn($q) => $q->where('id', '!=', $ignoreId))
+            ->exists()) {
+            $slug = "{$originalSlug}-{$counter}";
+            $counter++;
+        }
+
+        return $slug;
     }
 
     public function songs(): HasMany

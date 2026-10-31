@@ -59,10 +59,10 @@ class SecurityHeaders
 
         return implode('; ', [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net {$viteDevOrigins}",
-            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com {$viteDevOrigins}",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com {$viteDevOrigins}",
+            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com https://cdnjs.cloudflare.com {$viteDevOrigins}",
             "img-src 'self' data: https:",
-            "font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com",
+            "font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com",
             "connect-src 'self' {$viteDevOrigins}",
             $workerSrc,
             "media-src 'self'",

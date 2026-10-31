@@ -749,6 +749,9 @@ export interface UpdateContactMessagePayload {
 export interface ContactMessageFilters {
   search?: string;
   status?: string;
+  type?: 'ministry' | 'event' | 'event_registration' | 'general' | string;
+  ministry_name?: string;
+  event_name?: string;
   page?: number;
   per_page?: number;
   sort_by?: string;
@@ -1037,7 +1040,24 @@ interface MinistrySearchItem {
   created_at: string;
 }
 
-type SearchItem = PrayerRequestSearchItem | ContactMessageSearchItem | MediaSearchItem | BlogSearchItem | SermonSearchItem | SongSearchItem | EventSearchItem | MinistrySearchItem;
+interface ServiceSearchItem {
+  id: number;
+  title: string;
+  day_of_week?: string;
+  status?: string;
+  created_at: string;
+}
+
+interface UserSearchItem {
+  id: number;
+  first_name: string;
+  last_name: string;
+  display_name?: string;
+  email: string;
+  created_at: string;
+}
+
+type SearchItem = PrayerRequestSearchItem | ContactMessageSearchItem | MediaSearchItem | BlogSearchItem | SermonSearchItem | SongSearchItem | EventSearchItem | MinistrySearchItem | ServiceSearchItem | UserSearchItem;
 
 export interface SearchResult {
   prayer_requests?: PrayerRequestSearchItem[];
@@ -1048,6 +1068,8 @@ export interface SearchResult {
   songs?: SongSearchItem[];
   events?: EventSearchItem[];
   ministries?: MinistrySearchItem[];
+  services?: ServiceSearchItem[];
+  users?: UserSearchItem[];
 }
 
 // ============================================================
@@ -1077,6 +1099,37 @@ export interface CreateLeaderPayload {
   email?: string | null;
   phone?: string | null;
   facebook?: string | null;
+  display_order?: number;
+  status?: 'active' | 'inactive';
+}
+
+// ============================================================
+// CHURCH SERVICES MODULE
+// ============================================================
+
+export interface ChurchServiceItem {
+  id: number;
+  title: string;
+  day: string;
+  time: string;
+  type?: string | null;
+  location?: string | null;
+  description?: string | null;
+  icon?: string | null;
+  display_order: number;
+  status: 'active' | 'inactive';
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface CreateChurchServicePayload {
+  title: string;
+  day: string;
+  time: string;
+  type?: string | null;
+  location?: string | null;
+  description?: string | null;
+  icon?: string | null;
   display_order?: number;
   status?: 'active' | 'inactive';
 }

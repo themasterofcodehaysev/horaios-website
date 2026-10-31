@@ -48,8 +48,8 @@ const BlogFormPage: React.FC = () => {
           });
         }
       } catch (err: any) {
-        alert(err?.response?.data?.message || 'Failed to load blog details');
-        navigate('/admin/blogs');
+        alert(err?.response?.data?.message || 'Failed to load news details');
+        navigate('/admin/news');
       } finally {
         setFetching(false);
       }
@@ -68,8 +68,8 @@ const BlogFormPage: React.FC = () => {
 
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
-    if (!formData.title.trim()) newErrors.title = 'Blog title is required';
-    if (!formData.content || !formData.content.trim()) newErrors.content = 'Blog content is required';
+    if (!formData.title.trim()) newErrors.title = 'News title is required';
+    if (!formData.content || !formData.content.trim()) newErrors.content = 'News content is required';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -85,9 +85,9 @@ const BlogFormPage: React.FC = () => {
       } else {
         await blogService.createBlog(formData);
       }
-      navigate('/admin/blogs');
+      navigate('/admin/news');
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to save blog post');
+      alert(err?.response?.data?.message || 'Failed to save news article');
     } finally {
       setLoading(false);
     }
@@ -112,14 +112,14 @@ const BlogFormPage: React.FC = () => {
         <div className="flex items-center gap-3">
           <button
             type="button"
-            onClick={() => navigate('/admin/blogs')}
+            onClick={() => navigate('/admin/news')}
             className="p-2 text-neutral-500 hover:bg-neutral-100 rounded-lg transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div>
             <h1 className="text-h3 text-neutral-900 font-bold">
-              {isEdit ? 'Edit Blog Post' : 'Create New Blog Post'}
+              {isEdit ? 'Edit News Article' : 'Create New News Article'}
             </h1>
             <p className="text-body-xs text-neutral-500">
               {isEdit ? 'Update article content, metadata, or publishing status' : 'Publish a new article or announcement to the church website'}
@@ -160,7 +160,7 @@ const BlogFormPage: React.FC = () => {
                 maxLength={500}
                 value={formData.excerpt || ''}
                 onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
-                placeholder="Brief summary displayed on blog cards..."
+                placeholder="Brief summary displayed on news cards..."
                 className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20"
               />
               <span className="text-body-xs text-neutral-400 block text-right">
@@ -226,7 +226,7 @@ const BlogFormPage: React.FC = () => {
                 />
                 <div>
                   <span className="text-body-sm font-semibold text-neutral-900 flex items-center gap-1">
-                    <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Featured Post
+                    <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Featured Article
                   </span>
                   <span className="text-body-xs text-neutral-500 block">
                     Display prominently on homepage and news section
@@ -261,7 +261,7 @@ const BlogFormPage: React.FC = () => {
                 onChange={(url) => setFormData({ ...formData, featured_image: url })}
                 folder="blogs"
                 label="Featured Image"
-                helperText="Upload a cover image for this blog post."
+                helperText="Upload a cover image for this news article."
               />
             </div>
           </div>
@@ -269,7 +269,7 @@ const BlogFormPage: React.FC = () => {
           <div className="flex items-center justify-end gap-3 pt-2">
             <button
               type="button"
-              onClick={() => navigate('/admin/blogs')}
+              onClick={() => navigate('/admin/news')}
               className="px-5 py-2.5 border border-neutral-200 rounded-lg text-body-sm font-medium text-neutral-700 hover:bg-neutral-50"
             >
               Cancel
@@ -280,7 +280,7 @@ const BlogFormPage: React.FC = () => {
               className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary-red text-white rounded-lg text-body-sm font-medium hover:bg-primary-dark-red shadow-sm disabled:opacity-50"
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-              {loading ? 'Saving...' : isEdit ? 'Update Post' : 'Publish Post'}
+              {loading ? 'Saving...' : isEdit ? 'Update News Article' : 'Publish News Article'}
             </button>
           </div>
         </div>

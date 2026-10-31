@@ -15,6 +15,7 @@ class Song extends Model
     protected $fillable = [
         'uuid',
         'title',
+        'slug',
         'artist',
         'composer',
         'category_id',
@@ -34,6 +35,21 @@ class Song extends Model
         ];
     }
 
+    protected static ?bool $hasSlugColumn = null;
+
+    public static function hasSlugColumn(): bool
+    {
+        if (static::$hasSlugColumn === null) {
+            try {
+                static::$hasSlugColumn = \Illuminate\Support\Facades\Schema::hasColumn('songs', 'slug');
+            } catch (\Throwable) {
+                static::$hasSlugColumn = false;
+            }
+        }
+
+        return static::$hasSlugColumn;
+    }
+
     protected static function boot(): void
     {
         parent::boot();
@@ -42,7 +58,41 @@ class Song extends Model
             if (empty($song->uuid)) {
                 $song->uuid = (string) Str::uuid();
             }
+
+            if (static::hasSlugColumn() && empty($song->slug) && !empty($song->title)) {
+                $song->slug = static::generateUniqueSlug($song->title);
+            }
         });
+
+        static::updating(function ($song) {
+            if (static::hasSlugColumn() && $song->isDirty('title') && !$song->isDirty('slug') && !empty($song->title)) {
+                $song->slug = static::generateUniqueSlug($song->title, $song->id);
+            }
+        });
+    }
+
+    public static function generateUniqueSlug(string $title, ?int $ignoreId = null): string
+    {
+        $slug = Str::slug($title);
+        $originalSlug = $slug ?: 'song';
+        $slug = $originalSlug;
+        $counter = 1;
+
+        $query = static::query();
+
+        if (in_array(SoftDeletes::class, class_uses_recursive(static::class), true)) {
+            $query->withTrashed();
+        }
+
+        while ((clone $query)
+            ->where('slug', $slug)
+            ->when($ignoreId, fn($q) => $q->where('id', '!=', $ignoreId))
+            ->exists()) {
+            $slug = "{$originalSlug}-{$counter}";
+            $counter++;
+        }
+
+        return $slug;
     }
 
     public function category(): BelongsTo

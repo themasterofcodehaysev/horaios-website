@@ -40,12 +40,18 @@ export const MinistryCard: React.FC<MinistryCardProps> = ({
         </div>
       ) : null}
 
-      <div className="flex-1 flex flex-col space-y-2">
-        <h3 className="text-h6 font-semibold text-neutral-900">
+      <div className="flex-1 flex flex-col space-y-2 min-w-0">
+        <h3 
+          className="text-h6 font-semibold text-neutral-900 truncate"
+          title={name}
+        >
           {name}
         </h3>
 
-        <p className="text-body-sm text-neutral-600">
+        <p 
+          className="text-body-sm text-neutral-600 line-clamp-2"
+          title={description}
+        >
           {description}
         </p>
 

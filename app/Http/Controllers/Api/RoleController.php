@@ -74,6 +74,8 @@ class RoleController extends BaseApiController
                 'id'           => $p->id,
                 'name'         => $p->name,
                 'display_name' => $p->display_name,
+                'group'        => $p->group,
+                'description'  => $p->description,
             ])
         );
 

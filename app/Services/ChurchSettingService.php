@@ -22,7 +22,21 @@ class ChurchSettingService
 
         foreach ($settings as $key => $value) {
             $type = is_array($value) ? 'json' : (is_bool($value) ? 'boolean' : 'string');
-            ChurchSetting::set($key, $value, $type);
+            $group = null;
+            if (str_starts_with($key, 'giving_')) {
+                $group = 'giving';
+            } elseif (in_array($key, ['church_name', 'short_name', 'logo', 'favicon', 'footer_text', 'copyright'])) {
+                $group = 'general';
+            } elseif (in_array($key, ['address', 'phone', 'email', 'website', 'google_map_url', 'google_map_directions_url', 'latitude', 'longitude'])) {
+                $group = 'contact';
+            } elseif (in_array($key, ['facebook', 'youtube', 'telegram', 'instagram', 'twitter', 'tiktok'])) {
+                $group = 'social';
+            } elseif (in_array($key, ['maintenance_mode', 'maintenance_message', 'analytics_id', 'custom_css', 'custom_js'])) {
+                $group = 'advanced';
+            } elseif (in_array($key, ['default_language', 'timezone'])) {
+                $group = 'system';
+            }
+            ChurchSetting::set($key, $value, $type, $group);
         }
 
         AuditLogService::log(

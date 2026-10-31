@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Plus, Search, Star, Eye, Edit2, Copy, Trash2, CheckCircle,
-  XCircle, ChevronLeft, ChevronRight, X, AlertTriangle, Layers, Heart, ArrowUpDown,
+  XCircle, ChevronLeft, ChevronRight, X, AlertTriangle, Layers, Heart, ArrowUpDown, Users,
 } from 'lucide-react';
 import { ministryService } from '../../services/ministry.service';
 import type { MinistryItem, MinistryCategory, PaginatedResponse, MinistryFilters } from '../../types';
@@ -167,6 +167,12 @@ const MinistriesListPage: React.FC = () => {
             className="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-neutral-200 text-neutral-700 rounded-lg text-body-xs font-medium hover:bg-neutral-50 shadow-xs"
           >
             <Layers className="w-3.5 h-3.5 text-neutral-500" /> Categories
+          </Link>
+          <Link
+            to="/admin/ministries/join-requests"
+            className="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-neutral-200 text-neutral-700 rounded-lg text-body-xs font-medium hover:bg-neutral-50 shadow-xs"
+          >
+            <Users className="w-3.5 h-3.5 text-neutral-500" /> Join Requests
           </Link>
           <Link
             to="/admin/ministries/create"

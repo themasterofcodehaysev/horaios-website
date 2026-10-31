@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowLeft, Plus, Layers, Edit2, Trash2, CheckCircle,
-  XCircle, Loader2, AlertTriangle, X, Hash,
+  XCircle, Loader2, AlertTriangle, X, Hash, Users,
 } from 'lucide-react';
 import { ministryService } from '../../services/ministry.service';
 import type { MinistryCategory } from '../../types';
@@ -65,7 +65,10 @@ const MinistryCategoriesPage: React.FC = () => {
 
     setSubmitting(true);
     try {
-      if (modal.mode === 'edit' && modal.category?.id) {
+      if (modal.mode === 'edit') {
+        if (!modal.category?.id) {
+          throw new Error('Category ID is missing for update');
+        }
         await ministryService.updateMinistryCategory(modal.category.id, formData);
       } else {
         await ministryService.createMinistryCategory(formData);
@@ -73,7 +76,7 @@ const MinistryCategoriesPage: React.FC = () => {
       setModal({ open: false, mode: 'create', category: null });
       fetchCategories();
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to save ministry category');
+      alert(err?.response?.data?.message || err?.message || 'Failed to save ministry category');
     } finally {
       setSubmitting(false);
     }
@@ -110,13 +113,21 @@ const MinistryCategoriesPage: React.FC = () => {
             </p>
           </div>
         </div>
-        <button
-          onClick={openCreateModal}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-primary-red text-white rounded-lg text-body-sm font-medium hover:bg-primary-dark-red transition-colors shadow-sm"
-        >
-          <Plus className="w-4 h-4" />
-          Add Category
-        </button>
+        <div className="flex items-center gap-2">
+          <Link
+            to="/admin/ministries/join-requests"
+            className="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-neutral-200 text-neutral-700 rounded-lg text-body-xs font-medium hover:bg-neutral-50 shadow-xs"
+          >
+            <Users className="w-3.5 h-3.5 text-neutral-500" /> Join Requests
+          </Link>
+          <button
+            onClick={openCreateModal}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-primary-red text-white rounded-lg text-body-sm font-medium hover:bg-primary-dark-red transition-colors shadow-sm"
+          >
+            <Plus className="w-4 h-4" />
+            Add Category
+          </button>
+        </div>
       </div>
 
       <div className="bg-white rounded-xl border border-neutral-200 overflow-hidden shadow-xs">

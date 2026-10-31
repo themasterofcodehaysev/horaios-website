@@ -34,6 +34,9 @@ class ContactController extends BaseApiController
         $messages = $this->contactService->getAdminContactMessages([
             'search' => $request->input('search'),
             'status' => $request->input('status'),
+            'type' => $request->input('type'),
+            'ministry_name' => $request->input('ministry_name'),
+            'event_name' => $request->input('event_name'),
             'sort_by' => $request->input('sort_by'),
             'sort_dir' => $request->input('sort_dir'),
         ], $request->input('per_page', 15));
@@ -95,7 +98,7 @@ class ContactController extends BaseApiController
     {
         $this->authorize('viewAny', ContactMessage::class);
 
-        $stats = $this->contactService->getStats();
+        $stats = $this->contactService->getStats($request->input('type'));
 
         return $this->success($stats, 'Contact message statistics retrieved');
     }

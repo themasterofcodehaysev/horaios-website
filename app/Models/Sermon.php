@@ -15,6 +15,7 @@ class Sermon extends Model
     protected $fillable = [
         'uuid',
         'title',
+        'slug',
         'summary',
         'description',
         'speaker_id',

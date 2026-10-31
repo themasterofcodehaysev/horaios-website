@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
             MinistrySeeder::class,
             SongSeeder::class,
             SermonSeeder::class,
+            LeaderSeeder::class,
+            ChurchServiceSeeder::class,
             NavigationMenuSeeder::class,
         ]);
     }

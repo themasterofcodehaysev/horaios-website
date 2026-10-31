@@ -15,7 +15,7 @@ const SermonCategoriesPage: React.FC = () => {
   const [modal, setModal] = useState<{
     open: boolean;
     mode: 'create' | 'edit';
-    category: Partial<SermonCategory> | null;
+    category: SermonCategory | null;
   }>({ open: false, mode: 'create', category: null });
 
   const [formData, setFormData] = useState({
@@ -33,8 +33,8 @@ const SermonCategoriesPage: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      const data = await sermonService.getPublicCategories();
-      setCategories(data);
+      const data = await sermonService.getAdminCategories();
+      setCategories(data.sort((a, b) => a.display_order - b.display_order));
     } catch (err: any) {
       setError(err?.response?.data?.message || 'Failed to load sermon categories');
     } finally {
@@ -49,14 +49,14 @@ const SermonCategoriesPage: React.FC = () => {
     setModal({ open: true, mode: 'create', category: null });
   };
 
-  const openEditModal = (ca: SermonCategory) => {
+  const openEditModal = (cat: SermonCategory) => {
     setFormData({
-      name: ca.name,
-      description: ca.description || '',
-      display_order: ca.display_order,
-      status: ca.status,
+      name: cat.name,
+      description: cat.description || '',
+      display_order: cat.display_order,
+      status: cat.status,
     });
-    setModal({ open: true, mode: 'edit', category: ca });
+    setModal({ open: true, mode: 'edit', category: cat });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -65,7 +65,10 @@ const SermonCategoriesPage: React.FC = () => {
 
     setSubmitting(true);
     try {
-      if (modal.mode === 'edit' && modal.category?.id) {
+      if (modal.mode === 'edit') {
+        if (!modal.category?.id) {
+          throw new Error('Category ID is missing for update');
+        }
         await sermonService.updateCategory(modal.category.id, formData);
       } else {
         await sermonService.createCategory(formData);
@@ -73,7 +76,7 @@ const SermonCategoriesPage: React.FC = () => {
       setModal({ open: false, mode: 'create', category: null });
       fetchCategories();
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to save sermon category');
+      alert(err?.response?.data?.message || err?.message || 'Failed to save sermon category');
     } finally {
       setSubmitting(false);
     }

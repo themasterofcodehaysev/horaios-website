@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\SermonCategory;
 use App\Models\User;
+use Illuminate\Support\Str;
 
 class SermonCategoryService
 {
@@ -25,6 +26,11 @@ class SermonCategoryService
 
     public function createCategory(array $data, ?User $actingUser = null): SermonCategory
     {
+        $data['uuid'] = (string) Str::uuid();
+        if (SermonCategory::hasSlugColumn() && empty($data['slug']) && !empty($data['name'])) {
+            $data['slug'] = SermonCategory::generateUniqueSlug($data['name']);
+        }
+
         $category = SermonCategory::create($data);
 
         AuditLogService::log(
@@ -42,6 +48,9 @@ class SermonCategoryService
     public function updateCategory(SermonCategory $category, array $data, ?User $actingUser = null): SermonCategory
     {
         $old = $category->only(['name', 'status']);
+        if (SermonCategory::hasSlugColumn() && !empty($data['name']) && empty($data['slug']) && $data['name'] !== $category->name) {
+            $data['slug'] = SermonCategory::generateUniqueSlug($data['name'], $category->id);
+        }
         $category->update($data);
 
         AuditLogService::log(

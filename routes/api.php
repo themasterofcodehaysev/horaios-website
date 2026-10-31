@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuditLogController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BlogCategoryController;
 use App\Http\Controllers\Api\BlogController;
+use App\Http\Controllers\Api\ChurchServiceController;
 use App\Http\Controllers\Api\ChurchSettingController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\DashboardController;
@@ -75,6 +76,9 @@ Route::middleware('compress')->prefix('v1')->group(function () {
 
     // Public leadership team
     Route::get('leaders', [LeaderController::class, 'index'])->name('leaders.index');
+
+    // Public church services schedule
+    Route::get('services', [ChurchServiceController::class, 'index'])->name('services.index');
 
     // Public blog / news posts endpoints
     Route::prefix('blogs')->name('blogs.')->group(function () {
@@ -295,24 +299,35 @@ Route::middleware('compress')->prefix('v1')->group(function () {
                 Route::post('reorder', [LeaderController::class, 'reorder'])->name('reorder');
             });
 
+            // Admin Church Services management
+            Route::prefix('services')->name('services.')->group(function () {
+                Route::get('/', [ChurchServiceController::class, 'adminIndex'])->name('index');
+                Route::post('/', [ChurchServiceController::class, 'store'])->name('store');
+                Route::get('{id}', [ChurchServiceController::class, 'show'])->name('show');
+                Route::put('{id}', [ChurchServiceController::class, 'update'])->name('update');
+                Route::delete('{id}', [ChurchServiceController::class, 'destroy'])->name('destroy');
+                Route::patch('{id}/status', [ChurchServiceController::class, 'toggleStatus'])->name('status');
+                Route::post('reorder', [ChurchServiceController::class, 'reorder'])->name('reorder');
+            });
+
             // Admin Prayer Requests management
             Route::prefix('prayer-requests')->name('prayer-requests.')->group(function () {
                 Route::get('/', [PrayerController::class, 'adminIndex'])->name('index');
-                Route::get('{id}', [PrayerController::class, 'adminShow'])->name('show');
-                Route::put('{id}', [PrayerController::class, 'update'])->name('update');
-                Route::delete('{id}', [PrayerController::class, 'destroy'])->name('destroy');
-                Route::patch('{id}/status', [PrayerController::class, 'updateStatus'])->name('status');
                 Route::get('stats', [PrayerController::class, 'stats'])->name('stats');
+                Route::get('{id}', [PrayerController::class, 'adminShow'])->whereNumber('id')->name('show');
+                Route::put('{id}', [PrayerController::class, 'update'])->whereNumber('id')->name('update');
+                Route::delete('{id}', [PrayerController::class, 'destroy'])->whereNumber('id')->name('destroy');
+                Route::patch('{id}/status', [PrayerController::class, 'updateStatus'])->whereNumber('id')->name('status');
             });
 
             // Admin Contact Messages management
             Route::prefix('contact-messages')->name('contact-messages.')->group(function () {
                 Route::get('/', [ContactController::class, 'adminIndex'])->name('index');
-                Route::get('{id}', [ContactController::class, 'adminShow'])->name('show');
-                Route::put('{id}', [ContactController::class, 'update'])->name('update');
-                Route::delete('{id}', [ContactController::class, 'destroy'])->name('destroy');
-                Route::patch('{id}/status', [ContactController::class, 'updateStatus'])->name('status');
                 Route::get('stats', [ContactController::class, 'stats'])->name('stats');
+                Route::get('{id}', [ContactController::class, 'adminShow'])->whereNumber('id')->name('show');
+                Route::put('{id}', [ContactController::class, 'update'])->whereNumber('id')->name('update');
+                Route::delete('{id}', [ContactController::class, 'destroy'])->whereNumber('id')->name('destroy');
+                Route::patch('{id}/status', [ContactController::class, 'updateStatus'])->whereNumber('id')->name('status');
             });
 
             // Navigation Management
@@ -351,6 +366,12 @@ Route::middleware('compress')->prefix('v1')->group(function () {
 
             // Direct Image Upload
             Route::post('upload/image', [UploadController::class, 'uploadImage'])->name('upload.image');
+
+            // Admin Search
+            Route::prefix('search')->name('search.')->group(function () {
+                Route::get('/', [SearchController::class, 'global'])->name('global');
+                Route::get('{type}', [SearchController::class, 'byType'])->name('by-type');
+            });
         });
 
         // Users

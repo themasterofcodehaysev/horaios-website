@@ -21,7 +21,7 @@ class BlogCategoryController extends BaseApiController
             ->orderBy('name', 'asc')
             ->get();
 
-        return $this->success(BlogCategoryResource::collection($categories), 'Active blog categories retrieved');
+        return $this->success(BlogCategoryResource::collection($categories), 'Active news categories retrieved');
     }
 
     public function adminIndex(Request $request): JsonResponse
@@ -37,7 +37,7 @@ class BlogCategoryController extends BaseApiController
             ->orderBy('name', 'asc')
             ->get();
 
-        return $this->success(BlogCategoryResource::collection($categories), 'Admin blog categories retrieved');
+        return $this->success(BlogCategoryResource::collection($categories), 'Admin news categories retrieved');
     }
 
     public function store(Request $request): JsonResponse
@@ -53,16 +53,16 @@ class BlogCategoryController extends BaseApiController
 
         try {
             $category = BlogCategory::create($validated);
-            return $this->created(new BlogCategoryResource($category), 'Blog category created successfully');
+            return $this->created(new BlogCategoryResource($category), 'News category created successfully');
         } catch (Throwable $e) {
-            return $this->error('Failed to create blog category: ' . $e->getMessage(), 500);
+            return $this->error('Failed to create news category: ' . $e->getMessage(), 500);
         }
     }
 
     public function show(int $id): JsonResponse
     {
         $category = BlogCategory::withCount('publishedPosts')->findOrFail($id);
-        return $this->success(new BlogCategoryResource($category), 'Blog category details retrieved');
+        return $this->success(new BlogCategoryResource($category), 'News category details retrieved');
     }
 
     public function update(Request $request, int $id): JsonResponse
@@ -79,9 +79,9 @@ class BlogCategoryController extends BaseApiController
 
         try {
             $category->update($validated);
-            return $this->success(new BlogCategoryResource($category->fresh()), 'Blog category updated successfully');
+            return $this->success(new BlogCategoryResource($category->fresh()), 'News category updated successfully');
         } catch (Throwable $e) {
-            return $this->error('Failed to update blog category: ' . $e->getMessage(), 500);
+            return $this->error('Failed to update news category: ' . $e->getMessage(), 500);
         }
     }
 
@@ -92,9 +92,9 @@ class BlogCategoryController extends BaseApiController
 
         try {
             $category->delete();
-            return $this->noContent('Blog category deleted successfully');
+            return $this->noContent('News category deleted successfully');
         } catch (Throwable $e) {
-            return $this->error('Failed to delete blog category: ' . $e->getMessage(), 500);
+            return $this->error('Failed to delete news category: ' . $e->getMessage(), 500);
         }
     }
 }

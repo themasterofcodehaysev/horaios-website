@@ -27,8 +27,8 @@ class AddNewPermissionsSeeder extends Seeder
             // Homepage
             ['name' => 'homepage.manage', 'display_name' => 'Manage Homepage', 'group' => 'homepage', 'description' => 'Manage homepage sections and content'],
             
-            // Navigation
-            ['name' => 'navigation.manage', 'display_name' => 'Manage Navigation', 'group' => 'navigation', 'description' => 'Manage navigation menus and items'],
+            // Services
+            ['name' => 'services.manage', 'display_name' => 'Manage Service Page', 'group' => 'services', 'description' => 'Manage church service schedules and details'],
             
             // Footer
             ['name' => 'footer.manage', 'display_name' => 'Manage Footer', 'group' => 'footer', 'description' => 'Manage footer content and settings'],
@@ -67,7 +67,7 @@ class AddNewPermissionsSeeder extends Seeder
                 'prayer_requests.view', 'prayer_requests.edit',
                 'contact_messages.view', 'contact_messages.edit',
                 'homepage.manage',
-                'navigation.manage',
+                'services.manage',
                 'footer.manage',
             ];
             

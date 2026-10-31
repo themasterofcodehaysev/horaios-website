@@ -9,12 +9,12 @@ class ContactPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->isEditor() || $user->hasPermission('contact_messages.view');
+        return $user->isEditor() || $user->hasPermission('contact_messages.view') || $user->hasPermission('ministries.manage');
     }
 
     public function view(User $user, ContactMessage $message): bool
     {
-        return $user->isEditor() || $user->hasPermission('contact_messages.view');
+        return $user->isEditor() || $user->hasPermission('contact_messages.view') || $user->hasPermission('ministries.manage');
     }
 
     public function create(User $user): bool
@@ -24,11 +24,11 @@ class ContactPolicy
 
     public function update(User $user, ContactMessage $message): bool
     {
-        return $user->isEditor() || $user->hasPermission('contact_messages.edit');
+        return $user->isEditor() || $user->hasPermission('contact_messages.edit') || $user->hasPermission('ministries.manage');
     }
 
     public function delete(User $user, ContactMessage $message): bool
     {
-        return $user->isAdmin() || $user->hasPermission('contact_messages.delete');
+        return $user->isAdmin() || $user->hasPermission('contact_messages.delete') || $user->hasPermission('ministries.manage');
     }
 }

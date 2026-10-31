@@ -9,7 +9,11 @@ class PasswordReset extends ResetPasswordNotification
 {
     protected function resetUrl($notifiable): string
     {
-        return url('/reset-password/' . $this->token) . '?email=' . $notifiable->getEmail();
+        $email = method_exists($notifiable, 'getEmailForPasswordReset')
+            ? $notifiable->getEmailForPasswordReset()
+            : ($notifiable->email ?? '');
+
+        return url('/reset-password/' . $this->token) . '?email=' . urlencode($email);
     }
 
     public function toMail($notifiable): MailMessage

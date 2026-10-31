@@ -112,4 +112,62 @@ class SermonApiTest extends TestCase
         $response->assertStatus(200)
                  ->assertJsonPath('data.thumbnail', '/storage/uploads/sermons/test.jpg');
     }
+
+    public function test_admin_can_create_sermon_category(): void
+    {
+        $headers = $this->superAdminHeaders();
+
+        $response = $this->withHeaders($headers)->postJson('/api/v1/admin/sermon-categories', [
+            'name'          => 'Sunday Worship',
+            'description'   => 'Main Sunday service sermons',
+            'display_order' => 1,
+            'status'        => 'active',
+        ]);
+
+        $response->assertStatus(201)
+                 ->assertJsonPath('data.name', 'Sunday Worship');
+
+        $this->assertDatabaseHas('sermon_categories', ['name' => 'Sunday Worship']);
+    }
+
+    public function test_admin_can_update_sermon_category(): void
+    {
+        $category = SermonCategory::factory()->create(['name' => 'Old Category']);
+        $headers  = $this->superAdminHeaders();
+
+        $response = $this->withHeaders($headers)->putJson("/api/v1/admin/sermon-categories/{$category->id}", [
+            'name'   => 'Updated Category',
+            'status' => 'active',
+        ]);
+
+        $response->assertStatus(200)
+                 ->assertJsonPath('data.name', 'Updated Category');
+
+        $this->assertDatabaseHas('sermon_categories', ['id' => $category->id, 'name' => 'Updated Category']);
+    }
+
+    public function test_admin_can_create_sermon_category_when_slug_column_exists(): void
+    {
+        \Illuminate\Support\Facades\Schema::table('sermon_categories', function ($table) {
+            $table->string('slug')->default('');
+        });
+        SermonCategory::$hasSlugColumnCache = [];
+
+        $headers = $this->superAdminHeaders();
+
+        $response = $this->withHeaders($headers)->postJson('/api/v1/admin/sermon-categories', [
+            'name'          => 'Bible Study Series',
+            'description'   => 'Mid-week study',
+            'display_order' => 2,
+            'status'        => 'active',
+        ]);
+
+        $response->assertStatus(201)
+                 ->assertJsonPath('data.name', 'Bible Study Series');
+
+        $this->assertDatabaseHas('sermon_categories', [
+            'name' => 'Bible Study Series',
+            'slug' => 'bible-study-series',
+        ]);
+    }
 }

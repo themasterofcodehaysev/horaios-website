@@ -26,7 +26,7 @@ class RolesAndPermissionsSeeder extends Seeder
             ['name' => 'sermons.manage', 'display_name' => 'Manage Sermons', 'group' => 'content'],
             ['name' => 'events.manage', 'display_name' => 'Manage Events', 'group' => 'content'],
             ['name' => 'ministries.manage', 'display_name' => 'Manage Ministries', 'group' => 'content'],
-            ['name' => 'blog.manage', 'display_name' => 'Manage Blog', 'group' => 'content'],
+            ['name' => 'blog.manage', 'display_name' => 'Manage News', 'group' => 'content'],
 
             // Communication management (keep existing group names)
             ['name' => 'prayer_requests.view', 'display_name' => 'View Prayer Requests', 'group' => 'prayer_requests'],

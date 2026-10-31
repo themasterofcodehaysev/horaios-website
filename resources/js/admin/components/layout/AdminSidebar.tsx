@@ -17,7 +17,10 @@ import {
   ChevronsLeft,
   ChevronsRight,
   X,
-  LifeBuoy
+  LifeBuoy,
+  Clock,
+  HandHeart,
+  Ticket,
 } from 'lucide-react';
 
 interface AdminSidebarProps {
@@ -56,6 +59,7 @@ const navGroups: NavGroupDef[] = [
       { name: 'Events', path: '/admin/events', icon: Calendar },
       { name: 'Ministries', path: '/admin/ministries', icon: Heart },
       { name: 'Leadership Team', path: '/admin/leadership', icon: Users },
+      { name: 'Church Services', path: '/admin/services', icon: Clock },
     ],
   },
   {
@@ -63,14 +67,13 @@ const navGroups: NavGroupDef[] = [
     items: [
       { name: 'Prayer Requests', path: '/admin/prayer-requests', icon: MessageCircleHeart },
       { name: 'Contact Messages', path: '/admin/contact-messages', icon: Mail },
+      { name: 'Ministry Requests', path: '/admin/ministries/join-requests', icon: HandHeart },
+      { name: 'Event Registrations', path: '/admin/events/registrations', icon: Ticket },
     ],
   },
   {
     label: 'MANAGEMENT',
     items: [
-      { name: 'Navigation', path: '/admin/navigation', icon: LayoutDashboard },
-      { name: 'Homepage', path: '/admin/homepage', icon: LayoutDashboard },
-      { name: 'Footer', path: '/admin/footer', icon: LayoutDashboard },
       { name: 'Users', path: '/admin/users', icon: Users },
       { name: 'Roles & Permissions', path: '/admin/roles', icon: Shield },
       { name: 'Church Settings', path: '/admin/settings', icon: Settings },

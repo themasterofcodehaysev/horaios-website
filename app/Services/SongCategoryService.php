@@ -23,6 +23,9 @@ class SongCategoryService
     public function createCategory(array $data, ?User $actingUser = null): SongCategory
     {
         $data['uuid'] = (string) Str::uuid();
+        if (SongCategory::hasSlugColumn() && empty($data['slug']) && !empty($data['name'])) {
+            $data['slug'] = SongCategory::generateUniqueSlug($data['name']);
+        }
 
         $category = SongCategory::create($data);
 
@@ -41,6 +44,9 @@ class SongCategoryService
     public function updateCategory(SongCategory $category, array $data, ?User $actingUser = null): SongCategory
     {
         $oldValues = $category->toArray();
+        if (SongCategory::hasSlugColumn() && !empty($data['name']) && empty($data['slug']) && $data['name'] !== $category->name) {
+            $data['slug'] = SongCategory::generateUniqueSlug($data['name'], $category->id);
+        }
         $category->update($data);
 
         AuditLogService::log(

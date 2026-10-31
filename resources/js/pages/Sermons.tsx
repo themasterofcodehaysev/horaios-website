@@ -4,6 +4,7 @@ import { Search, Video, Sparkles, ChevronRight, Star, ChevronLeft, Calendar, Use
 import { Layout } from '../components/layout';
 import { sermonService } from '../admin/services/sermon.service';
 import { getImageUrl } from '../utils/imageUrl';
+import { getSermonThumbnail } from '../utils/youtube';
 import type { SermonItem, SermonCategory, SermonSeries, Speaker, PaginatedResponse } from '../admin/types';
 
 export const SermonsPage: React.FC = () => {
@@ -88,7 +89,8 @@ export const SermonsPage: React.FC = () => {
       </section>
 
       {/* Main Content */}
-      <section className="py-12 px-4 max-w-6xl mx-auto space-y-10">
+      <section className="bg-slate-50 py-12 px-4 sm:px-6 lg:px-8 border-t border-slate-200/60">
+        <div className="max-w-6xl mx-auto space-y-10">
         {/* Category Pills & Dropdowns */}
         <div className="space-y-4">
           <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
@@ -163,8 +165,8 @@ export const SermonsPage: React.FC = () => {
                   className="group relative bg-neutral-900 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col justify-between"
                 >
                   <div className="aspect-video bg-neutral-800 relative overflow-hidden">
-                    {sermon.thumbnail ? (
-                      <img src={getImageUrl(sermon.thumbnail)} alt={sermon.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90" />
+                    {getSermonThumbnail(sermon) ? (
+                      <img src={getSermonThumbnail(sermon)} alt={sermon.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-neutral-800 to-neutral-900">
                         <Video className="w-10 h-10 text-neutral-500" />
@@ -187,7 +189,10 @@ export const SermonsPage: React.FC = () => {
                           {sermon.category.name}
                         </span>
                       )}
-                      <h3 className="text-h5 font-bold group-hover:text-primary-100 transition-colors leading-snug">
+                      <h3 
+                        className="text-h5 font-bold group-hover:text-primary-100 transition-colors leading-snug truncate"
+                        title={sermon.title}
+                      >
                         {sermon.title}
                       </h3>
                       {sermon.speaker && (
@@ -256,8 +261,8 @@ export const SermonsPage: React.FC = () => {
                   <div>
                     {/* Card Media Preview */}
                     <div className="aspect-video bg-neutral-900 relative overflow-hidden">
-                      {sermon.thumbnail ? (
-                        <img src={getImageUrl(sermon.thumbnail)} alt={sermon.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                      {getSermonThumbnail(sermon) ? (
+                        <img src={getSermonThumbnail(sermon)} alt={sermon.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-neutral-800 to-neutral-900">
                           <Video className="w-10 h-10 text-neutral-600" />
@@ -289,7 +294,10 @@ export const SermonsPage: React.FC = () => {
                         )}
                       </div>
 
-                      <h3 className="text-h5 font-bold text-neutral-900 group-hover:text-primary-red transition-colors leading-snug">
+                      <h3 
+                        className="text-h5 font-bold text-neutral-900 group-hover:text-primary-red transition-colors leading-snug truncate"
+                        title={sermon.title}
+                      >
                         {sermon.title}
                       </h3>
 
@@ -307,7 +315,10 @@ export const SermonsPage: React.FC = () => {
                       </div>
 
                       {sermon.summary && (
-                        <p className="text-body-xs text-neutral-500 line-clamp-2 leading-relaxed">
+                        <p 
+                          className="text-body-xs text-neutral-500 line-clamp-2 leading-relaxed"
+                          title={sermon.summary}
+                        >
                           {sermon.summary}
                         </p>
                       )}
@@ -351,6 +362,7 @@ export const SermonsPage: React.FC = () => {
             </button>
           </div>
         )}
+        </div>
       </section>
     </Layout>
   );

@@ -20,7 +20,7 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Response interceptor — auto-logout on 401
+// Response interceptor — auto-logout on 401 (except for login requests or when already on login page)
 api.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -29,7 +29,13 @@ api.interceptors.response.use(
       localStorage.removeItem('admin_user');
       sessionStorage.removeItem('admin_token');
       sessionStorage.removeItem('admin_user');
-      window.location.href = '/login';
+
+      const isLoginRequest = error.config?.url?.includes('/auth/login');
+      const isLoginPage = typeof window !== 'undefined' && window.location.pathname === '/login';
+
+      if (!isLoginRequest && !isLoginPage) {
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }

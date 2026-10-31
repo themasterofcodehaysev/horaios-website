@@ -7,6 +7,7 @@ import { Card } from '../components/ui/Card';
 import { Input } from '../components/ui/Input';
 import { Search, Sparkles, CalendarRange, Star, CalendarDays, ChevronLeft, ChevronRight, History, Clock3 } from 'lucide-react';
 import { eventService } from '../services/publicContent.service';
+import { downloadIcsFile, generateMultipleEventsIcs } from '../utils/calendar';
 import type { EventPublic, EventCategoryPublic, PaginatedMeta } from '../types';
 
 const formatDate = (dateStr: string | null): string => {
@@ -230,28 +231,22 @@ export const EventsPage: React.FC = () => {
                     <Link
                       key={ev.id}
                       to={`/events/${ev.id}`}
-                      className="group h-full relative"
+                      className="group h-full"
                     >
-                      <div className="h-full">
-                        <EventCard
-                          title={ev.title}
-                          date={
-                            ev.start_date && ev.end_date && ev.start_date !== ev.end_date
-                              ? `${formatDate(ev.start_date)} — ${formatDate(ev.end_date)}`
-                              : formatDate(ev.start_date)
-                          }
-                          time={formatTime(ev.start_time)}
-                          location={ev.location || 'On Campus'}
-                          description={ev.description || undefined}
-                          image={ev.featured_image || undefined}
-                          featured={ev.featured}
-                        />
-                        <div className="absolute top-3 left-3 z-10">
-                          <span className="inline-flex items-center gap-1 bg-amber-400 text-neutral-950 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-sm">
-                            <Star className="w-3 h-3 fill-current" /> Featured
-                          </span>
-                        </div>
-                      </div>
+                      <EventCard
+                        title={ev.title}
+                        date={
+                          ev.start_date && ev.end_date && ev.start_date !== ev.end_date
+                            ? `${formatDate(ev.start_date)} — ${formatDate(ev.end_date)}`
+                            : formatDate(ev.start_date)
+                        }
+                        time={formatTime(ev.start_time)}
+                        location={ev.location || 'On Campus'}
+                        description={ev.description || undefined}
+                        image={ev.featured_image || undefined}
+                        featured={ev.featured}
+                        category={ev.category?.name || undefined}
+                      />
                     </Link>
                   ))}
                 </div>
@@ -344,6 +339,7 @@ export const EventsPage: React.FC = () => {
                             description={ev.description || undefined}
                             image={ev.featured_image || undefined}
                             featured={ev.featured}
+                            category={ev.category?.name || undefined}
                           />
                         </Link>
                       ))}
@@ -388,11 +384,26 @@ export const EventsPage: React.FC = () => {
             Subscribe to our public calendar and get all upcoming church events automatically synced to your phone or desktop.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-            <Button variant="primary" size="lg">
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={() => {
+                const targetEvents = events.length > 0 ? events : featuredEvents;
+                downloadIcsFile(generateMultipleEventsIcs(targetEvents), 'horaios-church-calendar.ics');
+              }}
+            >
               <CalendarRange className="w-5 h-5 mr-2" />
-              Subscribe to Calendar
+              Subscribe to Calendar (.ics)
             </Button>
-            <Button variant="secondary" size="lg">
+            <Button
+              variant="secondary"
+              size="lg"
+              onClick={() => {
+                const targetEvents = events.length > 0 ? events : featuredEvents;
+                downloadIcsFile(generateMultipleEventsIcs(targetEvents), 'horaios-church-events.ics');
+              }}
+            >
+              <CalendarDays className="w-5 h-5 mr-2" />
               Download .ics File
             </Button>
           </div>

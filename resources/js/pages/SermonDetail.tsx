@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import {
-  ArrowLeft, Calendar, User, BookOpen, Share2, Copy, Check,
-  Video, Sparkles, ChevronRight, Globe,
+  ArrowLeft, Calendar, User, BookOpen,
+  Video, Sparkles, ChevronRight, Play,
 } from 'lucide-react';
 import MarkdownPreview from '@uiw/react-markdown-preview';
 import { Layout } from '../components/layout';
-import { Seo } from '../components/common';
+import { Seo, ShareBar } from '../components/common';
 import type { SeoStructuredData } from '../components/common/Seo';
 import { sermonService } from '../admin/services/sermon.service';
 import { getImageUrl } from '../utils/imageUrl';
+import { getYouTubeId, getSermonThumbnail } from '../utils/youtube';
 import type { SermonItem } from '../admin/types';
 
 const SITE_NAME = 'Horaios Baptist Church';
@@ -44,6 +45,8 @@ function buildSermonSeo(sermon: SermonItem) {
     || (sermon.description ? truncate(stripMarkdown(sermon.description), 160) : null)
     || `${sermon.title}${sermon.speaker ? ` — a message from ${sermon.speaker.name}` : ''} at ${SITE_NAME}.`;
 
+  const thumb = getSermonThumbnail(sermon);
+
   const jsonLd: SeoStructuredData = {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -52,7 +55,7 @@ function buildSermonSeo(sermon: SermonItem) {
     ...(sermon.published_at ? { datePublished: sermon.published_at } : {}),
     dateModified: sermon.updated_at,
     ...(sermon.speaker ? { author: { '@type': 'Person', name: sermon.speaker.name } } : {}),
-    ...(sermon.thumbnail ? { image: getImageUrl(sermon.thumbnail) } : {}),
+    ...(thumb ? { image: thumb } : {}),
     publisher: { '@type': 'Organization', name: SITE_NAME },
     ...(canonicalUrl ? { url: canonicalUrl } : {}),
   };
@@ -61,7 +64,7 @@ function buildSermonSeo(sermon: SermonItem) {
     title: `${sermon.title} | ${SITE_NAME} Sermons`,
     description,
     canonicalUrl,
-    image: getImageUrl(sermon.thumbnail),
+    image: thumb || undefined,
     jsonLd,
   };
 }
@@ -72,7 +75,11 @@ export const SermonDetailPage: React.FC = () => {
   const [relatedSermons, setRelatedSermons] = useState<SermonItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  useEffect(() => {
+    setIsPlaying(false);
+  }, [id]);
 
   useEffect(() => {
     const fetchSermon = async () => {
@@ -97,20 +104,6 @@ export const SermonDetailPage: React.FC = () => {
     };
     fetchSermon();
   }, [id]);
-
-  // Extract YouTube Video ID
-  const getYouTubeId = (url: string | null): string | null => {
-    if (!url) return null;
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-    const match = url.match(regExp);
-    return (match && match[2].length === 11) ? match[2] : null;
-  };
-
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(window.location.href);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
 
   if (loading) {
     return (
@@ -153,16 +146,17 @@ export const SermonDetailPage: React.FC = () => {
         type="article"
         jsonLd={sermonSeo.jsonLd}
       />
-      <article className="max-w-4xl mx-auto pt-28 sm:pt-32 pb-16 px-4 sm:px-6 space-y-8 animate-fade-in">
-        {/* Back Link */}
-        <div>
-          <Link
-            to="/sermons"
-            className="inline-flex items-center gap-1.5 text-body-sm font-medium text-neutral-600 hover:text-primary-red transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" /> Back to Sermons Library
-          </Link>
-        </div>
+      <div className="min-h-screen bg-slate-50 pt-28 sm:pt-32 pb-20 border-t border-slate-200/60">
+        <article className="max-w-4xl mx-auto px-4 sm:px-6 space-y-8 animate-fade-in">
+          {/* Back Link */}
+          <div>
+            <Link
+              to="/sermons"
+              className="inline-flex items-center gap-1.5 text-body-sm font-medium text-neutral-600 hover:text-primary-red transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" /> Back to Sermons Library
+            </Link>
+          </div>
 
         {/* Sermon Title & Meta Header */}
         <header className="space-y-4">
@@ -207,22 +201,51 @@ export const SermonDetailPage: React.FC = () => {
           </div>
         </header>
 
-        {/* YouTube Video Player Embed */}
-        {youtubeId ? (
+        {/* YouTube Video Player Embed or Interactive Thumbnail Preview */}
+        {isPlaying && youtubeId ? (
           <div className="aspect-video bg-neutral-900 rounded-3xl overflow-hidden shadow-2xl border border-neutral-800">
             <iframe
-              src={`https://www.youtube.com/embed/${youtubeId}?autoplay=0&rel=0`}
+              src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0`}
               title={sermon.title}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
               className="w-full h-full border-0"
             />
           </div>
-        ) : sermon.thumbnail ? (
-          <div className="aspect-video bg-neutral-900 rounded-3xl overflow-hidden shadow-xl border border-neutral-200">
-            <img src={getImageUrl(sermon.thumbnail)} alt={sermon.title} className="w-full h-full object-cover" />
+        ) : (
+          <div
+            onClick={() => {
+              if (youtubeId) {
+                setIsPlaying(true);
+              } else if (sermon.youtube_url) {
+                window.open(sermon.youtube_url, '_blank', 'noopener,noreferrer');
+              }
+            }}
+            className="aspect-video bg-neutral-900 rounded-3xl overflow-hidden shadow-2xl border border-neutral-200/80 relative group cursor-pointer"
+          >
+            {getSermonThumbnail(sermon) ? (
+              <img
+                src={getSermonThumbnail(sermon)}
+                alt={sermon.title}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-neutral-800 to-neutral-900">
+                <Video className="w-16 h-16 text-neutral-600" />
+              </div>
+            )}
+
+            {/* Gradient Overlay & Big Red Play Button */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-black/20 group-hover:from-black/85 group-hover:via-black/40 transition-all flex flex-col items-center justify-center p-6 text-center">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-primary-red text-white flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:bg-primary-dark-red transition-all duration-300">
+                <Play className="w-8 h-8 sm:w-10 sm:h-10 ml-1.5 fill-current" />
+              </div>
+              <span className="mt-4 px-4 py-1.5 rounded-full bg-black/60 backdrop-blur-md text-white text-body-xs font-bold uppercase tracking-wider border border-white/20 group-hover:bg-primary-red group-hover:border-primary-red transition-colors">
+                Watch Full Message
+              </span>
+            </div>
           </div>
-        ) : null}
+        )}
 
         {/* Summary Banner */}
         {sermon.summary && (
@@ -271,36 +294,11 @@ export const SermonDetailPage: React.FC = () => {
         )}
 
         {/* Social Share Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-4 p-4 bg-neutral-50 rounded-2xl border border-neutral-200">
-          <div className="flex items-center gap-2 text-body-xs font-bold text-neutral-600 uppercase tracking-wider">
-            <Share2 className="w-4 h-4 text-primary-red" /> Share This Message
-          </div>
-          <div className="flex items-center gap-2">
-            <a
-              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white rounded-lg text-body-xs font-medium hover:bg-blue-700 transition-colors"
-            >
-              <Globe className="w-3.5 h-3.5" /> Facebook
-            </a>
-            <a
-              href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(sermon.title)}`}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-neutral-900 text-white rounded-lg text-body-xs font-medium hover:bg-neutral-800 transition-colors"
-            >
-              <Share2 className="w-3.5 h-3.5" /> X / Twitter
-            </a>
-            <button
-              onClick={handleCopyLink}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-neutral-200 text-neutral-700 rounded-lg text-body-xs font-medium hover:bg-neutral-100 transition-colors shadow-xs"
-            >
-              {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-              {copied ? 'Copied!' : 'Copy Link'}
-            </button>
-          </div>
-        </div>
+        <ShareBar
+          title={sermon.title}
+          description={sermon.scripture_reference || (typeof sermon.speaker === 'object' ? sermon.speaker?.name : sermon.speaker) || ''}
+          label="Share This Message"
+        />
 
         {/* Related Sermons Section */}
         {relatedSermons.length > 0 && (
@@ -309,28 +307,47 @@ export const SermonDetailPage: React.FC = () => {
               <Sparkles className="w-4 h-4 text-amber-500" /> Related Sermons & Messages
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {relatedSermons.map((rel) => (
-                <Link
-                  key={rel.id}
-                  to={`/sermons/${rel.id}`}
-                  className="group bg-neutral-50 hover:bg-white rounded-2xl p-4 border border-neutral-200 hover:border-neutral-300 hover:shadow-md transition-all flex items-center justify-between"
-                >
-                  <div className="space-y-1 pr-2">
-                    <h4 className="text-body-sm font-bold text-neutral-900 group-hover:text-primary-red transition-colors">
-                      {rel.title}
-                    </h4>
-                    <p className="text-body-xs text-neutral-500">
-                      {rel.speaker?.name || 'Horaios Baptist Church'}
-                      {rel.scripture_reference && ` • ${rel.scripture_reference}`}
-                    </p>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-neutral-400 group-hover:translate-x-1 transition-transform shrink-0" />
-                </Link>
-              ))}
+              {relatedSermons.map((rel) => {
+                const relThumb = getSermonThumbnail(rel);
+                return (
+                  <Link
+                    key={rel.id}
+                    to={`/sermons/${rel.id}`}
+                    className="group bg-white hover:bg-neutral-50 rounded-2xl p-3 border border-neutral-200 hover:border-neutral-300 hover:shadow-md transition-all flex items-center gap-3"
+                  >
+                    <div className="w-24 sm:w-28 aspect-video bg-neutral-900 rounded-xl overflow-hidden shrink-0 relative">
+                      {relThumb ? (
+                        <img src={relThumb} alt={rel.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-neutral-500">
+                          <Video className="w-6 h-6" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="space-y-1 pr-2 min-w-0 flex-1">
+                      <h4 
+                        className="text-body-sm font-bold text-neutral-900 group-hover:text-primary-red transition-colors truncate"
+                        title={rel.title}
+                      >
+                        {rel.title}
+                      </h4>
+                      <p 
+                        className="text-body-xs text-neutral-500 truncate"
+                        title={`${rel.speaker?.name || 'Horaios Baptist Church'}${rel.scripture_reference ? ` • ${rel.scripture_reference}` : ''}`}
+                      >
+                        {rel.speaker?.name || 'Horaios Baptist Church'}
+                        {rel.scripture_reference && ` • ${rel.scripture_reference}`}
+                      </p>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-neutral-400 group-hover:translate-x-1 transition-transform shrink-0" />
+                  </Link>
+                );
+              })}
             </div>
           </section>
         )}
-      </article>
+        </article>
+      </div>
     </Layout>
   );
 };

@@ -54,6 +54,9 @@ class SongService
     public function createSong(array $data, ?User $actingUser = null): Song
     {
         $data['uuid'] = (string) Str::uuid();
+        if (Song::hasSlugColumn() && empty($data['slug']) && !empty($data['title'])) {
+            $data['slug'] = Song::generateUniqueSlug($data['title']);
+        }
         $data['created_by'] = $actingUser?->id;
         $data['updated_by'] = $actingUser?->id;
 
@@ -152,7 +155,7 @@ class SongService
     {
         $newTitle = $song->title . ' (Copy)';
 
-        $duplicate = Song::create([
+        $songData = [
             'uuid' => (string) Str::uuid(),
             'title' => $newTitle,
             'artist' => $song->artist,
@@ -164,7 +167,13 @@ class SongService
             'display_order' => $song->display_order + 1,
             'created_by' => $actingUser?->id,
             'updated_by' => $actingUser?->id,
-        ]);
+        ];
+
+        if (Song::hasSlugColumn()) {
+            $songData['slug'] = Song::generateUniqueSlug($newTitle);
+        }
+
+        $duplicate = Song::create($songData);
 
         AuditLogService::log(
             'duplicate',

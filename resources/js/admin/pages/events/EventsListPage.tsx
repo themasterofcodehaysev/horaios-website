@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Plus, Search, Star, Eye, Edit2, Copy, Trash2, CheckCircle,
-  XCircle, ChevronLeft, ChevronRight, X, AlertTriangle, Layers, Calendar, MapPin, Ban,
+  XCircle, ChevronLeft, ChevronRight, X, AlertTriangle, Layers, Calendar, MapPin, Ban, Ticket,
 } from 'lucide-react';
 import { eventService } from '../../services/event.service';
 import type { EventItem, EventCategory, PaginatedResponse, EventFilters } from '../../types';
@@ -183,6 +183,12 @@ const EventsListPage: React.FC = () => {
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          <Link
+            to="/admin/events/registrations"
+            className="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-neutral-200 text-neutral-700 rounded-lg text-body-xs font-medium hover:bg-neutral-50 shadow-xs"
+          >
+            <Ticket className="w-3.5 h-3.5 text-neutral-500" /> Registrations
+          </Link>
           <Link
             to="/admin/events/categories"
             className="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-neutral-200 text-neutral-700 rounded-lg text-body-xs font-medium hover:bg-neutral-50 shadow-xs"

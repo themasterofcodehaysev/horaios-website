@@ -19,6 +19,9 @@ export const contactService = {
     const params = new URLSearchParams();
     if (filters.search) params.set('search', filters.search);
     if (filters.status) params.set('status', filters.status);
+    if (filters.type) params.set('type', filters.type);
+    if (filters.ministry_name) params.set('ministry_name', filters.ministry_name);
+    if (filters.event_name) params.set('event_name', filters.event_name);
     if (filters.page) params.set('page', String(filters.page));
     if (filters.per_page) params.set('per_page', String(filters.per_page));
     if (filters.sort_by) params.set('sort_by', filters.sort_by);
@@ -47,8 +50,11 @@ export const contactService = {
     return data.data;
   },
 
-  async getContactMessageStats(): Promise<ContactMessageStats> {
-    const { data } = await api.get<ApiResponse<ContactMessageStats>>('/admin/contact-messages/stats');
+  async getContactMessageStats(type?: string): Promise<ContactMessageStats> {
+    const params = new URLSearchParams();
+    if (type) params.set('type', type);
+    const query = params.toString() ? `?${params.toString()}` : '';
+    const { data } = await api.get<ApiResponse<ContactMessageStats>>(`/admin/contact-messages/stats${query}`);
     return data.data;
   },
 };

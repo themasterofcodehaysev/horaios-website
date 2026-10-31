@@ -3,6 +3,7 @@ import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
 import { Play } from 'lucide-react';
 import { getImageUrl } from '../../utils/imageUrl';
+import { getYouTubeThumbnail } from '../../utils/youtube';
 
 interface SermonCardProps {
   title: string;
@@ -25,13 +26,15 @@ export const SermonCard: React.FC<SermonCardProps> = ({
   description,
   onClick,
 }) => {
+  const thumbUrl = image ? getImageUrl(image) : (videoUrl ? getYouTubeThumbnail(videoUrl) : null);
+
   return (
     <Card hoverable padding="md" onClick={onClick} className="flex flex-col cursor-pointer">
       <div className="relative mb-4 overflow-hidden rounded-lg h-48 bg-neutral-200 group">
-        {image ? (
+        {thumbUrl ? (
           <>
             <img
-              src={getImageUrl(image)}
+              src={thumbUrl}
               alt={title}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
@@ -57,7 +60,10 @@ export const SermonCard: React.FC<SermonCardProps> = ({
           </Badge>
         )}
 
-        <h3 className="text-h6 font-semibold text-neutral-900 line-clamp-2">
+        <h3 
+          className="text-h6 font-semibold text-neutral-900 truncate"
+          title={title}
+        >
           {title}
         </h3>
 
@@ -67,7 +73,10 @@ export const SermonCard: React.FC<SermonCardProps> = ({
         </div>
 
         {description && (
-          <p className="text-body-sm text-neutral-600 line-clamp-2">
+          <p 
+            className="text-body-sm text-neutral-600 line-clamp-2"
+            title={description}
+          >
             {description}
           </p>
         )}

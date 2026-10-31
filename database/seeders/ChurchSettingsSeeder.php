@@ -34,14 +34,6 @@ class ChurchSettingsSeeder extends Seeder
             ['key' => 'telegram', 'value' => 'https://t.me/horaiosbaptist', 'type' => 'string', 'group' => 'social', 'is_public' => true],
             ['key' => 'instagram', 'value' => 'https://instagram.com/horaiosbaptist', 'type' => 'string', 'group' => 'social', 'is_public' => true],
 
-            // Service Times Settings
-            ['key' => 'service_times', 'value' => json_encode([
-                ['day' => 'Sunday', 'time' => '09:00 AM & 11:00 AM', 'type' => 'Main Service'],
-                ['day' => 'Wednesday', 'time' => '07:00 PM', 'type' => 'Prayer & Study'],
-            ]), 'type' => 'json', 'group' => 'service_times', 'is_public' => true],
-            ['key' => 'service_location', 'value' => 'Main Sanctuary', 'type' => 'string', 'group' => 'service_times', 'is_public' => true],
-            ['key' => 'pastor_name', 'value' => 'Senior Pastor', 'type' => 'string', 'group' => 'service_times', 'is_public' => true],
-
             // Advanced Settings
             ['key' => 'maintenance_mode', 'value' => 'false', 'type' => 'boolean', 'group' => 'advanced', 'is_public' => false],
             ['key' => 'maintenance_message', 'value' => 'We are currently under maintenance. Please check back soon.', 'type' => 'text', 'group' => 'advanced', 'is_public' => false],
@@ -52,6 +44,17 @@ class ChurchSettingsSeeder extends Seeder
             // System Settings
             ['key' => 'default_language', 'value' => 'en', 'type' => 'string', 'group' => 'system', 'is_public' => false],
             ['key' => 'timezone', 'value' => 'Asia/Phnom_Penh', 'type' => 'string', 'group' => 'system', 'is_public' => false],
+
+            // Giving & Contribution Settings
+            ['key' => 'giving_enabled', 'value' => 'true', 'type' => 'boolean', 'group' => 'giving', 'is_public' => true],
+            ['key' => 'giving_qr_image', 'value' => '', 'type' => 'string', 'group' => 'giving', 'is_public' => true],
+            ['key' => 'giving_bank_name', 'value' => 'ABA Bank (KHQR)', 'type' => 'string', 'group' => 'giving', 'is_public' => true],
+            ['key' => 'giving_account_name', 'value' => 'Horaios Baptist Church', 'type' => 'string', 'group' => 'giving', 'is_public' => true],
+            ['key' => 'giving_account_number', 'value' => '001 234 567', 'type' => 'string', 'group' => 'giving', 'is_public' => true],
+            ['key' => 'giving_currency', 'value' => 'USD / KHR', 'type' => 'string', 'group' => 'giving', 'is_public' => true],
+            ['key' => 'giving_instructions', 'value' => "1. Open any mobile banking app with KHQR/Bakong support (e.g. ABA Mobile, Acleda, Bakong).\n2. Tap Scan QR and scan the church code.\n3. Enter the giving amount and add 'Tithe' or 'Offering' in the remarks.\n4. Confirm your transfer.", 'type' => 'text', 'group' => 'giving', 'is_public' => true],
+            ['key' => 'giving_online_url', 'value' => '', 'type' => 'string', 'group' => 'giving', 'is_public' => true],
+            ['key' => 'giving_note', 'value' => 'Your faithful giving supports worship services, community outreach, and Gospel ministries.', 'type' => 'text', 'group' => 'giving', 'is_public' => true],
         ];
 
         foreach ($settings as $setting) {

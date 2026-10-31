@@ -5,9 +5,8 @@ import { HeroSection, BlogCard } from '../components/sections';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 import { Input } from '../components/ui/Input';
-import { Pagination } from '../components/ui/Pagination';
-import { Search, Sparkles, Newspaper, Star, Mail, ChevronLeft, ChevronRight } from 'lucide-react';
-import { blogService } from '../services/publicContent.service';
+import { Search, Sparkles, Newspaper, Star, Mail, ChevronLeft, ChevronRight, CheckCircle2, AlertCircle } from 'lucide-react';
+import { blogService, contactService } from '../services/publicContent.service';
 import { placeholderImage } from '../lib/placeholderImage';
 import type { BlogPostPublic, BlogCategoryPublic, PaginatedMeta } from '../types';
 
@@ -24,6 +23,37 @@ export const NewsPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [page, setPage] = useState(1);
   const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterSubmitting, setNewsletterSubmitting] = useState(false);
+  const [newsletterStatus, setNewsletterStatus] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const email = newsletterEmail.trim();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setNewsletterStatus({ type: 'error', text: 'Please enter a valid email address.' });
+      return;
+    }
+
+    setNewsletterSubmitting(true);
+    setNewsletterStatus(null);
+    try {
+      await contactService.submitContactMessage({
+        name: 'Newsletter Subscriber',
+        email,
+        subject: 'Newsletter Subscription',
+        message: `New subscription request from ${email} for Horaios Church news and announcements.`,
+      });
+      setNewsletterStatus({ type: 'success', text: 'Thank you for subscribing! You will receive our latest church news and updates.' });
+      setNewsletterEmail('');
+    } catch (err: any) {
+      setNewsletterStatus({
+        type: 'error',
+        text: err?.response?.data?.message || 'Failed to subscribe. Please try again later.',
+      });
+    } finally {
+      setNewsletterSubmitting(false);
+    }
+  };
 
   useEffect(() => {
     const t = setTimeout(() => {
@@ -303,18 +333,41 @@ export const NewsPage: React.FC = () => {
               <p className="text-body-lg text-primary-100 max-w-xl mx-auto mb-7">
                 Get weekly updates, inspiring articles, and the latest news delivered straight to your inbox.
               </p>
-              <div className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
-                <input
-                  type="email"
-                  value={newsletterEmail}
-                  onChange={(e) => setNewsletterEmail(e.target.value)}
-                  placeholder="Enter your email address"
-                  className="flex-1 px-4 py-3 rounded-xl bg-white text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-4 focus:ring-white/20 text-body-base shadow-lg"
-                />
-                <Button variant="primary" size="lg" className="bg-white !text-primary-red hover:bg-primary-100 transition-colors whitespace-nowrap">
-                  Subscribe
-                </Button>
-              </div>
+              <form onSubmit={handleNewsletterSubmit} className="max-w-lg mx-auto space-y-3">
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <input
+                    type="email"
+                    value={newsletterEmail}
+                    onChange={(e) => setNewsletterEmail(e.target.value)}
+                    placeholder="Enter your email address"
+                    disabled={newsletterSubmitting}
+                    className="flex-1 px-4 py-3 rounded-xl bg-white text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-4 focus:ring-white/20 text-body-base shadow-lg disabled:opacity-75"
+                  />
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    size="lg"
+                    disabled={newsletterSubmitting}
+                    className="bg-white !text-primary-red hover:bg-primary-100 transition-colors whitespace-nowrap font-bold"
+                  >
+                    {newsletterSubmitting ? 'Subscribing...' : 'Subscribe'}
+                  </Button>
+                </div>
+                {newsletterStatus && (
+                  <div className={`p-3 rounded-xl text-body-xs font-semibold flex items-center justify-center gap-2 ${
+                    newsletterStatus.type === 'success'
+                      ? 'bg-emerald-500/20 text-white border border-emerald-300/30'
+                      : 'bg-black/30 text-white border border-white/20'
+                  }`}>
+                    {newsletterStatus.type === 'success' ? (
+                      <CheckCircle2 className="w-4 h-4 text-emerald-300 shrink-0" />
+                    ) : (
+                      <AlertCircle className="w-4 h-4 text-amber-300 shrink-0" />
+                    )}
+                    <span>{newsletterStatus.text}</span>
+                  </div>
+                )}
+              </form>
             </div>
           </Card>
         </div>

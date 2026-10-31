@@ -1,8 +1,9 @@
-import React from 'react';
-import { Mail, MapPin, Phone } from 'lucide-react';
+import React, { useState } from 'react';
+import { Mail, MapPin, Phone, ShieldCheck, FileText } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { FacebookIcon, YoutubeIcon, TelegramIcon, InstagramIcon } from '../common/SocialIcons';
 import { useSiteSettings } from '../../context/SiteSettingsContext';
+import { Modal } from '../ui/Modal';
 
 interface FooterProps {}
 
@@ -28,8 +29,11 @@ const Footer: React.FC<FooterProps> = () => {
     ? `© ${currentYear} ${settings.copyright}`
     : `© ${currentYear} ${settings.church_name}. All rights reserved.`;
 
+  const [policyModal, setPolicyModal] = useState<'privacy' | 'terms' | null>(null);
+
   return (
-    <footer className="relative z-10 bg-gradient-footer text-white border-t border-white/10">
+    <>
+      <footer className="relative z-10 bg-gradient-footer text-white border-t border-white/10">
       {/* Main Footer */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -176,16 +180,82 @@ const Footer: React.FC<FooterProps> = () => {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-body-sm text-white/60">{copyrightText}</p>
           <div className="flex gap-4">
-            <Link to="#" className="text-body-sm text-white/60 hover:text-white transition-colors">
+            <button
+              type="button"
+              onClick={() => setPolicyModal('privacy')}
+              className="text-body-sm text-white/60 hover:text-white transition-colors cursor-pointer"
+            >
               Privacy Policy
-            </Link>
-            <Link to="#" className="text-body-sm text-white/60 hover:text-white transition-colors">
+            </button>
+            <button
+              type="button"
+              onClick={() => setPolicyModal('terms')}
+              className="text-body-sm text-white/60 hover:text-white transition-colors cursor-pointer"
+            >
               Terms of Service
-            </Link>
+            </button>
           </div>
         </div>
       </div>
     </footer>
+
+    <Modal
+      isOpen={policyModal !== null}
+      onClose={() => setPolicyModal(null)}
+      title={policyModal === 'privacy' ? 'Privacy Policy' : 'Terms of Service'}
+      size="md"
+    >
+      {policyModal === 'privacy' && (
+        <div className="space-y-4 text-neutral-700 text-body-sm leading-relaxed">
+          <div className="flex items-center gap-3 p-3 bg-primary-red/5 rounded-xl border border-primary-red/10 text-primary-red">
+            <ShieldCheck className="w-5 h-5 shrink-0" />
+            <p className="font-semibold text-xs uppercase tracking-wider">
+              {settings.church_name || 'Horaios Baptist Church'} Privacy Commitment
+            </p>
+          </div>
+          <p>
+            We take your privacy and confidence seriously. When you submit information through our website (such as contact messages, ministry applications, or prayer requests), your personal details are treated with utmost care and pastoral discretion.
+          </p>
+          <h4 className="text-body-base font-bold text-neutral-900 pt-1">Information Collection & Use</h4>
+          <p>
+            Personal contact details (name, email, phone number) are collected only when voluntarily provided to connect you with our ministry leaders or reply to inquiries.
+          </p>
+          <h4 className="text-body-base font-bold text-neutral-900 pt-1">Prayer & Ministry Privacy</h4>
+          <p>
+            Prayer requests marked as confidential are shared exclusively with pastoral leadership and intercessory teams. We never sell, rent, or distribute personal information to external commercial third parties.
+          </p>
+          <p className="text-xs text-neutral-500 pt-2 border-t border-neutral-100">
+            For questions regarding privacy, please contact <a href={`mailto:${settings.email || 'admin@horaiosbaptist.org'}`} className="text-primary-red font-medium underline">{settings.email || 'our church office'}</a>.
+          </p>
+        </div>
+      )}
+
+      {policyModal === 'terms' && (
+        <div className="space-y-4 text-neutral-700 text-body-sm leading-relaxed">
+          <div className="flex items-center gap-3 p-3 bg-neutral-100 rounded-xl border border-neutral-200 text-neutral-800">
+            <FileText className="w-5 h-5 shrink-0 text-primary-navy" />
+            <p className="font-semibold text-xs uppercase tracking-wider">
+              Terms of Website Use
+            </p>
+          </div>
+          <p>
+            Welcome to the official website of {settings.church_name || 'Horaios Baptist Church'}. By accessing and using this site, you agree to these terms of service.
+          </p>
+          <h4 className="text-body-base font-bold text-neutral-900 pt-1">Content & Copyright</h4>
+          <p>
+            Sermon recordings, study notes, event information, ministry details, and media published on this site are provided for personal spiritual growth, worship, and church community edification.
+          </p>
+          <h4 className="text-body-base font-bold text-neutral-900 pt-1">Acceptable Use</h4>
+          <p>
+            Visitors may not use website contact forms or prayer submission services to transmit unsolicited spam, unlawful materials, or offensive content.
+          </p>
+          <p className="text-xs text-neutral-500 pt-2 border-t border-neutral-100">
+            {settings.church_name} reserves the right to update these terms to reflect church operational practices.
+          </p>
+        </div>
+      )}
+    </Modal>
+  </>
   );
 };
 

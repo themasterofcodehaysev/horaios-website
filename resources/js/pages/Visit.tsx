@@ -5,6 +5,7 @@ import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
 import { useSiteSettings } from '../context/SiteSettingsContext';
+import { IconRenderer } from '../components/ui/IconRenderer';
 
 export const VisitPage: React.FC = () => {
   const { settings } = useSiteSettings();
@@ -35,19 +36,33 @@ export const VisitPage: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {settings.parsedServiceTimes.map((item, idx) => (
-              <Card key={idx} padding="lg" className="border-l-4 border-primary-red">
+              <Card key={idx} padding="lg" className="border-l-4 border-primary-red hover:shadow-md transition-shadow">
                 <div className="flex items-start gap-4">
-                  <Clock className="w-6 h-6 text-primary-red flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="text-h6 font-semibold text-neutral-900 mb-2">
-                      {item.day}
+                  <div className="w-11 h-11 rounded-xl bg-primary-red/10 text-primary-red flex items-center justify-center flex-shrink-0 text-lg">
+                    <IconRenderer
+                      icon={item.icon}
+                      fallback={<Clock className="w-6 h-6 text-primary-red" />}
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-h6 font-semibold text-neutral-900 mb-0.5 truncate" title={item.title || item.day}>
+                      {item.title || item.day}
                     </h3>
-                    <p className="text-body-base font-medium text-primary-red mb-2">
+                    <p className="text-body-xs font-semibold text-neutral-500 uppercase tracking-wider mb-2">
+                      {item.day}
+                    </p>
+                    <p className="text-body-base font-bold text-primary-red mb-1">
                       {item.time}
                     </p>
-                    <p className="text-body-sm text-neutral-600">
+                    <p className="text-body-sm text-neutral-600 line-clamp-2" title={item.type}>
                       {item.type}
                     </p>
+                    {item.location && (
+                      <p className="text-caption text-neutral-500 mt-2 flex items-center gap-1.5 pt-2 border-t border-neutral-100">
+                        <MapPin className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
+                        <span className="truncate">{item.location}</span>
+                      </p>
+                    )}
                   </div>
                 </div>
               </Card>
@@ -284,10 +299,18 @@ export const VisitPage: React.FC = () => {
             We can't wait to meet you! Come as you are and experience God's love in our community.
           </p>
           <Button
-            variant="primary"
+            variant="default"
             size="lg"
-            className="bg-primary-red hover:bg-primary-dark-red"
-            onClick={() => googleMapDirectionsUrl && window.open(googleMapDirectionsUrl, '_blank')}
+            className="bg-white text-primary-red hover:bg-neutral-100 font-bold shadow-lg transition-all"
+            onClick={() => {
+              if (googleMapDirectionsUrl) {
+                window.open(googleMapDirectionsUrl, '_blank');
+              } else if (googleMapUrl) {
+                window.open(googleMapUrl, '_blank');
+              } else {
+                window.scrollTo({ top: 400, behavior: 'smooth' });
+              }
+            }}
           >
             Get Directions & More Info
           </Button>

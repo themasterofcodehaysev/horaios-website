@@ -2,10 +2,10 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import {
   ArrowLeft, Maximize2, Minimize2, Play, Pause,
-  AArrowUp, AArrowDown, RefreshCw, Calendar, Music, Sparkles, ChevronRight,
+  AArrowUp, AArrowDown, RefreshCw, Calendar, Music, Sparkles, ChevronRight, Type,
 } from 'lucide-react';
 import { Layout } from '../components/layout';
-import { Seo } from '../components/common';
+import { Seo, ShareBar } from '../components/common';
 import type { SeoStructuredData } from '../components/common/Seo';
 import { songService } from '../admin/services/song.service';
 import type { SongItem } from '../admin/types';
@@ -64,6 +64,7 @@ export const SongDetailPage: React.FC = () => {
   const [isAutoScrolling, setIsAutoScrolling] = useState(false);
   const [scrollSpeed, setScrollSpeed] = useState<number>(1); // 1 = normal, 1.5 = medium, 2 = fast
   const scrollIntervalRef = useRef<number | null>(null);
+  const worshipContainerRef = useRef<HTMLDivElement | null>(null);
 
   // Save font size preference
   useEffect(() => {
@@ -100,22 +101,6 @@ export const SongDetailPage: React.FC = () => {
     setIsAutoScrolling(false);
   }, [id]);
 
-  // Auto Scroll Mechanism
-  const startAutoScroll = useCallback(() => {
-    if (scrollIntervalRef.current) clearInterval(scrollIntervalRef.current);
-    setIsAutoScrolling(true);
-
-    const stepMs = Math.round(50 / scrollSpeed);
-    scrollIntervalRef.current = window.setInterval(() => {
-      window.scrollBy({ top: 1, behavior: 'smooth' });
-
-      // Check if reached bottom of page
-      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 10) {
-        stopAutoScroll();
-      }
-    }, stepMs);
-  }, [scrollSpeed]);
-
   const stopAutoScroll = useCallback(() => {
     if (scrollIntervalRef.current) {
       clearInterval(scrollIntervalRef.current);
@@ -124,13 +109,54 @@ export const SongDetailPage: React.FC = () => {
     setIsAutoScrolling(false);
   }, []);
 
-  const toggleAutoScroll = () => {
+  // Auto Scroll Mechanism (handles both worship container and standard window)
+  const startAutoScroll = useCallback(() => {
+    if (scrollIntervalRef.current) clearInterval(scrollIntervalRef.current);
+    setIsAutoScrolling(true);
+
+    const stepMs = Math.max(16, Math.round(40 / scrollSpeed));
+    scrollIntervalRef.current = window.setInterval(() => {
+      const container = worshipContainerRef.current;
+      if (container) {
+        container.scrollBy({ top: 1, behavior: 'auto' });
+        if (container.scrollTop + container.clientHeight >= container.scrollHeight - 10) {
+          stopAutoScroll();
+        }
+      } else {
+        window.scrollBy({ top: 1, behavior: 'auto' });
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 10) {
+          stopAutoScroll();
+        }
+      }
+    }, stepMs);
+  }, [scrollSpeed, stopAutoScroll]);
+
+  const toggleAutoScroll = useCallback(() => {
     if (isAutoScrolling) {
       stopAutoScroll();
     } else {
       startAutoScroll();
     }
-  };
+  }, [isAutoScrolling, stopAutoScroll, startAutoScroll]);
+
+  // Listen for Escape key to exit worship mode and Spacebar to toggle scroll
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && worshipMode) {
+        setWorshipMode(false);
+        stopAutoScroll();
+      } else if (e.code === 'Space') {
+        const target = e.target as HTMLElement;
+        const isInput = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT' || target.isContentEditable);
+        if (!isInput) {
+          e.preventDefault();
+          toggleAutoScroll();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [worshipMode, stopAutoScroll, toggleAutoScroll]);
 
   // Clean up interval on unmount
   useEffect(() => {
@@ -188,7 +214,10 @@ export const SongDetailPage: React.FC = () => {
   // Render Worship Mode Fullscreen Shell
   if (worshipMode) {
     return (
-      <div className="fixed inset-0 z-50 bg-neutral-950 text-neutral-100 overflow-y-auto min-h-screen px-4 py-6 sm:px-8 select-none flex flex-col justify-between">
+      <div
+        ref={worshipContainerRef}
+        className="fixed inset-0 z-50 bg-neutral-950 text-neutral-100 overflow-y-auto min-h-screen px-4 py-6 sm:px-8 select-none flex flex-col justify-between"
+      >
         <Seo
           title={songSeo.title}
           description={songSeo.description}
@@ -202,8 +231,9 @@ export const SongDetailPage: React.FC = () => {
             <button
               onClick={() => { setWorshipMode(false); stopAutoScroll(); }}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white text-body-xs font-semibold transition-colors"
+              title="Exit Worship Mode (Esc)"
             >
-              <Minimize2 className="w-4 h-4 text-amber-400" /> Exit
+              <Minimize2 className="w-4 h-4 text-amber-400" /> Exit (Esc)
             </button>
 
             {/* Song title */}
@@ -256,7 +286,7 @@ export const SongDetailPage: React.FC = () => {
                   className="p-1.5 text-neutral-400 hover:text-white"
                   title="Smaller font"
                 >
-                  <Type className="w-3.5 h-3.5" />
+                  <AArrowDown className="w-3.5 h-3.5" />
                 </button>
                 <span className="text-[10px] text-neutral-400 font-mono px-1">{fontSize}px</span>
                 <button
@@ -264,7 +294,7 @@ export const SongDetailPage: React.FC = () => {
                   className="p-1.5 text-neutral-400 hover:text-white"
                   title="Larger font"
                 >
-                  <Type className="w-4 h-4" />
+                  <AArrowUp className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
@@ -309,15 +339,16 @@ export const SongDetailPage: React.FC = () => {
         canonicalUrl={songSeo.canonicalUrl}
         jsonLd={songSeo.jsonLd}
       />
-      <article className="max-w-3xl mx-auto pt-28 sm:pt-32 pb-16 px-4 sm:px-6 space-y-8">
-        {/* Top Navigation & Worship Mode Button */}
-        <div className="flex items-center justify-between border-b border-neutral-200 pb-4">
-          <Link
-            to="/songs"
-            className="inline-flex items-center gap-1.5 text-body-sm font-medium text-neutral-600 hover:text-primary-red transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" /> Back to Songbook
-          </Link>
+      <div className="min-h-screen bg-slate-50 pt-28 sm:pt-32 pb-20 border-t border-slate-200/60">
+        <article className="max-w-3xl mx-auto px-4 sm:px-6 space-y-8">
+          {/* Top Navigation & Worship Mode Button */}
+          <div className="flex items-center justify-between border-b border-neutral-200 pb-4">
+            <Link
+              to="/songs"
+              className="inline-flex items-center gap-1.5 text-body-sm font-medium text-neutral-600 hover:text-primary-red transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" /> Back to Songbook
+            </Link>
 
           <button
             onClick={() => setWorshipMode(true)}
@@ -365,6 +396,7 @@ export const SongDetailPage: React.FC = () => {
             </span>
             <div className="flex items-center bg-white rounded-xl border border-neutral-200 p-1 shadow-xs">
               <button
+                type="button"
                 onClick={decreaseFontSize}
                 className="p-1.5 hover:bg-neutral-100 rounded-lg text-neutral-700 transition-colors"
                 title="Decrease Font Size"
@@ -373,6 +405,7 @@ export const SongDetailPage: React.FC = () => {
               </button>
               <span className="text-body-xs font-mono font-bold px-3 text-neutral-900">{fontSize}px</span>
               <button
+                type="button"
                 onClick={increaseFontSize}
                 className="p-1.5 hover:bg-neutral-100 rounded-lg text-neutral-700 transition-colors"
                 title="Increase Font Size"
@@ -380,6 +413,7 @@ export const SongDetailPage: React.FC = () => {
                 <AArrowUp className="w-4 h-4" />
               </button>
               <button
+                type="button"
                 onClick={resetFontSize}
                 className="p-1.5 hover:bg-neutral-100 rounded-lg text-neutral-400 hover:text-neutral-700 transition-colors border-l border-neutral-200 ml-1"
                 title="Reset Font Size"
@@ -396,14 +430,16 @@ export const SongDetailPage: React.FC = () => {
             </span>
             <div className="flex items-center gap-2">
               <button
+                type="button"
                 onClick={toggleAutoScroll}
-                className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-body-xs font-bold transition-all ${
+                className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-body-xs font-bold transition-all shadow-sm ${
                   isAutoScrolling
                     ? 'bg-amber-500 text-neutral-950 shadow-md'
                     : 'bg-white border border-neutral-200 text-neutral-800 hover:bg-neutral-100'
                 }`}
+                title={isAutoScrolling ? 'Pause auto-scroll (Spacebar)' : 'Start auto-scroll'}
               >
-                {isAutoScrolling ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+                {isAutoScrolling ? <Pause className="w-3.5 h-3.5 fill-current" /> : <Play className="w-3.5 h-3.5 fill-current" />}
                 {isAutoScrolling ? 'Pause' : 'Start Scroll'}
               </button>
 
@@ -429,6 +465,30 @@ export const SongDetailPage: React.FC = () => {
             {song.lyrics}
           </div>
         </div>
+
+        {/* Floating Quick Pause Dock at bottom-right when scrolling */}
+        {isAutoScrolling && (
+          <div className="fixed bottom-6 right-6 z-40 animate-fade-in flex items-center gap-2.5 bg-neutral-900/90 text-white backdrop-blur-md px-4 py-2.5 rounded-full shadow-2xl border border-neutral-700/80">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-body-xs font-medium text-neutral-200">Auto-Scrolling ({scrollSpeed}x)</span>
+            <button
+              type="button"
+              onClick={toggleAutoScroll}
+              className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500 hover:bg-amber-400 text-neutral-950 font-bold text-body-xs transition-colors shadow-sm ml-1"
+              title="Pause auto-scroll (Spacebar)"
+            >
+              <Pause className="w-3.5 h-3.5 fill-current" />
+              <span>Pause</span>
+            </button>
+          </div>
+        )}
+
+        {/* Social Share Bar */}
+        <ShareBar
+          title={song.title}
+          description={song.artist ? `Worship song by ${song.artist}` : 'Horaios Worship Song'}
+          label="Share Song"
+        />
 
         {/* Related Songs Section (Max 5) */}
         {relatedSongs.length > 0 && (
@@ -457,7 +517,8 @@ export const SongDetailPage: React.FC = () => {
             </div>
           </section>
         )}
-      </article>
+        </article>
+      </div>
     </Layout>
   );
 };

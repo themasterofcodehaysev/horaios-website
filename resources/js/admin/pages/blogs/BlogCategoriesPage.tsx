@@ -36,7 +36,7 @@ const BlogCategoriesPage: React.FC = () => {
       const data = await blogService.getAdminBlogCategories();
       setCategories(data.sort((a, b) => a.display_order - b.display_order));
     } catch (err: any) {
-      setError(err?.response?.data?.message || 'Failed to load blog categories');
+      setError(err?.response?.data?.message || 'Failed to load news categories');
     } finally {
       setLoading(false);
     }
@@ -65,7 +65,10 @@ const BlogCategoriesPage: React.FC = () => {
 
     setSubmitting(true);
     try {
-      if (modal.mode === 'edit' && modal.category?.id) {
+      if (modal.mode === 'edit') {
+        if (!modal.category?.id) {
+          throw new Error('Category ID is missing for update');
+        }
         await blogService.updateBlogCategory(modal.category.id, formData);
       } else {
         await blogService.createBlogCategory(formData);
@@ -73,7 +76,7 @@ const BlogCategoriesPage: React.FC = () => {
       setModal({ open: false, mode: 'create', category: null });
       fetchCategories();
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to save blog category');
+      alert(err?.response?.data?.message || err?.message || 'Failed to save news category');
     } finally {
       setSubmitting(false);
     }
@@ -87,7 +90,7 @@ const BlogCategoriesPage: React.FC = () => {
       setDeleteModal({ open: false, category: null });
       fetchCategories();
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to delete blog category');
+      alert(err?.response?.data?.message || 'Failed to delete news category');
     } finally {
       setDeleting(false);
     }
@@ -98,15 +101,15 @@ const BlogCategoriesPage: React.FC = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Link
-            to="/admin/blogs"
+            to="/admin/news"
             className="p-2 text-neutral-500 hover:bg-neutral-100 rounded-lg transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <h1 className="text-h3 text-neutral-900 font-bold">Blog Categories</h1>
+            <h1 className="text-h3 text-neutral-900 font-bold">News Categories</h1>
             <p className="text-body-xs text-neutral-500">
-              Organize blog posts by topic (e.g. Announcements, Devotionals, Testimonies).
+              Organize news articles by topic (e.g. Announcements, Devotionals, Testimonies).
             </p>
           </div>
         </div>
@@ -135,7 +138,7 @@ const BlogCategoriesPage: React.FC = () => {
         ) : categories.length === 0 ? (
           <div className="px-5 py-12 text-center">
             <Layers className="w-8 h-8 text-neutral-300 mx-auto mb-3" />
-            <p className="text-body-sm text-neutral-500 mb-4">No blog categories created yet</p>
+            <p className="text-body-sm text-neutral-500 mb-4">No news categories created yet</p>
             <button
               onClick={openCreateModal}
               className="inline-flex items-center gap-2 px-4 py-2 bg-primary-red text-white rounded-lg text-body-sm font-medium hover:bg-primary-dark-red"
@@ -148,7 +151,7 @@ const BlogCategoriesPage: React.FC = () => {
             <div className="hidden sm:grid grid-cols-[60px_1fr_120px_100px_100px] gap-3 px-6 py-3 bg-neutral-50 border-b border-neutral-200 text-body-xs text-neutral-500 font-medium uppercase tracking-wide">
               <span>Order</span>
               <span>Category Name & Description</span>
-              <span>Post Count</span>
+              <span>Article Count</span>
               <span>Status</span>
               <span className="text-right">Actions</span>
             </div>
@@ -167,7 +170,7 @@ const BlogCategoriesPage: React.FC = () => {
 
                 <div>
                   <span className="inline-block text-body-xs px-2.5 py-0.5 rounded-full bg-accent-blue/10 text-accent-blue font-semibold">
-                    {cat.posts_count ?? 0} Posts
+                    {cat.posts_count ?? 0} Articles
                   </span>
                 </div>
 
@@ -235,7 +238,7 @@ const BlogCategoriesPage: React.FC = () => {
                 rows={3}
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                placeholder="Short description of posts in this category..."
+                placeholder="Short description of news articles in this category..."
                 className="w-full px-3.5 py-2 border border-neutral-200 rounded-lg text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20"
               />
             </div>

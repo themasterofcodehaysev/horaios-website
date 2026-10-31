@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import {
   HomePage,
   AboutPage,
@@ -19,7 +19,6 @@ import {
   PrayerPage,
   NotFoundPage,
   LoginPage,
-  RegisterPage,
   ForgotPasswordPage,
   ResetPasswordPage,
 } from './pages';
@@ -55,7 +54,7 @@ function App() {
           <Route path="/prayer" element={<PrayerPage />} />
           <Route path="/prayer-requests" element={<PrayerPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/register" element={<Navigate to="/login" replace />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
           

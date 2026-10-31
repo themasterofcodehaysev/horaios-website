@@ -7,7 +7,7 @@ export const searchService = {
     params.set('query', query);
     if (type) params.set('type', type);
 
-    const { data } = await api.get<ApiResponse<SearchResult>>(`/search?${params.toString()}`);
+    const { data } = await api.get<ApiResponse<SearchResult>>(`/admin/search?${params.toString()}`);
     return data.data;
   },
 
@@ -16,7 +16,7 @@ export const searchService = {
     params.set('query', query);
     params.set('limit', String(limit));
 
-    const { data } = await api.get<ApiResponse<unknown>>(`/search/${type}?${params.toString()}`);
+    const { data } = await api.get<ApiResponse<unknown>>(`/admin/search/${type}?${params.toString()}`);
     return data.data;
   },
 };

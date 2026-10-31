@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\AuditLog;
 use App\Models\BlogPost;
+use App\Models\ChurchService;
 use App\Models\ChurchSetting;
 use App\Models\ContactMessage;
 use App\Models\Event;
@@ -21,6 +22,7 @@ use App\Models\Speaker;
 use App\Models\User;
 use App\Policies\AuditLogPolicy;
 use App\Policies\BlogPolicy;
+use App\Policies\ChurchServicePolicy;
 use App\Policies\ContactPolicy;
 use App\Policies\EventPolicy;
 use App\Policies\FooterSettingPolicy;
@@ -80,6 +82,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Ministry::class, MinistryPolicy::class);
         Gate::policy(HomepageSection::class, HomepageSectionPolicy::class);
         Gate::policy(FooterSetting::class, FooterSettingPolicy::class);
+        Gate::policy(ChurchService::class, ChurchServicePolicy::class);
         Gate::policy(NavigationMenu::class, NavigationPolicy::class);
         Gate::policy(NavigationMenuItem::class, NavigationMenuItemPolicy::class);
 

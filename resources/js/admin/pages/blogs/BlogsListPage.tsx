@@ -30,7 +30,7 @@ const BlogsListPage: React.FC = () => {
       setBlogs(result.data);
       setMeta(result.meta);
     } catch (err: any) {
-      setError(err?.response?.data?.message || 'Failed to load blog posts');
+      setError(err?.response?.data?.message || 'Failed to load news articles');
     } finally {
       setLoading(false);
     }
@@ -59,7 +59,7 @@ const BlogsListPage: React.FC = () => {
       setBlogs(prev => prev.map(b => b.id === blog.id ? updated : b));
       addToast({
         type: 'success',
-        title: updated.status === 'published' ? 'Post Published' : 'Post Set to Draft',
+        title: updated.status === 'published' ? 'News Published' : 'News Set to Draft',
         message: `"${blog.title}" is now ${updated.status}.`,
       });
     } catch (err: any) {
@@ -77,13 +77,13 @@ const BlogsListPage: React.FC = () => {
       setBlogs(prev => prev.map(b => b.id === blog.id ? updated : b));
       addToast({
         type: 'success',
-        title: updated.featured ? 'Post Featured' : 'Post Unfeatured',
+        title: updated.featured ? 'News Featured' : 'News Unfeatured',
         message: `"${blog.title}" is now ${updated.featured ? 'featured' : 'unfeatured'}.`,
       });
     } catch (err: any) {
       addToast({
         type: 'error',
-        title: 'Failed to update post',
+        title: 'Failed to update news article',
         message: err?.response?.data?.message || 'Failed to toggle featured state',
       });
     }
@@ -95,13 +95,13 @@ const BlogsListPage: React.FC = () => {
       fetchBlogs();
       addToast({
         type: 'success',
-        title: 'Post Duplicated',
+        title: 'News Duplicated',
         message: `A draft copy of "${blog.title}" has been created.`,
       });
     } catch (err: any) {
       addToast({
         type: 'error',
-        title: 'Failed to duplicate post',
+        title: 'Failed to duplicate news article',
         message: err?.response?.data?.message || 'Please try again.',
       });
     }
@@ -117,13 +117,13 @@ const BlogsListPage: React.FC = () => {
       fetchBlogs();
       addToast({
         type: 'success',
-        title: 'Post Deleted',
+        title: 'News Deleted',
         message: `"${title}" has been deleted.`,
       });
     } catch (err: any) {
       addToast({
         type: 'error',
-        title: 'Failed to delete post',
+        title: 'Failed to delete news article',
         message: err?.response?.data?.message || 'Please try again.',
       });
     } finally {
@@ -135,23 +135,23 @@ const BlogsListPage: React.FC = () => {
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-h2 text-neutral-900 font-bold">Blog Management</h1>
+          <h1 className="text-h2 text-neutral-900 font-bold">News Management</h1>
           <p className="text-body-sm text-neutral-500 mt-1">
-            Manage church news, articles, announcements, and blog categories.
+            Manage church news, articles, announcements, and categories.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Link
-            to="/admin/blogs/categories"
+            to="/admin/news/categories"
             className="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-neutral-200 text-neutral-700 rounded-lg text-body-xs font-medium hover:bg-neutral-50 shadow-xs"
           >
             <Layers className="w-3.5 h-3.5 text-neutral-500" /> Categories
           </Link>
           <Link
-            to="/admin/blogs/create"
+            to="/admin/news/create"
             className="inline-flex items-center gap-2 px-4 py-2 bg-primary-red text-white rounded-lg text-body-sm font-medium hover:bg-primary-dark-red shadow-sm"
           >
-            <Plus className="w-4 h-4" /> Add Blog
+            <Plus className="w-4 h-4" /> Add News
           </Link>
         </div>
       </div>
@@ -228,12 +228,12 @@ const BlogsListPage: React.FC = () => {
         ) : blogs.length === 0 ? (
           <div className="px-5 py-12 text-center">
             <FileText className="w-8 h-8 text-neutral-300 mx-auto mb-3" />
-            <p className="text-body-sm text-neutral-500 mb-4">No blog posts found matching your criteria</p>
+            <p className="text-body-sm text-neutral-500 mb-4">No news articles found matching your criteria</p>
             <Link
-              to="/admin/blogs/create"
+              to="/admin/news/create"
               className="inline-flex items-center gap-2 px-4 py-2 bg-primary-red text-white rounded-lg text-body-sm font-medium hover:bg-primary-dark-red"
             >
-              <Plus className="w-4 h-4" /> Add First Blog Post
+              <Plus className="w-4 h-4" /> Add First News Article
             </Link>
           </div>
         ) : (
@@ -254,7 +254,7 @@ const BlogsListPage: React.FC = () => {
                     <button
                       onClick={() => handleToggleFeatured(blog)}
                       className="p-1 text-neutral-300 hover:text-amber-400 transition-colors"
-                      title={blog.featured ? 'Unfeature post' : 'Feature post'}
+                      title={blog.featured ? 'Unfeature news article' : 'Feature news article'}
                     >
                       <Star className={`w-4 h-4 ${blog.featured ? 'fill-amber-400 text-amber-400' : ''}`} />
                     </button>
@@ -270,7 +270,7 @@ const BlogsListPage: React.FC = () => {
 
                   <div className="min-w-0">
                     <Link
-                      to={`/admin/blogs/${blog.id}/edit`}
+                      to={`/admin/news/${blog.id}/edit`}
                       className="text-body-sm text-neutral-900 font-semibold hover:text-primary-red transition-colors truncate block"
                     >
                       {blog.title}
@@ -309,28 +309,28 @@ const BlogsListPage: React.FC = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="p-1.5 text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 rounded-lg transition-colors"
-                      title="Preview Post"
+                      title="Preview News"
                     >
                       <Eye className="w-4 h-4" />
                     </a>
                     <Link
-                      to={`/admin/blogs/${blog.id}/edit`}
+                      to={`/admin/news/${blog.id}/edit`}
                       className="p-1.5 text-neutral-500 hover:text-primary-red hover:bg-neutral-100 rounded-lg transition-colors"
-                      title="Edit Post"
+                      title="Edit News Article"
                     >
                       <Edit2 className="w-4 h-4" />
                     </Link>
                     <button
                       onClick={() => handleDuplicate(blog)}
                       className="p-1.5 text-neutral-500 hover:text-accent-blue hover:bg-neutral-100 rounded-lg transition-colors"
-                      title="Duplicate Post"
+                      title="Duplicate News Article"
                     >
                       <Copy className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => setDeleteModal({ open: true, blog })}
                       className="p-1.5 text-neutral-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                      title="Delete Post"
+                      title="Delete News Article"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -345,7 +345,7 @@ const BlogsListPage: React.FC = () => {
       {meta && meta.last_page > 1 && (
         <div className="flex items-center justify-between px-1">
           <span className="text-body-xs text-neutral-500">
-            Showing {meta.from || 0}–{meta.to || 0} of {meta.total} posts
+            Showing {meta.from || 0}–{meta.to || 0} of {meta.total} news articles
           </span>
           <div className="flex items-center gap-1">
             <button
@@ -376,7 +376,7 @@ const BlogsListPage: React.FC = () => {
             <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
               <AlertTriangle className="w-6 h-6 text-red-600" />
             </div>
-            <h3 className="text-h5 text-neutral-900 text-center font-semibold mb-2">Delete Blog Post</h3>
+            <h3 className="text-h5 text-neutral-900 text-center font-semibold mb-2">Delete News Article</h3>
             <p className="text-body-sm text-neutral-500 text-center mb-6">
               Are you sure you want to delete <strong>"{deleteModal.blog.title}"</strong>?
             </p>
@@ -392,7 +392,7 @@ const BlogsListPage: React.FC = () => {
                 disabled={deleting}
                 className="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-lg text-body-sm font-medium hover:bg-red-700 disabled:opacity-50"
               >
-                {deleting ? 'Deleting...' : 'Delete Post'}
+                {deleting ? 'Deleting...' : 'Delete News Article'}
               </button>
             </div>
           </div>

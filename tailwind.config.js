@@ -66,7 +66,8 @@ export default {
       },
       fontFamily: {
         sans: "'Instrument Sans', 'Inter', system-ui, -apple-system, sans-serif",
-        display: "'Instrument Sans', 'Inter', system-ui, -apple-system, sans-serif",
+        serif: "'Lora', 'Playfair Display', Georgia, Cambria, serif",
+        display: "'Playfair Display', 'Lora', Georgia, serif",
         mono: "'Fira Code', 'Courier New', monospace",
       },
       fontSize: {

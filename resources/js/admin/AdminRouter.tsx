@@ -42,14 +42,19 @@ const BlogCategoriesPage = lazy(() => import('./pages/blogs/BlogCategoriesPage')
 const EventsListPage = lazy(() => import('./pages/events/EventsListPage'));
 const EventFormPage = lazy(() => import('./pages/events/EventFormPage'));
 const EventCategoriesPage = lazy(() => import('./pages/events/EventCategoriesPage'));
+const EventRegistrationsPage = lazy(() => import('./pages/events/EventRegistrationsPage'));
 
 // Ministries Module Admin Pages
 const MinistriesListPage = lazy(() => import('./pages/ministries/MinistriesListPage'));
 const MinistryFormPage = lazy(() => import('./pages/ministries/MinistryFormPage'));
 const MinistryCategoriesPage = lazy(() => import('./pages/ministries/MinistryCategoriesPage'));
+const MinistryJoinRequestsPage = lazy(() => import('./pages/ministries/MinistryJoinRequestsPage'));
 
 // Leadership Team Admin Page
 const LeadershipPage = lazy(() => import('./pages/leadership/LeadershipPage'));
+
+// Church Services Admin Page
+const ChurchServicesPage = lazy(() => import('./pages/services/ChurchServicesPage'));
 
 // Prayer Requests Module Admin Pages
 const PrayerRequestsListPage = lazy(() => import('./pages/prayer/PrayerRequestsListPage'));
@@ -59,15 +64,6 @@ const ContactMessagesListPage = lazy(() => import('./pages/contact/ContactMessag
 
 // Notification Center Admin Pages
 const NotificationsPage = lazy(() => import('./pages/notifications/NotificationsPage'));
-
-// Navigation Management Admin Pages
-const NavigationManagementPage = lazy(() => import('./pages/navigation/NavigationManagementPage'));
-
-// Homepage CMS Admin Pages
-const HomepageCmsPage = lazy(() => import('./pages/homepage/HomepageCmsPage'));
-
-// Footer Management Admin Pages
-const FooterManagementPage = lazy(() => import('./pages/footer/FooterManagementPage'));
 
 // Error Pages
 const Error404Page = lazy(() => import('./pages/error/Error404Page'));
@@ -214,6 +210,11 @@ export const AdminRouter: React.FC = () => {
               <Route index element={<LeadershipPage />} />
             </Route>
 
+            {/* Church Services Module */}
+            <Route path="services" element={<ProtectedRoute permission="services.manage" />}>
+              <Route index element={<ChurchServicesPage />} />
+            </Route>
+
             {/* Events Calendar Module */}
             <Route path="events" element={<ProtectedRoute permission="events.manage" />}>
               <Route index element={<EventsListPage />} />
@@ -226,6 +227,9 @@ export const AdminRouter: React.FC = () => {
             </Route>
             <Route path="events/categories" element={<ProtectedRoute permission="events.manage" />}>
               <Route index element={<EventCategoriesPage />} />
+            </Route>
+            <Route path="events/registrations" element={<ProtectedRoute permission="events.manage" />}>
+              <Route index element={<EventRegistrationsPage />} />
             </Route>
 
             {/* Ministries Management Module */}
@@ -240,6 +244,9 @@ export const AdminRouter: React.FC = () => {
             </Route>
             <Route path="ministries/categories" element={<ProtectedRoute permission="ministries.manage" />}>
               <Route index element={<MinistryCategoriesPage />} />
+            </Route>
+            <Route path="ministries/join-requests" element={<ProtectedRoute permission="ministries.manage" />}>
+              <Route index element={<MinistryJoinRequestsPage />} />
             </Route>
 
             {/* Prayer Requests Module */}
@@ -272,29 +279,6 @@ export const AdminRouter: React.FC = () => {
               <Route index element={
                 <Suspense fallback={<PageLoader />}>
                   <AccountSettingsPage />
-                </Suspense>
-              } />
-            </Route>
-
-            {/* Navigation Management */}
-            <Route path="navigation" element={<ProtectedRoute permission="navigation.manage" />}>
-              <Route index element={
-                <Suspense fallback={<PageLoader />}>
-                  <NavigationManagementPage />
-                </Suspense>
-              } />
-            </Route>
-
-            {/* Homepage CMS */}
-            <Route path="homepage" element={<ProtectedRoute permission="homepage.manage" />}>
-              <Route index element={<HomepageCmsPage />} />
-            </Route>
-
-            {/* Footer Management */}
-            <Route path="footer" element={<ProtectedRoute permission="footer.manage" />}>
-              <Route index element={
-                <Suspense fallback={<PageLoader />}>
-                  <FooterManagementPage />
                 </Suspense>
               } />
             </Route>

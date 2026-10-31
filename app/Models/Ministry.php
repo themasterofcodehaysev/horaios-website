@@ -15,6 +15,7 @@ class Ministry extends Model
     protected $fillable = [
         'uuid',
         'name',
+        'slug',
         'description',
         'leader',
         'email',

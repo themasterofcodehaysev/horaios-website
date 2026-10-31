@@ -9,26 +9,26 @@ class NavigationPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->isEditor() || $user->hasPermission('navigation.manage');
+        return $user->isEditor() || $user->hasPermission('settings.manage');
     }
 
     public function view(User $user, NavigationMenu $menu): bool
     {
-        return $user->isEditor() || $user->hasPermission('navigation.manage');
+        return $user->isEditor() || $user->hasPermission('settings.manage');
     }
 
     public function create(User $user): bool
     {
-        return $user->isEditor() || $user->hasPermission('navigation.manage');
+        return $user->isEditor() || $user->hasPermission('settings.manage');
     }
 
     public function update(User $user, ?NavigationMenu $menu = null): bool
     {
-        return $user->isEditor() || $user->hasPermission('navigation.manage');
+        return $user->isEditor() || $user->hasPermission('settings.manage');
     }
 
     public function delete(User $user, NavigationMenu $menu): bool
     {
-        return $user->isAdmin() || $user->hasPermission('navigation.manage');
+        return $user->isAdmin() || $user->hasPermission('settings.manage');
     }
 }

@@ -3,15 +3,18 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft, Calendar, Clock, MapPin, Mail, Phone, User,
   Sparkles, Heart, MessageCircle, HandHeart, Search, Users,
+  CheckCircle2, AlertTriangle, Send,
 } from 'lucide-react';
 import MarkdownPreview from '@uiw/react-markdown-preview';
 import { Layout } from '../components/layout';
-import { Breadcrumb } from '../components/common';
+import { Breadcrumb, ShareBar } from '../components/common';
 import { MinistryCard } from '../components/sections';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
-import { ministryService } from '../services/publicContent.service';
+import { Modal } from '../components/ui/Modal';
+import { Input } from '../components/ui/Input';
+import { ministryService, contactService } from '../services/publicContent.service';
 import type { MinistryPublic } from '../types';
 
 export const MinistryDetailPage: React.FC = () => {
@@ -21,7 +24,56 @@ export const MinistryDetailPage: React.FC = () => {
   const [relatedMinistries, setRelatedMinistries] = useState<MinistryPublic[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [joining, setJoining] = useState(false);
+  const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
+  const [submittingJoin, setSubmittingJoin] = useState(false);
+  const [joinSuccess, setJoinSuccess] = useState(false);
+  const [joinError, setJoinError] = useState<string | null>(null);
+  const [joinFormData, setJoinFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    message: '',
+  });
+
+  const openJoinModal = () => {
+    setIsJoinModalOpen(true);
+    setJoinSuccess(false);
+    setJoinError(null);
+    if (ministry) {
+      setJoinFormData((prev) => ({
+        ...prev,
+        message: prev.message || `Hi, I am interested in joining ${ministry.name} and would love to learn more about how I can get involved!`,
+      }));
+    }
+  };
+
+  const handleJoinSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!ministry) return;
+
+    if (joinFormData.message.trim().length < 10) {
+      setJoinError('Please provide a message with at least 10 characters.');
+      return;
+    }
+
+    setSubmittingJoin(true);
+    setJoinError(null);
+
+    try {
+      await contactService.submitContactMessage({
+        name: joinFormData.name.trim(),
+        email: joinFormData.email.trim(),
+        phone: joinFormData.phone.trim() || undefined,
+        subject: `Join Ministry: ${ministry.name}`,
+        message: joinFormData.message.trim(),
+      });
+      setJoinSuccess(true);
+    } catch (err: any) {
+      setJoinError(err?.response?.data?.message || 'Failed to submit request. Please try again.');
+    } finally {
+      setSubmittingJoin(false);
+    }
+  };
 
   const setMetaDescription = useCallback((description: string | null) => {
     if (!description) return;
@@ -132,7 +184,7 @@ export const MinistryDetailPage: React.FC = () => {
             backgroundColor: ministry.featured_image ? undefined : '#0f172a',
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-primary-red/30 via-primary-red/60 to-primary-red" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-primary-red/80 to-primary-red" />
         <div className="relative max-w-6xl mx-auto w-full px-4 sm:px-6 pb-14 text-white space-y-5">
           <Link
             to="/ministries"
@@ -168,14 +220,14 @@ export const MinistryDetailPage: React.FC = () => {
             </h1>
             {ministry.leader && (
               <p className="text-body-lg font-medium text-primary-100 flex items-center gap-2">
-                <User className="w-4 h-4" /> Led by <span className="text-white font-semibold">{ministry.leader}</span>
+                <User className="w-4 h-4 text-amber-300" /> Led by <span className="text-white font-semibold">{ministry.leader}</span>
               </p>
             )}
           </div>
         </div>
       </section>
 
-      <section className="bg-neutral-50/50 py-16">
+      <section className="bg-slate-50 py-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
             <Card padding="lg" shadow="sm" className="space-y-5">
@@ -191,24 +243,26 @@ export const MinistryDetailPage: React.FC = () => {
               )}
             </Card>
 
-            <div className="bg-gradient-to-br from-primary-red to-primary-red rounded-3xl p-8 sm:p-10 text-white shadow-xl space-y-6">
+            <div className="bg-primary-navy rounded-3xl p-8 sm:p-10 text-white shadow-xl space-y-6 border border-white/10">
               <div className="flex items-center gap-3">
-                <HandHeart className="w-8 h-8 text-primary-200" />
+                <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-amber-300">
+                  <HandHeart className="w-6 h-6" />
+                </div>
                 <h3 className="text-h4 font-bold">Ready to Join This Ministry?</h3>
               </div>
-              <p className="text-body-lg text-primary-100 max-w-2xl">
+              <p className="text-body-lg text-slate-200 max-w-2xl">
                 We'd love to have you serve with us. Take the next step — connect with the ministry leader and discover how your gifts can make an impact.
               </p>
               <div className="flex flex-wrap gap-3">
                 <Button
                   variant="primary"
                   size="lg"
-                  className="bg-white !text-primary-red hover:bg-primary-100 transition-colors"
-                  onClick={() => setJoining(true)}
-                  disabled={joining}
+                  className="bg-white !text-primary-navy font-bold hover:bg-neutral-100 transition-colors shadow-md"
+                  style={{ color: '#273161' }}
+                  onClick={openJoinModal}
                 >
                   <Users className="w-5 h-5 mr-2" />
-                  {joining ? 'Connecting...' : `Join ${ministry.name}`}
+                  Join {ministry.name}
                 </Button>
                 {ministry.email && (
                   <a
@@ -220,18 +274,24 @@ export const MinistryDetailPage: React.FC = () => {
                 )}
               </div>
             </div>
+
+            <ShareBar
+              title={ministry.name}
+              description={ministry.short_description || `Learn more about ${ministry.name} at Horaios Baptist Church.`}
+              label="Share Ministry"
+            />
           </div>
 
           <aside className="lg:sticky lg:top-28 h-fit space-y-5">
             <Card padding="lg" shadow="md" className="space-y-6">
               <h3 className="text-h6 font-bold text-neutral-900 flex items-center gap-2">
-                <MessageCircle className="w-5 h-5 text-primary-red" /> Ministry Information
+                <MessageCircle className="w-5 h-5 text-primary-navy" /> Ministry Information
               </h3>
               <ul className="space-y-5">
                 {ministry.leader && (
                   <li className="flex items-start gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-primary-red/10 flex items-center justify-center shrink-0">
-                      <User className="w-4 h-4 text-primary-red" />
+                    <div className="w-9 h-9 rounded-xl bg-primary-navy/10 flex items-center justify-center shrink-0">
+                      <User className="w-4 h-4 text-primary-navy" />
                     </div>
                     <div>
                       <p className="text-body-xs font-semibold text-neutral-500 uppercase tracking-wider">Leader</p>
@@ -241,8 +301,8 @@ export const MinistryDetailPage: React.FC = () => {
                 )}
                 {meetingSchedule && (
                   <li className="flex items-start gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-primary-red/10 flex items-center justify-center shrink-0">
-                      <Clock className="w-4 h-4 text-primary-red" />
+                    <div className="w-9 h-9 rounded-xl bg-primary-navy/10 flex items-center justify-center shrink-0">
+                      <Clock className="w-4 h-4 text-primary-navy" />
                     </div>
                     <div>
                       <p className="text-body-xs font-semibold text-neutral-500 uppercase tracking-wider">Meeting Time</p>
@@ -293,11 +353,10 @@ export const MinistryDetailPage: React.FC = () => {
                 variant="primary"
                 size="lg"
                 className="w-full !py-3.5"
-                onClick={() => setJoining(true)}
-                disabled={joining}
+                onClick={openJoinModal}
               >
                 <HandHeart className="w-4 h-4 mr-2" />
-                {joining ? 'Processing...' : 'Join Ministry'}
+                Join Ministry
               </Button>
             </Card>
           </aside>
@@ -307,7 +366,7 @@ export const MinistryDetailPage: React.FC = () => {
       <section className="py-16 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 space-y-10">
           <div className="text-center space-y-3">
-            <Badge variant="primary" size="sm" className="uppercase tracking-wider">Next Steps</Badge>
+            <span className="inline-flex items-center px-3 py-1 rounded-full bg-primary-navy/10 text-primary-navy text-xs font-bold uppercase tracking-wider">Next Steps</span>
             <h2 className="text-h3 font-bold text-neutral-900">How to Get Involved</h2>
             <p className="text-body-base text-neutral-600 max-w-xl mx-auto">
               Three simple steps to connect, grow, and serve through our ministry community.
@@ -315,22 +374,22 @@ export const MinistryDetailPage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card padding="lg" className="text-center h-full border border-neutral-200 hover:border-primary-red/30 hover:shadow-md transition-all">
-              <div className="w-14 h-14 rounded-2xl bg-primary-red/10 text-primary-red flex items-center justify-center mx-auto mb-4">
+            <Card padding="lg" className="text-center h-full border border-neutral-200 hover:border-primary-navy/30 hover:shadow-md transition-all">
+              <div className="w-14 h-14 rounded-2xl bg-primary-navy/10 text-primary-navy flex items-center justify-center mx-auto mb-4">
                 <Search className="w-7 h-7" />
               </div>
-              <div className="text-body-xs font-bold text-primary-red uppercase tracking-wider mb-2">Step 1</div>
+              <div className="text-body-xs font-bold text-primary-navy uppercase tracking-wider mb-2">Step 1</div>
               <h4 className="text-h6 font-bold text-neutral-900 mb-3">Explore</h4>
               <p className="text-body-sm text-neutral-600 leading-relaxed">
                 Browse ministries and learn more about each one — their mission, values, and how they serve our church.
               </p>
             </Card>
 
-            <Card padding="lg" className="text-center h-full border border-neutral-200 hover:border-primary-red/30 hover:shadow-md transition-all">
-              <div className="w-14 h-14 rounded-2xl bg-primary-red/10 text-primary-red flex items-center justify-center mx-auto mb-4">
+            <Card padding="lg" className="text-center h-full border border-neutral-200 hover:border-primary-navy/30 hover:shadow-md transition-all">
+              <div className="w-14 h-14 rounded-2xl bg-primary-navy/10 text-primary-navy flex items-center justify-center mx-auto mb-4">
                 <MessageCircle className="w-7 h-7" />
               </div>
-              <div className="text-body-xs font-bold text-primary-red uppercase tracking-wider mb-2">Step 2</div>
+              <div className="text-body-xs font-bold text-primary-navy uppercase tracking-wider mb-2">Step 2</div>
               <h4 className="text-h6 font-bold text-neutral-900 mb-3">Connect</h4>
               <p className="text-body-sm text-neutral-600 leading-relaxed">
                 Reach out to the ministry leader. Ask questions, share your heart, and find where you fit best.
@@ -353,11 +412,10 @@ export const MinistryDetailPage: React.FC = () => {
             <Button
               variant="primary"
               size="lg"
-              onClick={() => setJoining(true)}
-              disabled={joining}
+              onClick={openJoinModal}
             >
               <Heart className="w-5 h-5 mr-2" />
-              {joining ? 'Connecting...' : 'Get Connected Today'}
+              Get Connected Today
             </Button>
           </div>
         </div>
@@ -397,6 +455,123 @@ export const MinistryDetailPage: React.FC = () => {
           </div>
         </section>
       )}
+
+      {/* Join Ministry Modal */}
+      <Modal
+        isOpen={isJoinModalOpen}
+        onClose={() => setIsJoinModalOpen(false)}
+        title={ministry ? `Get Connected: ${ministry.name}` : 'Join Ministry'}
+        size="md"
+      >
+        {joinSuccess ? (
+          <div className="text-center py-6 space-y-4">
+            <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-sm">
+              <CheckCircle2 className="w-10 h-10" />
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-h4 font-bold text-neutral-900">Request Sent!</h3>
+              <p className="text-body-sm text-neutral-600 max-w-sm mx-auto">
+                Thank you, <strong className="text-neutral-900">{joinFormData.name}</strong>! Your message expressing interest in joining <strong>{ministry?.name}</strong> has been sent to our ministry leadership.
+              </p>
+            </div>
+            <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-100 text-body-xs text-emerald-800 text-left space-y-1">
+              <p className="font-semibold">What happens next?</p>
+              <p>Our ministry team will review your details and reach out to you directly via {joinFormData.email}{joinFormData.phone ? ` or ${joinFormData.phone}` : ''}.</p>
+            </div>
+            <Button
+              variant="primary"
+              className="w-full mt-4"
+              onClick={() => {
+                setIsJoinModalOpen(false);
+                setJoinSuccess(false);
+              }}
+            >
+              Done
+            </Button>
+          </div>
+        ) : (
+          <form onSubmit={handleJoinSubmit} className="space-y-4">
+            <div className="bg-primary-navy/5 border border-primary-navy/10 rounded-xl p-3.5 text-body-sm text-neutral-700 flex items-start gap-3">
+              <div className="w-9 h-9 rounded-lg bg-primary-navy/10 text-primary-navy flex items-center justify-center shrink-0 mt-0.5">
+                <HandHeart className="w-5 h-5" />
+              </div>
+              <div className="text-body-xs space-y-0.5">
+                <p className="font-bold text-neutral-900">Join {ministry?.name}</p>
+                <p className="text-neutral-600">
+                  {ministry?.leader ? `Led by ${ministry.leader}. ` : ''}Leave your information below and our ministry coordinators will connect with you about getting involved.
+                </p>
+              </div>
+            </div>
+
+            {joinError && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-body-xs text-red-700 flex items-start gap-2">
+                <AlertTriangle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                <span>{joinError}</span>
+              </div>
+            )}
+
+            <Input
+              label="Your Full Name"
+              type="text"
+              required
+              placeholder="e.g. John Doe"
+              value={joinFormData.name}
+              onChange={(e) => setJoinFormData((prev) => ({ ...prev, name: e.target.value }))}
+            />
+
+            <Input
+              label="Email Address"
+              type="email"
+              required
+              placeholder="you@example.com"
+              value={joinFormData.email}
+              onChange={(e) => setJoinFormData((prev) => ({ ...prev, email: e.target.value }))}
+            />
+
+            <Input
+              label="Phone Number (Optional)"
+              type="tel"
+              placeholder="+855 12 345 678"
+              value={joinFormData.phone}
+              onChange={(e) => setJoinFormData((prev) => ({ ...prev, phone: e.target.value }))}
+            />
+
+            <div>
+              <label className="block text-label-md text-neutral-700 mb-1.5 font-medium">
+                Message or Note <span className="text-error ml-1">*</span>
+              </label>
+              <textarea
+                required
+                rows={3}
+                className="w-full px-3 py-2 text-body-sm rounded-lg border border-neutral-300 focus:border-primary-red focus:outline-none focus:ring-1 focus:ring-primary-red transition-all"
+                placeholder="Tell us a little about yourself or what areas you'd like to get involved in..."
+                value={joinFormData.message}
+                onChange={(e) => setJoinFormData((prev) => ({ ...prev, message: e.target.value }))}
+              />
+              <p className="text-[11px] text-neutral-400 mt-1">Minimum 10 characters.</p>
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-3 border-t border-neutral-100">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsJoinModalOpen(false)}
+                disabled={submittingJoin}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                variant="primary"
+                disabled={submittingJoin}
+                icon={<Send className="w-4 h-4" />}
+              >
+                {submittingJoin ? 'Sending...' : 'Send Request'}
+              </Button>
+            </div>
+          </form>
+        )}
+      </Modal>
     </Layout>
   );
 };

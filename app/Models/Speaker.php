@@ -2,19 +2,20 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasUuidAndSlug;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Str;
 
 class Speaker extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, HasUuidAndSlug, SoftDeletes;
 
     protected $fillable = [
         'uuid',
         'name',
+        'slug',
         'photo',
         'biography',
         'position',
@@ -29,17 +30,6 @@ class Speaker extends Model
         return [
             'display_order' => 'integer',
         ];
-    }
-
-    protected static function boot(): void
-    {
-        parent::boot();
-
-        static::creating(function ($speaker) {
-            if (empty($speaker->uuid)) {
-                $speaker->uuid = (string) Str::uuid();
-            }
-        });
     }
 
     public function sermons(): HasMany

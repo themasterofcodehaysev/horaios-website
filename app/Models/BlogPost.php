@@ -15,6 +15,7 @@ class BlogPost extends Model
     protected $fillable = [
         'uuid',
         'title',
+        'slug',
         'excerpt',
         'content',
         'featured_image',

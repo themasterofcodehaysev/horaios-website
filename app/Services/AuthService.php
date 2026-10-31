@@ -103,7 +103,7 @@ class AuthService
             return;
         }
 
-        $status = Password::sendResetLink($email);
+        $status = Password::sendResetLink(['email' => $email]);
 
         if ($status === Password::RESET_LINK_SENT) {
             AuditLogService::log('password_reset_requested', 'User', (string) $user->id);
@@ -112,7 +112,14 @@ class AuthService
 
     public function resetPassword(string $token, string $email, string $password): void
     {
-        $status = Password::reset($token, function ($user, $newPassword) {
+        $credentials = [
+            'token' => $token,
+            'email' => $email,
+            'password' => $password,
+            'password_confirmation' => $password,
+        ];
+
+        $status = Password::reset($credentials, function ($user, $newPassword) {
             $user->forceFill([
                 'password' => Hash::make($newPassword),
             ])->save();

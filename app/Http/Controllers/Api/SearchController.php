@@ -15,12 +15,10 @@ class SearchController extends BaseApiController
 
     public function global(Request $request): JsonResponse
     {
-        $this->authorize('viewAny', PrayerRequest::class);
-
-        $query = $request->input('query');
+        $query = trim((string) $request->input('query'));
         $type = $request->input('type');
 
-        if (empty($query) || strlen($query) < 2) {
+        if (empty($query) || mb_strlen($query) < 2) {
             return $this->error('Search query must be at least 2 characters', 400);
         }
 
@@ -31,12 +29,10 @@ class SearchController extends BaseApiController
 
     public function byType(Request $request, string $type): JsonResponse
     {
-        $this->authorize('viewAny', PrayerRequest::class);
+        $query = trim((string) $request->input('query'));
+        $limit = (int) $request->input('limit', 20);
 
-        $query = $request->input('query');
-        $limit = $request->input('limit', 20);
-
-        if (empty($query) || strlen($query) < 2) {
+        if (empty($query) || mb_strlen($query) < 2) {
             return $this->error('Search query must be at least 2 characters', 400);
         }
 

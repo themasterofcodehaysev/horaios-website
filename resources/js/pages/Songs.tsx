@@ -91,7 +91,8 @@ export const SongsPage: React.FC = () => {
       </section>
 
       {/* Main Content */}
-      <section className="py-12 px-4 max-w-6xl mx-auto space-y-10">
+      <section className="bg-slate-50 py-12 px-4 sm:px-6 lg:px-8 border-t border-slate-200/60">
+        <div className="max-w-6xl mx-auto space-y-10">
         {/* Category Pills */}
         <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
           <button
@@ -211,6 +212,7 @@ export const SongsPage: React.FC = () => {
             </button>
           </div>
         )}
+        </div>
       </section>
     </Layout>
   );

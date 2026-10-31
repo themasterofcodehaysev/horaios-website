@@ -25,7 +25,7 @@ class BlogController extends BaseApiController
             'featured'      => $request->input('featured'),
         ], $request->input('per_page', 12));
 
-        return $this->paginated(BlogResource::collection($posts), 'Published blog posts retrieved');
+        return $this->paginated(BlogResource::collection($posts), 'Published news articles retrieved');
     }
 
     public function show(Request $request, string $identifier): JsonResponse
@@ -44,7 +44,7 @@ class BlogController extends BaseApiController
             }
         }
 
-        return $this->success(new BlogResource($post), 'Blog post retrieved');
+        return $this->success(new BlogResource($post), 'News article retrieved');
     }
 
     public function adminShow(int $id): JsonResponse
@@ -52,7 +52,7 @@ class BlogController extends BaseApiController
         $post = BlogPost::with(['category', 'creator', 'updater'])->findOrFail($id);
         $this->authorize('update', $post);
 
-        return $this->success(new BlogResource($post), 'Admin blog post retrieved');
+        return $this->success(new BlogResource($post), 'Admin news article retrieved');
     }
 
     public function related(string $identifier): JsonResponse
@@ -63,7 +63,7 @@ class BlogController extends BaseApiController
 
         $related = $this->blogService->getRelatedPosts($post, 5);
 
-        return $this->success(BlogResource::collection($related), 'Related blog posts retrieved');
+        return $this->success(BlogResource::collection($related), 'Related news articles retrieved');
     }
 
     public function adminIndex(Request $request): JsonResponse
@@ -79,7 +79,7 @@ class BlogController extends BaseApiController
             'sort_dir'    => $request->input('sort_dir'),
         ], $request->input('per_page', 15));
 
-        return $this->paginated(BlogResource::collection($posts), 'Admin blog posts retrieved');
+        return $this->paginated(BlogResource::collection($posts), 'Admin news articles retrieved');
     }
 
     public function store(CreateBlogPostRequest $request): JsonResponse
@@ -88,9 +88,9 @@ class BlogController extends BaseApiController
 
         try {
             $post = $this->blogService->createPost($request->validated(), $request->user());
-            return $this->created(new BlogResource($post), 'Blog post created successfully');
+            return $this->created(new BlogResource($post), 'News article created successfully');
         } catch (Throwable $e) {
-            return $this->error('Failed to create blog post: ' . $e->getMessage(), 500);
+            return $this->error('Failed to create news article: ' . $e->getMessage(), 500);
         }
     }
 
@@ -101,9 +101,9 @@ class BlogController extends BaseApiController
 
         try {
             $updated = $this->blogService->updatePost($post, $request->validated(), $request->user());
-            return $this->success(new BlogResource($updated), 'Blog post updated successfully');
+            return $this->success(new BlogResource($updated), 'News article updated successfully');
         } catch (Throwable $e) {
-            return $this->error('Failed to update blog post: ' . $e->getMessage(), 500);
+            return $this->error('Failed to update news article: ' . $e->getMessage(), 500);
         }
     }
 
@@ -114,9 +114,9 @@ class BlogController extends BaseApiController
 
         try {
             $this->blogService->deletePost($post, $request->user());
-            return $this->noContent('Blog post deleted successfully');
+            return $this->noContent('News article deleted successfully');
         } catch (Throwable $e) {
-            return $this->error('Failed to delete blog post: ' . $e->getMessage(), 500);
+            return $this->error('Failed to delete news article: ' . $e->getMessage(), 500);
         }
     }
 
@@ -126,7 +126,7 @@ class BlogController extends BaseApiController
         $this->authorize('update', $post);
 
         $updated = $this->blogService->togglePublish($post, $request->user());
-        return $this->success(new BlogResource($updated), "Blog post status changed to {$updated->status}");
+        return $this->success(new BlogResource($updated), "News article status changed to {$updated->status}");
     }
 
     public function toggleFeatured(Request $request, int $id): JsonResponse
@@ -135,7 +135,7 @@ class BlogController extends BaseApiController
         $this->authorize('update', $post);
 
         $updated = $this->blogService->toggleFeatured($post, $request->user());
-        return $this->success(new BlogResource($updated), $updated->featured ? 'Blog post featured' : 'Blog post unfeatured');
+        return $this->success(new BlogResource($updated), $updated->featured ? 'News article featured' : 'News article unfeatured');
     }
 
     public function duplicate(Request $request, int $id): JsonResponse
@@ -144,6 +144,6 @@ class BlogController extends BaseApiController
         $this->authorize('create', BlogPost::class);
 
         $duplicate = $this->blogService->duplicatePost($post, $request->user());
-        return $this->created(new BlogResource($duplicate), 'Blog post duplicated successfully');
+        return $this->created(new BlogResource($duplicate), 'News article duplicated successfully');
     }
 }

@@ -204,4 +204,46 @@ class BlogApiTest extends TestCase
         $response->assertStatus(422)
                  ->assertJsonValidationErrors(['title']);
     }
+
+    public function test_admin_can_create_blog_category(): void
+    {
+        $headers = $this->superAdminHeaders();
+
+        $response = $this->withHeaders($headers)->postJson('/api/v1/admin/blog-categories', [
+            'name'          => 'Devotionals',
+            'description'   => 'Daily devotional articles',
+            'display_order' => 1,
+            'status'        => 'active',
+        ]);
+
+        $response->assertStatus(201)
+                 ->assertJsonPath('data.name', 'Devotionals');
+
+        $this->assertDatabaseHas('blog_categories', ['name' => 'Devotionals']);
+    }
+
+    public function test_admin_can_create_blog_category_when_slug_column_exists(): void
+    {
+        \Illuminate\Support\Facades\Schema::table('blog_categories', function ($table) {
+            $table->string('slug')->default('');
+        });
+        BlogCategory::$hasSlugColumnCache = [];
+
+        $headers = $this->superAdminHeaders();
+
+        $response = $this->withHeaders($headers)->postJson('/api/v1/admin/blog-categories', [
+            'name'          => 'Weekly Announcements',
+            'description'   => 'Church announcements',
+            'display_order' => 2,
+            'status'        => 'active',
+        ]);
+
+        $response->assertStatus(201)
+                 ->assertJsonPath('data.name', 'Weekly Announcements');
+
+        $this->assertDatabaseHas('blog_categories', [
+            'name' => 'Weekly Announcements',
+            'slug' => 'weekly-announcements',
+        ]);
+    }
 }

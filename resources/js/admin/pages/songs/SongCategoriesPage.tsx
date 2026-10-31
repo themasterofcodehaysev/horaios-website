@@ -65,7 +65,10 @@ const SongCategoriesPage: React.FC = () => {
 
     setSubmitting(true);
     try {
-      if (modal.mode === 'edit' && modal.category?.id) {
+      if (modal.mode === 'edit') {
+        if (!modal.category?.id) {
+          throw new Error('Category ID is missing for update');
+        }
         await songService.updateCategory(modal.category.id, formData);
       } else {
         await songService.createCategory(formData);
@@ -73,7 +76,7 @@ const SongCategoriesPage: React.FC = () => {
       setModal({ open: false, mode: 'create', category: null });
       fetchCategories();
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to save category');
+      alert(err?.response?.data?.message || err?.message || 'Failed to save category');
     } finally {
       setSubmitting(false);
     }

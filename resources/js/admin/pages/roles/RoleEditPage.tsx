@@ -4,6 +4,19 @@ import { ArrowLeft, Save, Loader2, ShieldAlert } from 'lucide-react';
 import { roleService } from '../../services/role.service';
 import type { Role, Permission } from '../../types';
 
+const GROUP_LABELS: Record<string, string> = {
+  users: 'User Management',
+  content: 'Content Management',
+  services: 'Church Services',
+  prayer_requests: 'Prayer Requests',
+  contact_messages: 'Contact Messages',
+  media: 'Media Library',
+  homepage: 'Homepage Sections',
+  footer: 'Footer Management',
+  settings: 'Church Settings',
+  audit: 'Audit Logs',
+};
+
 export default function RoleEditPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -28,11 +41,22 @@ export default function RoleEditPage() {
         if (Array.isArray(permsRes)) {
           allPerms = permsRes;
         } else if (permsRes && typeof permsRes === 'object') {
-          allPerms = Object.values(permsRes).flat();
+          allPerms = Object.entries(permsRes).flatMap(([groupKey, items]: [string, any]) => {
+            const list = Array.isArray(items) ? items : [];
+            return list.map((item: any) => ({
+              ...item,
+              group: item.group || groupKey,
+            }));
+          });
         }
-        setPermissions(allPerms);
+        // Exclude removed management pages permissions
+        const excludedPerms = ['navigation.manage', 'homepage.manage', 'footer.manage'];
+        const cleanPerms = allPerms.filter((p: Permission) => !excludedPerms.includes(p.name));
+        setPermissions(cleanPerms);
         
-        const currentPerms = roleRes.permissions?.map((p: Permission) => p.id) || [];
+        const currentPerms = roleRes.permissions
+          ?.filter((p: Permission) => !excludedPerms.includes(p.name))
+          ?.map((p: Permission) => p.id) || [];
         setSelectedPermissions(currentPerms);
       } catch (err) {
         console.error('Failed to fetch role data', err);
@@ -131,7 +155,7 @@ export default function RoleEditPage() {
             {Object.entries(groupedPermissions).map(([group, perms]) => (
               <div key={group} className="border border-gray-100 rounded-xl overflow-hidden">
                 <div className="bg-gray-50 px-4 py-3 border-b border-gray-100">
-                  <h3 className="font-medium text-gray-900 capitalize">{group.replace('_', ' ')}</h3>
+                  <h3 className="font-medium text-gray-900">{GROUP_LABELS[group] || group.replace('_', ' ')}</h3>
                 </div>
                 <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {perms.map(perm => {

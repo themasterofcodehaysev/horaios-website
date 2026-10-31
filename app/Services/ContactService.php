@@ -24,6 +24,22 @@ class ContactService
                 });
             })
             ->when(!empty($filters['status']), fn($q) => $q->where('status', $filters['status']))
+            ->when(!empty($filters['type']) && ($filters['type'] === 'event' || $filters['type'] === 'event_registration'), function ($q) {
+                $q->where('subject', 'like', 'Event Registration:%');
+            })
+            ->when(!empty($filters['type']) && $filters['type'] === 'ministry', function ($q) {
+                $q->where('subject', 'like', 'Join Ministry:%');
+            })
+            ->when(!empty($filters['type']) && $filters['type'] === 'general', function ($q) {
+                $q->where('subject', 'not like', 'Join Ministry:%')
+                  ->where('subject', 'not like', 'Event Registration:%');
+            })
+            ->when(!empty($filters['ministry_name']), function ($q) use ($filters) {
+                $q->where('subject', 'like', "%{$filters['ministry_name']}%");
+            })
+            ->when(!empty($filters['event_name']), function ($q) use ($filters) {
+                $q->where('subject', 'like', "%{$filters['event_name']}%");
+            })
             ->orderBy($filters['sort_by'] ?? 'created_at', $filters['sort_dir'] ?? 'desc');
 
         return $query->paginate($perPage);
@@ -111,14 +127,24 @@ class ContactService
         ], $actingUser);
     }
 
-    public function getStats(): array
+    public function getStats(?string $type = null): array
     {
+        $base = ContactMessage::query();
+        if ($type === 'ministry') {
+            $base->where('subject', 'like', 'Join Ministry:%');
+        } elseif ($type === 'event' || $type === 'event_registration') {
+            $base->where('subject', 'like', 'Event Registration:%');
+        } elseif ($type === 'general') {
+            $base->where('subject', 'not like', 'Join Ministry:%')
+                 ->where('subject', 'not like', 'Event Registration:%');
+        }
+
         return [
-            'total' => ContactMessage::count(),
-            'unread' => ContactMessage::where('status', 'unread')->count(),
-            'read' => ContactMessage::where('status', 'read')->count(),
-            'replied' => ContactMessage::where('status', 'replied')->count(),
-            'archived' => ContactMessage::where('status', 'archived')->count(),
+            'total' => (clone $base)->count(),
+            'unread' => (clone $base)->where('status', 'unread')->count(),
+            'read' => (clone $base)->where('status', 'read')->count(),
+            'replied' => (clone $base)->where('status', 'replied')->count(),
+            'archived' => (clone $base)->where('status', 'archived')->count(),
         ];
     }
 }

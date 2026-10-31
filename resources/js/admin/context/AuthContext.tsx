@@ -22,9 +22,9 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [token, setToken] = useState<string | null>(localStorage.getItem('admin_token'));
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [user, setUser] = useState<AuthUser | null>(() => authService.getStoredUser());
+  const [token, setToken] = useState<string | null>(() => authService.getStoredToken());
+  const [isLoading, setIsLoading] = useState<boolean>(() => !authService.getStoredToken() ? false : true);
   const navigate = useNavigate();
 
   useEffect(() => {

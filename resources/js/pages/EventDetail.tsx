@@ -1,19 +1,21 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
-  ArrowLeft, Calendar, Clock, MapPin, Share2, Copy, Check,
+  ArrowLeft, Calendar, Clock, MapPin,
   Sparkles, ChevronRight,
   CalendarDays, Users, AlertCircle, CheckCircle2, XCircle, PlayCircle, CalendarRange,
 } from 'lucide-react';
-import { FacebookIcon, LinkedinIcon, TwitterIcon } from '../components/common/SocialIcons';
 import MarkdownPreview from '@uiw/react-markdown-preview';
 import { Layout } from '../components/layout';
-import { Breadcrumb } from '../components/common';
+import { Breadcrumb, ShareBar } from '../components/common';
 import { EventCard } from '../components/sections';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
-import { eventService } from '../services/publicContent.service';
+import { Modal } from '../components/ui/Modal';
+import { Input } from '../components/ui/Input';
+import { eventService, contactService } from '../services/publicContent.service';
+import { downloadIcsFile, generateSingleEventIcs, getGoogleCalendarUrl } from '../utils/calendar';
 import type { EventPublic, EventStatus } from '../types';
 
 const formatDate = (dateStr: string | null): string => {
@@ -67,14 +69,43 @@ export const EventDetailPage: React.FC = () => {
   const [relatedEvents, setRelatedEvents] = useState<EventPublic[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
-  const [registering, setRegistering] = useState(false);
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+  const [regForm, setRegForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    attendees: 1,
+    notes: '',
+  });
+  const [regSubmitting, setRegSubmitting] = useState(false);
+  const [regSuccess, setRegSuccess] = useState(false);
+  const [regError, setRegError] = useState<string | null>(null);
 
-  const handleCopyLink = useCallback(() => {
-    navigator.clipboard.writeText(window.location.href);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  }, []);
+  const handleRegisterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!event) return;
+    setRegSubmitting(true);
+    setRegError(null);
+
+    try {
+      await contactService.submitContactMessage({
+        name: regForm.name.trim(),
+        email: regForm.email.trim(),
+        phone: regForm.phone.trim() || undefined,
+        subject: `Event Registration: ${event.title}`,
+        message: `New registration for "${event.title}".\nDate: ${event.start_date || 'N/A'}${event.start_time ? ` at ${event.start_time}` : ''}\nLocation: ${event.location || 'N/A'}\nAttendees Count: ${regForm.attendees}\nNotes: ${regForm.notes?.trim() || 'None'}`,
+      });
+      setRegSuccess(true);
+    } catch (err: any) {
+      setRegError(
+        err?.response?.data?.message ||
+        err?.response?.data?.errors?.[Object.keys(err?.response?.data?.errors || {})[0]]?.[0] ||
+        'Failed to complete registration. Please try again.'
+      );
+    } finally {
+      setRegSubmitting(false);
+    }
+  };
 
   const setMetaDescription = useCallback((description: string | null) => {
     if (!description) return;
@@ -220,18 +251,16 @@ export const EventDetailPage: React.FC = () => {
   const canRegister = event.registration_required && status !== 'completed' && status !== 'cancelled'
     && (spotsLeft === null || spotsLeft > 0);
 
-  const shareUrl = encodeURIComponent(window.location.href);
-  const shareTitle = encodeURIComponent(event.title);
-
   return (
     <Layout>
-      <div className="max-w-6xl mx-auto py-10 px-4 sm:px-6 space-y-10 pb-20">
-        <Link
-          to="/events"
-          className="inline-flex items-center gap-1.5 text-body-sm font-medium text-neutral-600 hover:text-primary-red transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" /> Back to All Events
-        </Link>
+      <div className="min-h-screen bg-slate-50 pt-28 sm:pt-32 pb-20 border-t border-slate-200/60">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 space-y-10">
+          <Link
+            to="/events"
+            className="inline-flex items-center gap-1.5 text-body-sm font-medium text-neutral-600 hover:text-primary-red transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" /> Back to All Events
+          </Link>
 
         <Breadcrumb
           items={[
@@ -285,44 +314,11 @@ export const EventDetailPage: React.FC = () => {
               )}
             </section>
 
-            <div className="flex flex-wrap items-center justify-between gap-4 p-5 bg-neutral-50 rounded-2xl border border-neutral-200">
-              <div className="flex items-center gap-2 text-body-xs font-bold text-neutral-600 uppercase tracking-wider">
-                <Share2 className="w-4 h-4 text-primary-red" /> Share Event
-              </div>
-              <div className="flex flex-wrap items-center gap-2">
-                <a
-                  href={`https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#0A66C2] text-white rounded-lg text-body-xs font-medium hover:bg-[#0958a8] transition-colors"
-                >
-                  <LinkedinIcon className="w-3.5 h-3.5" /> LinkedIn
-                </a>
-                <a
-                  href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white rounded-lg text-body-xs font-medium hover:bg-blue-700 transition-colors"
-                >
-                  <FacebookIcon className="w-3.5 h-3.5" /> Facebook
-                </a>
-                <a
-                  href={`https://twitter.com/intent/tweet?url=${shareUrl}&text=${shareTitle}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-neutral-900 text-white rounded-lg text-body-xs font-medium hover:bg-neutral-800 transition-colors"
-                >
-                  <TwitterIcon className="w-3.5 h-3.5" /> X
-                </a>
-                <button
-                  onClick={handleCopyLink}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-neutral-200 text-neutral-700 rounded-lg text-body-xs font-medium hover:bg-neutral-100 transition-colors shadow-xs"
-                >
-                  {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-                  {copied ? 'Copied!' : 'Copy Link'}
-                </button>
-              </div>
-            </div>
+            <ShareBar
+              title={event.title}
+              description={event.location || event.category?.name || ''}
+              label="Share Event"
+            />
           </div>
 
           <aside className="lg:sticky lg:top-28 h-fit space-y-5">
@@ -418,11 +414,14 @@ export const EventDetailPage: React.FC = () => {
                       variant="primary"
                       size="lg"
                       className="w-full"
-                      onClick={() => setRegistering(true)}
-                      disabled={registering}
+                      onClick={() => {
+                        setRegSuccess(false);
+                        setRegError(null);
+                        setIsRegisterModalOpen(true);
+                      }}
                     >
                       <Users className="w-4 h-4 mr-2" />
-                      {registering ? 'Processing...' : 'Register Now'}
+                      Register Now
                     </Button>
                   )}
                   {spotsLeft !== null && spotsLeft <= 0 && status !== 'cancelled' && status !== 'completed' && (
@@ -438,12 +437,28 @@ export const EventDetailPage: React.FC = () => {
               <Calendar className="w-8 h-8 text-primary-red mx-auto" />
               <h4 className="text-h6 font-bold text-neutral-900">Add to Calendar</h4>
               <p className="text-body-xs text-neutral-500">
-                Never miss an event. Sync our calendar with yours.
+                Never miss this event. Sync it directly with your calendar.
               </p>
-              <Button variant="secondary" size="md" className="w-full">
-                <CalendarDays className="w-4 h-4 mr-2" />
-                Subscribe Calendar
-              </Button>
+              <div className="flex flex-col gap-2 pt-1">
+                <Button
+                  variant="primary"
+                  size="md"
+                  className="w-full"
+                  onClick={() => window.open(getGoogleCalendarUrl(event), '_blank')}
+                >
+                  <CalendarRange className="w-4 h-4 mr-2" />
+                  Google Calendar
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="md"
+                  className="w-full"
+                  onClick={() => downloadIcsFile(generateSingleEventIcs(event), `${event.slug || 'event'}.ics`)}
+                >
+                  <CalendarDays className="w-4 h-4 mr-2" />
+                  Download .ics
+                </Button>
+              </div>
             </Card>
           </aside>
         </div>
@@ -468,6 +483,7 @@ export const EventDetailPage: React.FC = () => {
                     description={rel.description || undefined}
                     image={rel.featured_image || undefined}
                     featured={rel.featured}
+                    category={rel.category?.name || undefined}
                   />
                 </Link>
               ))}
@@ -477,22 +493,166 @@ export const EventDetailPage: React.FC = () => {
 
         <Card padding="lg" className="text-center bg-gradient-to-r from-primary-red via-primary-red to-primary-red border-0 !text-white">
           <CalendarDays className="w-10 h-10 text-primary-100 mx-auto mb-4" />
-          <h2 className="text-h3 font-bold mb-3">Never Miss an Event</h2>
+          <h2 className="text-h3 font-bold mb-3">Add This Event to Your Calendar</h2>
           <p className="text-body-lg text-primary-100 max-w-xl mx-auto mb-6">
-            Subscribe to our public calendar and get all upcoming events automatically synced to your device.
+            Easily save this gathering to Apple Calendar, Outlook, or Google Calendar so you don't miss it.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button variant="primary" size="lg" className="bg-white !text-primary-red hover:bg-primary-100 transition-colors">
+            <Button
+              variant="primary"
+              size="lg"
+              className="bg-white !text-primary-red hover:bg-primary-100 transition-colors font-bold shadow-md"
+              onClick={() => downloadIcsFile(generateSingleEventIcs(event), `${event.slug || 'event'}.ics`)}
+            >
               <Calendar className="w-5 h-5 mr-2" />
               Download .ics
             </Button>
-            <Button variant="secondary" size="lg" className="!bg-white/10 !text-white hover:!bg-white/20 border-0">
+            <Button
+              variant="secondary"
+              size="lg"
+              className="!bg-white/10 !text-white hover:!bg-white/20 border-0 font-bold"
+              onClick={() => window.open(getGoogleCalendarUrl(event), '_blank')}
+            >
               <CalendarRange className="w-5 h-5 mr-2" />
               Google Calendar
             </Button>
           </div>
         </Card>
+        </div>
       </div>
+
+      {/* Registration Modal */}
+      <Modal
+        isOpen={isRegisterModalOpen}
+        onClose={() => setIsRegisterModalOpen(false)}
+        title={`Register for ${event.title}`}
+        size="md"
+      >
+        {regSuccess ? (
+          <div className="text-center py-6 space-y-4">
+            <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-sm">
+              <CheckCircle2 className="w-9 h-9" />
+            </div>
+            <span className="inline-block px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider rounded-full">
+              Registration Received
+            </span>
+            <h3 className="text-h4 font-bold text-neutral-900">You're Registered!</h3>
+            <p className="text-body-sm text-neutral-600 max-w-sm mx-auto leading-relaxed">
+              Thank you, <span className="font-semibold text-neutral-900">{regForm.name}</span>! Your spot for{' '}
+              <span className="font-semibold text-neutral-900">{event.title}</span> ({regForm.attendees} {regForm.attendees === 1 ? 'attendee' : 'attendees'}) has been received. We look forward to having you!
+            </p>
+            <div className="flex flex-col sm:flex-row gap-2 justify-center pt-3">
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => window.open(getGoogleCalendarUrl(event), '_blank')}
+              >
+                <CalendarRange className="w-4 h-4 mr-1.5" /> Google Calendar
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => downloadIcsFile(generateSingleEventIcs(event), `${event.slug || 'event'}.ics`)}
+              >
+                <Calendar className="w-4 h-4 mr-1.5" /> Download .ics
+              </Button>
+            </div>
+            <div className="pt-2">
+              <button
+                onClick={() => setIsRegisterModalOpen(false)}
+                className="text-body-xs font-semibold text-neutral-500 hover:text-neutral-800"
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        ) : (
+          <form onSubmit={handleRegisterSubmit} className="space-y-4">
+            {regError && (
+              <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-body-xs flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span>{regError}</span>
+              </div>
+            )}
+            <div className="p-3.5 bg-neutral-50 rounded-xl border border-neutral-200 text-body-xs text-neutral-600 space-y-1">
+              <p className="font-bold text-neutral-900">{event.title}</p>
+              <p>{formatDate(event.start_date)}{timeRange ? ` • ${timeRange}` : ''}</p>
+              {event.location && <p className="text-neutral-500">{event.location}</p>}
+            </div>
+
+            <Input
+              label="Full Name"
+              required
+              value={regForm.name}
+              onChange={(e) => setRegForm({ ...regForm, name: e.target.value })}
+              placeholder="e.g. John Doe"
+            />
+
+            <Input
+              label="Email Address"
+              type="email"
+              required
+              value={regForm.email}
+              onChange={(e) => setRegForm({ ...regForm, email: e.target.value })}
+              placeholder="you@example.com"
+            />
+
+            <Input
+              label="Phone Number"
+              type="tel"
+              required
+              value={regForm.phone}
+              onChange={(e) => setRegForm({ ...regForm, phone: e.target.value })}
+              placeholder="e.g. +855 12 345 678"
+            />
+
+            <div>
+              <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
+                Number of Attendees
+              </label>
+              <input
+                type="number"
+                min={1}
+                max={spotsLeft && spotsLeft > 0 ? spotsLeft : 20}
+                value={regForm.attendees}
+                onChange={(e) => setRegForm({ ...regForm, attendees: Math.max(1, parseInt(e.target.value, 10) || 1) })}
+                className="w-full px-3 py-2 border border-neutral-300 rounded-xl text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-red/30"
+              />
+            </div>
+
+            <div>
+              <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
+                Notes / Special Requests (Optional)
+              </label>
+              <textarea
+                rows={2}
+                value={regForm.notes}
+                onChange={(e) => setRegForm({ ...regForm, notes: e.target.value })}
+                placeholder="Dietary requirements, children attending, accessibility assistance, etc."
+                className="w-full px-3 py-2 border border-neutral-300 rounded-xl text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-red/30"
+              />
+            </div>
+
+            <div className="flex gap-2 justify-end pt-2">
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => setIsRegisterModalOpen(false)}
+                disabled={regSubmitting}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                variant="primary"
+                disabled={regSubmitting}
+              >
+                {regSubmitting ? 'Registering...' : 'Complete Registration'}
+              </Button>
+            </div>
+          </form>
+        )}
+      </Modal>
     </Layout>
   );
 };

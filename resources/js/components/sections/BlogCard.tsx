@@ -47,14 +47,20 @@ export const BlogCard: React.FC<BlogCardProps> = ({
           </div>
         )}
 
-        <h3 className={clsx(
-          'font-semibold text-neutral-900 line-clamp-2',
-          featured ? 'text-h4' : 'text-h6'
-        )}>
+        <h3 
+          className={clsx(
+            'font-semibold text-neutral-900 truncate',
+            featured ? 'text-h4' : 'text-h6'
+          )}
+          title={title}
+        >
           {title}
         </h3>
 
-        <p className="text-body-sm text-neutral-600 line-clamp-2">
+        <p 
+          className="text-body-sm text-neutral-600 line-clamp-2"
+          title={excerpt}
+        >
           {excerpt}
         </p>
 

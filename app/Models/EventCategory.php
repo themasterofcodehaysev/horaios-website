@@ -15,6 +15,7 @@ class EventCategory extends Model
     protected $fillable = [
         'uuid',
         'name',
+        'slug',
         'description',
         'display_order',
         'status',
