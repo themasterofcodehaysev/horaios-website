@@ -154,12 +154,12 @@ export const HomePage: React.FC = () => {
     <Layout>
       {/* 1. Reverent Hero Section */}
       <HeroSection
-        badge="Boeung Keng Kang 3 • Phnom Penh, Cambodia"
+        badge="Boeung Tompun • Phnom Penh, Cambodia"
         title="A Christ-Centered Family Rooted in Grace & Truth"
-        description="Come as you are. Join us this Sunday as we worship God, grow deeply in biblical discipleship, and serve our community across Cambodia."
+        description='"Get up and Walk in the name of Jesus" — Join us this Sunday as we worship God, grow deeply in biblical discipleship, and serve our community across Cambodia.'
         verse={{
-          text: "How beautiful are the feet of those who bring good news!",
-          reference: "Romans 10:15 (Horaios)"
+          text: "In the name of Jesus Christ of Nazareth, rise up and walk.",
+          reference: "Acts 3:6 • The Beautiful (Horaios) Gate"
         }}
         primaryCTA={{
           label: 'Plan Your Visit',
@@ -194,7 +194,7 @@ export const HomePage: React.FC = () => {
                   Join Us for Worship
                 </h2>
                 <p className="text-body-sm text-neutral-600 mt-1.5 leading-relaxed">
-                  Gather in person at our sanctuary in BKK3 or join our online live stream.
+                  Gather in person at our sanctuary in Boeung Tompun, Phnom Penh or join our online live stream.
                 </p>
               </div>
 
@@ -291,7 +291,7 @@ export const HomePage: React.FC = () => {
               </div>
               <div className="flex items-center gap-2.5">
                 <MapPin className="w-4 h-4 text-primary-navy flex-shrink-0" />
-                <span className="text-caption font-medium">BKK3 Phnom Penh sanctuary</span>
+                <span className="text-caption font-medium">Boeung Tompun Phnom Penh</span>
               </div>
             </div>
 
@@ -314,10 +314,10 @@ export const HomePage: React.FC = () => {
                 You Have a Place at the Table
               </h2>
               <p className="text-body-lg text-neutral-700 leading-relaxed font-sans">
-                Welcome to Horaios Baptist Church. Whether you are exploring faith in Christ for the very first time or searching for a home church to plant roots in Phnom Penh, our hearts and doors are wide open to you.
+                Welcome to Horaios Baptist Church Cambodia. Whether you are exploring faith in Christ for the very first time or searching for a home church to plant roots in Phnom Penh, our hearts and doors are wide open to you.
               </p>
               <p className="text-body-base text-neutral-600 leading-relaxed font-sans">
-                We are a fellowship of ordinary people transformed by the extraordinary love of Jesus Christ. Our mission is to proclaim the Gospel with conviction, nurture believers through sound biblical discipleship, and demonstrate Christ’s love to our neighbors.
+                Named after the Beautiful (Horaios) Gate in Acts 3:2, we were established to be the sign, symbol, and instrument of the Kingdom of God. Our prayer and calling is that all who are spiritually, physically, or economically weak may find healing, restoration, and new strength to get up and walk in the name of Jesus.
               </p>
 
               {/* Three Spiritual Pillars */}
@@ -348,7 +348,7 @@ export const HomePage: React.FC = () => {
                   </div>
                   <div>
                     <h3 className="text-label-lg font-bold text-neutral-900">Loving Mission</h3>
-                    <p className="text-caption text-neutral-500 mt-1">Serving Phnom Penh with sacrificial compassion.</p>
+                    <p className="text-caption text-neutral-500 mt-1">Serving Phnom Penh with compassionate action.</p>
                   </div>
                 </div>
               </div>
@@ -825,7 +825,7 @@ export const HomePage: React.FC = () => {
                 Partner in God's Work in Cambodia
               </h3>
               <p className="text-body-base text-white/90 leading-relaxed font-sans">
-                Your faithful tithes and voluntary offerings directly support Gospel proclamation, discipleship training, children's education, and practical compassionate care across Phnom Penh and Cambodia.
+                Your faithful tithes and voluntary offerings directly support Gospel proclamation, dormitory shelter and education for underprivileged youth, and practical compassionate care across Phnom Penh and Cambodia.
               </p>
               <div className="pt-2 flex flex-wrap gap-3">
                 <Button 

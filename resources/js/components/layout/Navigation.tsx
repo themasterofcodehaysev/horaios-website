@@ -70,10 +70,10 @@ export const Navigation: React.FC<NavigationProps> = ({ onLinkClick }) => {
   const moreNavItems: NavItem[] = [
     { label: 'News & Stories', href: '/news', icon: Newspaper, description: 'Church articles & announcements' },
     { label: 'Worship & Songs', href: '/songs', icon: Music, description: 'Hymns, lyrics & chords' },
-    { label: 'Plan Your Visit', href: '/visit', icon: MapPin, description: 'Sunday service times & directions to BKK3' },
+    { label: 'Plan Your Visit', href: '/visit', icon: MapPin, description: 'Sunday service times & directions to sanctuary' },
     { label: 'Prayer Requests', href: '/prayer', icon: Heart, description: 'Submit confidential prayer needs' },
     { label: 'Give Online', href: '/give', icon: Gift, description: 'Faithful stewardship & offerings' },
-    { label: 'Contact Us', href: '/contact', icon: Mail, description: 'Reach our church office in BKK3' },
+    { label: 'Contact Us', href: '/contact', icon: Mail, description: 'Reach our church office in Boeung Tompun' },
   ];
 
   const [hoveredHref, setHoveredHref] = useState<string | null>(null);

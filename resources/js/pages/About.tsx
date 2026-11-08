@@ -56,8 +56,8 @@ export const AboutPage: React.FC = () => {
 
       <HeroSection
         title={`About ${settings.church_name || 'Horaios Baptist Church'}`}
-        subtitle="Our Story"
-        description="Discover who we are and what drives our mission to serve Christ and community."
+        subtitle="Our Calling & Heritage"
+        description='"Get up and Walk in the name of Jesus" (Acts 3:2) — Discovering our heritage, our biblical foundation, and our calling as an instrument of God’s Kingdom in Cambodia.'
         minHeight="md"
         primaryCTA={{
           label: 'Plan Your Visit',
@@ -81,17 +81,21 @@ export const AboutPage: React.FC = () => {
                 Our Journey of Faith
               </div>
               <h2 className="text-display-md font-extrabold text-neutral-900 leading-tight">
-                Rooted in Scripture, Growing in Grace
+                Get Up and Walk in the Name of Jesus
               </h2>
-              <p className="text-body-lg text-neutral-700 leading-relaxed">
-                {settings.footer_text || 'Founded in faith and rooted in Scripture, Horaios Baptist Church is dedicated to worshiping God, discipling believers, and demonstrating the transformative love of Jesus Christ across Cambodia.'}
+              <p className="text-body-lg text-neutral-700 leading-relaxed font-medium">
+                Horaios Baptist Church Cambodia (HBCC) was founded on October 25, 2015, born out of prayer, cross-cultural missionary dedication, and a deep compassion for the people of Cambodia.
               </p>
               <p className="text-body-base text-neutral-600 leading-relaxed">
-                What began as a small prayer gathering of faithful believers has grown into a vibrant church family. Through seasons of growth and challenge, our central anchor remains steadfast: to know Christ and make Him known through biblical preaching, authentic community, and compassionate outreach.
+                The church's beginnings were initiated by <strong>Rev. J. Lalduhawma</strong>, an Indian missionary sent from the Baptist Church of Mizoram who arrived in Phnom Penh on December 12, 2013. In October 2015, a dormitory ministry was launched to provide housing, mentorship, and education to students. A few days later, regular worship began in the dormitory's small hall—gathering Rev. Lalduhawma and his family, the Chinthan family (dormitory warden), seven student residents (two Christian and five non-Christian), and fellow Mizo missionaries.
               </p>
               <p className="text-body-base text-neutral-600 leading-relaxed">
-                We believe that every person—regardless of their background—has immense value in God's eyes and is invited to experience His unfailing grace and purpose.
+                The name <strong>Horaios</strong> originates from the Greek word meaning <em>"Beautiful (Holy)"</em>. Its deeper biblical foundation comes from <strong>Acts 3:2</strong>, at the Beautiful (Horaios) Gate of the temple where the Apostle Peter ministered healing to the lame man in the name of Jesus Christ. We bear this name in enduring faith that people who are spiritually, physically, or economically weak and unable to walk by themselves may get up and walk in the name of Jesus.
               </p>
+              <div className="pt-2 text-caption font-semibold text-neutral-500 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-primary-red"></span>
+                <span>House No. 9L, Street 3BT Chamreun Phal-1, Sangkat Boeung Tompun, Khan Meanchey, Phnom Penh, Cambodia</span>
+              </div>
             </div>
 
             {/* Visual Image */}
@@ -104,8 +108,8 @@ export const AboutPage: React.FC = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                 <div className="absolute bottom-4 left-4 right-4 p-4 rounded-xl bg-white/95 backdrop-blur-md border border-white/40 shadow-sm">
-                  <p className="text-label-md font-bold text-neutral-900">Horaios Baptist Church</p>
-                  <p className="text-caption text-primary-red font-semibold">Phnom Penh, Cambodia</p>
+                  <p className="text-label-md font-bold text-neutral-900">Horaios Baptist Church Cambodia</p>
+                  <p className="text-caption text-primary-red font-semibold">Boeung Tompun, Phnom Penh</p>
                 </div>
               </div>
             </div>
@@ -116,37 +120,37 @@ export const AboutPage: React.FC = () => {
           <div className="bg-neutral-50 rounded-3xl p-8 sm:p-12 border border-neutral-200/80">
             <div className="text-center max-w-2xl mx-auto mb-10">
               <h3 className="text-h4 font-bold text-neutral-900">Milestones of God's Faithfulness</h3>
-              <p className="text-body-sm text-neutral-600 mt-1">Key moments in the story of Horaios Baptist Church</p>
+              <p className="text-body-sm text-neutral-600 mt-1">Key moments in the founding and ministry of Horaios Baptist Church</p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               
               <div className="bg-white rounded-2xl p-6 border border-neutral-200/70 shadow-xs flex flex-col justify-between">
                 <div>
-                  <span className="px-2.5 py-1 rounded-lg bg-primary-red/10 text-primary-red text-caption font-extrabold">2018</span>
-                  <h4 className="text-h6 font-bold text-neutral-900 mt-3 mb-1">Founding Prayer</h4>
+                  <span className="px-2.5 py-1 rounded-lg bg-primary-red/10 text-primary-red text-caption font-extrabold">Dec 2013</span>
+                  <h4 className="text-h6 font-bold text-neutral-900 mt-3 mb-1">Missionary Arrival</h4>
                   <p className="text-body-sm text-neutral-600 leading-relaxed">
-                    A small group begins meeting for prayer, Bible study, and Gospel fellowship.
+                    Rev. J. Lalduhawma arrives in Phnom Penh from the Baptist Church of Mizoram, dedicating the work to prayer and outreach.
                   </p>
                 </div>
               </div>
 
               <div className="bg-white rounded-2xl p-6 border border-neutral-200/70 shadow-xs flex flex-col justify-between">
                 <div>
-                  <span className="px-2.5 py-1 rounded-lg bg-primary-navy/10 text-primary-navy text-caption font-extrabold">2020</span>
-                  <h4 className="text-h6 font-bold text-neutral-900 mt-3 mb-1">Weekly Worship</h4>
+                  <span className="px-2.5 py-1 rounded-lg bg-primary-navy/10 text-primary-navy text-caption font-extrabold">Oct 2015</span>
+                  <h4 className="text-h6 font-bold text-neutral-900 mt-3 mb-1">Dormitory & First Service</h4>
                   <p className="text-body-sm text-neutral-600 leading-relaxed">
-                    Regular Sunday services launch with dedicated children's and youth ministries.
+                    Dormitory ministry begins, and the very first Sunday worship service gathers on October 25, 2015—our church Foundation Day.
                   </p>
                 </div>
               </div>
 
               <div className="bg-white rounded-2xl p-6 border border-neutral-200/70 shadow-xs flex flex-col justify-between">
                 <div>
-                  <span className="px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-700 text-caption font-extrabold">2023</span>
-                  <h4 className="text-h6 font-bold text-neutral-900 mt-3 mb-1">Community Outreach</h4>
+                  <span className="px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-700 text-caption font-extrabold">2018 – 2022</span>
+                  <h4 className="text-h6 font-bold text-neutral-900 mt-3 mb-1">Leadership & Ministry Growth</h4>
                   <p className="text-body-sm text-neutral-600 leading-relaxed">
-                    Expansion of local mercy ministries, small groups, and community blessing projects.
+                    Local leadership is appointed, establishing women’s, children’s, youth, and community compassion ministries.
                   </p>
                 </div>
               </div>
@@ -154,9 +158,9 @@ export const AboutPage: React.FC = () => {
               <div className="bg-white rounded-2xl p-6 border border-neutral-200/70 shadow-xs flex flex-col justify-between">
                 <div>
                   <span className="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-700 text-caption font-extrabold">Today & Beyond</span>
-                  <h4 className="text-h6 font-bold text-neutral-900 mt-3 mb-1">Multiplying Disciples</h4>
+                  <h4 className="text-h6 font-bold text-neutral-900 mt-3 mb-1">Advancing God's Kingdom</h4>
                   <p className="text-body-sm text-neutral-600 leading-relaxed">
-                    Training next-generation leaders and sharing Christ's love throughout the nation.
+                    Multiplying disciples, nurturing university students, caring for the needy, and witnessing across Cambodia.
                   </p>
                 </div>
               </div>
@@ -173,13 +177,13 @@ export const AboutPage: React.FC = () => {
           <div className="text-center max-w-3xl mx-auto mb-14">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-red/10 text-primary-red text-label-sm uppercase tracking-wider font-bold mb-3">
               <Award className="w-3.5 h-3.5" />
-              What We Believe & Value
+              What We Believe & Stand On
             </div>
             <h2 className="text-display-md font-bold text-neutral-900 tracking-tight">
-              Our Core Biblical Values
+              Our Statement of Faith & Core Convictions
             </h2>
             <p className="text-body-lg text-neutral-600 mt-3">
-              These fundamental convictions shape our worship, relationships, and mission.
+              Rooted in the inspired Word of God, these essential doctrines shape our worship, life, and mission in Cambodia.
             </p>
           </div>
 
@@ -187,31 +191,14 @@ export const AboutPage: React.FC = () => {
             
             <div className="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-elevation-sm hover:border-primary-red/40 hover:shadow-elevation-md transition-all flex flex-col justify-between">
               <div>
-                <div className="w-12 h-12 rounded-xl bg-primary-red/10 text-primary-red flex items-center justify-center mb-5">
-                  <Church className="w-6 h-6" />
-                </div>
-                <h3 className="text-h5 font-bold text-neutral-900 mb-2">
-                  Christ-Centered
-                </h3>
-                <p className="text-body-sm text-neutral-600 leading-relaxed mb-4">
-                  Jesus Christ is the cornerstone, head, and supreme focus of everything we do.
-                </p>
-              </div>
-              <div className="pt-3 border-t border-neutral-100 text-caption font-bold text-primary-red">
-                Colossians 1:18
-              </div>
-            </div>
-
-            <div className="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-elevation-sm hover:border-primary-navy/40 hover:shadow-elevation-md transition-all flex flex-col justify-between">
-              <div>
                 <div className="w-12 h-12 rounded-xl bg-primary-navy/10 text-primary-navy flex items-center justify-center mb-5">
                   <BookOpen className="w-6 h-6" />
                 </div>
                 <h3 className="text-h5 font-bold text-neutral-900 mb-2">
-                  Bible-Rooted
+                  The Word of God
                 </h3>
                 <p className="text-body-sm text-neutral-600 leading-relaxed mb-4">
-                  God's inspired Word is our supreme authority for truth, doctrine, and living.
+                  The 66 books of the Old and New Testaments are the inspired, infallible Word of God—our supreme and final authority for faith, truth, and conduct.
                 </p>
               </div>
               <div className="pt-3 border-t border-neutral-100 text-caption font-bold text-primary-navy">
@@ -219,20 +206,37 @@ export const AboutPage: React.FC = () => {
               </div>
             </div>
 
+            <div className="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-elevation-sm hover:border-primary-red/40 hover:shadow-elevation-md transition-all flex flex-col justify-between">
+              <div>
+                <div className="w-12 h-12 rounded-xl bg-primary-red/10 text-primary-red flex items-center justify-center mb-5">
+                  <Church className="w-6 h-6" />
+                </div>
+                <h3 className="text-h5 font-bold text-neutral-900 mb-2">
+                  The One Triune God
+                </h3>
+                <p className="text-body-sm text-neutral-600 leading-relaxed mb-4">
+                  One true God, eternally existing in three distinct persons: Father, Son, and Holy Spirit—co-equal in power and glory, Creator of heaven and earth.
+                </p>
+              </div>
+              <div className="pt-3 border-t border-neutral-100 text-caption font-bold text-primary-red">
+                Matthew 28:19
+              </div>
+            </div>
+
             <div className="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-elevation-sm hover:border-amber-500/40 hover:shadow-elevation-md transition-all flex flex-col justify-between">
               <div>
                 <div className="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-700 flex items-center justify-center mb-5">
-                  <Users className="w-6 h-6" />
+                  <Heart className="w-6 h-6" />
                 </div>
                 <h3 className="text-h5 font-bold text-neutral-900 mb-2">
-                  Authentic Fellowship
+                  Salvation in Christ
                 </h3>
                 <p className="text-body-sm text-neutral-600 leading-relaxed mb-4">
-                  We cultivate honest, supportive relationships that encourage spiritual maturity.
+                  Jesus is the Way, Truth, and Life. Conceived by the Holy Spirit and born of Mary, He died in our place and rose bodily; salvation is purely by grace through faith.
                 </p>
               </div>
               <div className="pt-3 border-t border-neutral-100 text-caption font-bold text-amber-700">
-                Acts 2:42-47
+                John 14:6 • Ephesians 2:8-9
               </div>
             </div>
 
@@ -242,14 +246,14 @@ export const AboutPage: React.FC = () => {
                   <Globe className="w-6 h-6" />
                 </div>
                 <h3 className="text-h5 font-bold text-neutral-900 mb-2">
-                  Gospel Mission
+                  The Church & Mission
                 </h3>
                 <p className="text-body-sm text-neutral-600 leading-relaxed mb-4">
-                  Passionate about proclaiming Christ's love locally and empowering disciples globally.
+                  The body of Christ united in the Holy Spirit, called to local worship, fellowship, discipling all nations, and showing God's love to the poor, orphans, and oppressed.
                 </p>
               </div>
               <div className="pt-3 border-t border-neutral-100 text-caption font-bold text-emerald-700">
-                Matthew 28:19-20
+                Acts 2:42-47 • Matthew 28:19
               </div>
             </div>
 
@@ -262,39 +266,39 @@ export const AboutPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             
-            <div className="bg-gradient-to-br from-primary-red/5 to-primary-red/10 rounded-3xl p-8 sm:p-10 border-2 border-primary-red/20 shadow-elevation-sm flex flex-col justify-between">
-              <div>
-                <div className="w-14 h-14 rounded-2xl bg-primary-red text-white flex items-center justify-center mb-6 shadow-elevation-md">
-                  <Target className="w-7 h-7" />
-                </div>
-                <span className="text-caption font-bold text-primary-red uppercase tracking-wider">Our Aspiration</span>
-                <h3 className="text-h3 font-bold text-neutral-900 mt-1 mb-4">
-                  Our Vision
-                </h3>
-                <p className="text-body-lg text-neutral-700 leading-relaxed">
-                  To be a thriving, multiplying community of faithful believers who passionately love Jesus, embody biblical truth, and transform cities and families through the Gospel.
-                </p>
-              </div>
-              <div className="mt-8 pt-6 border-t border-primary-red/20 flex items-center gap-2 text-primary-red font-semibold text-body-sm">
-                <CheckCircle2 className="w-4 h-4" /> Rooted in the Great Commission
-              </div>
-            </div>
-
             <div className="bg-gradient-to-br from-primary-navy/5 to-primary-navy/10 rounded-3xl p-8 sm:p-10 border-2 border-primary-navy/20 shadow-elevation-sm flex flex-col justify-between">
               <div>
                 <div className="w-14 h-14 rounded-2xl bg-primary-navy text-white flex items-center justify-center mb-6 shadow-elevation-md">
                   <Heart className="w-7 h-7" />
                 </div>
-                <span className="text-caption font-bold text-primary-navy uppercase tracking-wider">Our Daily Calling</span>
+                <span className="text-caption font-bold text-primary-navy uppercase tracking-wider">Our Core Mission</span>
                 <h3 className="text-h3 font-bold text-neutral-900 mt-1 mb-4">
-                  Our Mission
+                  Our Mission Statement
                 </h3>
-                <p className="text-body-lg text-neutral-700 leading-relaxed">
-                  To glorify God by proclaiming the Gospel of Jesus Christ, nurturing believers in biblical discipleship, and extending compassionate care to our neighbors and the world.
+                <p className="text-body-lg text-neutral-700 leading-relaxed italic">
+                  "The Horaios Baptist Church Cambodia declares its mission through its establishment, to be the sign, symbol, and instrument of the Kingdom of God; and strives for the firm establishment, realization, and extension of the Kingdom of God, where God reigns, God's will is done, and God's name is praised."
                 </p>
               </div>
               <div className="mt-8 pt-6 border-t border-primary-navy/20 flex items-center gap-2 text-primary-navy font-semibold text-body-sm">
-                <CheckCircle2 className="w-4 h-4" /> Living out the Great Commandment
+                <CheckCircle2 className="w-4 h-4" /> Instrument of God's Kingdom in Cambodia
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-primary-red/5 to-primary-red/10 rounded-3xl p-8 sm:p-10 border-2 border-primary-red/20 shadow-elevation-sm flex flex-col justify-between">
+              <div>
+                <div className="w-14 h-14 rounded-2xl bg-primary-red text-white flex items-center justify-center mb-6 shadow-elevation-md">
+                  <Target className="w-7 h-7" />
+                </div>
+                <span className="text-caption font-bold text-primary-red uppercase tracking-wider">Our Core Calling & Aim</span>
+                <h3 className="text-h3 font-bold text-neutral-900 mt-1 mb-4">
+                  Our Objectives & Vision
+                </h3>
+                <p className="text-body-lg text-neutral-700 leading-relaxed">
+                  To profess and proclaim the Gospel in obedience to the Great Commission; to be guided primarily by the Christian Bible; to foster harmonious cooperation with churches and community; to maintain educational and dormitory shelters for youth; and to actively demonstrate Christ's love among the poor, orphans, and marginalized.
+                </p>
+              </div>
+              <div className="mt-8 pt-6 border-t border-primary-red/20 flex items-center gap-2 text-primary-red font-semibold text-body-sm">
+                <CheckCircle2 className="w-4 h-4" /> Obeying the Great Commission & Compassionate Action
               </div>
             </div>
 
