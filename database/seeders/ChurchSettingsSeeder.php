@@ -15,11 +15,11 @@ class ChurchSettingsSeeder extends Seeder
             ['key' => 'short_name', 'value' => 'Horaios Church', 'type' => 'string', 'group' => 'general', 'is_public' => true],
             ['key' => 'logo', 'value' => '/images/logo.png', 'type' => 'string', 'group' => 'general', 'is_public' => true],
             ['key' => 'favicon', 'value' => '/images/logo.png', 'type' => 'string', 'group' => 'general', 'is_public' => true],
-            ['key' => 'footer_text', 'value' => 'A community of faith serving God and loving our neighbors in Phnom Penh, Cambodia.', 'type' => 'string', 'group' => 'general', 'is_public' => true],
+            ['key' => 'footer_text', 'value' => 'Established to be the sign, symbol, and instrument of the Kingdom of God in Cambodia.', 'type' => 'string', 'group' => 'general', 'is_public' => true],
             ['key' => 'copyright', 'value' => 'Horaios Baptist Church. All rights reserved.', 'type' => 'string', 'group' => 'general', 'is_public' => true],
 
             // Contact Settings
-            ['key' => 'address', 'value' => 'St 348, Boeung Kengkang 3, Boeung Kengkang Phnom Penh, Phnom Penh 12304, Cambodia', 'type' => 'string', 'group' => 'contact', 'is_public' => true],
+            ['key' => 'address', 'value' => 'House No: 9L, Street 3BT Chamreun Phal-1, Sangkat Boeung Tompun, Khan Meanchey, Phnom Penh, Cambodia', 'type' => 'string', 'group' => 'contact', 'is_public' => true],
             ['key' => 'phone', 'value' => '+855 (0) 23 XXX XXXX', 'type' => 'string', 'group' => 'contact', 'is_public' => true],
             ['key' => 'email', 'value' => 'info@horaiosbaptist.org', 'type' => 'string', 'group' => 'contact', 'is_public' => true],
             ['key' => 'website', 'value' => 'https://horaiosbaptist.org', 'type' => 'string', 'group' => 'contact', 'is_public' => true],
