@@ -34,9 +34,11 @@ export const VisitPage: React.FC = () => {
             Service Times
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {settings.parsedServiceTimes.map((item, idx) => (
-              <Card key={idx} padding="lg" className="border-l-4 border-primary-red hover:shadow-md transition-shadow">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {(settings.parsedServiceTimes || [])
+              .filter((item) => !item.status || item.status === 'active')
+              .map((item, idx) => (
+              <Card key={item.id ?? idx} padding="lg" className="border-l-4 border-primary-red hover:shadow-md transition-shadow flex flex-col justify-between">
                 <div className="flex items-start gap-4">
                   <div className="w-11 h-11 rounded-xl bg-primary-red/10 text-primary-red flex items-center justify-center flex-shrink-0 text-lg">
                     <IconRenderer
@@ -54,8 +56,8 @@ export const VisitPage: React.FC = () => {
                     <p className="text-body-base font-bold text-primary-red mb-1">
                       {item.time}
                     </p>
-                    <p className="text-body-sm text-neutral-600 line-clamp-2" title={item.type}>
-                      {item.type}
+                    <p className="text-body-sm text-neutral-600 line-clamp-2" title={item.description || item.type}>
+                      {item.description || item.type}
                     </p>
                     {item.location && (
                       <p className="text-caption text-neutral-500 mt-2 flex items-center gap-1.5 pt-2 border-t border-neutral-100">

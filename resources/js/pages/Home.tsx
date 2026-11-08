@@ -198,12 +198,15 @@ export const HomePage: React.FC = () => {
                 </p>
               </div>
 
-              {/* Schedule Timing Cards */}
+              {/* Schedule Timing Cards (Displays Services 1, 2, 3) */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 flex-1">
                 {settings.parsedServiceTimes && settings.parsedServiceTimes.length > 0 ? (
-                  settings.parsedServiceTimes.map((item, idx) => (
+                  settings.parsedServiceTimes
+                    .filter((item) => !item.status || item.status === 'active')
+                    .slice(0, 3)
+                    .map((item, idx) => (
                     <div 
-                      key={idx} 
+                      key={item.id ?? idx} 
                       className="bg-white rounded-2xl p-5 border border-neutral-200/80 hover:border-primary-navy/40 hover:shadow-elevation-sm transition-all flex flex-col justify-between"
                     >
                       <div className="flex items-center gap-2 mb-2">
@@ -214,11 +217,15 @@ export const HomePage: React.FC = () => {
                         ) : (
                           <span className="w-2 h-2 rounded-full bg-primary-navy shrink-0"></span>
                         )}
-                        <span className="text-label-md font-bold text-neutral-900 truncate" title={item.day}>{item.day}</span>
+                        <span className="text-label-md font-bold text-neutral-900 truncate" title={item.title || item.day}>
+                          {item.title || item.day}
+                        </span>
                       </div>
                       <div>
                         <p className="text-h5 font-extrabold text-primary-navy">{item.time}</p>
-                        <p className="text-caption text-neutral-500 mt-1">{item.type}</p>
+                        <p className="text-caption text-neutral-500 mt-1 truncate" title={item.day && item.day !== item.title ? `${item.day} • ${item.type}` : item.type}>
+                          {item.day && item.day !== item.title ? `${item.day} • ${item.type}` : item.type}
+                        </p>
                       </div>
                     </div>
                   ))
@@ -227,28 +234,28 @@ export const HomePage: React.FC = () => {
                     <div className="bg-white rounded-2xl p-5 border border-neutral-200/80 hover:border-primary-navy/40 hover:shadow-elevation-sm transition-all">
                       <div className="flex items-center gap-2 mb-2">
                         <span className="w-2 h-2 rounded-full bg-primary-navy"></span>
-                        <span className="text-label-md font-bold text-neutral-900">Sunday Worship</span>
+                        <span className="text-label-md font-bold text-neutral-900">Main Sunday Worship</span>
                       </div>
                       <p className="text-h5 font-extrabold text-primary-navy">9:00 AM & 11:00 AM</p>
-                      <p className="text-caption text-neutral-500 mt-1">Main Sanctuary & Live Stream</p>
+                      <p className="text-caption text-neutral-500 mt-1">Sunday Morning • Main Sanctuary</p>
                     </div>
 
                     <div className="bg-white rounded-2xl p-5 border border-neutral-200/80 hover:border-primary-navy/40 hover:shadow-elevation-sm transition-all">
                       <div className="flex items-center gap-2 mb-2">
                         <span className="w-2 h-2 rounded-full bg-primary-navy"></span>
-                        <span className="text-label-md font-bold text-neutral-900">Mid-Week Prayer</span>
+                        <span className="text-label-md font-bold text-neutral-900">Mid-Week Prayer & Study</span>
                       </div>
                       <p className="text-h5 font-extrabold text-primary-navy">7:00 PM - 8:30 PM</p>
-                      <p className="text-caption text-neutral-500 mt-1">Wednesday Prayer & Study</p>
+                      <p className="text-caption text-neutral-500 mt-1">Wednesday Evening • Fellowship Hall</p>
                     </div>
 
                     <div className="bg-white rounded-2xl p-5 border border-neutral-200/80 hover:border-primary-navy/40 hover:shadow-elevation-sm transition-all">
                       <div className="flex items-center gap-2 mb-2">
                         <span className="w-2 h-2 rounded-full bg-primary-navy"></span>
-                        <span className="text-label-md font-bold text-neutral-900">Youth Fellowship</span>
+                        <span className="text-label-md font-bold text-neutral-900">Youth Fellowship & Worship</span>
                       </div>
                       <p className="text-h5 font-extrabold text-primary-navy">2:30 PM - 4:30 PM</p>
-                      <p className="text-caption text-neutral-500 mt-1">Saturday Youth Hall</p>
+                      <p className="text-caption text-neutral-500 mt-1">Saturday Afternoon • Youth Hall</p>
                     </div>
                   </>
                 )}

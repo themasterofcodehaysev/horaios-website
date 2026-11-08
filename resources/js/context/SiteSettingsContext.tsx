@@ -98,8 +98,9 @@ const defaultSettings: SiteSettings = {
   service_location: "",
   pastor_name: "",
   parsedServiceTimes: [
-    { day: "Sunday Morning", time: "9:00 AM & 11:00 AM", type: "Main Worship Service" },
-    { day: "Wednesday Evening", time: "7:00 PM", type: "Prayer Meeting & Bible Study" },
+    { title: "Main Sunday Worship", day: "Sunday Morning", time: "9:00 AM & 11:00 AM", type: "Main Worship Service", status: "active" },
+    { title: "Mid-Week Prayer & Bible Study", day: "Wednesday Evening", time: "7:00 PM - 8:30 PM", type: "Prayer & Discipleship", status: "active" },
+    { title: "Youth Fellowship & Worship", day: "Saturday Afternoon", time: "2:30 PM - 4:30 PM", type: "Youth & Students", status: "active" },
   ],
   giving_enabled: true,
   giving_currency: "USD / KHR",
@@ -190,16 +191,19 @@ export const SiteSettingsProvider: React.FC<{ children: ReactNode }> = ({ childr
       .then((res) => res.json())
       .then((data) => {
         if (data.success && Array.isArray(data.data) && data.data.length > 0) {
-          const items: ServiceTimeItem[] = data.data.map((s: any) => ({
-            id: s.id,
-            day: s.day,
-            time: s.time,
-            type: s.type || s.title,
-            title: s.title,
-            location: s.location,
-            description: s.description,
-            icon: s.icon,
-          }));
+          const items: ServiceTimeItem[] = data.data
+            .filter((s: any) => !s.status || s.status === 'active')
+            .map((s: any) => ({
+              id: s.id,
+              day: s.day,
+              time: s.time,
+              type: s.type || s.title,
+              title: s.title,
+              location: s.location,
+              description: s.description,
+              icon: s.icon,
+              status: s.status || 'active',
+            }));
           setSettings((prev) => ({
             ...prev,
             parsedServiceTimes: items,
