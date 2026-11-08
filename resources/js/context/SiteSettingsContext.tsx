@@ -126,7 +126,7 @@ const defaultSettings: SiteSettings = {
   giving_bank_account_number_usd: "001 234 567",
   giving_bank_account_number_khr: "001 234 568",
   giving_bank_swift_code: "ABACXXPP",
-  giving_bank_branch: "BKK3 Branch, St 348, Phnom Penh 12304, Cambodia",
+  giving_bank_branch: "Boeung Tompun Branch, Phnom Penh, Cambodia",
   giving_bank_wire_memo: "[Your Name] - Tithe/Offering",
   giving_bank_instructions: "Please include your full name and 'Tithe' or 'Offering' in the wire transfer memo.",
 

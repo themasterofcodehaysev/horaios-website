@@ -538,7 +538,7 @@ export default function ChurchSettingsPage() {
               className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue text-sm"
               value={settings.giving?.giving_bank_branch || ''}
               onChange={e => handleInputChange('giving', 'giving_bank_branch', e.target.value)}
-              placeholder="e.g. BKK3 Branch, St 348, Phnom Penh 12304, Cambodia"
+              placeholder="e.g. Boeung Tompun Branch, Phnom Penh, Cambodia"
             />
           </div>
 

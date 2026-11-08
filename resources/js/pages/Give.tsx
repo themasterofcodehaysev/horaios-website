@@ -57,6 +57,7 @@ export const GivePage: React.FC = () => {
 
   const funds = [
     'General Tithe & Offering',
+    'Student Dormitory Ministry',
     'Missions & Community Outreach',
     'Building & Facility Fund',
     'Youth & Children Ministry',
@@ -199,7 +200,7 @@ Thank you for your generous heart and faithful support of Horaios Baptist Church
   const bankUsdAcc = settings.giving_bank_account_number_usd || accountNumber;
   const bankKhrAcc = settings.giving_bank_account_number_khr || '';
   const bankSwift = settings.giving_bank_swift_code || 'ABACXXPP';
-  const bankBranch = settings.giving_bank_branch || 'BKK3 Branch, Phnom Penh, Cambodia';
+  const bankBranch = settings.giving_bank_branch || 'Boeung Tompun Branch, Phnom Penh, Cambodia';
   const bankMemo = settings.giving_bank_wire_memo || '[Your Name] - Tithe/Offering';
   const bankInstructions = settings.giving_bank_instructions || '';
 
