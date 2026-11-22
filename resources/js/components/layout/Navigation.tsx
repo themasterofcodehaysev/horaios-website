@@ -324,7 +324,7 @@ export const Navigation: React.FC<NavigationProps> = ({ onLinkClick }) => {
                 <Globe className="w-3.5 h-3.5" />
                 <span className={clsx('tracking-wider', language === 'en' ? 'font-black underline underline-offset-2' : 'opacity-70')}>EN</span>
                 <span className="opacity-40 text-[10px]">|</span>
-                <span className={clsx(language === 'km' ? 'font-black underline underline-offset-2 text-primary-red' : 'opacity-70')}>ខ្មែរ</span>
+                <span className={clsx(language === 'km' ? 'font-black underline underline-offset-2' : 'opacity-70')}>ខ្មែរ</span>
               </button>
 
               <Link to="/give" className="hidden sm:inline-flex">

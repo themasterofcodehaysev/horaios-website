@@ -129,7 +129,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
               className={clsx(
                 'flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-all border',
                 language === 'en'
-                  ? 'bg-primary-red text-white border-primary-red shadow-elevation-sm'
+                  ? 'bg-white border-neutral-800 text-neutral-900 shadow-elevation-sm'
                   : 'border-neutral-200 text-neutral-700 hover:bg-neutral-100'
               )}
             >
@@ -141,7 +141,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
               className={clsx(
                 'flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-all border',
                 language === 'km'
-                  ? 'bg-primary-red text-white border-primary-red shadow-elevation-sm'
+                  ? 'bg-white border-neutral-800 text-neutral-900 shadow-elevation-sm'
                   : 'border-neutral-200 text-neutral-700 hover:bg-neutral-100'
               )}
             >
