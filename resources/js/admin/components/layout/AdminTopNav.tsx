@@ -102,7 +102,7 @@ export const AdminTopNav: React.FC<AdminTopNavProps> = ({ user, onLogout, onOpen
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loadingNotifications, setLoadingNotifications] = useState(false);
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
   const langRef = useRef<HTMLDivElement>(null);
@@ -225,19 +225,52 @@ export const AdminTopNav: React.FC<AdminTopNavProps> = ({ user, onLogout, onOpen
     return () => clearTimeout(timer);
   }, [searchQuery, handleSearch]);
 
-  // Simple breadcrumb generator - memoized
+  // Breadcrumb generator with localization support
   const breadcrumbs = useMemo(() => {
     const paths = location.pathname.split('/').filter(p => p && p !== 'admin');
-    if (paths.length === 0) return [{ name: 'Dashboard', path: '/admin' }];
+    const dashboardLabel = t('admin.dashboard', 'Dashboard');
+    if (paths.length === 0) return [{ name: dashboardLabel, path: '/admin' }];
     
+    const segmentMap: Record<string, { key: string; fallback: string }> = {
+      'songs': { key: 'admin.songs', fallback: 'Songs' },
+      'sermons': { key: 'admin.sermons', fallback: 'Sermons' },
+      'news': { key: 'admin.news', fallback: 'News' },
+      'events': { key: 'admin.events', fallback: 'Events' },
+      'ministries': { key: 'admin.ministries', fallback: 'Ministries' },
+      'leadership': { key: 'admin.leadership', fallback: 'Leadership Team' },
+      'services': { key: 'admin.services', fallback: 'Church Services' },
+      'prayer-requests': { key: 'admin.prayer_requests', fallback: 'Prayer Requests' },
+      'contact-messages': { key: 'admin.contact_messages', fallback: 'Contact Messages' },
+      'join-requests': { key: 'admin.ministry_requests', fallback: 'Ministry Requests' },
+      'registrations': { key: 'admin.event_registrations', fallback: 'Event Registrations' },
+      'users': { key: 'admin.users', fallback: 'Users' },
+      'roles': { key: 'admin.roles', fallback: 'Roles & Permissions' },
+      'settings': { key: 'admin.settings', fallback: 'Church Settings' },
+      'audit-logs': { key: 'admin.audit_logs', fallback: 'Audit Logs' },
+      'notifications': { key: 'admin.notifications', fallback: 'Notifications' },
+      'support': { key: 'admin.support', fallback: 'Support' },
+      'profile': { key: 'admin.profile', fallback: 'My Profile' },
+      'account': { key: 'admin.profile', fallback: 'My Profile' },
+      'categories': { key: 'admin.breadcrumb.categories', fallback: 'Categories' },
+      'series': { key: 'admin.breadcrumb.series', fallback: 'Series' },
+      'speakers': { key: 'admin.breadcrumb.speakers', fallback: 'Speakers' },
+      'create': { key: 'admin.breadcrumb.create', fallback: 'Create' },
+      'edit': { key: 'admin.breadcrumb.edit', fallback: 'Edit' },
+    };
+
     return [
-      { name: 'Dashboard', path: '/admin' },
-      ...paths.map((p, i) => ({
-        name: p.charAt(0).toUpperCase() + p.slice(1).replace('-', ' '),
-        path: '/admin/' + paths.slice(0, i + 1).join('/')
-      }))
+      { name: dashboardLabel, path: '/admin' },
+      ...paths.map((p, i) => {
+        const lower = p.toLowerCase();
+        const mapped = segmentMap[lower];
+        const defaultName = p.charAt(0).toUpperCase() + p.slice(1).replace('-', ' ');
+        return {
+          name: mapped ? t(mapped.key, mapped.fallback) : defaultName,
+          path: '/admin/' + paths.slice(0, i + 1).join('/')
+        };
+      })
     ];
-  }, [location.pathname]);
+  }, [location.pathname, t]);
 
   const getInitials = useCallback((name?: string) => {
     if (!name) return 'A';
