@@ -31,6 +31,7 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { useSiteSettings } from '../context/SiteSettingsContext';
+import { useLanguage } from '../context/LanguageContext';
 import { getYouTubeId, getSermonThumbnail } from '../utils/youtube';
 
 // Helper for event date badges
@@ -61,6 +62,7 @@ const formatTimeString = (timeStr: string | null): string => {
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const { settings } = useSiteSettings();
+  const { t } = useLanguage();
 
   const [sermons, setSermons] = useState<SermonItem[]>([]);
   const [loadingSermons, setLoadingSermons] = useState(true);
@@ -154,19 +156,19 @@ export const HomePage: React.FC = () => {
     <Layout>
       {/* 1. Reverent Hero Section */}
       <HeroSection
-        badge="Boeung Tompun • Phnom Penh, Cambodia"
-        title="A Christ-Centered Family Rooted in Grace & Truth"
-        description='"Get up and Walk in the name of Jesus" — Join us this Sunday as we worship God, grow deeply in biblical discipleship, and serve our community across Cambodia.'
+        badge={t('home.hero.badge', 'Boeung Tompun • Phnom Penh, Cambodia')}
+        title={t('home.hero.title', 'A Christ-Centered Family Rooted in Grace & Truth')}
+        description={t('home.hero.description', '"Get up and Walk in the name of Jesus" — Join us this Sunday as we worship God, grow deeply in biblical discipleship, and serve our community across Cambodia.')}
         verse={{
-          text: "In the name of Jesus Christ of Nazareth, rise up and walk.",
-          reference: "Acts 3:6 • The Beautiful (Horaios) Gate"
+          text: t('home.hero.verse_text', 'In the name of Jesus Christ of Nazareth, rise up and walk.'),
+          reference: t('home.hero.verse_ref', 'Acts 3:6 • The Beautiful (Horaios) Gate')
         }}
         primaryCTA={{
-          label: 'Plan Your Visit',
+          label: t('home.hero.cta_visit', 'Plan Your Visit'),
           onClick: () => navigate('/visit'),
         }}
         secondaryCTA={{
-          label: 'Sunday Service Times',
+          label: t('home.hero.cta_times', 'Sunday Service Times'),
           onClick: () => {
             const el = document.getElementById('worship-schedule');
             el?.scrollIntoView({ behavior: 'smooth' });
@@ -188,13 +190,13 @@ export const HomePage: React.FC = () => {
               <div className="lg:max-w-xs flex-shrink-0">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-navy/10 text-primary-navy text-xs uppercase tracking-wider mb-2 font-bold">
                   <Church className="w-3.5 h-3.5" />
-                  Worship Gatherings
+                  {t('home.schedule.badge', 'Worship Gatherings')}
                 </div>
                 <h2 className="font-serif text-2xl sm:text-3xl font-semibold text-neutral-900 tracking-tight">
-                  Join Us for Worship
+                  {t('home.schedule.title', 'Join Us for Worship')}
                 </h2>
                 <p className="text-body-sm text-neutral-600 mt-1.5 leading-relaxed">
-                  Gather in person at our sanctuary in Boeung Tompun, Phnom Penh or join our online live stream.
+                  {t('home.schedule.desc', 'Gather in person at our sanctuary in Boeung Tompun, Phnom Penh or join our online live stream.')}
                 </p>
               </div>
 
@@ -270,13 +272,13 @@ export const HomePage: React.FC = () => {
                   className="bg-white !text-primary-red border border-primary-red/30 hover:bg-neutral-50 font-bold shadow-sm"
                   style={{ color: '#74121c' }}
                 >
-                  Plan Your Visit
+                  {t('home.hero.cta_visit', 'Plan Your Visit')}
                 </Button>
                 <button
                   onClick={() => navigate('/contact')}
                   className="text-body-xs font-semibold text-primary-navy hover:text-primary-navy/80 flex items-center justify-center gap-1.5 py-1"
                 >
-                  <MapPin className="w-3.5 h-3.5" /> View Map & Directions
+                  <MapPin className="w-3.5 h-3.5" /> {t('home.schedule.directions', 'View Map & Directions')}
                 </button>
               </div>
 
@@ -286,19 +288,19 @@ export const HomePage: React.FC = () => {
             <div className="mt-8 pt-6 border-t border-neutral-200/80 grid grid-cols-2 md:grid-cols-4 gap-4 text-neutral-700">
               <div className="flex items-center gap-2.5">
                 <Smile className="w-4 h-4 text-primary-navy flex-shrink-0" />
-                <span className="text-caption font-medium">Come as you are (casual dress)</span>
+                <span className="text-caption font-medium">{t('home.schedule.feature_casual', 'Come as you are (casual dress)')}</span>
               </div>
               <div className="flex items-center gap-2.5">
                 <Users className="w-4 h-4 text-primary-navy flex-shrink-0" />
-                <span className="text-caption font-medium">Safe children's ministry</span>
+                <span className="text-caption font-medium">{t('home.schedule.feature_kids', "Safe children's ministry")}</span>
               </div>
               <div className="flex items-center gap-2.5">
                 <Languages className="w-4 h-4 text-primary-navy flex-shrink-0" />
-                <span className="text-caption font-medium">Khmer & English services</span>
+                <span className="text-caption font-medium">{t('home.schedule.feature_bilingual', 'Khmer & English services')}</span>
               </div>
               <div className="flex items-center gap-2.5">
                 <MapPin className="w-4 h-4 text-primary-navy flex-shrink-0" />
-                <span className="text-caption font-medium">Boeung Tompun Phnom Penh</span>
+                <span className="text-caption font-medium">{t('home.schedule.feature_location', 'Boeung Tompun Phnom Penh')}</span>
               </div>
             </div>
 
@@ -315,16 +317,16 @@ export const HomePage: React.FC = () => {
             <div className="lg:col-span-7 space-y-6">
               <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-primary-navy/10 text-primary-navy text-xs uppercase tracking-wider font-bold">
                 <Church className="w-4 h-4" />
-                Welcome from Our Leadership
+                {t('home.welcome.badge', 'Welcome from Our Leadership')}
               </div>
               <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-semibold text-neutral-900 leading-tight">
-                You Have a Place at the Table
+                {t('home.welcome.title', 'You Have a Place at the Table')}
               </h2>
               <p className="text-body-lg text-neutral-700 leading-relaxed font-sans">
-                Welcome to Horaios Baptist Church Cambodia. Whether you are exploring faith in Christ for the very first time or searching for a home church to plant roots in Phnom Penh, our hearts and doors are wide open to you.
+                {t('home.welcome.p1', 'Welcome to Horaios Baptist Church Cambodia. Whether you are exploring faith in Christ for the very first time or searching for a home church to plant roots in Phnom Penh, our hearts and doors are wide open to you.')}
               </p>
               <p className="text-body-base text-neutral-600 leading-relaxed font-sans">
-                Named after the Beautiful (Horaios) Gate in Acts 3:2, we were established to be the sign, symbol, and instrument of the Kingdom of God. Our prayer and calling is that all who are spiritually, physically, or economically weak may find healing, restoration, and new strength to get up and walk in the name of Jesus.
+                {t('home.welcome.p2', 'Named after the Beautiful (Horaios) Gate in Acts 3:2, we were established to be the sign, symbol, and instrument of the Kingdom of God. Our prayer and calling is that all who are spiritually, physically, or economically weak may find healing, restoration, and new strength to get up and walk in the name of Jesus.')}
               </p>
 
               {/* Three Spiritual Pillars */}
@@ -334,8 +336,8 @@ export const HomePage: React.FC = () => {
                     <BookOpen className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-label-lg font-bold text-neutral-900">Biblical Truth</h3>
-                    <p className="text-caption text-neutral-500 mt-1">Grounded faithfully in God’s inspired Word.</p>
+                    <h3 className="text-label-lg font-bold text-neutral-900">{t('home.welcome.pillar_truth', 'Biblical Truth')}</h3>
+                    <p className="text-caption text-neutral-500 mt-1">{t('home.welcome.pillar_truth_desc', "Grounded faithfully in God's inspired Word.")}</p>
                   </div>
                 </div>
 
@@ -344,8 +346,8 @@ export const HomePage: React.FC = () => {
                     <Users className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-label-lg font-bold text-neutral-900">True Community</h3>
-                    <p className="text-caption text-neutral-500 mt-1">Caring fellowship where no one walks alone.</p>
+                    <h3 className="text-label-lg font-bold text-neutral-900">{t('home.welcome.pillar_comm', 'True Community')}</h3>
+                    <p className="text-caption text-neutral-500 mt-1">{t('home.welcome.pillar_comm_desc', 'Caring fellowship where no one walks alone.')}</p>
                   </div>
                 </div>
 
@@ -354,18 +356,18 @@ export const HomePage: React.FC = () => {
                     <Heart className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-label-lg font-bold text-neutral-900">Loving Mission</h3>
-                    <p className="text-caption text-neutral-500 mt-1">Serving Phnom Penh with compassionate action.</p>
+                    <h3 className="text-label-lg font-bold text-neutral-900">{t('home.welcome.pillar_mission', 'Loving Mission')}</h3>
+                    <p className="text-caption text-neutral-500 mt-1">{t('home.welcome.pillar_mission_desc', 'Serving Phnom Penh with compassionate action.')}</p>
                   </div>
                 </div>
               </div>
 
               <div className="pt-4 flex flex-wrap items-center gap-4">
                 <Button variant="primary" size="lg" onClick={() => navigate('/about')}>
-                  Our Story & What We Believe →
+                  {t('home.welcome.cta_story', 'Our Story & What We Believe →')}
                 </Button>
                 <Button variant="default" size="lg" onClick={() => navigate('/visit')}>
-                  What to Expect on Sunday
+                  {t('home.welcome.cta_expect', 'What to Expect on Sunday')}
                 </Button>
               </div>
             </div>
@@ -406,17 +408,17 @@ export const HomePage: React.FC = () => {
             <div>
               <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-primary-navy/10 text-primary-navy text-xs uppercase tracking-wider font-bold mb-3">
                 <BookOpen className="w-3.5 h-3.5" />
-                Biblical Teaching
+                {t('home.sermons.badge', 'Biblical Teaching')}
               </div>
               <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-neutral-900 tracking-tight">
-                Grow in God's Word
+                {t('home.sermons.title', "Grow in God's Word")}
               </h2>
               <p className="text-body-base text-neutral-600 mt-2 max-w-xl">
-                Recent Sunday sermons and expositional teachings to strengthen your daily walk with Christ.
+                {t('home.sermons.desc', 'Recent Sunday sermons and expositional teachings to strengthen your daily walk with Christ.')}
               </p>
             </div>
             <Button variant="default" className="self-start md:self-auto" onClick={() => navigate('/sermons')}>
-              Browse All Sermons →
+              {t('home.sermons.browse_all', 'Browse All Sermons →')}
             </Button>
           </div>
 
@@ -786,13 +788,13 @@ export const HomePage: React.FC = () => {
             <Heart className="w-7 h-7" />
           </div>
           <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white/15 text-white/95 text-xs uppercase tracking-wider font-bold mb-3 border border-white/20">
-            Pastoral Care & Prayer
+            {t('home.prayer.badge', 'Pastoral Care & Prayer')}
           </div>
           <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-white tracking-tight">
-            How Can We Pray For You?
+            {t('home.prayer.title', 'How Can We Pray For You?')}
           </h2>
           <p className="text-body-lg text-white/90 mt-3 max-w-2xl mx-auto leading-relaxed font-sans">
-            We believe that God hears and answers prayer. If you are carrying a burden, facing a major decision, or walking through illness, our pastoral staff and intercessory prayer team pray for every request by name.
+            {t('home.prayer.desc', 'We believe that God hears and answers prayer. If you are carrying a burden, facing a major decision, or walking through illness, our pastoral staff and intercessory prayer team pray for every request by name.')}
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button 
@@ -802,7 +804,7 @@ export const HomePage: React.FC = () => {
               className="bg-white !text-primary-navy hover:bg-neutral-100 font-bold shadow-elevation-md px-8 py-3.5 border-0 transition-all"
               style={{ color: '#273161' }}
             >
-              Submit Confidential Prayer Request
+              {t('home.prayer.cta_submit', 'Submit Confidential Prayer Request')}
             </Button>
             <Button 
               variant="default" 
@@ -810,7 +812,7 @@ export const HomePage: React.FC = () => {
               onClick={() => navigate('/contact')}
               className="border-2 border-white/80 bg-white/10 text-white hover:bg-white hover:!text-primary-navy font-bold px-8 py-3.5 transition-all"
             >
-              Speak with a Pastor
+              {t('home.prayer.cta_pastor', 'Speak with a Pastor')}
             </Button>
           </div>
         </div>
@@ -826,13 +828,13 @@ export const HomePage: React.FC = () => {
             {/* Giving Narrative */}
             <div className="space-y-4">
               <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 backdrop-blur-md text-xs uppercase tracking-wider font-bold text-white/90 border border-white/20">
-                <ShieldCheck className="w-4 h-4 text-emerald-300" /> Faithful Stewardship
+                <ShieldCheck className="w-4 h-4 text-emerald-300" /> {t('home.giving.badge', 'Faithful Stewardship')}
               </div>
               <h3 className="font-serif text-3xl sm:text-4xl font-semibold text-white leading-tight">
-                Partner in God's Work in Cambodia
+                {t('home.giving.title', "Partner in God's Work in Cambodia")}
               </h3>
               <p className="text-body-base text-white/90 leading-relaxed font-sans">
-                Your faithful tithes and voluntary offerings directly support Gospel proclamation, dormitory shelter and education for underprivileged youth, and practical compassionate care across Phnom Penh and Cambodia.
+                {t('home.giving.desc', 'Your faithful tithes and voluntary offerings directly support Gospel proclamation, dormitory shelter and education for underprivileged youth, and practical compassionate care across Phnom Penh and Cambodia.')}
               </p>
               <div className="pt-2 flex flex-wrap gap-3">
                 <Button 
@@ -841,7 +843,7 @@ export const HomePage: React.FC = () => {
                   className="bg-white !text-primary-red hover:bg-primary-dark-red hover:!text-white border-2 border-white font-bold shadow-elevation-md px-8 py-3 transition-all"
                   onClick={() => navigate('/give')}
                 >
-                  Give Online
+                  {t('home.giving.cta_online', 'Give Online')}
                 </Button>
                 <Button 
                   variant="default" 
@@ -849,7 +851,7 @@ export const HomePage: React.FC = () => {
                   className="border-2 border-white/80 bg-white/10 text-white font-bold hover:bg-white hover:text-brand-burgundy px-8 py-3"
                   onClick={() => navigate('/visit')}
                 >
-                  Give in Person
+                  {t('home.giving.cta_person', 'Give in Person')}
                 </Button>
               </div>
             </div>

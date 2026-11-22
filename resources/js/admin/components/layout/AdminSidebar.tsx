@@ -23,6 +23,8 @@ import {
   Ticket,
 } from 'lucide-react';
 
+import { useLanguage } from '../../../context/LanguageContext';
+
 interface AdminSidebarProps {
   collapsed: boolean;
   onToggleCollapse: () => void;
@@ -32,6 +34,7 @@ interface AdminSidebarProps {
 }
 
 interface NavItemDef {
+  key: string;
   name: string;
   path: string;
   icon: React.ComponentType<{ size?: number; className?: string }>;
@@ -39,52 +42,58 @@ interface NavItemDef {
 }
 
 interface NavGroupDef {
+  key: string;
   label: string;
   items: NavItemDef[];
 }
 
 const navGroups: NavGroupDef[] = [
   {
+    key: 'admin.main',
     label: 'MAIN',
     items: [
-      { name: 'Dashboard', path: '/admin', icon: LayoutDashboard, exact: true },
+      { key: 'admin.dashboard', name: 'Dashboard', path: '/admin', icon: LayoutDashboard, exact: true },
     ],
   },
   {
+    key: 'admin.content',
     label: 'CONTENT',
     items: [
-      { name: 'Songs', path: '/admin/songs', icon: Music },
-      { name: 'Sermons', path: '/admin/sermons', icon: BookOpen },
-      { name: 'News', path: '/admin/news', icon: FileText },
-      { name: 'Events', path: '/admin/events', icon: Calendar },
-      { name: 'Ministries', path: '/admin/ministries', icon: Heart },
-      { name: 'Leadership Team', path: '/admin/leadership', icon: Users },
-      { name: 'Church Services', path: '/admin/services', icon: Clock },
+      { key: 'admin.songs', name: 'Songs', path: '/admin/songs', icon: Music },
+      { key: 'admin.sermons', name: 'Sermons', path: '/admin/sermons', icon: BookOpen },
+      { key: 'admin.news', name: 'News', path: '/admin/news', icon: FileText },
+      { key: 'admin.events', name: 'Events', path: '/admin/events', icon: Calendar },
+      { key: 'admin.ministries', name: 'Ministries', path: '/admin/ministries', icon: Heart },
+      { key: 'admin.leadership', name: 'Leadership Team', path: '/admin/leadership', icon: Users },
+      { key: 'admin.services', name: 'Church Services', path: '/admin/services', icon: Clock },
     ],
   },
   {
+    key: 'admin.communication',
     label: 'COMMUNICATION',
     items: [
-      { name: 'Prayer Requests', path: '/admin/prayer-requests', icon: MessageCircleHeart },
-      { name: 'Contact Messages', path: '/admin/contact-messages', icon: Mail },
-      { name: 'Ministry Requests', path: '/admin/ministries/join-requests', icon: HandHeart },
-      { name: 'Event Registrations', path: '/admin/events/registrations', icon: Ticket },
+      { key: 'admin.prayer_requests', name: 'Prayer Requests', path: '/admin/prayer-requests', icon: MessageCircleHeart },
+      { key: 'admin.contact_messages', name: 'Contact Messages', path: '/admin/contact-messages', icon: Mail },
+      { key: 'admin.ministry_requests', name: 'Ministry Requests', path: '/admin/ministries/join-requests', icon: HandHeart },
+      { key: 'admin.event_registrations', name: 'Event Registrations', path: '/admin/events/registrations', icon: Ticket },
     ],
   },
   {
+    key: 'admin.management',
     label: 'MANAGEMENT',
     items: [
-      { name: 'Users', path: '/admin/users', icon: Users },
-      { name: 'Roles & Permissions', path: '/admin/roles', icon: Shield },
-      { name: 'Church Settings', path: '/admin/settings', icon: Settings },
-      { name: 'Audit Logs', path: '/admin/audit-logs', icon: ScrollText },
+      { key: 'admin.users', name: 'Users', path: '/admin/users', icon: Users },
+      { key: 'admin.roles', name: 'Roles & Permissions', path: '/admin/roles', icon: Shield },
+      { key: 'admin.settings', name: 'Church Settings', path: '/admin/settings', icon: Settings },
+      { key: 'admin.audit_logs', name: 'Audit Logs', path: '/admin/audit-logs', icon: ScrollText },
     ],
   },
   {
+    key: 'admin.account',
     label: 'ACCOUNT',
     items: [
-      { name: 'Notifications', path: '/admin/notifications', icon: Bell },
-      { name: 'Support', path: '/admin/support', icon: LifeBuoy },
+      { key: 'admin.notifications', name: 'Notifications', path: '/admin/notifications', icon: Bell },
+      { key: 'admin.support', name: 'Support', path: '/admin/support', icon: LifeBuoy },
     ],
   },
 ];
@@ -96,6 +105,8 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   onCloseMobile,
   darkMode = false
 }) => {
+  const { t } = useLanguage();
+
   return (
     <>
       {/* Mobile Backdrop */}
@@ -133,39 +144,42 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             <div key={index} className="mb-6">
               {!collapsed && (
                 <h3 className={`px-6 mb-2 text-xs font-semibold tracking-wider ${darkMode ? 'text-slate-500' : 'text-neutral-400'}`}>
-                  {group.label}
+                  {t(group.key, group.label)}
                 </h3>
               )}
               <ul className="space-y-1 px-3">
-                {group.items.map((item) => (
-                  <li key={item.path}>
-                    <NavLink
-                      to={item.path}
-                      end={item.exact}
-                      onClick={() => { if (window.innerWidth < 1024) onCloseMobile(); }}
-                      className={({ isActive }) =>
-                        `group flex items-center px-3 py-2.5 rounded-md transition-colors relative ${
-                          isActive
-                            ? 'bg-primary-red/10 text-primary-red font-medium'
-                            : darkMode
-                              ? 'text-slate-400 hover:bg-slate-700 hover:text-slate-200'
-                              : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900'
-                        }`
-                      }
-                      title={collapsed ? item.name : undefined}
-                    >
-                      {({ isActive }) => (
-                        <>
-                          {isActive && (
-                            <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary-red rounded-r-md" />
-                          )}
-                          <item.icon size={20} className={`flex-shrink-0 ${collapsed ? 'mx-auto' : 'mr-3'}`} />
-                          {!collapsed && <span className="truncate">{item.name}</span>}
-                        </>
-                      )}
-                    </NavLink>
-                  </li>
-                ))}
+                {group.items.map((item) => {
+                  const itemName = t(item.key, item.name);
+                  return (
+                    <li key={item.path}>
+                      <NavLink
+                        to={item.path}
+                        end={item.exact}
+                        onClick={() => { if (window.innerWidth < 1024) onCloseMobile(); }}
+                        className={({ isActive }) =>
+                          `group flex items-center px-3 py-2.5 rounded-md transition-colors relative ${
+                            isActive
+                              ? 'bg-primary-red/10 text-primary-red font-medium'
+                              : darkMode
+                                ? 'text-slate-400 hover:bg-slate-700 hover:text-slate-200'
+                                : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900'
+                          }`
+                        }
+                        title={collapsed ? itemName : undefined}
+                      >
+                        {({ isActive }) => (
+                          <>
+                            {isActive && (
+                              <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary-red rounded-r-md" />
+                            )}
+                            <item.icon size={20} className={`flex-shrink-0 ${collapsed ? 'mx-auto' : 'mr-3'}`} />
+                            {!collapsed && <span className="truncate">{itemName}</span>}
+                          </>
+                        )}
+                      </NavLink>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ))}

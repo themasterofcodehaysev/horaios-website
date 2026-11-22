@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import clsx from 'clsx';
 import { Link } from 'react-router-dom';
 import { Button } from '../ui/Button';
-import { ChevronDown, LucideIcon } from 'lucide-react';
+import { ChevronDown, Globe, LucideIcon } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 export interface NavItem {
   label: string;
@@ -29,6 +30,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
   onClose,
 }) => {
   const [moreExpanded, setMoreExpanded] = useState(true);
+  const { language, setLanguage, t } = useLanguage();
 
   if (!isOpen) return null;
 
@@ -63,7 +65,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
             onClick={() => setMoreExpanded(!moreExpanded)}
             className="w-full flex items-center justify-between px-4 py-2 text-xs font-bold uppercase tracking-wider text-neutral-500 hover:text-neutral-900"
           >
-            <span>More Links</span>
+            <span>{t('nav.more', 'More Links')}</span>
             <ChevronDown className={clsx('w-4 h-4 transition-transform duration-200', moreExpanded && 'rotate-180')} />
           </button>
 
@@ -111,9 +113,42 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
         <div className="pt-4">
           <Link to="/give" onClick={onClose} className="block">
             <Button variant="primary" size="lg" fullWidth className="shadow-elevation-sm">
-              Give Online
+              {t('nav.give_online', 'Give Online')}
             </Button>
           </Link>
+        </div>
+
+        {/* Language Switcher */}
+        <div className="pt-3 border-t border-neutral-100">
+          <p className="px-4 py-1 text-xs font-bold uppercase tracking-wider text-neutral-400">
+            {t('lang.switch', 'Language')}
+          </p>
+          <div className="flex gap-2 mt-2 px-2">
+            <button
+              onClick={() => setLanguage('en')}
+              className={clsx(
+                'flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-all border',
+                language === 'en'
+                  ? 'bg-primary-red text-white border-primary-red shadow-elevation-sm'
+                  : 'border-neutral-200 text-neutral-700 hover:bg-neutral-100'
+              )}
+            >
+              <Globe className="w-4 h-4" />
+              English
+            </button>
+            <button
+              onClick={() => setLanguage('km')}
+              className={clsx(
+                'flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-all border',
+                language === 'km'
+                  ? 'bg-primary-red text-white border-primary-red shadow-elevation-sm'
+                  : 'border-neutral-200 text-neutral-700 hover:bg-neutral-100'
+              )}
+            >
+              <Globe className="w-4 h-4" />
+              ភាសាខ្មែរ
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -12,12 +12,14 @@ import {
   Gift, 
   Mail,
   Music,
+  Globe,
   LucideIcon 
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '../ui/Button';
 import { MobileMenu, type NavItem } from './MobileMenu';
 import { useSiteSettings } from '../../context/SiteSettingsContext';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface NavigationProps {
   onLinkClick?: (href: string) => void;
@@ -30,6 +32,7 @@ export const Navigation: React.FC<NavigationProps> = ({ onLinkClick }) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const { settings } = useSiteSettings();
+  const { language, setLanguage, t } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -60,20 +63,20 @@ export const Navigation: React.FC<NavigationProps> = ({ onLinkClick }) => {
   }, [location.pathname]);
 
   const primaryNavItems: NavItem[] = [
-    { label: 'Home', href: '/' },
-    { label: 'About', href: '/about' },
-    { label: 'Ministries', href: '/ministries' },
-    { label: 'Sermons', href: '/sermons' },
-    { label: 'Events', href: '/events' },
+    { label: t('nav.home', 'Home'), href: '/' },
+    { label: t('nav.about', 'About'), href: '/about' },
+    { label: t('nav.ministries', 'Ministries'), href: '/ministries' },
+    { label: t('nav.sermons', 'Sermons'), href: '/sermons' },
+    { label: t('nav.events', 'Events'), href: '/events' },
   ];
 
   const moreNavItems: NavItem[] = [
-    { label: 'News & Stories', href: '/news', icon: Newspaper, description: 'Church articles & announcements' },
-    { label: 'Worship & Songs', href: '/songs', icon: Music, description: 'Hymns, lyrics & chords' },
-    { label: 'Plan Your Visit', href: '/visit', icon: MapPin, description: 'Sunday service times & directions to sanctuary' },
-    { label: 'Prayer Requests', href: '/prayer', icon: Heart, description: 'Submit confidential prayer needs' },
-    { label: 'Give Online', href: '/give', icon: Gift, description: 'Faithful stewardship & offerings' },
-    { label: 'Contact Us', href: '/contact', icon: Mail, description: 'Reach our church office in Boeung Tompun' },
+    { label: t('nav.news', 'News & Stories'), href: '/news', icon: Newspaper, description: t('nav.news_desc', 'Church articles & announcements') },
+    { label: t('nav.songs', 'Worship & Songs'), href: '/songs', icon: Music, description: t('nav.songs_desc', 'Hymns, lyrics & chords') },
+    { label: t('nav.visit', 'Plan Your Visit'), href: '/visit', icon: MapPin, description: t('nav.visit_desc', 'Sunday service times & directions to sanctuary') },
+    { label: t('nav.prayer', 'Prayer Requests'), href: '/prayer', icon: Heart, description: t('nav.prayer_desc', 'Submit confidential prayer needs') },
+    { label: t('nav.give', 'Give Online'), href: '/give', icon: Gift, description: t('nav.give_desc', 'Faithful stewardship & offerings') },
+    { label: t('nav.contact', 'Contact Us'), href: '/contact', icon: Mail, description: t('nav.contact_desc', 'Reach our church office in Boeung Tompun') },
   ];
 
   const [hoveredHref, setHoveredHref] = useState<string | null>(null);
@@ -247,7 +250,7 @@ export const Navigation: React.FC<NavigationProps> = ({ onLinkClick }) => {
                     )}
                     aria-expanded={dropdownOpen}
                   >
-                    <span>More Links</span>
+                    <span>{t('nav.more', 'More Links')}</span>
                     <ChevronDown className={clsx('w-3.5 h-3.5 transition-transform duration-200', dropdownOpen && 'rotate-180')} />
                   </button>
 
@@ -255,7 +258,7 @@ export const Navigation: React.FC<NavigationProps> = ({ onLinkClick }) => {
                   {dropdownOpen && (
                     <div className="absolute top-full right-0 mt-3 w-80 bg-white rounded-2xl shadow-elevation-lg border border-neutral-200/80 p-2 z-50 animate-fade-in">
                       <div className="px-3 py-2 text-[10px] uppercase font-bold tracking-wider text-neutral-400 border-b border-neutral-100 mb-1">
-                        Explore Church Pages
+                        {t('nav.more_pages', 'Explore Church Pages')}
                       </div>
                       <div className="space-y-1">
                         {moreNavItems.map((item) => {
@@ -304,7 +307,26 @@ export const Navigation: React.FC<NavigationProps> = ({ onLinkClick }) => {
             </div>
 
             {/* Right: Actions & Mobile Menu (matches left flex-1 for true center alignment) */}
-            <div className="flex items-center justify-end flex-1 gap-3">
+            <div className="flex items-center justify-end flex-1 gap-2.5 sm:gap-3">
+              {/* Language Switcher */}
+              <button
+                type="button"
+                onClick={() => setLanguage(language === 'en' ? 'km' : 'en')}
+                className={clsx(
+                  'flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-bold transition-all border select-none cursor-pointer',
+                  isScrolled
+                    ? 'border-neutral-200 bg-neutral-100/80 text-neutral-800 hover:bg-neutral-200/70 hover:border-neutral-300'
+                    : 'border-white/20 bg-black/15 text-white hover:bg-white/20 backdrop-blur-sm'
+                )}
+                title={language === 'en' ? 'ប្តូរទៅភាសាខ្មែរ (Khmer)' : 'Switch to English'}
+                aria-label="Toggle language"
+              >
+                <Globe className="w-3.5 h-3.5" />
+                <span className={clsx('tracking-wider', language === 'en' ? 'font-black underline underline-offset-2' : 'opacity-70')}>EN</span>
+                <span className="opacity-40 text-[10px]">|</span>
+                <span className={clsx(language === 'km' ? 'font-black underline underline-offset-2 text-primary-red' : 'opacity-70')}>ខ្មែរ</span>
+              </button>
+
               <Link to="/give" className="hidden sm:inline-flex">
                 <Button 
                   variant={isScrolled ? "primary" : "default"} 
@@ -314,7 +336,7 @@ export const Navigation: React.FC<NavigationProps> = ({ onLinkClick }) => {
                     !isScrolled && 'bg-white text-brand-burgundy border-0 hover:bg-neutral-100'
                   )}
                 >
-                  Give
+                  {t('nav.give', 'Give')}
                 </Button>
               </Link>
 

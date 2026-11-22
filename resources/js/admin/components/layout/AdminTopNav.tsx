@@ -8,8 +8,8 @@ import { searchService } from '../../services/search.service';
 import { notificationService } from '../../services/notification.service';
 import type { AuthUser, SearchResult } from '../../types';
 import type { Notification } from '../types';
-
-type Language = 'en' | 'km';
+import { useLanguage } from '../../../context/LanguageContext';
+import type { Language } from '../../../constants/translations';
 
 const LANGUAGES: Record<Language, string> = {
   en: 'English',
@@ -102,7 +102,7 @@ export const AdminTopNav: React.FC<AdminTopNavProps> = ({ user, onLogout, onOpen
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loadingNotifications, setLoadingNotifications] = useState(false);
-  const [language, setLanguage] = useState<Language>(() => (localStorage.getItem('admin_language') as Language) || 'en');
+  const { language, setLanguage } = useLanguage();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
   const langRef = useRef<HTMLDivElement>(null);

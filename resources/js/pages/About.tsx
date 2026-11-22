@@ -24,10 +24,12 @@ import { leaderService } from '../admin/services/leader.service';
 import type { Leader } from '../admin/types';
 import { getImageUrl } from '../utils/imageUrl';
 import { useSiteSettings } from '../context/SiteSettingsContext';
+import { useLanguage } from '../context/LanguageContext';
 
 export const AboutPage: React.FC = () => {
   const navigate = useNavigate();
   const { settings } = useSiteSettings();
+  const { t } = useLanguage();
   const [leaders, setLeaders] = useState<Leader[]>([]);
   const [loadingLeaders, setLoadingLeaders] = useState(true);
 
@@ -56,15 +58,15 @@ export const AboutPage: React.FC = () => {
 
       <HeroSection
         title={`About ${settings.church_name || 'Horaios Baptist Church'}`}
-        subtitle="Our Calling & Heritage"
-        description='"Get up and Walk in the name of Jesus" (Acts 3:2) — Discovering our heritage, our biblical foundation, and our calling as an instrument of God’s Kingdom in Cambodia.'
+        subtitle={t('about.hero.subtitle', 'Our Calling & Heritage')}
+        description={t('about.hero.desc', '"Get up and Walk in the name of Jesus" (Acts 3:2) — Discovering our heritage, our biblical foundation, and our calling as an instrument of God\'s Kingdom in Cambodia.')}
         minHeight="md"
         primaryCTA={{
-          label: 'Plan Your Visit',
+          label: t('home.hero.cta_visit', 'Plan Your Visit'),
           onClick: () => navigate('/visit'),
         }}
         secondaryCTA={{
-          label: 'Contact Us',
+          label: t('nav.contact', 'Contact Us'),
           onClick: () => navigate('/contact'),
         }}
       />
@@ -78,23 +80,23 @@ export const AboutPage: React.FC = () => {
             <div className="lg:col-span-7 space-y-6">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-red/10 text-primary-red text-label-sm uppercase tracking-wider font-bold">
                 <Church className="w-4 h-4" />
-                Our Journey of Faith
+                {t('about.journey.badge', 'Our Journey of Faith')}
               </div>
               <h2 className="text-display-md font-extrabold text-neutral-900 leading-tight">
-                Get Up and Walk in the Name of Jesus
+                {t('about.journey.title', 'Get Up and Walk in the Name of Jesus')}
               </h2>
               <p className="text-body-lg text-neutral-700 leading-relaxed font-medium">
-                Horaios Baptist Church Cambodia (HBCC) was founded on October 25, 2015, born out of prayer, cross-cultural missionary dedication, and a deep compassion for the people of Cambodia.
+                {t('about.journey.p1', 'Horaios Baptist Church Cambodia (HBCC) was founded on October 25, 2015, born out of prayer, cross-cultural missionary dedication, and a deep compassion for the people of Cambodia.')}
               </p>
               <p className="text-body-base text-neutral-600 leading-relaxed">
-                The church's beginnings were initiated by <strong>Rev. J. Lalduhawma</strong>, an Indian missionary sent from the Baptist Church of Mizoram who arrived in Phnom Penh on December 12, 2013. In October 2015, a dormitory ministry was launched to provide housing, mentorship, and education to students. A few days later, regular worship began in the dormitory's small hall—gathering Rev. Lalduhawma and his family, the Chinthan family (dormitory warden), seven student residents (two Christian and five non-Christian), and fellow Mizo missionaries.
+                {t('about.journey.p2', "The church's beginnings were initiated by Rev. J. Lalduhawma, an Indian missionary sent from the Baptist Church of Mizoram who arrived in Phnom Penh on December 12, 2013. In October 2015, a dormitory ministry was launched to provide housing, mentorship, and education to students. A few days later, regular worship began in the dormitory's small hall—gathering Rev. Lalduhawma and his family, the Chinthan family (dormitory warden), seven student residents (two Christian and five non-Christian), and fellow Mizo missionaries.")}
               </p>
               <p className="text-body-base text-neutral-600 leading-relaxed">
-                The name <strong>Horaios</strong> originates from the Greek word meaning <em>"Beautiful (Holy)"</em>. Its deeper biblical foundation comes from <strong>Acts 3:2</strong>, at the Beautiful (Horaios) Gate of the temple where the Apostle Peter ministered healing to the lame man in the name of Jesus Christ. We bear this name in enduring faith that people who are spiritually, physically, or economically weak and unable to walk by themselves may get up and walk in the name of Jesus.
+                {t('about.journey.p3', 'The name Horaios originates from the Greek word meaning "Beautiful (Holy)". Its deeper biblical foundation comes from Acts 3:2, at the Beautiful (Horaios) Gate of the temple where the Apostle Peter ministered healing to the lame man in the name of Jesus Christ. We bear this name in enduring faith that people who are spiritually, physically, or economically weak and unable to walk by themselves may get up and walk in the name of Jesus.')}
               </p>
               <div className="pt-2 text-caption font-semibold text-neutral-500 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-primary-red"></span>
-                <span>House No. 9L, Street 3BT Chamreun Phal-1, Sangkat Boeung Tompun, Khan Meanchey, Phnom Penh, Cambodia</span>
+                <span>{t('about.journey.address', 'House No. 9L, Street 3BT Chamreun Phal-1, Sangkat Boeung Tompun, Khan Meanchey, Phnom Penh, Cambodia')}</span>
               </div>
             </div>
 
@@ -119,48 +121,48 @@ export const AboutPage: React.FC = () => {
           {/* Timeline Milestones */}
           <div className="bg-neutral-50 rounded-3xl p-8 sm:p-12 border border-neutral-200/80">
             <div className="text-center max-w-2xl mx-auto mb-10">
-              <h3 className="text-h4 font-bold text-neutral-900">Milestones of God's Faithfulness</h3>
-              <p className="text-body-sm text-neutral-600 mt-1">Key moments in the founding and ministry of Horaios Baptist Church</p>
+              <h3 className="text-h4 font-bold text-neutral-900">{t('about.timeline.title', "Milestones of God's Faithfulness")}</h3>
+              <p className="text-body-sm text-neutral-600 mt-1">{t('about.timeline.desc', 'Key moments in the founding and ministry of Horaios Baptist Church')}</p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               
               <div className="bg-white rounded-2xl p-6 border border-neutral-200/70 shadow-xs flex flex-col justify-between">
                 <div>
-                  <span className="px-2.5 py-1 rounded-lg bg-primary-red/10 text-primary-red text-caption font-extrabold">Dec 2013</span>
-                  <h4 className="text-h6 font-bold text-neutral-900 mt-3 mb-1">Missionary Arrival</h4>
+                  <span className="px-2.5 py-1 rounded-lg bg-primary-red/10 text-primary-red text-caption font-extrabold">{t('about.timeline.m1_year', 'Dec 2013')}</span>
+                  <h4 className="text-h6 font-bold text-neutral-900 mt-3 mb-1">{t('about.timeline.m1_title', 'Missionary Arrival')}</h4>
                   <p className="text-body-sm text-neutral-600 leading-relaxed">
-                    Rev. J. Lalduhawma arrives in Phnom Penh from the Baptist Church of Mizoram, dedicating the work to prayer and outreach.
+                    {t('about.timeline.m1_desc', 'Rev. J. Lalduhawma arrives in Phnom Penh from the Baptist Church of Mizoram, dedicating the work to prayer and outreach.')}
                   </p>
                 </div>
               </div>
 
               <div className="bg-white rounded-2xl p-6 border border-neutral-200/70 shadow-xs flex flex-col justify-between">
                 <div>
-                  <span className="px-2.5 py-1 rounded-lg bg-primary-navy/10 text-primary-navy text-caption font-extrabold">Oct 2015</span>
-                  <h4 className="text-h6 font-bold text-neutral-900 mt-3 mb-1">Dormitory & First Service</h4>
+                  <span className="px-2.5 py-1 rounded-lg bg-primary-navy/10 text-primary-navy text-caption font-extrabold">{t('about.timeline.m2_year', 'Oct 2015')}</span>
+                  <h4 className="text-h6 font-bold text-neutral-900 mt-3 mb-1">{t('about.timeline.m2_title', 'Dormitory & First Service')}</h4>
                   <p className="text-body-sm text-neutral-600 leading-relaxed">
-                    Dormitory ministry begins, and the very first Sunday worship service gathers on October 25, 2015—our church Foundation Day.
+                    {t('about.timeline.m2_desc', 'Dormitory ministry begins, and the very first Sunday worship service gathers on October 25, 2015—our church Foundation Day.')}
                   </p>
                 </div>
               </div>
 
               <div className="bg-white rounded-2xl p-6 border border-neutral-200/70 shadow-xs flex flex-col justify-between">
                 <div>
-                  <span className="px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-700 text-caption font-extrabold">2018 – 2022</span>
-                  <h4 className="text-h6 font-bold text-neutral-900 mt-3 mb-1">Leadership & Ministry Growth</h4>
+                  <span className="px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-700 text-caption font-extrabold">{t('about.timeline.m3_year', '2018 – 2022')}</span>
+                  <h4 className="text-h6 font-bold text-neutral-900 mt-3 mb-1">{t('about.timeline.m3_title', 'Leadership & Ministry Growth')}</h4>
                   <p className="text-body-sm text-neutral-600 leading-relaxed">
-                    Local leadership is appointed, establishing women’s, children’s, youth, and community compassion ministries.
+                    {t('about.timeline.m3_desc', 'Local leadership is appointed, establishing women’s, children’s, youth, and community compassion ministries.')}
                   </p>
                 </div>
               </div>
 
               <div className="bg-white rounded-2xl p-6 border border-neutral-200/70 shadow-xs flex flex-col justify-between">
                 <div>
-                  <span className="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-700 text-caption font-extrabold">Today & Beyond</span>
-                  <h4 className="text-h6 font-bold text-neutral-900 mt-3 mb-1">Advancing God's Kingdom</h4>
+                  <span className="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-700 text-caption font-extrabold">{t('about.timeline.m4_year', 'Today & Beyond')}</span>
+                  <h4 className="text-h6 font-bold text-neutral-900 mt-3 mb-1">{t('about.timeline.m4_title', "Advancing God's Kingdom")}</h4>
                   <p className="text-body-sm text-neutral-600 leading-relaxed">
-                    Multiplying disciples, nurturing university students, caring for the needy, and witnessing across Cambodia.
+                    {t('about.timeline.m4_desc', 'Multiplying disciples, nurturing university students, caring for the needy, and witnessing across Cambodia.')}
                   </p>
                 </div>
               </div>
@@ -177,13 +179,13 @@ export const AboutPage: React.FC = () => {
           <div className="text-center max-w-3xl mx-auto mb-14">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-red/10 text-primary-red text-label-sm uppercase tracking-wider font-bold mb-3">
               <Award className="w-3.5 h-3.5" />
-              What We Believe & Stand On
+              {t('about.convictions.badge', 'What We Believe & Stand On')}
             </div>
             <h2 className="text-display-md font-bold text-neutral-900 tracking-tight">
-              Our Statement of Faith & Core Convictions
+              {t('about.convictions.title', 'Our Statement of Faith & Core Convictions')}
             </h2>
             <p className="text-body-lg text-neutral-600 mt-3">
-              Rooted in the inspired Word of God, these essential doctrines shape our worship, life, and mission in Cambodia.
+              {t('about.convictions.desc', 'Rooted in the inspired Word of God, these essential doctrines shape our worship, life, and mission in Cambodia.')}
             </p>
           </div>
 
@@ -195,10 +197,10 @@ export const AboutPage: React.FC = () => {
                   <BookOpen className="w-6 h-6" />
                 </div>
                 <h3 className="text-h5 font-bold text-neutral-900 mb-2">
-                  The Word of God
+                  {t('about.doctrine.word_title', 'The Word of God')}
                 </h3>
                 <p className="text-body-sm text-neutral-600 leading-relaxed mb-4">
-                  The 66 books of the Old and New Testaments are the inspired, infallible Word of God—our supreme and final authority for faith, truth, and conduct.
+                  {t('about.doctrine.word_desc', 'The 66 books of the Old and New Testaments are the inspired, infallible Word of God—our supreme and final authority for faith, truth, and conduct.')}
                 </p>
               </div>
               <div className="pt-3 border-t border-neutral-100 text-caption font-bold text-primary-navy">
@@ -212,10 +214,10 @@ export const AboutPage: React.FC = () => {
                   <Church className="w-6 h-6" />
                 </div>
                 <h3 className="text-h5 font-bold text-neutral-900 mb-2">
-                  The One Triune God
+                  {t('about.doctrine.god_title', 'The One Triune God')}
                 </h3>
                 <p className="text-body-sm text-neutral-600 leading-relaxed mb-4">
-                  One true God, eternally existing in three distinct persons: Father, Son, and Holy Spirit—co-equal in power and glory, Creator of heaven and earth.
+                  {t('about.doctrine.god_desc', 'One true God, eternally existing in three distinct persons: Father, Son, and Holy Spirit—co-equal in power and glory, Creator of heaven and earth.')}
                 </p>
               </div>
               <div className="pt-3 border-t border-neutral-100 text-caption font-bold text-primary-red">
@@ -229,10 +231,10 @@ export const AboutPage: React.FC = () => {
                   <Heart className="w-6 h-6" />
                 </div>
                 <h3 className="text-h5 font-bold text-neutral-900 mb-2">
-                  Salvation in Christ
+                  {t('about.doctrine.salvation_title', 'Salvation in Christ')}
                 </h3>
                 <p className="text-body-sm text-neutral-600 leading-relaxed mb-4">
-                  Jesus is the Way, Truth, and Life. Conceived by the Holy Spirit and born of Mary, He died in our place and rose bodily; salvation is purely by grace through faith.
+                  {t('about.doctrine.salvation_desc', 'Jesus is the Way, Truth, and Life. Conceived by the Holy Spirit and born of Mary, He died in our place and rose bodily; salvation is purely by grace through faith.')}
                 </p>
               </div>
               <div className="pt-3 border-t border-neutral-100 text-caption font-bold text-amber-700">
@@ -246,10 +248,10 @@ export const AboutPage: React.FC = () => {
                   <Globe className="w-6 h-6" />
                 </div>
                 <h3 className="text-h5 font-bold text-neutral-900 mb-2">
-                  The Church & Mission
+                  {t('about.doctrine.church_title', 'The Church & Mission')}
                 </h3>
                 <p className="text-body-sm text-neutral-600 leading-relaxed mb-4">
-                  The body of Christ united in the Holy Spirit, called to local worship, fellowship, discipling all nations, and showing God's love to the poor, orphans, and oppressed.
+                  {t('about.doctrine.church_desc', "The body of Christ united in the Holy Spirit, called to local worship, fellowship, discipling all nations, and showing God's love to the poor, orphans, and oppressed.")}
                 </p>
               </div>
               <div className="pt-3 border-t border-neutral-100 text-caption font-bold text-emerald-700">
@@ -271,16 +273,16 @@ export const AboutPage: React.FC = () => {
                 <div className="w-14 h-14 rounded-2xl bg-primary-navy text-white flex items-center justify-center mb-6 shadow-elevation-md">
                   <Heart className="w-7 h-7" />
                 </div>
-                <span className="text-caption font-bold text-primary-navy uppercase tracking-wider">Our Core Mission</span>
+                <span className="text-caption font-bold text-primary-navy uppercase tracking-wider">{t('about.mission.badge', 'Our Core Mission')}</span>
                 <h3 className="text-h3 font-bold text-neutral-900 mt-1 mb-4">
-                  Our Mission Statement
+                  {t('about.mission.title', 'Our Mission Statement')}
                 </h3>
                 <p className="text-body-lg text-neutral-700 leading-relaxed italic">
-                  "The Horaios Baptist Church Cambodia declares its mission through its establishment, to be the sign, symbol, and instrument of the Kingdom of God; and strives for the firm establishment, realization, and extension of the Kingdom of God, where God reigns, God's will is done, and God's name is praised."
+                  {t('about.mission.desc', '"The Horaios Baptist Church Cambodia declares its mission through its establishment, to be the sign, symbol, and instrument of the Kingdom of God; and strives for the firm establishment, realization, and extension of the Kingdom of God, where God reigns, God\'s will is done, and God\'s name is praised."')}
                 </p>
               </div>
               <div className="mt-8 pt-6 border-t border-primary-navy/20 flex items-center gap-2 text-primary-navy font-semibold text-body-sm">
-                <CheckCircle2 className="w-4 h-4" /> Instrument of God's Kingdom in Cambodia
+                <CheckCircle2 className="w-4 h-4" /> {t('about.mission.tag', "Instrument of God's Kingdom in Cambodia")}
               </div>
             </div>
 
@@ -289,16 +291,16 @@ export const AboutPage: React.FC = () => {
                 <div className="w-14 h-14 rounded-2xl bg-primary-red text-white flex items-center justify-center mb-6 shadow-elevation-md">
                   <Target className="w-7 h-7" />
                 </div>
-                <span className="text-caption font-bold text-primary-red uppercase tracking-wider">Our Core Calling & Aim</span>
+                <span className="text-caption font-bold text-primary-red uppercase tracking-wider">{t('about.vision.badge', 'Our Core Calling & Aim')}</span>
                 <h3 className="text-h3 font-bold text-neutral-900 mt-1 mb-4">
-                  Our Objectives & Vision
+                  {t('about.vision.title', 'Our Objectives & Vision')}
                 </h3>
                 <p className="text-body-lg text-neutral-700 leading-relaxed">
-                  To profess and proclaim the Gospel in obedience to the Great Commission; to be guided primarily by the Christian Bible; to foster harmonious cooperation with churches and community; to maintain educational and dormitory shelters for youth; and to actively demonstrate Christ's love among the poor, orphans, and marginalized.
+                  {t('about.vision.desc', "To profess and proclaim the Gospel in obedience to the Great Commission; to be guided primarily by the Christian Bible; to foster harmonious cooperation with churches and community; to maintain educational and dormitory shelters for youth; and to actively demonstrate Christ's love among the poor, orphans, and marginalized.")}
                 </p>
               </div>
               <div className="mt-8 pt-6 border-t border-primary-red/20 flex items-center gap-2 text-primary-red font-semibold text-body-sm">
-                <CheckCircle2 className="w-4 h-4" /> Obeying the Great Commission & Compassionate Action
+                <CheckCircle2 className="w-4 h-4" /> {t('about.vision.tag', 'Obedient to the Great Commission & Love in Action')}
               </div>
             </div>
 
@@ -312,13 +314,13 @@ export const AboutPage: React.FC = () => {
           <div className="text-center max-w-3xl mx-auto mb-14">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-red/10 text-primary-red text-label-sm uppercase tracking-wider font-bold mb-3">
               <User className="w-3.5 h-3.5" />
-              Pastoral Care & Guidance
+              {t('about.leadership.badge', 'Pastoral Care & Guidance')}
             </div>
             <h2 className="text-display-md font-bold text-neutral-900 tracking-tight">
-              Our Leadership Team
+              {t('about.leadership.title', 'Our Leadership Team')}
             </h2>
             <p className="text-body-lg text-neutral-600 mt-3">
-              Serving God's flock with humility, biblical dedication, and pastoral love.
+              {t('about.leadership.desc', "Serving God's flock with humility, biblical dedication, and pastoral love.")}
             </p>
           </div>
 
