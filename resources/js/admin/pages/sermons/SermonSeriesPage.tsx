@@ -8,8 +8,10 @@ import { sermonService } from '../../services/sermon.service';
 import type { SermonSeries } from '../../types';
 import { getImageUrl } from '../../utils/imageUrl';
 import ImageUpload from '../../components/ui/ImageUpload';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const SermonSeriesPage: React.FC = () => {
+  const { t } = useLanguage();
   const [seriesList, setSeriesList] = useState<SermonSeries[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -109,9 +111,9 @@ const SermonSeriesPage: React.FC = () => {
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <h1 className="text-h3 text-neutral-900 font-bold">Sermon Series</h1>
+            <h1 className="text-h3 text-neutral-900 font-bold">{t('admin.sermons.series_title', 'Sermon Series')}</h1>
             <p className="text-body-xs text-neutral-500">
-              Group sermons by teaching themes (e.g. Romans, Faith Foundations, Easter).
+              {t('admin.sermons.series_desc', 'Group sermons by teaching themes (e.g. Romans, Faith Foundations, Easter).')}
             </p>
           </div>
         </div>

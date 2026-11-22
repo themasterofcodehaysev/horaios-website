@@ -6,8 +6,10 @@ import {
 } from 'lucide-react';
 import { contactService } from '../../services/contact.service';
 import type { ContactMessage, PaginatedResponse, ContactMessageFilters, ContactMessageStats } from '../../types';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const ContactMessagesListPage: React.FC = () => {
+  const { t } = useLanguage();
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [stats, setStats] = useState<ContactMessageStats | null>(null);
   const [meta, setMeta] = useState<PaginatedResponse<ContactMessage>['meta'] | null>(null);
@@ -88,9 +90,9 @@ const ContactMessagesListPage: React.FC = () => {
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-h2 text-neutral-900 font-bold">Contact Messages</h1>
+          <h1 className="text-h2 text-neutral-900 font-bold">{t('admin.contact.page_title', 'Contact Messages')}</h1>
           <p className="text-body-sm text-neutral-500 mt-1">
-            Manage and respond to messages from the contact form.
+            {t('admin.contact.page_desc', 'Manage and respond to messages from the contact form.')}
           </p>
         </div>
       </div>

@@ -9,9 +9,11 @@ import { userService } from '../../services/user.service';
 import { roleService } from '../../services/role.service';
 import { useToast } from '../../hooks/useToast';
 import type { User, Role, PaginatedResponse, UserFilters } from '../../types';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const UsersListPage: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const { addToast } = useToast();
   const [users, setUsers] = useState<User[]>([]);
   const [meta, setMeta] = useState<PaginatedResponse<User>['meta'] | null>(null);
@@ -113,9 +115,9 @@ const UsersListPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-h2 text-neutral-900 font-bold">Users</h1>
+          <h1 className="text-h2 text-neutral-900 font-bold">{t('admin.users.page_title', 'Users')}</h1>
           <p className="text-body-sm text-neutral-500 mt-1">
-            Manage user accounts, roles, and permissions.
+            {t('admin.users.page_desc', 'Manage user accounts, roles, and permissions.')}
           </p>
         </div>
         <Link

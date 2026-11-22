@@ -8,9 +8,11 @@ import { blogService } from '../../services/blog.service';
 import type { BlogItem, BlogCategory, PaginatedResponse, BlogFilters } from '../../types';
 import { getImageUrl } from '../../utils/imageUrl';
 import { useToast } from '../../hooks/useToast';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const BlogsListPage: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const { addToast } = useToast();
   const [blogs, setBlogs] = useState<BlogItem[]>([]);
   const [categories, setCategories] = useState<BlogCategory[]>([]);
@@ -135,9 +137,9 @@ const BlogsListPage: React.FC = () => {
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-h2 text-neutral-900 font-bold">News Management</h1>
+          <h1 className="text-h2 text-neutral-900 font-bold">{t('admin.news.page_title', 'News Management')}</h1>
           <p className="text-body-sm text-neutral-500 mt-1">
-            Manage church news, articles, announcements, and categories.
+            {t('admin.news.page_desc', 'Manage church news, articles, announcements, and categories.')}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">

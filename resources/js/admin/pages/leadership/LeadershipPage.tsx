@@ -9,8 +9,10 @@ import type { Leader } from '../../types';
 import { getImageUrl } from '../../utils/imageUrl';
 import ImageUpload from '../../components/ui/ImageUpload';
 import { useToast } from '../../hooks/useToast';
+import { useLanguage } from '../../../context/LanguageContext';
 
 export const LeadershipPage: React.FC = () => {
+  const { t } = useLanguage();
   const { addToast } = useToast();
   const [leaders, setLeaders] = useState<Leader[]>([]);
   const [loading, setLoading] = useState(true);
@@ -181,10 +183,10 @@ export const LeadershipPage: React.FC = () => {
         <div>
           <h1 className="text-h3 text-neutral-900 font-bold flex items-center gap-2.5">
             <Users className="w-7 h-7 text-primary-red" />
-            Leadership Team
+            {t('admin.leadership.page_title', 'Leadership Team')}
           </h1>
           <p className="text-body-xs text-neutral-500">
-            Manage pastors, elders, directors, and ministry leaders displayed on the About page.
+            {t('admin.leadership.page_desc', 'Manage pastors, elders, directors, and ministry leaders displayed on the About page.')}
           </p>
         </div>
         <button

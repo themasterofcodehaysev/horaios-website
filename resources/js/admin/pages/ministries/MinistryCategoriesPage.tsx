@@ -6,8 +6,10 @@ import {
 } from 'lucide-react';
 import { ministryService } from '../../services/ministry.service';
 import type { MinistryCategory } from '../../types';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const MinistryCategoriesPage: React.FC = () => {
+  const { t } = useLanguage();
   const [categories, setCategories] = useState<MinistryCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -107,9 +109,9 @@ const MinistryCategoriesPage: React.FC = () => {
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <h1 className="text-h3 text-neutral-900 font-bold">Ministry Categories</h1>
+            <h1 className="text-h3 text-neutral-900 font-bold">{t('admin.ministries.categories_title', 'Ministry Categories')}</h1>
             <p className="text-body-xs text-neutral-500">
-              Group ministries into areas (e.g. Children, Youth, Outreach, Worship).
+              {t('admin.ministries.categories_desc', 'Group ministries into areas (e.g. Children, Youth, Outreach, Worship).')}
             </p>
           </div>
         </div>

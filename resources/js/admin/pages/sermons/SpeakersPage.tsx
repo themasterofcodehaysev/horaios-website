@@ -8,8 +8,10 @@ import { sermonService } from '../../services/sermon.service';
 import type { Speaker } from '../../types';
 import { getImageUrl } from '../../utils/imageUrl';
 import ImageUpload from '../../components/ui/ImageUpload';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const SpeakersPage: React.FC = () => {
+  const { t } = useLanguage();
   const [speakers, setSpeakers] = useState<Speaker[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -133,9 +135,9 @@ const SpeakersPage: React.FC = () => {
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <h1 className="text-h3 text-neutral-900 font-bold">Speakers & Preachers</h1>
+            <h1 className="text-h3 text-neutral-900 font-bold">{t('admin.sermons.speakers_title', 'Speakers & Preachers')}</h1>
             <p className="text-body-xs text-neutral-500">
-              Manage pastors, visiting speakers, and ministers.
+              {t('admin.sermons.speakers_desc', 'Manage pastors, visiting speakers, and ministers.')}
             </p>
           </div>
         </div>

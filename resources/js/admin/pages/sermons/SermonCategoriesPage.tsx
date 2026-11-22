@@ -6,8 +6,10 @@ import {
 } from 'lucide-react';
 import { sermonService } from '../../services/sermon.service';
 import type { SermonCategory } from '../../types';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const SermonCategoriesPage: React.FC = () => {
+  const { t } = useLanguage();
   const [categories, setCategories] = useState<SermonCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -108,9 +110,9 @@ const SermonCategoriesPage: React.FC = () => {
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <h1 className="text-h3 text-neutral-900 font-bold">Sermon Categories</h1>
+            <h1 className="text-h3 text-neutral-900 font-bold">{t('admin.sermons.categories_title', 'Sermon Categories')}</h1>
             <p className="text-body-xs text-neutral-500">
-              Organize sermons by service type (e.g. Sunday Worship, Bible Study, Youth Service).
+              {t('admin.sermons.categories_desc', 'Organize sermons by service type (e.g. Sunday Worship, Bible Study, Youth Service).')}
             </p>
           </div>
         </div>

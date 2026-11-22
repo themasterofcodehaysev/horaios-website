@@ -8,9 +8,11 @@ import { ministryService } from '../../services/ministry.service';
 import type { MinistryItem, MinistryCategory, PaginatedResponse, MinistryFilters } from '../../types';
 import { getImageUrl } from '../../utils/imageUrl';
 import { useToast } from '../../hooks/useToast';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const MinistriesListPage: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const { addToast } = useToast();
   const [ministries, setMinistries] = useState<MinistryItem[]>([]);
   const [categories, setCategories] = useState<MinistryCategory[]>([]);
@@ -156,9 +158,9 @@ const MinistriesListPage: React.FC = () => {
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-h2 text-neutral-900 font-bold">Ministries Management</h1>
+          <h1 className="text-h2 text-neutral-900 font-bold">{t('admin.ministries.page_title', 'Ministries Management')}</h1>
           <p className="text-body-sm text-neutral-500 mt-1">
-            Manage church ministry teams, schedules, leaders, and sign-ups.
+            {t('admin.ministries.page_desc', 'Manage church ministry teams, schedules, leaders, and sign-ups.')}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">

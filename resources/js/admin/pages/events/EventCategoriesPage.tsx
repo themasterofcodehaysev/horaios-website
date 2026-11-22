@@ -6,8 +6,10 @@ import {
 } from 'lucide-react';
 import { eventService } from '../../services/event.service';
 import type { EventCategory } from '../../types';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const EventCategoriesPage: React.FC = () => {
+  const { t } = useLanguage();
   const [categories, setCategories] = useState<EventCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -107,9 +109,9 @@ const EventCategoriesPage: React.FC = () => {
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <h1 className="text-h3 text-neutral-900 font-bold">Event Categories</h1>
+            <h1 className="text-h3 text-neutral-900 font-bold">{t('admin.events.categories_title', 'Event Categories')}</h1>
             <p className="text-body-xs text-neutral-500">
-              Organize events by type (e.g. Sunday Service, Youth, Conference, Outreach).
+              {t('admin.events.categories_desc', 'Organize events by type (e.g. Sunday Service, Youth, Conference, Outreach).')}
             </p>
           </div>
         </div>

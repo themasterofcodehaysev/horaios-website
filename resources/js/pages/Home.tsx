@@ -589,13 +589,13 @@ export const HomePage: React.FC = () => {
           <div className="text-center max-w-3xl mx-auto mb-14">
             <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-primary-navy/10 text-primary-navy text-xs uppercase tracking-wider font-bold mb-3">
               <Users className="w-3.5 h-3.5" />
-              Community & Discipleship
+              {t('home.ministries.badge', 'Community & Discipleship')}
             </div>
             <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-neutral-900 tracking-tight">
-              Ministries for Every Season of Life
+              {t('home.ministries.title', 'Ministries for Every Season of Life')}
             </h2>
             <p className="text-body-base text-neutral-600 mt-2">
-              Deepen your faith, build authentic relationships, and serve alongside fellow believers in our church family.
+              {t('home.ministries.desc', 'Deepen your faith, build authentic relationships, and serve alongside fellow believers in our church family.')}
             </p>
           </div>
 
@@ -664,7 +664,7 @@ export const HomePage: React.FC = () => {
                     </div>
 
                     <div className="mt-6 pt-4 border-t border-neutral-100 flex items-center justify-between text-body-xs font-bold text-primary-navy">
-                      <span>Learn More</span>
+                      <span>{t('home.ministries.learn_more', 'Learn More')}</span>
                       <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </div>
                   </div>
@@ -673,13 +673,13 @@ export const HomePage: React.FC = () => {
             </div>
           ) : (
             <div className="text-center py-12 bg-white rounded-3xl border border-neutral-200">
-              <p className="text-body-base text-neutral-600">No ministries found.</p>
+              <p className="text-body-base text-neutral-600">{t('home.ministries.empty', 'No ministries found.')}</p>
             </div>
           )}
 
           <div className="text-center mt-12">
             <Button variant="primary" size="lg" onClick={() => navigate('/ministries')}>
-              Explore All Church Ministries →
+              {t('home.ministries.explore_all', 'Explore All Church Ministries →')}
             </Button>
           </div>
         </div>
@@ -692,14 +692,14 @@ export const HomePage: React.FC = () => {
             <div>
               <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-primary-navy/10 text-primary-navy text-xs uppercase tracking-wider font-bold mb-3">
                 <Calendar className="w-3.5 h-3.5" />
-                Church Calendar
+                {t('home.events.badge', 'Church Calendar')}
               </div>
               <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-neutral-900 tracking-tight">
-                Upcoming Gatherings & Events
+                {t('home.events.title', 'Upcoming Gatherings & Events')}
               </h2>
             </div>
             <Button variant="default" onClick={() => navigate('/events')}>
-              View Full Calendar →
+              {t('home.events.view_all', 'View Full Calendar →')}
             </Button>
           </div>
 
@@ -765,7 +765,7 @@ export const HomePage: React.FC = () => {
                     </div>
                     <div className="flex-shrink-0 flex items-center gap-3">
                       <Button variant="default" size="sm" className="hidden sm:inline-flex">
-                        Event Details
+                        {t('home.events.details', 'Event Details')}
                       </Button>
                       <ChevronRight className="w-5 h-5 text-neutral-400 group-hover:text-primary-navy group-hover:translate-x-1 transition-all" />
                     </div>
@@ -775,7 +775,7 @@ export const HomePage: React.FC = () => {
             </div>
           ) : (
             <div className="text-center py-12 bg-slate-50 rounded-3xl border border-slate-200">
-              <p className="text-body-base text-neutral-600">No upcoming events scheduled right now. Check back soon!</p>
+              <p className="text-body-base text-neutral-600">{t('home.events.empty', 'No upcoming events scheduled right now. Check back soon!')}</p>
             </div>
           )}
         </div>

@@ -9,10 +9,12 @@ import type { EventItem, EventCategory, PaginatedResponse, EventFilters } from '
 import { getImageUrl } from '../../utils/imageUrl';
 import { useConfirm } from '../../context/ConfirmContext';
 import { useToast } from '../../hooks/useToast';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const EventsListPage: React.FC = () => {
   const navigate = useNavigate();
   const confirm = useConfirm();
+  const { t } = useLanguage();
   const { addToast } = useToast();
   const [events, setEvents] = useState<EventItem[]>([]);
   const [categories, setCategories] = useState<EventCategory[]>([]);
@@ -177,9 +179,9 @@ const EventsListPage: React.FC = () => {
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-h2 text-neutral-900 font-bold">Events Management</h1>
+          <h1 className="text-h2 text-neutral-900 font-bold">{t('admin.events.page_title', 'Events Management')}</h1>
           <p className="text-body-sm text-neutral-500 mt-1">
-            Manage church events, conferences, retreats, and registration settings.
+            {t('admin.events.page_desc', 'Manage church events, conferences, retreats, and registration settings.')}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">

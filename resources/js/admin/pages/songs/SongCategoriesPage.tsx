@@ -6,8 +6,10 @@ import {
 } from 'lucide-react';
 import { songService } from '../../services/song.service';
 import type { SongCategory } from '../../types';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const SongCategoriesPage: React.FC = () => {
+  const { t } = useLanguage();
   const [categories, setCategories] = useState<SongCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -108,9 +110,9 @@ const SongCategoriesPage: React.FC = () => {
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <h1 className="text-h3 text-neutral-900 font-bold">Song Categories</h1>
+            <h1 className="text-h3 text-neutral-900 font-bold">{t('admin.songs.categories_title', 'Song Categories')}</h1>
             <p className="text-body-xs text-neutral-500">
-              Organize songs into worship, praise, offering, communion, etc.
+              {t('admin.songs.categories_desc', 'Organize songs into worship, praise, offering, communion, etc.')}
             </p>
           </div>
         </div>

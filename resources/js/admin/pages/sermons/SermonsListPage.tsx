@@ -8,9 +8,11 @@ import { sermonService } from '../../services/sermon.service';
 import { useToast } from '../../hooks/useToast';
 import { getImageUrl } from '../../utils/imageUrl';
 import type { SermonItem, Speaker, SermonSeries, SermonCategory, PaginatedResponse, SermonFilters } from '../../types';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const SermonsListPage: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const { addToast } = useToast();
   const [sermons, setSermons] = useState<SermonItem[]>([]);
   const [speakers, setSpeakers] = useState<Speaker[]>([]);
@@ -144,9 +146,9 @@ const SermonsListPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-h2 text-neutral-900 font-bold">Sermon Management</h1>
+          <h1 className="text-h2 text-neutral-900 font-bold">{t('admin.sermons.page_title', 'Sermon Management')}</h1>
           <p className="text-body-sm text-neutral-500 mt-1">
-            Manage church sermons, speakers, series, and categories.
+            {t('admin.sermons.page_desc', 'Manage church sermons, speakers, series, and categories.')}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">

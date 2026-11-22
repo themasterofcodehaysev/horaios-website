@@ -8,6 +8,7 @@ import { churchServiceService } from '../../services/churchService.service';
 import type { ChurchServiceItem } from '../../types';
 import { IconRenderer } from '../../../components/ui/IconRenderer';
 import { useToast } from '../../hooks/useToast';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const PRESET_ICONS = [
   { label: 'Church', html: '<i class="fa-solid fa-church"></i>' },
@@ -32,6 +33,7 @@ const PRESET_DAYS = [
 ];
 
 export const ChurchServicesPage: React.FC = () => {
+  const { t } = useLanguage();
   const { addToast } = useToast();
   const [services, setServices] = useState<ChurchServiceItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -235,10 +237,10 @@ export const ChurchServicesPage: React.FC = () => {
         <div>
           <h1 className="text-2xl font-bold text-gray-900 tracking-tight flex items-center gap-2">
             <Clock className="w-7 h-7 text-primary-red" />
-            Church Services & Schedules
+            {t('admin.services.page_title', 'Church Services & Schedules')}
           </h1>
           <p className="text-sm text-gray-500 mt-1">
-            Manage weekly worship services, prayer meetings, fellowship times, locations, and custom FontAwesome icons.
+            {t('admin.services.page_desc', 'Manage weekly worship services, prayer meetings, fellowship times, locations, and custom FontAwesome icons.')}
           </p>
         </div>
         <button

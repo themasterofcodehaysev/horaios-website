@@ -6,8 +6,10 @@ import {
 } from 'lucide-react';
 import { prayerService } from '../../services/prayer.service';
 import type { PrayerRequest, PaginatedResponse, PrayerRequestFilters, PrayerRequestStats } from '../../types';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const PrayerRequestsListPage: React.FC = () => {
+  const { t } = useLanguage();
   const [prayers, setPrayers] = useState<PrayerRequest[]>([]);
   const [stats, setStats] = useState<PrayerRequestStats | null>(null);
   const [meta, setMeta] = useState<PaginatedResponse<PrayerRequest>['meta'] | null>(null);
@@ -99,9 +101,9 @@ const PrayerRequestsListPage: React.FC = () => {
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-h2 text-neutral-900 font-bold">Prayer Requests</h1>
+          <h1 className="text-h2 text-neutral-900 font-bold">{t('admin.prayer.page_title', 'Prayer Requests')}</h1>
           <p className="text-body-sm text-neutral-500 mt-1">
-            Manage and respond to prayer requests from the community.
+            {t('admin.prayer.page_desc', 'Manage and respond to prayer requests from the community.')}
           </p>
         </div>
       </div>

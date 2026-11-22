@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { dashboardService } from '../services/dashboard.service';
 import type { DashboardData, RecentUser, RecentActivity, RecentContentItem } from '../types';
+import { useLanguage } from '../../context/LanguageContext';
 
 const statCardColors: Record<string, string> = {
   red: 'bg-red-50 text-red-600',
@@ -28,6 +29,7 @@ const contentTypeMeta: Record<RecentContentItem['type'], { label: string; href: 
 };
 
 const DashboardPage: React.FC = () => {
+  const { t } = useLanguage();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -87,9 +89,9 @@ const DashboardPage: React.FC = () => {
     <div className="space-y-8 animate-fade-in">
       {/* Page Header */}
       <div>
-        <h1 className="text-h2 text-neutral-900 font-bold">Dashboard</h1>
+        <h1 className="text-h2 text-neutral-900 font-bold">{t('admin.dashboard.title', 'Dashboard')}</h1>
         <p className="text-body-base text-neutral-500 mt-1">
-          Welcome back. Here's an overview of your church management system.
+          {t('admin.dashboard.desc', "Welcome back. Here's an overview of your church management system.")}
         </p>
       </div>
 

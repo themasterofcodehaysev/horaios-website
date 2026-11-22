@@ -7,9 +7,11 @@ import {
 import { songService } from '../../services/song.service';
 import { useToast } from '../../hooks/useToast';
 import type { SongItem, SongCategory, PaginatedResponse, SongFilters } from '../../types';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const SongsListPage: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const { addToast } = useToast();
   const [songs, setSongs] = useState<SongItem[]>([]);
   const [categories, setCategories] = useState<SongCategory[]>([]);
@@ -135,9 +137,9 @@ const SongsListPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-h2 text-neutral-900 font-bold">Worship Song Library</h1>
+          <h1 className="text-h2 text-neutral-900 font-bold">{t('admin.songs.page_title', 'Worship Song Library')}</h1>
           <p className="text-body-sm text-neutral-500 mt-1">
-            Manage church worship songs, lyrics, and song categories.
+            {t('admin.songs.page_desc', 'Manage church worship songs, lyrics, and song categories.')}
           </p>
         </div>
         <div className="flex items-center gap-3">

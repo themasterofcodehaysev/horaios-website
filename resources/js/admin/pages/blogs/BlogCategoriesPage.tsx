@@ -6,8 +6,10 @@ import {
 } from 'lucide-react';
 import { blogService } from '../../services/blog.service';
 import type { BlogCategory } from '../../types';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const BlogCategoriesPage: React.FC = () => {
+  const { t } = useLanguage();
   const [categories, setCategories] = useState<BlogCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -107,9 +109,9 @@ const BlogCategoriesPage: React.FC = () => {
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <h1 className="text-h3 text-neutral-900 font-bold">News Categories</h1>
+            <h1 className="text-h3 text-neutral-900 font-bold">{t('admin.news.categories_title', 'News Categories')}</h1>
             <p className="text-body-xs text-neutral-500">
-              Organize news articles by topic (e.g. Announcements, Devotionals, Testimonies).
+              {t('admin.news.categories_desc', 'Organize news articles by topic (e.g. Announcements, Devotionals, Testimonies).')}
             </p>
           </div>
         </div>
