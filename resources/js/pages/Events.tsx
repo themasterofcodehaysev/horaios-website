@@ -8,6 +8,7 @@ import { Input } from '../components/ui/Input';
 import { Search, Sparkles, CalendarRange, Star, CalendarDays, ChevronLeft, ChevronRight, History, Clock3 } from 'lucide-react';
 import { eventService } from '../services/publicContent.service';
 import { downloadIcsFile, generateMultipleEventsIcs } from '../utils/calendar';
+import { useLanguage } from '../context/LanguageContext';
 import type { EventPublic, EventCategoryPublic, PaginatedMeta } from '../types';
 
 const formatDate = (dateStr: string | null): string => {
@@ -29,6 +30,7 @@ const formatTime = (timeStr: string | null): string => {
 type Scope = 'upcoming' | 'past' | 'all';
 
 export const EventsPage: React.FC = () => {
+  const { t } = useLanguage();
   const [events, setEvents] = useState<EventPublic[]>([]);
   const [featuredEvents, setFeaturedEvents] = useState<EventPublic[]>([]);
   const [categories, setCategories] = useState<EventCategoryPublic[]>([]);
@@ -110,9 +112,9 @@ export const EventsPage: React.FC = () => {
   const hasActiveFilters = !!selectedCategory || !!searchDebounced || scope !== 'upcoming';
 
   const scopeOptions: { key: Scope; label: string; icon: React.ReactNode }[] = [
-    { key: 'upcoming', label: 'Upcoming', icon: <Clock3 className="w-4 h-4" /> },
-    { key: 'past', label: 'Past', icon: <History className="w-4 h-4" /> },
-    { key: 'all', label: 'All', icon: <CalendarRange className="w-4 h-4" /> },
+    { key: 'upcoming', label: t('events.upcoming', 'Upcoming'), icon: <Clock3 className="w-4 h-4" /> },
+    { key: 'past', label: t('events.past', 'Past'), icon: <History className="w-4 h-4" /> },
+    { key: 'all', label: t('events.all_events', 'All'), icon: <CalendarRange className="w-4 h-4" /> },
   ];
 
   const groupedByMonth: Record<string, EventPublic[]> = {};
@@ -127,9 +129,9 @@ export const EventsPage: React.FC = () => {
   return (
     <Layout>
       <HeroSection
-        title="Events"
-        subtitle="What's Happening"
-        description="Join us for worship, fellowship, community outreach, and spiritual growth. There's a place for everyone at Horaios Baptist Church."
+        title={t('events.hero.title', 'Events')}
+        subtitle={t('events.hero.subtitle', "What's Happening")}
+        description={t('events.hero.desc', "Join us for worship, fellowship, community outreach, and spiritual growth. There's a place for everyone at Horaios Baptist Church.")}
         minHeight="md"
       />
 
@@ -138,7 +140,7 @@ export const EventsPage: React.FC = () => {
           <div className="max-w-2xl mx-auto">
             <Input
               type="text"
-              placeholder="Search events, locations, descriptions..."
+              placeholder={t('events.search_placeholder', 'Search events, locations, descriptions...')}
               icon={<Search className="w-5 h-5" />}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -172,7 +174,7 @@ export const EventsPage: React.FC = () => {
                     : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
                 }`}
               >
-                All
+                {t('events.all_categories', 'All')}
               </button>
               {categories.map((cat) => (
                 <button
@@ -198,7 +200,7 @@ export const EventsPage: React.FC = () => {
                   }}
                   className="px-4 py-2 rounded-full text-body-sm font-semibold text-primary-red hover:bg-primary-red/5 transition-colors whitespace-nowrap"
                 >
-                  Reset
+                  {t('events.reset', 'Reset')}
                 </button>
               )}
             </div>
@@ -212,7 +214,7 @@ export const EventsPage: React.FC = () => {
             <div className="space-y-5">
               <div className="flex items-center justify-between flex-wrap gap-3">
                 <h2 className="text-h4 font-bold text-neutral-900 flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-amber-500" /> Featured Events
+                  <Sparkles className="w-5 h-5 text-amber-500" /> {t('events.featured', 'Featured Events')}
                 </h2>
               </div>
               {featuredLoading ? (
@@ -258,7 +260,7 @@ export const EventsPage: React.FC = () => {
             <div className="flex items-center justify-between flex-wrap gap-3">
               <h2 className="text-h4 font-bold text-neutral-900 flex items-center gap-2">
                 <CalendarDays className="w-5 h-5 text-primary-red" />
-                {scope === 'upcoming' ? 'Upcoming Events' : scope === 'past' ? 'Past Events' : 'All Events'}
+                {scope === 'upcoming' ? t('events.upcoming', 'Upcoming Events') : scope === 'past' ? t('events.past', 'Past Events') : t('events.all_events', 'All Events')}
                 {selectedCategory && ` — ${categories.find(c => String(c.id) === selectedCategory)?.name || 'Category'}`}
                 {searchDebounced && ` matching "${searchDebounced}"`}
               </h2>
@@ -283,14 +285,14 @@ export const EventsPage: React.FC = () => {
               <Card padding="lg" className="text-center py-16 bg-white">
                 <CalendarRange className="w-12 h-12 text-neutral-300 mx-auto mb-4" />
                 <h3 className="text-h5 font-bold text-neutral-800 mb-2">
-                  {scope === 'past' ? 'No Past Events' : scope === 'upcoming' ? 'No Upcoming Events' : 'No Events Found'}
+                  {scope === 'past' ? t('events.past', 'No Past Events') : scope === 'upcoming' ? t('events.no_upcoming', 'No Upcoming Events') : t('events.no_found', 'No Events Found')}
                 </h3>
                 <p className="text-body-sm text-neutral-500 max-w-sm mx-auto mb-6">
                   {hasActiveFilters
-                    ? 'Try adjusting your search, date range, or category filters.'
+                    ? t('events.no_found', 'Try adjusting your search, date range, or category filters.')
                     : scope === 'upcoming'
-                      ? 'Check back soon — new events are added regularly.'
-                      : 'No events in the history matching these filters yet.'}
+                      ? t('events.no_upcoming', 'Check back soon — new events are added regularly.')
+                      : t('events.no_found', 'No events in the history matching these filters yet.')}
                 </p>
                 {hasActiveFilters && (
                   <Button
@@ -303,7 +305,7 @@ export const EventsPage: React.FC = () => {
                       setPage(1);
                     }}
                   >
-                    Reset Filters
+                    {t('events.reset_filters', 'Reset Filters')}
                   </Button>
                 )}
               </Card>
@@ -379,9 +381,9 @@ export const EventsPage: React.FC = () => {
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary-red/10 text-primary-red">
             <CalendarDays className="w-7 h-7" />
           </div>
-          <h2 className="text-h3 font-bold text-neutral-900">Never Miss an Event</h2>
+          <h2 className="text-h3 font-bold text-neutral-900">{t('events.subscribe.title', 'Never Miss an Event')}</h2>
           <p className="text-body-lg text-neutral-700 max-w-xl mx-auto">
-            Subscribe to our public calendar and get all upcoming church events automatically synced to your phone or desktop.
+            {t('events.subscribe.desc', 'Subscribe to our public calendar and get all upcoming church events automatically synced to your phone or desktop.')}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
             <Button
@@ -393,7 +395,7 @@ export const EventsPage: React.FC = () => {
               }}
             >
               <CalendarRange className="w-5 h-5 mr-2" />
-              Subscribe to Calendar (.ics)
+              {t('events.subscribe.button', 'Subscribe to Calendar (.ics)')}
             </Button>
             <Button
               variant="secondary"
@@ -404,7 +406,7 @@ export const EventsPage: React.FC = () => {
               }}
             >
               <CalendarDays className="w-5 h-5 mr-2" />
-              Download .ics File
+              {t('events.subscribe.download', 'Download .ics File')}
             </Button>
           </div>
         </div>

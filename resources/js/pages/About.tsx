@@ -57,7 +57,7 @@ export const AboutPage: React.FC = () => {
       <div className="pt-20"></div>
 
       <HeroSection
-        title={`About ${settings.church_name || 'Horaios Baptist Church'}`}
+        title={t('about.hero.title', `About ${settings.church_name || 'Horaios Baptist Church'}`)}
         subtitle={t('about.hero.subtitle', 'Our Calling & Heritage')}
         description={t('about.hero.desc', '"Get up and Walk in the name of Jesus" (Acts 3:2) — Discovering our heritage, our biblical foundation, and our calling as an instrument of God\'s Kingdom in Cambodia.')}
         minHeight="md"
@@ -447,13 +447,13 @@ export const AboutPage: React.FC = () => {
           <div className="text-center max-w-3xl mx-auto mb-14">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-red/10 text-primary-red text-label-sm uppercase tracking-wider font-bold mb-3">
               <HelpCircle className="w-3.5 h-3.5" />
-              First Time Visiting?
+              {t('about.expect.badge', 'First Time Visiting?')}
             </div>
             <h2 className="text-display-md font-bold text-neutral-900 tracking-tight">
-              What to Expect on Sunday
+              {t('about.expect.title', 'What to Expect on Sunday')}
             </h2>
             <p className="text-body-lg text-neutral-600 mt-3">
-              We know visiting a new church can feel intimidating. Here is what you can look forward to.
+              {t('about.expect.desc', 'We know visiting a new church can feel intimidating. Here is what you can look forward to.')}
             </p>
           </div>
 
@@ -463,9 +463,9 @@ export const AboutPage: React.FC = () => {
               <div className="w-10 h-10 rounded-xl bg-primary-red/10 text-primary-red flex items-center justify-center font-bold text-sm mb-4">
                 01
               </div>
-              <h3 className="text-h6 font-bold text-neutral-900 mb-2">Warm Welcome</h3>
+              <h3 className="text-h6 font-bold text-neutral-900 mb-2">{t('about.expect.step1_title', 'Warm Welcome')}</h3>
               <p className="text-body-sm text-neutral-600 leading-relaxed">
-                Friendly greeters are ready to welcome you, answer questions, and help you find a comfortable seat.
+                {t('about.expect.step1_desc', 'Friendly greeters are ready to welcome you, answer questions, and help you find a comfortable seat.')}
               </p>
             </div>
 
@@ -473,9 +473,9 @@ export const AboutPage: React.FC = () => {
               <div className="w-10 h-10 rounded-xl bg-primary-navy/10 text-primary-navy flex items-center justify-center font-bold text-sm mb-4">
                 02
               </div>
-              <h3 className="text-h6 font-bold text-neutral-900 mb-2">Inspiring Worship</h3>
+              <h3 className="text-h6 font-bold text-neutral-900 mb-2">{t('about.expect.step2_title', 'Inspiring Worship')}</h3>
               <p className="text-body-sm text-neutral-600 leading-relaxed">
-                A blended worship service of modern praise and hymns, followed by faithful biblical preaching.
+                {t('about.expect.step2_desc', 'A blended worship service of modern praise and hymns, followed by faithful biblical preaching.')}
               </p>
             </div>
 
@@ -483,9 +483,9 @@ export const AboutPage: React.FC = () => {
               <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-700 flex items-center justify-center font-bold text-sm mb-4">
                 03
               </div>
-              <h3 className="text-h6 font-bold text-neutral-900 mb-2">Come As You Are</h3>
+              <h3 className="text-h6 font-bold text-neutral-900 mb-2">{t('about.expect.step3_title', 'Come As You Are')}</h3>
               <p className="text-body-sm text-neutral-600 leading-relaxed">
-                There is no formal dress code. Casual, comfortable, or traditional attire are all welcomed equally.
+                {t('about.expect.step3_desc', 'There is no formal dress code. Casual, comfortable, or traditional attire are all welcomed equally.')}
               </p>
             </div>
 
@@ -493,9 +493,9 @@ export const AboutPage: React.FC = () => {
               <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-700 flex items-center justify-center font-bold text-sm mb-4">
                 04
               </div>
-              <h3 className="text-h6 font-bold text-neutral-900 mb-2">Kids & Family Care</h3>
+              <h3 className="text-h6 font-bold text-neutral-900 mb-2">{t('about.expect.step4_title', 'Kids & Family Care')}</h3>
               <p className="text-body-sm text-neutral-600 leading-relaxed">
-                Safe and engaging children's classes staffed by loving, background-checked teachers.
+                {t('about.expect.step4_desc', "Safe and engaging children's classes staffed by loving, background-checked teachers.")}
               </p>
             </div>
 
@@ -507,13 +507,13 @@ export const AboutPage: React.FC = () => {
       <section className="py-20 bg-gradient-hero text-white text-center relative overflow-hidden">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-caption uppercase tracking-wider font-bold mb-4 border border-white/20">
-            <Sparkles className="w-3.5 h-3.5 text-amber-300" /> You Are Always Welcome
+            <Sparkles className="w-3.5 h-3.5 text-amber-300" /> {t('about.cta.badge', 'You Are Always Welcome')}
           </div>
           <h2 className="text-display-lg font-bold text-white mb-6">
-            Join Us This Sunday
+            {t('about.cta.title', 'Join Us This Sunday')}
           </h2>
           <p className="text-body-lg text-white/90 mb-8 max-w-2xl mx-auto leading-relaxed">
-            Whether you have questions about faith or are looking for a spiritual home in Cambodia, our church family is excited to meet you.
+            {t('about.cta.desc', 'Whether you have questions about faith or are looking for a spiritual home in Cambodia, our church family is excited to meet you.')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
@@ -522,7 +522,7 @@ export const AboutPage: React.FC = () => {
               className="bg-white text-primary-dark-red font-bold hover:bg-neutral-100 shadow-elevation-md"
               onClick={() => navigate('/visit')}
             >
-              Plan Your Visit This Sunday
+              {t('about.cta.plan_visit', 'Plan Your Visit This Sunday')}
             </Button>
             <Button 
               variant="default" 
@@ -530,7 +530,7 @@ export const AboutPage: React.FC = () => {
               className="bg-white text-primary-red font-bold border border-white hover:bg-white/90 hover:text-primary-dark-red shadow-elevation-md"
               onClick={() => navigate('/contact')}
             >
-              Contact Church Office
+              {t('about.cta.contact', 'Contact Church Office')}
             </Button>
           </div>
         </div>

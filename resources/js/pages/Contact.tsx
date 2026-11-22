@@ -7,9 +7,11 @@ import { Alert } from '../components/ui/Alert';
 import { Send, CheckCircle, AlertTriangle } from 'lucide-react';
 import { contactService } from '../services/publicContent.service';
 import { useSiteSettings } from '../context/SiteSettingsContext';
+import { useLanguage } from '../context/LanguageContext';
 
 export const ContactPage: React.FC = () => {
   const { settings } = useSiteSettings();
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -52,9 +54,9 @@ export const ContactPage: React.FC = () => {
       <div className="pt-20"></div>
 
       <HeroSection
-        title="Get In Touch"
-        subtitle="Contact Us"
-        description="Have questions or want to connect? We'd love to hear from you."
+        title={t('contact.hero.title', 'Get In Touch')}
+        subtitle={t('contact.hero.subtitle', 'Contact Us')}
+        description={t('contact.hero.desc', "Have questions or want to connect? We'd love to hear from you.")}
         minHeight="md"
       />
 
@@ -65,12 +67,12 @@ export const ContactPage: React.FC = () => {
             {/* Contact Form */}
             <div>
               <h2 className="text-h3 font-semibold text-neutral-900 mb-8">
-                Send us a Message
+                {t('contact.send_message', 'Send us a Message')}
               </h2>
 
               {submitted && (
-                <Alert variant="success" title="Message Sent!" className="mb-6">
-                  Thank you for contacting us. We'll get back to you soon!
+                <Alert variant="success" title={t('contact.success_title', 'Message Sent!')} className="mb-6">
+                  {t('contact.success_desc', "Thank you for contacting us. We'll get back to you soon!")}
                 </Alert>
               )}
 
@@ -83,7 +85,7 @@ export const ContactPage: React.FC = () => {
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <Input
-                  label="Name"
+                  label={t('contact.form.name', 'Name')}
                   type="text"
                   name="name"
                   value={formData.name}
@@ -92,7 +94,7 @@ export const ContactPage: React.FC = () => {
                 />
 
                 <Input
-                  label="Email"
+                  label={t('contact.form.email', 'Email')}
                   type="email"
                   name="email"
                   value={formData.email}
@@ -101,7 +103,7 @@ export const ContactPage: React.FC = () => {
                 />
 
                 <Input
-                  label="Phone (Optional)"
+                  label={t('contact.form.phone', 'Phone (Optional)')}
                   type="tel"
                   name="phone"
                   value={formData.phone}
@@ -109,7 +111,7 @@ export const ContactPage: React.FC = () => {
                 />
 
                 <Input
-                  label="Subject"
+                  label={t('contact.form.subject', 'Subject')}
                   type="text"
                   name="subject"
                   value={formData.subject}
@@ -119,7 +121,7 @@ export const ContactPage: React.FC = () => {
 
                 <div>
                   <label className="block text-label-md text-neutral-700 mb-2 font-medium">
-                    Message
+                    {t('contact.form.message', 'Message')}
                   </label>
                   <textarea
                     name="message"
@@ -128,7 +130,7 @@ export const ContactPage: React.FC = () => {
                     required
                     rows={6}
                     className="w-full px-3 py-2 rounded-md border-2 border-neutral-300 focus:border-primary-red focus:outline-none transition-all"
-                    placeholder="Tell us how we can help..."
+                    placeholder={t('contact.form.placeholder', 'Tell us how we can help...')}
                   ></textarea>
                 </div>
 
@@ -140,7 +142,7 @@ export const ContactPage: React.FC = () => {
                   icon={<Send className="w-5 h-5" />}
                   disabled={submitting}
                 >
-                  {submitting ? 'Sending...' : 'Send Message'}
+                  {submitting ? t('contact.form.sending', 'Sending...') : t('contact.form.send', 'Send Message')}
                 </Button>
               </form>
             </div>
@@ -148,14 +150,14 @@ export const ContactPage: React.FC = () => {
             {/* Contact Info */}
             <div>
               <h2 className="text-h3 font-semibold text-neutral-900 mb-8">
-                Contact Information
+                {t('contact.info.title', 'Contact Information')}
               </h2>
 
               <div className="space-y-8">
                 {settings.address && (
                   <div>
                     <h4 className="text-h6 font-semibold text-neutral-900 mb-3">
-                      📍 Address
+                      📍 {t('contact.info.address', 'Address')}
                     </h4>
                     <p className="text-body-base text-neutral-700">
                       {settings.address}
@@ -166,7 +168,7 @@ export const ContactPage: React.FC = () => {
                 {settings.phone && (
                   <div>
                     <h4 className="text-h6 font-semibold text-neutral-900 mb-3">
-                      📞 Phone
+                      📞 {t('contact.info.phone', 'Phone')}
                     </h4>
                     <a
                       href={`tel:${settings.phone.replace(/[^0-9+]/g, '')}`}
@@ -180,7 +182,7 @@ export const ContactPage: React.FC = () => {
                 {settings.email && (
                   <div>
                     <h4 className="text-h6 font-semibold text-neutral-900 mb-3">
-                      ✉️ Email
+                      ✉️ {t('contact.info.email', 'Email')}
                     </h4>
                     <a
                       href={`mailto:${settings.email}`}
@@ -193,13 +195,13 @@ export const ContactPage: React.FC = () => {
 
                 <div>
                   <h4 className="text-h6 font-semibold text-neutral-900 mb-3">
-                    🕐 Office Hours
+                    🕐 {t('contact.info.hours', 'Office Hours')}
                   </h4>
                   <p className="text-body-base text-neutral-700 mb-2">
-                    <span className="font-medium">Monday - Friday:</span> 9:00 AM - 5:00 PM
+                    <span className="font-medium">{t('contact.info.weekday', 'Monday - Friday:')}</span> {t('contact.info.weekday_hours', '9:00 AM - 5:00 PM')}
                   </p>
                   <p className="text-body-base text-neutral-700">
-                    <span className="font-medium">Saturday - Sunday:</span> Available during services
+                    <span className="font-medium">{t('contact.info.weekend', 'Saturday - Sunday:')}</span> {t('contact.info.weekend_hours', 'Available during services')}
                   </p>
                 </div>
               </div>
@@ -213,7 +215,7 @@ export const ContactPage: React.FC = () => {
         <section className="py-20 bg-neutral-50">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="text-h3 font-semibold text-neutral-900 mb-6">
-              Other Ways to Connect
+              {t('contact.other_ways', 'Other Ways to Connect')}
             </h2>
 
             <div className="flex flex-wrap justify-center gap-4 max-w-2xl mx-auto">
@@ -225,7 +227,7 @@ export const ContactPage: React.FC = () => {
                   className="inline-flex"
                 >
                   <Button variant="default">
-                    Follow on Facebook
+                    {t('contact.follow_facebook', 'Follow on Facebook')}
                   </Button>
                 </a>
               )}
@@ -237,7 +239,7 @@ export const ContactPage: React.FC = () => {
                   className="inline-flex"
                 >
                   <Button variant="default">
-                    Subscribe on YouTube
+                    {t('contact.subscribe_youtube', 'Subscribe on YouTube')}
                   </Button>
                 </a>
               )}
@@ -249,7 +251,7 @@ export const ContactPage: React.FC = () => {
                   className="inline-flex"
                 >
                   <Button variant="default">
-                    Join Telegram Channel
+                    {t('contact.join_telegram', 'Join Telegram Channel')}
                   </Button>
                 </a>
               )}
@@ -261,7 +263,7 @@ export const ContactPage: React.FC = () => {
                   className="inline-flex"
                 >
                   <Button variant="default">
-                    Follow on Instagram
+                    {t('contact.follow_instagram', 'Follow on Instagram')}
                   </Button>
                 </a>
               )}

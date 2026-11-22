@@ -5,10 +5,12 @@ import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
 import { useSiteSettings } from '../context/SiteSettingsContext';
+import { useLanguage } from '../context/LanguageContext';
 import { IconRenderer } from '../components/ui/IconRenderer';
 
 export const VisitPage: React.FC = () => {
   const { settings } = useSiteSettings();
+  const { t } = useLanguage();
 
   const googleMapUrl = settings.google_map_url || '';
   const googleMapDirectionsUrl = settings.google_map_directions_url || '';
@@ -21,9 +23,9 @@ export const VisitPage: React.FC = () => {
       <div className="pt-20"></div>
 
       <HeroSection
-        title="Plan Your Visit"
-        subtitle="Welcome"
-        description="Everything you need to know before your first visit to Horaios Baptist Church."
+        title={t('visit.hero.title', 'Plan Your Visit')}
+        subtitle={t('visit.hero.subtitle', 'Welcome')}
+        description={t('visit.hero.desc', 'Everything you need to know before your first visit to Horaios Baptist Church.')}
         minHeight="md"
       />
 
@@ -31,7 +33,7 @@ export const VisitPage: React.FC = () => {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-h2 font-semibold text-neutral-900 text-center mb-12">
-            Service Times
+            {t('visit.service_times', 'Service Times')}
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -100,14 +102,14 @@ export const VisitPage: React.FC = () => {
             {/* Location Info */}
             <div>
               <h2 className="text-h3 font-semibold text-neutral-900 mb-6">
-                Location & Contact
+                {t('visit.location_contact', 'Location & Contact')}
               </h2>
 
               <div className="space-y-4 mb-8">
                 <div className="flex items-start gap-4">
                   <MapPin className="w-6 h-6 text-primary-red flex-shrink-0 mt-1" />
                   <div>
-                    <p className="font-semibold text-neutral-900">Address</p>
+                    <p className="font-semibold text-neutral-900">{t('visit.address', 'Address')}</p>
                     <p className="text-body-base text-neutral-600">
                       {address}
                     </p>
@@ -117,7 +119,7 @@ export const VisitPage: React.FC = () => {
                 <div className="flex items-start gap-4">
                   <Phone className="w-6 h-6 text-primary-red flex-shrink-0 mt-1" />
                   <div>
-                    <p className="font-semibold text-neutral-900">Phone</p>
+                    <p className="font-semibold text-neutral-900">{t('visit.phone', 'Phone')}</p>
                     <a href={`tel:${phone.replace(/[^0-9+]/g, '')}`} className="text-body-base text-primary-red hover:text-primary-dark-red">
                       {phone}
                     </a>
@@ -127,7 +129,7 @@ export const VisitPage: React.FC = () => {
                 <div className="flex items-start gap-4">
                   <Mail className="w-6 h-6 text-primary-red flex-shrink-0 mt-1" />
                   <div>
-                    <p className="font-semibold text-neutral-900">Email</p>
+                    <p className="font-semibold text-neutral-900">{t('visit.email', 'Email')}</p>
                     <a href={`mailto:${email}`} className="text-body-base text-primary-red hover:text-primary-dark-red">
                       {email}
                     </a>
@@ -143,7 +145,7 @@ export const VisitPage: React.FC = () => {
                   className="mb-4"
                   onClick={() => window.open(googleMapDirectionsUrl, '_blank')}
                 >
-                  Get Directions
+                  {t('visit.get_directions', 'Get Directions')}
                 </Button>
               )}
             </div>
@@ -155,67 +157,67 @@ export const VisitPage: React.FC = () => {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-h2 font-semibold text-neutral-900 text-center mb-12">
-            Our Facilities
+            {t('visit.facilities', 'Our Facilities')}
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <Card padding="lg" className="text-center">
               <div className="text-4xl mb-4">👶</div>
               <h4 className="text-h6 font-semibold text-neutral-900 mb-2">
-                Nursery & Childcare
+                {t('visit.nursery_title', 'Nursery & Childcare')}
               </h4>
               <p className="text-body-sm text-neutral-600">
-                Infant through age 3 care available during services
+                {t('visit.nursery_desc', 'Infant through age 3 care available during services')}
               </p>
             </Card>
 
             <Card padding="lg" className="text-center">
               <div className="text-4xl mb-4">🧒</div>
               <h4 className="text-h6 font-semibold text-neutral-900 mb-2">
-                Children's Ministry
+                {t('visit.children_title', "Children's Ministry")}
               </h4>
               <p className="text-body-sm text-neutral-600">
-                Age-appropriate classes and activities during services
+                {t('visit.children_desc', 'Age-appropriate classes and activities during services')}
               </p>
             </Card>
 
             <Card padding="lg" className="text-center">
               <div className="text-4xl mb-4">♿</div>
               <h4 className="text-h6 font-semibold text-neutral-900 mb-2">
-                Accessibility
+                {t('visit.accessibility_title', 'Accessibility')}
               </h4>
               <p className="text-body-sm text-neutral-600">
-                Wheelchair accessible facilities and reserved seating
+                {t('visit.accessibility_desc', 'Wheelchair accessible facilities and reserved seating')}
               </p>
             </Card>
 
             <Card padding="lg" className="text-center">
               <div className="text-4xl mb-4">🅿️</div>
               <h4 className="text-h6 font-semibold text-neutral-900 mb-2">
-                Parking
+                {t('visit.parking_title', 'Parking')}
               </h4>
               <p className="text-body-sm text-neutral-600">
-                Ample free parking available for all guests
+                {t('visit.parking_desc', 'Ample free parking available for all guests')}
               </p>
             </Card>
 
             <Card padding="lg" className="text-center">
               <div className="text-4xl mb-4">🍽️</div>
               <h4 className="text-h6 font-semibold text-neutral-900 mb-2">
-                Fellowship Hall
+                {t('visit.fellowship_title', 'Fellowship Hall')}
               </h4>
               <p className="text-body-sm text-neutral-600">
-                Space for events, meals, and community gatherings
+                {t('visit.fellowship_desc', 'Space for events, meals, and community gatherings')}
               </p>
             </Card>
 
             <Card padding="lg" className="text-center">
               <div className="text-4xl mb-4">📶</div>
               <h4 className="text-h6 font-semibold text-neutral-900 mb-2">
-                WiFi Available
+                {t('visit.wifi_title', 'WiFi Available')}
               </h4>
               <p className="text-body-sm text-neutral-600">
-                Free wireless internet throughout the facility
+                {t('visit.wifi_desc', 'Free wireless internet throughout the facility')}
               </p>
             </Card>
           </div>
@@ -226,35 +228,35 @@ export const VisitPage: React.FC = () => {
       <section className="py-20 bg-neutral-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-h2 font-semibold text-neutral-900 text-center mb-12">
-            What to Expect
+            {t('visit.what_to_expect', 'What to Expect')}
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-6">
               <div>
                 <h4 className="text-h6 font-semibold text-neutral-900 mb-2">
-                  Warm Welcome
+                  {t('visit.expect_welcome_title', 'Warm Welcome')}
                 </h4>
                 <p className="text-body-base text-neutral-700">
-                  You'll be greeted by friendly volunteers who can answer questions and help you get oriented.
+                  {t('visit.expect_welcome_desc', "You'll be greeted by friendly volunteers who can answer questions and help you get oriented.")}
                 </p>
               </div>
 
               <div>
                 <h4 className="text-h6 font-semibold text-neutral-900 mb-2">
-                  Contemporary Worship
+                  {t('visit.expect_worship_title', 'Contemporary Worship')}
                 </h4>
                 <p className="text-body-base text-neutral-700">
-                  Experience uplifting worship music and a welcoming atmosphere of praise and prayer.
+                  {t('visit.expect_worship_desc', 'Experience uplifting worship music and a welcoming atmosphere of praise and prayer.')}
                 </p>
               </div>
 
               <div>
                 <h4 className="text-h6 font-semibold text-neutral-900 mb-2">
-                  Biblical Teaching
+                  {t('visit.expect_teaching_title', 'Biblical Teaching')}
                 </h4>
                 <p className="text-body-base text-neutral-700">
-                  Hear expository teaching from Scripture that challenges and encourages your faith.
+                  {t('visit.expect_teaching_desc', 'Hear expository teaching from Scripture that challenges and encourages your faith.')}
                 </p>
               </div>
             </div>
@@ -262,28 +264,28 @@ export const VisitPage: React.FC = () => {
             <div className="space-y-6">
               <div>
                 <h4 className="text-h6 font-semibold text-neutral-900 mb-2">
-                  Community Fellowship
+                  {t('visit.expect_fellowship_title', 'Community Fellowship')}
                 </h4>
                 <p className="text-body-base text-neutral-700">
-                  Connect with others before and after service with light refreshments and genuine conversation.
+                  {t('visit.expect_fellowship_desc', 'Connect with others before and after service with light refreshments and genuine conversation.')}
                 </p>
               </div>
 
               <div>
                 <h4 className="text-h6 font-semibold text-neutral-900 mb-2">
-                  Inclusive Atmosphere
+                  {t('visit.expect_inclusive_title', 'Inclusive Atmosphere')}
                 </h4>
                 <p className="text-body-base text-neutral-700">
-                  We welcome people of all backgrounds, beliefs, and life stages to worship with us.
+                  {t('visit.expect_inclusive_desc', 'We welcome people of all backgrounds, beliefs, and life stages to worship with us.')}
                 </p>
               </div>
 
               <div>
                 <h4 className="text-h6 font-semibold text-neutral-900 mb-2">
-                  Spiritual Growth
+                  {t('visit.expect_growth_title', 'Spiritual Growth')}
                 </h4>
                 <p className="text-body-base text-neutral-700">
-                  Discover resources and community to deepen your relationship with God.
+                  {t('visit.expect_growth_desc', 'Discover resources and community to deepen your relationship with God.')}
                 </p>
               </div>
             </div>
@@ -295,10 +297,10 @@ export const VisitPage: React.FC = () => {
       <section className="py-20 bg-primary-red">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-h3 font-semibold text-white mb-6">
-            Ready to Visit?
+            {t('visit.cta_title', 'Ready to Visit?')}
           </h2>
           <p className="text-body-lg text-white/90 mb-8">
-            We can't wait to meet you! Come as you are and experience God's love in our community.
+            {t('visit.cta_desc', "We can't wait to meet you! Come as you are and experience God's love in our community.")}
           </p>
           <Button
             variant="default"
@@ -314,7 +316,7 @@ export const VisitPage: React.FC = () => {
               }
             }}
           >
-            Get Directions & More Info
+            {t('visit.cta_button', 'Get Directions & More Info')}
           </Button>
         </div>
       </section>

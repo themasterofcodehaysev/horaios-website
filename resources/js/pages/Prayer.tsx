@@ -8,10 +8,12 @@ import { Input } from '../components/ui/Input';
 import { Heart, Send, CheckCircle2, AlertTriangle, Shield, Users, Sparkles, Clock, Lock } from 'lucide-react';
 import { prayerService } from '../services/publicContent.service';
 import { useSiteSettings } from '../context/SiteSettingsContext';
+import { useLanguage } from '../context/LanguageContext';
 
 export const PrayerPage: React.FC = () => {
   const navigate = useNavigate();
   const { settings } = useSiteSettings();
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -65,16 +67,16 @@ export const PrayerPage: React.FC = () => {
   return (
     <Layout>
       <HeroSection
-        title="Prayer Requests"
-        subtitle="We Are Here For You"
-        description="Share your prayer needs with our pastoral team and church community. We believe in the transformative power of prayer in Jesus' name."
+        title={t('prayer.hero.title', 'Prayer Requests')}
+        subtitle={t('prayer.hero.subtitle', 'We Are Here For You')}
+        description={t('prayer.hero.desc', "Share your prayer needs with our pastoral team and church community. We believe in the transformative power of prayer in Jesus' name.")}
         minHeight="md"
         primaryCTA={{
-          label: 'Plan Your Visit',
+          label: t('prayer.hero.cta_visit', 'Plan Your Visit'),
           onClick: () => navigate('/visit'),
         }}
         secondaryCTA={{
-          label: 'Contact Us',
+          label: t('prayer.hero.cta_contact', 'Contact Us'),
           onClick: () => navigate('/contact'),
         }}
       />
@@ -87,22 +89,22 @@ export const PrayerPage: React.FC = () => {
                 <CheckCircle2 className="w-9 h-9" />
               </div>
               <span className="inline-block px-3 py-1 bg-green-100/70 text-green-800 text-xs font-bold uppercase tracking-wider rounded-full mb-3">
-                Request Received
+                {t('prayer.success.badge', 'Request Received')}
               </span>
               <h2 className="text-display-xs sm:text-h2 font-bold text-neutral-900 mb-3">
-                Prayer Request Submitted
+                {t('prayer.success.title', 'Prayer Request Submitted')}
               </h2>
               <p className="text-body-base text-neutral-600 mb-8 leading-relaxed max-w-lg mx-auto">
-                Thank you for sharing your prayer needs with {settings.church_name || 'Horaios Baptist Church'}. Our pastoral care and prayer ministry team will faithfully lift up your request before God.
+                {t('prayer.success.desc', 'Thank you for sharing your prayer needs with')} {settings.church_name || 'Horaios Baptist Church'}{t('prayer.success.desc2', '. Our pastoral care and prayer ministry team will faithfully lift up your request before God.')}
               </p>
 
               <div className="p-4 rounded-2xl bg-neutral-50 border border-neutral-100 text-left mb-8 max-w-md mx-auto space-y-2 text-xs text-neutral-600">
                 <div className="flex items-center gap-2 font-semibold text-neutral-800">
                   <Shield className="w-4 h-4 text-primary-red" />
-                  <span>Confidentiality & Care</span>
+                  <span>{t('prayer.success.confidentiality', 'Confidentiality & Care')}</span>
                 </div>
                 <p>
-                  Your prayer request has been logged in our pastoral system. Unless marked public, only authorized church pastors and prayer ministers can view it.
+                  {t('prayer.success.confidentiality_desc', 'Your prayer request has been logged in our pastoral system. Unless marked public, only authorized church pastors and prayer ministers can view it.')}
                 </p>
               </div>
 
@@ -112,14 +114,14 @@ export const PrayerPage: React.FC = () => {
                   size="lg"
                   onClick={() => setSuccess(false)}
                 >
-                  Submit Another Request
+                  {t('prayer.success.another', 'Submit Another Request')}
                 </Button>
                 <Button
                   variant="default"
                   size="lg"
                   onClick={() => navigate('/')}
                 >
-                  Return to Home
+                  {t('prayer.success.home', 'Return to Home')}
                 </Button>
               </div>
             </div>
@@ -129,13 +131,13 @@ export const PrayerPage: React.FC = () => {
               <div className="lg:col-span-5 space-y-6">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-red/10 border border-primary-red/20 text-primary-red text-xs font-bold uppercase tracking-wider">
                   <Heart className="w-3.5 h-3.5" />
-                  <span>Pastoral Intercession</span>
+                  <span>{t('prayer.badge', 'Pastoral Intercession')}</span>
                 </div>
                 <h2 className="text-display-sm font-bold text-neutral-900 tracking-tight leading-tight">
-                  How Can We <span className="text-primary-red">Pray For You?</span>
+                  {t('prayer.title', 'How Can We')} <span className="text-primary-red">{t('prayer.title_highlight', 'Pray For You?')}</span>
                 </h2>
                 <p className="text-body-base text-neutral-700 leading-relaxed">
-                  No request is too small or too large for God. Whether you are walking through illness, celebrating a blessing, seeking guidance, or facing difficult trials, our church family is honored to stand with you in prayer.
+                  {t('prayer.desc', 'No request is too small or too large for God. Whether you are walking through illness, celebrating a blessing, seeking guidance, or facing difficult trials, our church family is honored to stand with you in prayer.')}
                 </p>
 
                 {/* Scripture Card */}
@@ -144,10 +146,10 @@ export const PrayerPage: React.FC = () => {
                     <Sparkles className="w-5 h-5" />
                   </div>
                   <blockquote className="text-body-sm text-neutral-200 italic leading-relaxed mb-3">
-                    "Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God. And the peace of God, which transcends all understanding, will guard your hearts and your minds in Christ Jesus."
+                    {t('prayer.verse', '"Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God. And the peace of God, which transcends all understanding, will guard your hearts and your minds in Christ Jesus."')}
                   </blockquote>
                   <cite className="text-xs font-bold uppercase tracking-wider text-red-300 not-italic block">
-                    — Philippians 4:6–7
+                    {t('prayer.verse_ref', '— Philippians 4:6–7')}
                   </cite>
                 </div>
 
@@ -156,15 +158,15 @@ export const PrayerPage: React.FC = () => {
                   <div className="flex items-start gap-3 p-4 rounded-xl bg-white border border-neutral-200/80 shadow-xs">
                     <Lock className="w-5 h-5 text-primary-red flex-shrink-0 mt-0.5" />
                     <div>
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-900">Pastoral Confidentiality</h4>
-                      <p className="text-xs text-neutral-600 mt-0.5">By default, all requests are kept strictly confidential between you and the pastoral team.</p>
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-900">{t('prayer.confidentiality', 'Pastoral Confidentiality')}</h4>
+                      <p className="text-xs text-neutral-600 mt-0.5">{t('prayer.confidentiality_desc', 'By default, all requests are kept strictly confidential between you and the pastoral team.')}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3 p-4 rounded-xl bg-white border border-neutral-200/80 shadow-xs">
                     <Users className="w-5 h-5 text-primary-red flex-shrink-0 mt-0.5" />
                     <div>
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-900">Weekly Prayer Team</h4>
-                      <p className="text-xs text-neutral-600 mt-0.5">Our ministry team intercedes weekly during our Wednesday prayer meeting.</p>
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-900">{t('prayer.weekly_team', 'Weekly Prayer Team')}</h4>
+                      <p className="text-xs text-neutral-600 mt-0.5">{t('prayer.weekly_team_desc', 'Our ministry team intercedes weekly during our Wednesday prayer meeting.')}</p>
                     </div>
                   </div>
                 </div>
@@ -174,10 +176,10 @@ export const PrayerPage: React.FC = () => {
               <div className="lg:col-span-7">
                 <Card padding="lg" className="bg-white rounded-3xl border border-neutral-200/80 shadow-elevation-sm p-6 sm:p-10">
                   <h3 className="text-h4 font-bold text-neutral-900 mb-2">
-                    Submit Your Prayer Request
+                    {t('prayer.form.title', 'Submit Your Prayer Request')}
                   </h3>
                   <p className="text-body-sm text-neutral-600 mb-6">
-                    Please fill out the form below. Required fields are marked with an asterisk (*).
+                    {t('prayer.form.desc', 'Please fill out the form below. Required fields are marked with an asterisk (*).')}
                   </p>
 
                   {error && (
@@ -191,7 +193,7 @@ export const PrayerPage: React.FC = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-label-md text-neutral-800 font-semibold mb-1.5">
-                          Your Name <span className="text-primary-red">*</span>
+                          {t('prayer.form.name', 'Your Name')} <span className="text-primary-red">*</span>
                         </label>
                         <Input
                           type="text"
@@ -203,7 +205,7 @@ export const PrayerPage: React.FC = () => {
                       </div>
                       <div>
                         <label className="block text-label-md text-neutral-800 font-semibold mb-1.5">
-                          Email Address
+                          {t('prayer.form.email', 'Email Address')}
                         </label>
                         <Input
                           type="email"
@@ -216,7 +218,7 @@ export const PrayerPage: React.FC = () => {
 
                     <div>
                       <label className="block text-label-md text-neutral-800 font-semibold mb-1.5">
-                        Phone Number (Optional)
+                        {t('prayer.form.phone', 'Phone Number (Optional)')}
                       </label>
                       <Input
                         type="tel"
@@ -228,20 +230,20 @@ export const PrayerPage: React.FC = () => {
 
                     <div>
                       <label className="block text-label-md text-neutral-800 font-semibold mb-1.5">
-                        Prayer Title <span className="text-primary-red">*</span>
+                        {t('prayer.form.prayer_title', 'Prayer Title')} <span className="text-primary-red">*</span>
                       </label>
                       <Input
                         type="text"
                         required
                         value={formData.title}
                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                        placeholder="Brief summary of your prayer need"
+                        placeholder={t('prayer.form.prayer_title_placeholder', 'Brief summary of your prayer need')}
                       />
                     </div>
 
                     <div>
                       <label className="block text-label-md text-neutral-800 font-semibold mb-1.5">
-                        Prayer Request Details <span className="text-primary-red">*</span>
+                        {t('prayer.form.details', 'Prayer Request Details')} <span className="text-primary-red">*</span>
                       </label>
                       <textarea
                         required
@@ -249,40 +251,40 @@ export const PrayerPage: React.FC = () => {
                         value={formData.request}
                         onChange={(e) => setFormData({ ...formData, request: e.target.value })}
                         className="w-full px-4 py-3 border border-neutral-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-red/20 focus:border-primary-red text-body-sm resize-none transition-all"
-                        placeholder="Please describe how we can specifically pray for you (minimum 10 characters)..."
+                        placeholder={t('prayer.form.details_placeholder', 'Please describe how we can specifically pray for you (minimum 10 characters)...')}
                       />
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-label-md text-neutral-800 font-semibold mb-1.5">
-                          Category
+                          {t('prayer.form.category', 'Category')}
                         </label>
                         <select
                           value={formData.request_type}
                           onChange={(e) => setFormData({ ...formData, request_type: e.target.value })}
                           className="w-full px-4 py-2.5 border border-neutral-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-red/20 focus:border-primary-red text-body-sm bg-white"
                         >
-                          <option value="general">General Request</option>
-                          <option value="healing">Healing & Health</option>
-                          <option value="guidance">Wisdom & Guidance</option>
-                          <option value="thanksgiving">Praise & Thanksgiving</option>
-                          <option value="emergency">Urgent / Emergency</option>
+                          <option value="general">{t('prayer.form.cat_general', 'General Request')}</option>
+                          <option value="healing">{t('prayer.form.cat_healing', 'Healing & Health')}</option>
+                          <option value="guidance">{t('prayer.form.cat_guidance', 'Wisdom & Guidance')}</option>
+                          <option value="thanksgiving">{t('prayer.form.cat_thanksgiving', 'Praise & Thanksgiving')}</option>
+                          <option value="emergency">{t('prayer.form.cat_emergency', 'Urgent / Emergency')}</option>
                         </select>
                       </div>
                       <div>
                         <label className="block text-label-md text-neutral-800 font-semibold mb-1.5">
-                          Urgency Level
+                          {t('prayer.form.urgency', 'Urgency Level')}
                         </label>
                         <select
                           value={formData.urgency}
                           onChange={(e) => setFormData({ ...formData, urgency: e.target.value })}
                           className="w-full px-4 py-2.5 border border-neutral-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-red/20 focus:border-primary-red text-body-sm bg-white"
                         >
-                          <option value="low">Low (Ongoing prayer)</option>
-                          <option value="medium">Medium (Standard)</option>
-                          <option value="high">High (Needs prayer this week)</option>
-                          <option value="urgent">Urgent (Immediate attention)</option>
+                          <option value="low">{t('prayer.form.urg_low', 'Low (Ongoing prayer)')}</option>
+                          <option value="medium">{t('prayer.form.urg_medium', 'Medium (Standard)')}</option>
+                          <option value="high">{t('prayer.form.urg_high', 'High (Needs prayer this week)')}</option>
+                          <option value="urgent">{t('prayer.form.urg_urgent', 'Urgent (Immediate attention)')}</option>
                         </select>
                       </div>
                     </div>
@@ -297,10 +299,10 @@ export const PrayerPage: React.FC = () => {
                         />
                         <div>
                           <span className="text-body-sm font-semibold text-neutral-900 block">
-                            Allow this request to be shared with the church congregation
+                            {t('prayer.form.allow_public', 'Allow this request to be shared with the church congregation')}
                           </span>
                           <span className="text-xs text-neutral-500">
-                            If unchecked, only pastors and elders will see your request.
+                            {t('prayer.form.allow_public_note', 'If unchecked, only pastors and elders will see your request.')}
                           </span>
                         </div>
                       </label>
@@ -314,10 +316,10 @@ export const PrayerPage: React.FC = () => {
                         />
                         <div>
                           <span className="text-body-sm font-semibold text-neutral-900 block">
-                            Submit anonymously
+                            {t('prayer.form.anonymous', 'Submit anonymously')}
                           </span>
                           <span className="text-xs text-neutral-500">
-                            Your name will be hidden from public prayer lists.
+                            {t('prayer.form.anonymous_note', 'Your name will be hidden from public prayer lists.')}
                           </span>
                         </div>
                       </label>
@@ -332,11 +334,11 @@ export const PrayerPage: React.FC = () => {
                       className="mt-6 shadow-elevation-sm"
                     >
                       {submitting ? (
-                        <>Submitting Prayer Request...</>
+                        <>{t('prayer.form.submitting', 'Submitting Prayer Request...')}</>
                       ) : (
                         <span className="flex items-center justify-center gap-2">
                           <Send className="w-4 h-4" />
-                          <span>Submit Prayer Request</span>
+                          <span>{t('prayer.form.submit', 'Submit Prayer Request')}</span>
                         </span>
                       )}
                     </Button>

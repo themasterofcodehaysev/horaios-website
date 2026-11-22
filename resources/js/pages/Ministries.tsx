@@ -9,6 +9,7 @@ import {
   Search, X, ChevronLeft, ChevronRight, AlertTriangle,
 } from 'lucide-react';
 import { ministryService } from '../services/publicContent.service';
+import { useLanguage } from '../context/LanguageContext';
 import type { MinistryPublic, MinistryCategoryPublic, MinistryFilters } from '../types';
 
 const iconMap: Record<string, React.ReactNode> = {
@@ -37,6 +38,7 @@ const formatSchedule = (m: MinistryPublic): string => {
 };
 
 export const MinistriesPage: React.FC = () => {
+  const { t } = useLanguage();
   const [ministries, setMinistries] = useState<MinistryPublic[]>([]);
   const [categories, setCategories] = useState<MinistryCategoryPublic[]>([]);
   const [meta, setMeta] = useState<{ current_page: number; last_page: number; per_page: number; total: number; from: number | null; to: number | null } | null>(null);
@@ -86,9 +88,9 @@ export const MinistriesPage: React.FC = () => {
   return (
     <Layout>
       <HeroSection
-        title="Our Ministries"
-        subtitle="Get Involved"
-        description="Discover how you can use your gifts to serve God and impact others."
+        title={t('ministries.hero.title', 'Our Ministries')}
+        subtitle={t('ministries.hero.subtitle', 'Get Involved')}
+        description={t('ministries.hero.desc', 'Discover how you can use your gifts to serve God and impact others.')}
         minHeight="md"
       />
 
@@ -99,7 +101,7 @@ export const MinistriesPage: React.FC = () => {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
               <input
                 type="text"
-                placeholder="Search ministries by name, leader, or location..."
+                placeholder={t('ministries.search_placeholder', 'Search ministries by name, leader, or location...')}
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 className="w-full pl-10 pr-9 py-2.5 border border-neutral-200 rounded-lg text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 bg-white"
@@ -120,7 +122,7 @@ export const MinistriesPage: React.FC = () => {
                     : 'bg-white text-neutral-700 border-neutral-200 hover:bg-neutral-50'
                 }`}
               >
-                All Ministries
+                {t('ministries.all', 'All Ministries')}
               </button>
               {categories.map((c) => (
                 <button
@@ -161,7 +163,7 @@ export const MinistriesPage: React.FC = () => {
             <div className="py-16 text-center">
               <Heart className="w-10 h-10 text-neutral-300 mx-auto mb-3" />
               <p className="text-body-base text-neutral-500">
-                No ministries found. Check back soon for opportunities to get involved.
+                {t('ministries.no_found', 'No ministries found. Check back soon for opportunities to get involved.')}
               </p>
             </div>
           ) : (
@@ -219,37 +221,37 @@ export const MinistriesPage: React.FC = () => {
       <section className="py-20 bg-neutral-50 border-t border-neutral-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-h2 font-semibold text-neutral-900 text-center mb-12">
-            How to Get Involved
+            {t('ministries.how_to', 'How to Get Involved')}
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card padding="lg" className="text-center h-full">
               <div className="text-4xl mb-4">🔍</div>
               <h4 className="text-h6 font-semibold text-neutral-900 mb-3">
-                Explore
+                {t('ministries.explore_title', 'Explore')}
               </h4>
               <p className="text-body-sm text-neutral-600 mb-4">
-                Browse our ministries, click to learn more about each one, and find where your passions align.
+                {t('ministries.explore_desc', 'Browse our ministries, click to learn more about each one, and find where your passions align.')}
               </p>
             </Card>
 
             <Card padding="lg" className="text-center h-full">
               <div className="text-4xl mb-4">💬</div>
               <h4 className="text-h6 font-semibold text-neutral-900 mb-3">
-                Connect
+                {t('ministries.connect_title', 'Connect')}
               </h4>
               <p className="text-body-sm text-neutral-600 mb-4">
-                Reach out to ministry leaders directly through their detail page to ask questions and express interest.
+                {t('ministries.connect_desc', 'Reach out to ministry leaders directly through their detail page to ask questions and express interest.')}
               </p>
             </Card>
 
             <Card padding="lg" className="text-center h-full">
               <div className="text-4xl mb-4">🙌</div>
               <h4 className="text-h6 font-semibold text-neutral-900 mb-3">
-                Serve
+                {t('ministries.serve_title', 'Serve')}
               </h4>
               <p className="text-body-sm text-neutral-600 mb-4">
-                Use your talents and passion to make a difference in the lives of others and grow in your faith.
+                {t('ministries.serve_desc', 'Use your talents and passion to make a difference in the lives of others and grow in your faith.')}
               </p>
             </Card>
           </div>
@@ -257,7 +259,7 @@ export const MinistriesPage: React.FC = () => {
           <div className="text-center mt-12">
             <Link to="/contact">
               <Button variant="primary" size="lg">
-                Get Connected
+                {t('ministries.get_connected', 'Get Connected')}
               </Button>
             </Link>
           </div>

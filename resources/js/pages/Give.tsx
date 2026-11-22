@@ -10,10 +10,12 @@ import {
   CreditCard, Lock, Calendar, ArrowRight, Download, Mail, DollarSign
 } from 'lucide-react';
 import { useSiteSettings } from '../context/SiteSettingsContext';
+import { useLanguage } from '../context/LanguageContext';
 import { getImageUrl } from '../utils/imageUrl';
 
 export const GivePage: React.FC = () => {
   const { settings } = useSiteSettings();
+  const { t } = useLanguage();
 
   // Contribution Form State
   const [frequency, setFrequency] = useState<'one-time' | 'monthly'>('one-time');
@@ -220,9 +222,9 @@ Thank you for your generous heart and faithful support of Horaios Baptist Church
       <div className="pt-20"></div>
 
       <HeroSection
-        title="Generous Giving"
-        subtitle="Support Our Ministry"
-        description="Your generosity enables us to worship together, serve our local community, and spread the Gospel."
+        title={t('give.hero.title', 'Generous Giving')}
+        subtitle={t('give.hero.subtitle', 'Support Our Ministry')}
+        description={t('give.hero.desc', 'Your generosity enables us to worship together, serve our local community, and spread the Gospel.')}
         minHeight="md"
       />
 
@@ -230,37 +232,37 @@ Thank you for your generous heart and faithful support of Horaios Baptist Church
       <section className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-h2 font-semibold text-neutral-900 text-center mb-12">
-            Why Give?
+            {t('give.why_give', 'Why Give?')}
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card padding="lg" className="text-center">
               <div className="text-4xl mb-4">⛪</div>
               <h4 className="text-h6 font-semibold text-neutral-900 mb-3">
-                Ministry & Outreach
+                {t('give.ministry_title', 'Ministry & Outreach')}
               </h4>
               <p className="text-body-sm text-neutral-600">
-                Your gifts fund our worship services, discipleship programs, and community outreach.
+                {t('give.ministry_desc', 'Your gifts fund our worship services, discipleship programs, and community outreach.')}
               </p>
             </Card>
 
             <Card padding="lg" className="text-center">
               <div className="text-4xl mb-4">🌱</div>
               <h4 className="text-h6 font-semibold text-neutral-900 mb-3">
-                Spiritual Growth
+                {t('give.growth_title', 'Spiritual Growth')}
               </h4>
               <p className="text-body-sm text-neutral-600">
-                Support educational programs that help people grow in their faith and knowledge.
+                {t('give.growth_desc', 'Support educational programs that help people grow in their faith and knowledge.')}
               </p>
             </Card>
 
             <Card padding="lg" className="text-center">
               <div className="text-4xl mb-4">🤝</div>
               <h4 className="text-h6 font-semibold text-neutral-900 mb-3">
-                Community Impact
+                {t('give.impact_title', 'Community Impact')}
               </h4>
               <p className="text-body-sm text-neutral-600">
-                Enable us to serve vulnerable populations and demonstrate Christ's love through action.
+                {t('give.impact_desc', "Enable us to serve vulnerable populations and demonstrate Christ's love through action.")}
               </p>
             </Card>
           </div>
@@ -635,10 +637,10 @@ Thank you for your generous heart and faithful support of Horaios Baptist Church
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-h2 font-semibold text-neutral-900">
-              Other Ways to Give
+              {t('give.other_ways', 'Other Ways to Give')}
             </h2>
             <p className="text-body-sm text-neutral-500 mt-2 max-w-xl mx-auto">
-              Choose the method that works best for you and your family to partner in the work of God's Kingdom.
+              {t('give.other_ways_desc', "Choose the method that works best for you and your family to partner in the work of God's Kingdom.")}
             </p>
           </div>
 
@@ -743,7 +745,7 @@ Thank you for your generous heart and faithful support of Horaios Baptist Church
       <section className="py-20 bg-neutral-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-h2 font-semibold text-neutral-900 text-center mb-12">
-            Your Impact
+            {t('give.your_impact', 'Your Impact')}
           </h2>
 
           <Card padding="lg" shadow="lg">
@@ -777,7 +779,7 @@ Thank you for your generous heart and faithful support of Horaios Baptist Church
       <section className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-h2 font-semibold text-neutral-900 text-center mb-12">
-            Giving FAQs
+            {t('give.faqs', 'Giving FAQs')}
           </h2>
 
           <div className="space-y-4">

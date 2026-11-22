@@ -4,8 +4,10 @@ import { Layout } from '../components/layout';
 import { SongCard } from '../components/sections';
 import { songService } from '../admin/services/song.service';
 import type { SongItem, SongCategory, PaginatedResponse } from '../admin/types';
+import { useLanguage } from '../context/LanguageContext';
 
 export const SongsPage: React.FC = () => {
+  const { t } = useLanguage();
   const [songs, setSongs] = useState<SongItem[]>([]);
   const [categories, setCategories] = useState<SongCategory[]>([]);
   const [meta, setMeta] = useState<PaginatedResponse<SongItem>['meta'] | null>(null);
@@ -67,13 +69,13 @@ export const SongsPage: React.FC = () => {
       <section className="bg-gradient-to-br from-primary-red via-primary-dark-red to-primary-red pt-28 sm:pt-32 pb-16 sm:pb-20 px-4 text-white">
         <div className="max-w-5xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-body-xs font-semibold uppercase tracking-wider text-primary-100 mb-4 border border-white/10">
-            <Music className="w-3.5 h-3.5 text-primary-300" /> Digital Worship Songbook
+            <Music className="w-3.5 h-3.5 text-primary-300" /> {t('songs.hero.badge', 'Praise & Worship')}
           </div>
           <h1 className="text-display-lg font-extrabold tracking-tight mb-4">
-            Worship Songs & Lyrics
+            {t('songs.hero.title', 'Worship & Songs')}
           </h1>
           <p className="text-body-lg text-neutral-200 max-w-2xl mx-auto leading-relaxed mb-8">
-            Access our digital collection of worship lyrics on your phone during services, small groups, and personal reflection.
+            {t('songs.hero.desc', 'Access our digital collection of worship lyrics on your phone during services, small groups, and personal reflection.')}
           </p>
 
           {/* Search Input */}
@@ -83,7 +85,7 @@ export const SongsPage: React.FC = () => {
               type="text"
               value={search}
               onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-              placeholder="Search by title, artist, or lyrics..."
+              placeholder={t('songs.search_placeholder', 'Search by title, artist, or lyrics...')}
               className="w-full pl-12 pr-4 py-4 rounded-xl bg-white text-neutral-900 shadow-xl focus:outline-none focus:ring-4 focus:ring-primary-red/30 text-body-base placeholder-neutral-400"
             />
           </div>
@@ -101,7 +103,7 @@ export const SongsPage: React.FC = () => {
               !selectedCategory ? 'bg-primary-red text-white shadow-md' : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
             }`}
           >
-            All Categories
+            {t('songs.all_categories', 'All Categories')}
           </button>
           {categories.map((cat) => (
             <button
@@ -120,7 +122,7 @@ export const SongsPage: React.FC = () => {
         {!search && !selectedCategory && page === 1 && featuredSongs.length > 0 && (
           <div className="space-y-4">
             <div className="flex items-center gap-2 text-h5 font-bold text-neutral-900">
-              <Sparkles className="w-5 h-5 text-amber-500" /> Featured Worship Songs
+              <Sparkles className="w-5 h-5 text-amber-500" /> {t('songs.featured', 'Featured Worship Songs')}
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               {featuredSongs.slice(0, 3).map((song) => (
@@ -134,7 +136,7 @@ export const SongsPage: React.FC = () => {
         {!search && !selectedCategory && page === 1 && recentSongs.length > 0 && (
           <div className="space-y-4">
             <div className="flex items-center gap-2 text-h5 font-bold text-neutral-900">
-              <Clock className="w-5 h-5 text-primary-red" /> Recently Added
+              <Clock className="w-5 h-5 text-primary-red" /> {t('songs.recently_added', 'Recently Added')}
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {recentSongs.map((song) => (
@@ -148,7 +150,7 @@ export const SongsPage: React.FC = () => {
         <div>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-h4 font-bold text-neutral-900">
-              {selectedCategory ? `${categories.find(c => String(c.id) === selectedCategory)?.name || 'Category'} Songs` : 'All Worship Songs'}
+              {selectedCategory ? `${categories.find(c => String(c.id) === selectedCategory)?.name || 'Category'} Songs` : t('songs.all_songs', 'All Worship Songs')}
             </h2>
             {meta && (
               <span className="text-body-xs text-neutral-500 font-medium">
@@ -170,15 +172,15 @@ export const SongsPage: React.FC = () => {
           ) : songs.length === 0 ? (
             <div className="text-center py-16 bg-neutral-50 rounded-2xl border border-neutral-200 px-4">
               <Music className="w-12 h-12 text-neutral-300 mx-auto mb-4" />
-              <h3 className="text-h5 font-bold text-neutral-800 mb-1">No Songs Found</h3>
+              <h3 className="text-h5 font-bold text-neutral-800 mb-1">{t('songs.no_found_title', 'No Songs Found')}</h3>
               <p className="text-body-sm text-neutral-500 max-w-sm mx-auto mb-6">
-                We couldn't find any worship songs matching your search criteria.
+                {t('songs.no_found_desc', "We couldn't find any worship songs matching your search criteria.")}
               </p>
               <button
                 onClick={() => { setSearch(''); setSelectedCategory(''); setPage(1); }}
                 className="px-4 py-2 bg-neutral-900 text-white rounded-lg text-body-sm font-medium hover:bg-neutral-800"
               >
-                Clear Search
+                {t('songs.clear_search', 'Clear Search')}
               </button>
             </div>
           ) : (

@@ -6,8 +6,10 @@ import { sermonService } from '../admin/services/sermon.service';
 import { getImageUrl } from '../utils/imageUrl';
 import { getSermonThumbnail } from '../utils/youtube';
 import type { SermonItem, SermonCategory, SermonSeries, Speaker, PaginatedResponse } from '../admin/types';
+import { useLanguage } from '../context/LanguageContext';
 
 export const SermonsPage: React.FC = () => {
+  const { t } = useLanguage();
   const [sermons, setSermons] = useState<SermonItem[]>([]);
   const [categories, setCategories] = useState<SermonCategory[]>([]);
   const [seriesList, setSeriesList] = useState<SermonSeries[]>([]);
@@ -65,13 +67,13 @@ export const SermonsPage: React.FC = () => {
       <section className="bg-gradient-to-br from-neutral-900 via-primary-red to-primary-red pt-28 sm:pt-32 pb-16 sm:pb-20 px-4 text-white">
         <div className="max-w-5xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-body-xs font-semibold uppercase tracking-wider text-primary-100 mb-4 border border-white/10">
-            <Video className="w-3.5 h-3.5 text-amber-400" /> Watch & Listen
+            <Video className="w-3.5 h-3.5 text-amber-400" /> {t('sermons.hero.badge', 'Watch & Listen')}
           </div>
           <h1 className="text-display-lg font-extrabold tracking-tight mb-4">
-            Sermons & Messages
+            {t('sermons.hero.title', 'Sermons & Messages')}
           </h1>
           <p className="text-body-lg text-neutral-200 max-w-2xl mx-auto leading-relaxed mb-8">
-            Explore our video library of biblical teaching, Sunday morning messages, and sermon series from Horaios Baptist Church.
+            {t('sermons.hero.desc', 'Explore our video library of biblical teaching, Sunday morning messages, and sermon series from Horaios Baptist Church.')}
           </p>
 
           {/* Search Bar */}
@@ -81,7 +83,7 @@ export const SermonsPage: React.FC = () => {
               type="text"
               value={search}
               onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-              placeholder="Search by sermon title, preacher, scripture, or theme..."
+              placeholder={t('sermons.search_placeholder', 'Search by sermon title, preacher, scripture, or theme...')}
               className="w-full pl-12 pr-4 py-4 rounded-xl bg-white text-neutral-900 shadow-xl focus:outline-none focus:ring-4 focus:ring-primary-red/30 text-body-base placeholder-neutral-400"
             />
           </div>
@@ -100,7 +102,7 @@ export const SermonsPage: React.FC = () => {
                 !selectedCategory ? 'bg-primary-red text-white shadow-md' : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
               }`}
             >
-              All Categories
+              {t('sermons.all_categories', 'All Categories')}
             </button>
             {categories.map((cat) => (
               <button
@@ -121,7 +123,7 @@ export const SermonsPage: React.FC = () => {
               onChange={(e) => { setSelectedSeries(e.target.value); setPage(1); }}
               className="px-3.5 py-2 border border-neutral-200 rounded-lg text-body-xs bg-white text-neutral-700 font-medium"
             >
-              <option value="">Filter by Series</option>
+              <option value="">{t('sermons.filter_series', 'Filter by Series')}</option>
               {seriesList.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
 
@@ -130,7 +132,7 @@ export const SermonsPage: React.FC = () => {
               onChange={(e) => { setSelectedSpeaker(e.target.value); setPage(1); }}
               className="px-3.5 py-2 border border-neutral-200 rounded-lg text-body-xs bg-white text-neutral-700 font-medium"
             >
-              <option value="">Filter by Preacher</option>
+              <option value="">{t('sermons.filter_preacher', 'Filter by Preacher')}</option>
               {speakers.map(sp => <option key={sp.id} value={sp.id}>{sp.name}</option>)}
             </select>
 
@@ -145,7 +147,7 @@ export const SermonsPage: React.FC = () => {
                 }}
                 className="text-body-xs text-primary-red font-semibold hover:underline"
               >
-                Reset Filters
+                {t('sermons.reset_filters', 'Reset Filters')}
               </button>
             )}
           </div>
@@ -155,7 +157,7 @@ export const SermonsPage: React.FC = () => {
         {!search && !selectedCategory && !selectedSeries && !selectedSpeaker && page === 1 && featuredSermons.length > 0 && (
           <div className="space-y-4">
             <div className="flex items-center gap-2 text-h5 font-bold text-neutral-900">
-              <Sparkles className="w-5 h-5 text-amber-500" /> Featured Sermons
+              <Sparkles className="w-5 h-5 text-amber-500" /> {t('sermons.featured', 'Featured Sermons')}
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {featuredSermons.slice(0, 3).map((sermon) => (
@@ -203,7 +205,7 @@ export const SermonsPage: React.FC = () => {
                     </div>
 
                     <div className="pt-3 border-t border-white/10 flex items-center justify-between text-body-xs font-medium text-neutral-300 group-hover:text-white">
-                      <span>Watch Message</span>
+                      <span>{t('sermons.watch_message', 'Watch Message')}</span>
                       <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </div>
                   </div>
@@ -217,7 +219,7 @@ export const SermonsPage: React.FC = () => {
         <div>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-h4 font-bold text-neutral-900">
-              {selectedCategory ? `${categories.find(c => String(c.id) === selectedCategory)?.name || 'Category'} Sermons` : 'All Sermons & Messages'}
+              {selectedCategory ? `${categories.find(c => String(c.id) === selectedCategory)?.name || 'Category'} Sermons` : t('sermons.all_sermons', 'All Sermons & Messages')}
             </h2>
             {meta && (
               <span className="text-body-xs text-neutral-500 font-medium">
@@ -239,15 +241,15 @@ export const SermonsPage: React.FC = () => {
           ) : sermons.length === 0 ? (
             <div className="text-center py-16 bg-neutral-50 rounded-2xl border border-neutral-200 px-4">
               <Video className="w-12 h-12 text-neutral-300 mx-auto mb-4" />
-              <h3 className="text-h5 font-bold text-neutral-800 mb-1">No Sermons Found</h3>
+              <h3 className="text-h5 font-bold text-neutral-800 mb-1">{t('sermons.no_found_title', 'No Sermons Found')}</h3>
               <p className="text-body-sm text-neutral-500 max-w-sm mx-auto mb-6">
-                We couldn't find any sermons matching your search or filter options.
+                {t('sermons.no_found_desc', "We couldn't find any sermons matching your search or filter options.")}
               </p>
               <button
                 onClick={() => { setSearch(''); setSelectedCategory(''); setSelectedSeries(''); setSelectedSpeaker(''); setPage(1); }}
                 className="px-4 py-2 bg-neutral-900 text-white rounded-lg text-body-sm font-medium hover:bg-neutral-800"
               >
-                Clear Search & Filters
+                {t('sermons.clear_filters', 'Clear Search & Filters')}
               </button>
             </div>
           ) : (
@@ -331,7 +333,7 @@ export const SermonsPage: React.FC = () => {
                       {sermon.published_at ? new Date(sermon.published_at).toLocaleDateString() : 'Recent'}
                     </span>
                     <span className="flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                      Watch Sermon <ChevronRight className="w-4 h-4" />
+                      {t('sermons.watch_sermon', 'Watch Sermon')} <ChevronRight className="w-4 h-4" />
                     </span>
                   </div>
                 </Link>

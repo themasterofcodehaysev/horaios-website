@@ -3,6 +3,7 @@ import { Mail, MapPin, Phone, ShieldCheck, FileText } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { FacebookIcon, YoutubeIcon, TelegramIcon, InstagramIcon } from '../common/SocialIcons';
 import { useSiteSettings } from '../../context/SiteSettingsContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { Modal } from '../ui/Modal';
 
 interface FooterProps {}
@@ -10,19 +11,20 @@ interface FooterProps {}
 const Footer: React.FC<FooterProps> = () => {
   const currentYear = new Date().getFullYear();
   const { settings } = useSiteSettings();
+  const { t } = useLanguage();
 
   const quickLinks = [
-    { label: 'Home', href: '/' },
-    { label: 'About', href: '/about' },
-    { label: 'Ministries', href: '/ministries' },
-    { label: 'Sermons', href: '/sermons' },
-    { label: 'Songs', href: '/songs' },
-    { label: 'Events', href: '/events' },
-    { label: 'News', href: '/news' },
-    { label: 'Prayer Request', href: '/prayer' },
-    { label: 'Visit', href: '/visit' },
-    { label: 'Give', href: '/give' },
-    { label: 'Contact', href: '/contact' },
+    { label: t('footer.home', 'Home'), href: '/' },
+    { label: t('footer.about', 'About'), href: '/about' },
+    { label: t('footer.ministries', 'Ministries'), href: '/ministries' },
+    { label: t('footer.sermons', 'Sermons'), href: '/sermons' },
+    { label: t('footer.songs', 'Songs'), href: '/songs' },
+    { label: t('footer.events', 'Events'), href: '/events' },
+    { label: t('footer.news', 'News'), href: '/news' },
+    { label: t('footer.prayer_request', 'Prayer Request'), href: '/prayer' },
+    { label: t('footer.visit', 'Visit'), href: '/visit' },
+    { label: t('footer.give', 'Give'), href: '/give' },
+    { label: t('footer.contact', 'Contact'), href: '/contact' },
   ];
 
   const copyrightText = settings.copyright
@@ -47,7 +49,7 @@ const Footer: React.FC<FooterProps> = () => {
               />
               <div>
                 <h3 className="text-h6 font-bold tracking-wide">{settings.church_name.toUpperCase()}</h3>
-                <p className="text-label-sm tracking-widest text-primary-light-red uppercase">CAMBODIA</p>
+                <p className="text-label-sm tracking-widest text-primary-light-red uppercase">{t('footer.cambodia', 'CAMBODIA')}</p>
               </div>
             </Link>
             <p className="text-body-sm text-white/80 mb-6">
@@ -103,7 +105,7 @@ const Footer: React.FC<FooterProps> = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-h6 font-semibold mb-4">Quick Links</h4>
+            <h4 className="text-h6 font-semibold mb-4">{t('footer.quick_links', 'Quick Links')}</h4>
             <ul className="space-y-2">
               {quickLinks.slice(0, 5).map((link) => (
                 <li key={link.href}>
@@ -120,7 +122,7 @@ const Footer: React.FC<FooterProps> = () => {
 
           {/* Quick Links Part 2 */}
           <div>
-            <h4 className="text-h6 font-semibold mb-4">More Links</h4>
+            <h4 className="text-h6 font-semibold mb-4">{t('footer.more_links', 'More Links')}</h4>
             <ul className="space-y-2">
               {quickLinks.slice(5).map((link) => (
                 <li key={link.href}>
@@ -137,7 +139,7 @@ const Footer: React.FC<FooterProps> = () => {
 
           {/* Contact */}
           <div>
-            <h4 className="text-h6 font-semibold mb-4">Get In Touch</h4>
+            <h4 className="text-h6 font-semibold mb-4">{t('footer.get_in_touch', 'Get In Touch')}</h4>
             <ul className="space-y-3">
               {settings.address && (
                 <li className="flex items-start gap-3">
@@ -185,14 +187,14 @@ const Footer: React.FC<FooterProps> = () => {
               onClick={() => setPolicyModal('privacy')}
               className="text-body-sm text-white/60 hover:text-white transition-colors cursor-pointer"
             >
-              Privacy Policy
+              {t('footer.privacy_policy', 'Privacy Policy')}
             </button>
             <button
               type="button"
               onClick={() => setPolicyModal('terms')}
               className="text-body-sm text-white/60 hover:text-white transition-colors cursor-pointer"
             >
-              Terms of Service
+              {t('footer.terms_of_service', 'Terms of Service')}
             </button>
           </div>
         </div>

@@ -8,9 +8,11 @@ import { Input } from '../components/ui/Input';
 import { Search, Sparkles, Newspaper, Star, Mail, ChevronLeft, ChevronRight, CheckCircle2, AlertCircle } from 'lucide-react';
 import { blogService, contactService } from '../services/publicContent.service';
 import { placeholderImage } from '../lib/placeholderImage';
+import { useLanguage } from '../context/LanguageContext';
 import type { BlogPostPublic, BlogCategoryPublic, PaginatedMeta } from '../types';
 
 export const NewsPage: React.FC = () => {
+  const { t } = useLanguage();
   const [posts, setPosts] = useState<BlogPostPublic[]>([]);
   const [featuredPosts, setFeaturedPosts] = useState<BlogPostPublic[]>([]);
   const [categories, setCategories] = useState<BlogCategoryPublic[]>([]);
@@ -56,11 +58,11 @@ export const NewsPage: React.FC = () => {
   };
 
   useEffect(() => {
-    const t = setTimeout(() => {
+    const tTimer = setTimeout(() => {
       setSearchDebounced(search);
       setPage(1);
     }, 350);
-    return () => clearTimeout(t);
+    return () => clearTimeout(tTimer);
   }, [search]);
 
   const fetchCategories = useCallback(async () => {
@@ -115,9 +117,9 @@ export const NewsPage: React.FC = () => {
   return (
     <Layout>
       <HeroSection
-        title="News & Updates"
-        subtitle="Latest News"
-        description="Stay informed about what's happening at Horaios Baptist Church — stories, announcements, and encouraging articles for our community."
+        title={t('news.hero.title', 'News & Updates')}
+        subtitle={t('news.hero.subtitle', 'Latest News')}
+        description={t('news.hero.desc', "Stay informed about what's happening at Horaios Baptist Church — stories, announcements, and encouraging articles for our community.")}
         minHeight="md"
       />
 
@@ -126,7 +128,7 @@ export const NewsPage: React.FC = () => {
           <div className="max-w-2xl mx-auto">
             <Input
               type="text"
-              placeholder="Search articles, topics, authors..."
+              placeholder={t('news.search_placeholder', 'Search articles, topics, authors...')}
               icon={<Search className="w-5 h-5" />}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -141,7 +143,7 @@ export const NewsPage: React.FC = () => {
                   : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
               }`}
             >
-              All
+              {t('news.all_categories', 'All')}
             </button>
             {categories.map((cat) => (
               <button
@@ -166,7 +168,7 @@ export const NewsPage: React.FC = () => {
                 }}
                 className="px-4 py-2 rounded-full text-body-sm font-semibold text-primary-red hover:bg-primary-red/5 transition-colors whitespace-nowrap"
               >
-                Clear Filters
+                {t('news.clear_filters', 'Clear Filters')}
               </button>
             )}
           </div>
@@ -179,7 +181,7 @@ export const NewsPage: React.FC = () => {
             <div className="space-y-5">
               <div className="flex items-center justify-between flex-wrap gap-3">
                 <h2 className="text-h4 font-bold text-neutral-900 flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-amber-500" /> Featured Articles
+                  <Sparkles className="w-5 h-5 text-amber-500" /> {t('news.featured', 'Featured Articles')}
                 </h2>
               </div>
               {featuredLoading ? (
@@ -212,7 +214,7 @@ export const NewsPage: React.FC = () => {
                         />
                         <div className="absolute top-3 left-3 z-10">
                           <span className="inline-flex items-center gap-1 bg-amber-400 text-neutral-950 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-sm">
-                            <Star className="w-3 h-3 fill-current" /> Featured
+                            <Star className="w-3 h-3 fill-current" /> {t('news.featured', 'Featured')}
                           </span>
                         </div>
                       </div>
@@ -231,7 +233,7 @@ export const NewsPage: React.FC = () => {
                   ? `${categories.find(c => String(c.id) === selectedCategory)?.name || 'Category'} Articles`
                   : searchDebounced
                     ? `Search Results for "${searchDebounced}"`
-                    : 'Latest News'}
+                    : t('news.all_articles', 'Latest News')}
               </h2>
               {meta && (
                 <span className="text-body-xs text-neutral-500 font-medium">
@@ -253,11 +255,11 @@ export const NewsPage: React.FC = () => {
             ) : posts.length === 0 ? (
               <Card padding="lg" className="text-center py-16 bg-white">
                 <Newspaper className="w-12 h-12 text-neutral-300 mx-auto mb-4" />
-                <h3 className="text-h5 font-bold text-neutral-800 mb-2">No Articles Found</h3>
+                <h3 className="text-h5 font-bold text-neutral-800 mb-2">{t('news.no_found_title', 'No Articles Found')}</h3>
                 <p className="text-body-sm text-neutral-500 max-w-sm mx-auto mb-6">
                   {hasActiveFilters
-                    ? 'Try adjusting your search or category filters.'
-                    : 'Check back soon for the latest news and updates from our church.'}
+                    ? t('news.no_found_desc', 'Try adjusting your search or category filters.')
+                    : t('news.no_found_desc', 'Check back soon for the latest news and updates from our church.')}
                 </p>
                 {hasActiveFilters && (
                   <Button
@@ -269,7 +271,7 @@ export const NewsPage: React.FC = () => {
                       setPage(1);
                     }}
                   >
-                    Clear Filters
+                    {t('news.clear_filters', 'Clear Filters')}
                   </Button>
                 )}
               </Card>
@@ -329,9 +331,9 @@ export const NewsPage: React.FC = () => {
             <div className="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(circle_at_top_right,_white,_transparent_60%)]" />
             <div className="relative">
               <Mail className="w-10 h-10 text-primary-100 mx-auto mb-4" />
-              <h2 className="text-h3 font-bold mb-3">Subscribe to Our Newsletter</h2>
+              <h2 className="text-h3 font-bold mb-3">{t('news.newsletter.title', 'Subscribe to Our Newsletter')}</h2>
               <p className="text-body-lg text-primary-100 max-w-xl mx-auto mb-7">
-                Get weekly updates, inspiring articles, and the latest news delivered straight to your inbox.
+                {t('news.newsletter.desc', 'Get weekly updates, inspiring articles, and the latest news delivered straight to your inbox.')}
               </p>
               <form onSubmit={handleNewsletterSubmit} className="max-w-lg mx-auto space-y-3">
                 <div className="flex flex-col sm:flex-row gap-3">
@@ -339,7 +341,7 @@ export const NewsPage: React.FC = () => {
                     type="email"
                     value={newsletterEmail}
                     onChange={(e) => setNewsletterEmail(e.target.value)}
-                    placeholder="Enter your email address"
+                    placeholder={t('news.newsletter.placeholder', 'Enter your email address')}
                     disabled={newsletterSubmitting}
                     className="flex-1 px-4 py-3 rounded-xl bg-white text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-4 focus:ring-white/20 text-body-base shadow-lg disabled:opacity-75"
                   />
@@ -350,7 +352,7 @@ export const NewsPage: React.FC = () => {
                     disabled={newsletterSubmitting}
                     className="bg-white !text-primary-red hover:bg-primary-100 transition-colors whitespace-nowrap font-bold"
                   >
-                    {newsletterSubmitting ? 'Subscribing...' : 'Subscribe'}
+                    {newsletterSubmitting ? t('news.newsletter.submitting', 'Subscribing...') : t('news.newsletter.button', 'Subscribe')}
                   </Button>
                 </div>
                 {newsletterStatus && (
