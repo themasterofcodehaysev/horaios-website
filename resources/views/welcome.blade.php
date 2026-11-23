@@ -11,7 +11,7 @@
     <!-- Google Fonts for Reverent Church Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Lora:ital,wght@0,400..700;1,400..700&family=Playfair+Display:ital,wght@0,500..800;1,500..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Lora:ital,wght@0,400..700;1,400..700&family=Playfair+Display:ital,wght@0,500..800;1,500..800&family=Siemreap&display=swap" rel="stylesheet">
 
     <!-- FontAwesome 6 for Custom Church Service & Ministry Icons (Local + CDN fallback) -->
     <link rel="stylesheet" href="/css/fontawesome.all.min.css">

@@ -15,7 +15,9 @@ import { blogService, contactService } from '../services/publicContent.service';
 import { placeholderImage } from '../lib/placeholderImage';
 import type { BlogPostPublic } from '../types';
 
+import { useLanguage, translate, getDateLocale } from '../context/LanguageContext';
 export const BlogDetailPage: React.FC = () => {
+  const { t } = useLanguage();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [post, setPost] = useState<BlogPostPublic | null>(null);
@@ -48,7 +50,7 @@ export const BlogDetailPage: React.FC = () => {
     } catch (err: any) {
       setNewsletterStatus({
         type: 'error',
-        text: err?.response?.data?.message || 'Failed to subscribe. Please try again later.',
+        text: err?.response?.data?.message || translate('ui.failed_to_subscribe_please_try_again_later', 'Failed to subscribe. Please try again later.'),
       });
     } finally {
       setNewsletterSubmitting(false);
@@ -84,9 +86,9 @@ export const BlogDetailPage: React.FC = () => {
       } catch (err: any) {
         const status = err?.response?.status;
         if (status === 404) {
-          setError('The requested article was not found.');
+          setError(translate('ui.the_requested_article_was_not_found', 'The requested article was not found.'));
         } else {
-          setError(err?.response?.data?.message || 'Unable to load article.');
+          setError(err?.response?.data?.message || translate('ui.unable_to_load_article', 'Unable to load article.'));
         }
       } finally {
         setLoading(false);
@@ -130,15 +132,15 @@ export const BlogDetailPage: React.FC = () => {
       <Layout>
         <div className="max-w-md mx-auto py-24 px-4 text-center">
           <Newspaper className="w-14 h-14 text-neutral-300 mx-auto mb-5" />
-          <h2 className="text-h4 font-bold text-neutral-800 mb-2">Article Not Found</h2>
+          <h2 className="text-h4 font-bold text-neutral-800 mb-2">{t('ui.article_not_found', 'Article Not Found')}</h2>
           <p className="text-body-sm text-neutral-500 mb-8">
-            {error || 'This article may have been removed or does not exist.'}
+            {error || translate('ui.this_article_may_have_been_removed_or_does_n', 'This article may have been removed or does not exist.')}
           </p>
           <button
             onClick={() => navigate('/news')}
             className="px-5 py-2.5 bg-primary-red text-white rounded-lg font-medium text-body-sm hover:bg-primary-dark-red transition-colors"
           >
-            Back to All News
+            {t('ui.back_to_all_news', 'Back to All News')}
           </button>
         </div>
       </Layout>
@@ -165,12 +167,12 @@ export const BlogDetailPage: React.FC = () => {
             to="/news"
             className="inline-flex items-center gap-1.5 text-body-sm font-medium text-neutral-600 hover:text-primary-red transition-colors"
           >
-            <ArrowLeft className="w-4 h-4" /> Back to All News
+            <ArrowLeft className="w-4 h-4" /> {t('ui.back_to_all_news', 'Back to All News')}
           </Link>
 
           <Breadcrumb
             items={[
-              { label: 'News', href: '/news' },
+              { label: t('footer.news', 'News'), href: '/news' },
               ...(post.category ? [{ label: post.category.name, href: `/news?category=${post.category.id}` }] : []),
               { label: post.title },
             ]}
@@ -185,7 +187,7 @@ export const BlogDetailPage: React.FC = () => {
               )}
               {post.featured && (
                 <span className="text-body-xs font-bold px-3 py-1 rounded-full bg-amber-100 text-amber-800">
-                  ★ Featured
+                  {t('ui.featured', '★ Featured')}
                 </span>
               )}
             </div>
@@ -203,7 +205,7 @@ export const BlogDetailPage: React.FC = () => {
               {post.published_at && (
                 <span className="flex items-center gap-1.5 text-neutral-500 text-body-xs">
                   <Calendar className="w-3.5 h-3.5" />
-                  {new Date(post.published_at).toLocaleDateString(undefined, {
+                  {new Date(post.published_at).toLocaleDateString(getDateLocale(), {
                     year: 'numeric', month: 'long', day: 'numeric',
                   })}
                 </span>
@@ -229,13 +231,13 @@ export const BlogDetailPage: React.FC = () => {
         <ShareBar
           title={post.title}
           description={post.excerpt || post.category?.name || ''}
-          label="Share This Article"
+          label={t('ui.share_this_article', 'Share This Article')}
         />
 
         {relatedPosts.length > 0 && (
           <section className="space-y-5">
             <h3 className="text-h4 font-bold text-neutral-900 flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-amber-500" /> Related Articles
+              <Sparkles className="w-5 h-5 text-amber-500" /> {t('ui.related_articles', 'Related Articles')}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {relatedPosts.map((rel) => (
@@ -247,8 +249,8 @@ export const BlogDetailPage: React.FC = () => {
                   <BlogCard
                     title={rel.title}
                     excerpt={rel.excerpt || ''}
-                    author={rel.author?.display_name || 'Horaios Church'}
-                    date={rel.published_at ? new Date(rel.published_at).toLocaleDateString() : 'Recent'}
+                    author={rel.author?.display_name || translate('ui.horaios_church', 'Horaios Church')}
+                    date={rel.published_at ? new Date(rel.published_at).toLocaleDateString(getDateLocale()) : t('ui.recent', 'Recent')}
                     image={rel.featured_image || placeholderImage(400, 250, 'News')}
                     category={rel.category?.name || undefined}
                   />
@@ -263,9 +265,9 @@ export const BlogDetailPage: React.FC = () => {
             <div className="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(circle_at_top_right,_white,_transparent_60%)]" />
             <div className="relative">
               <Mail className="w-10 h-10 text-primary-100 mx-auto mb-4" />
-              <h2 className="text-h3 font-bold mb-3">Subscribe to Our Newsletter</h2>
+              <h2 className="text-h3 font-bold mb-3">{t('news.newsletter.title', 'Subscribe to Our Newsletter')}</h2>
               <p className="text-body-lg text-primary-100 max-w-xl mx-auto mb-7">
-                Get weekly updates, inspiring articles, and the latest news delivered straight to your inbox.
+                {t('news.newsletter.desc', 'Get weekly updates, inspiring articles, and the latest news delivered straight to your inbox.')}
               </p>
               <form onSubmit={handleNewsletterSubmit} className="max-w-lg mx-auto space-y-3">
                 <div className="flex flex-col sm:flex-row gap-3">
@@ -273,7 +275,7 @@ export const BlogDetailPage: React.FC = () => {
                     type="email"
                     value={newsletterEmail}
                     onChange={(e) => setNewsletterEmail(e.target.value)}
-                    placeholder="Enter your email address"
+                    placeholder={t('news.newsletter.placeholder', 'Enter your email address')}
                     disabled={newsletterSubmitting}
                     className="flex-1 px-4 py-3 rounded-xl bg-white text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-4 focus:ring-white/20 text-body-base shadow-lg disabled:opacity-75"
                   />
@@ -284,7 +286,7 @@ export const BlogDetailPage: React.FC = () => {
                     disabled={newsletterSubmitting}
                     className="bg-white !text-primary-red hover:bg-primary-100 transition-colors whitespace-nowrap font-bold"
                   >
-                    {newsletterSubmitting ? 'Subscribing...' : 'Subscribe'}
+                    {newsletterSubmitting ? t('news.newsletter.submitting', 'Subscribing...') : t('news.newsletter.button', 'Subscribe')}
                   </Button>
                 </div>
                 {newsletterStatus && (

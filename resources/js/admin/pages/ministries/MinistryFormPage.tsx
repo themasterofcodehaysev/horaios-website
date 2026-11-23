@@ -6,7 +6,9 @@ import { ministryService } from '../../services/ministry.service';
 import type { MinistryCategory, CreateMinistryPayload } from '../../types';
 import ImageUpload from '../../components/ui/ImageUpload';
 
+import { useLanguage, translate } from '../../../context/LanguageContext';
 const MinistryFormPage: React.FC = () => {
+  const { t } = useLanguage();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const isEdit = Boolean(id);
@@ -60,7 +62,7 @@ const MinistryFormPage: React.FC = () => {
           });
         }
       } catch (err: any) {
-        alert(err?.response?.data?.message || 'Failed to load ministry details');
+        alert(err?.response?.data?.message || translate('admin_msg.failed_to_load_ministry_details', 'Failed to load ministry details'));
         navigate('/admin/ministries');
       } finally {
         setFetching(false);
@@ -80,9 +82,9 @@ const MinistryFormPage: React.FC = () => {
 
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
-    if (!formData.name.trim()) newErrors.name = 'Ministry name is required';
-    if (!formData.description || !formData.description.trim()) newErrors.description = 'Ministry description is required';
-    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = 'Invalid email address';
+    if (!formData.name.trim()) newErrors.name = translate('admin_msg.ministry_name_is_required', 'Ministry name is required');
+    if (!formData.description || !formData.description.trim()) newErrors.description = translate('admin_msg.ministry_description_is_required', 'Ministry description is required');
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = translate('admin_msg.invalid_email_address', 'Invalid email address');
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -100,7 +102,7 @@ const MinistryFormPage: React.FC = () => {
       }
       navigate('/admin/ministries');
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to save ministry');
+      alert(err?.response?.data?.message || translate('admin_msg.failed_to_save_ministry', 'Failed to save ministry'));
     } finally {
       setLoading(false);
     }
@@ -132,10 +134,10 @@ const MinistryFormPage: React.FC = () => {
           </button>
           <div>
             <h1 className="text-h3 text-neutral-900 font-bold">
-              {isEdit ? 'Edit Ministry' : 'Create New Ministry'}
+              {isEdit ? t('admin_ui.edit_ministry', 'Edit Ministry') : t('admin_ui.create_new_ministry', 'Create New Ministry')}
             </h1>
             <p className="text-body-xs text-neutral-500">
-              {isEdit ? 'Update ministry leadership, details, and schedules' : 'Introduce a new church department, outreach group, or ministry program'}
+              {isEdit ? t('admin_ui.update_ministry_leadership_details_and_sched', 'Update ministry leadership, details, and schedules') : t('admin_ui.introduce_a_new_church_department_outreach_g', 'Introduce a new church department, outreach group, or ministry program')}
             </p>
           </div>
         </div>
@@ -145,18 +147,18 @@ const MinistryFormPage: React.FC = () => {
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white rounded-xl border border-neutral-200 p-6 space-y-4 shadow-xs">
             <h2 className="text-h6 text-neutral-900 font-semibold border-b border-neutral-100 pb-3">
-              Ministry Overview
+              {t('admin_ui.ministry_overview', 'Ministry Overview')}
             </h2>
 
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Name <span className="text-red-500">*</span>
+                {t('contact.form.name', 'Name')} <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 value={formData.name}
                 onChange={handleNameChange}
-                placeholder="e.g. Youth Ministry"
+                placeholder={t('admin_ui.e_g_youth_ministry', 'e.g. Youth Ministry')}
                 className={`w-full px-3.5 py-2.5 border rounded-lg text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 ${
                   errors.name ? 'border-red-500 focus:border-red-500' : 'border-neutral-200 focus:border-primary-red'
                 }`}
@@ -167,7 +169,7 @@ const MinistryFormPage: React.FC = () => {
 
           <div className="bg-white rounded-xl border border-neutral-200 p-6 space-y-3 shadow-xs">
             <h2 className="text-h6 text-neutral-900 font-semibold border-b border-neutral-100 pb-3">
-              About & Description
+              {t('admin_ui.about_description', 'About & Description')}
             </h2>
             {errors.description && <p className="text-body-xs text-red-500">{errors.description}</p>}
             <div data-color-mode="light">
@@ -183,26 +185,26 @@ const MinistryFormPage: React.FC = () => {
         <div className="space-y-6">
           <div className="bg-white rounded-xl border border-neutral-200 p-6 space-y-4 shadow-xs">
             <h2 className="text-h6 text-neutral-900 font-semibold border-b border-neutral-100 pb-3">
-              Publishing Options
+              {t('admin_ui.publishing_options', 'Publishing Options')}
             </h2>
 
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Status
+                {t('admin_ui.status', 'Status')}
               </label>
               <select
                 value={formData.status}
                 onChange={(e) => setFormData({ ...formData, status: e.target.value as 'draft' | 'published' })}
                 className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm bg-white font-medium"
               >
-                <option value="published">Published (Public)</option>
-                <option value="draft">Draft (Private)</option>
+                <option value="published">{t('admin_ui.published_public', 'Published (Public)')}</option>
+                <option value="draft">{t('admin_ui.draft_private', 'Draft (Private)')}</option>
               </select>
             </div>
 
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Published Date
+                {t('admin_ui.published_date', 'Published Date')}
               </label>
               <input
                 type="datetime-local"
@@ -214,7 +216,7 @@ const MinistryFormPage: React.FC = () => {
 
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Display Order
+                {t('admin_ui.display_order', 'Display Order')}
               </label>
               <input
                 type="number"
@@ -235,10 +237,10 @@ const MinistryFormPage: React.FC = () => {
                 />
                 <div>
                   <span className="text-body-sm font-semibold text-neutral-900 flex items-center gap-1">
-                    <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Featured Ministry
+                    <Sparkles className="w-3.5 h-3.5 text-amber-500" /> {t('admin_ui.featured_ministry', 'Featured Ministry')}
                   </span>
                   <span className="text-body-xs text-neutral-500 block">
-                    Highlight on the ministries landing page
+                    {t('admin_ui.highlight_on_the_ministries_landing_page', 'Highlight on the ministries landing page')}
                   </span>
                 </div>
               </label>
@@ -247,19 +249,19 @@ const MinistryFormPage: React.FC = () => {
 
           <div className="bg-white rounded-xl border border-neutral-200 p-6 space-y-4 shadow-xs">
             <h2 className="text-h6 text-neutral-900 font-semibold border-b border-neutral-100 pb-3">
-              Classification & Media
+              {t('admin_ui.classification_media', 'Classification & Media')}
             </h2>
 
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Category
+                {t('prayer.form.category', 'Category')}
               </label>
               <select
                 value={formData.category_id || ''}
                 onChange={(e) => setFormData({ ...formData, category_id: e.target.value ? Number(e.target.value) : null })}
                 className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm bg-white"
               >
-                <option value="">No Category</option>
+                <option value="">{t('admin_ui.no_category', 'No Category')}</option>
                 {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
             </div>
@@ -269,33 +271,33 @@ const MinistryFormPage: React.FC = () => {
                 value={formData.featured_image}
                 onChange={(url) => setFormData({ ...formData, featured_image: url })}
                 folder="ministries"
-                label="Featured Image"
-                helperText="Upload a banner or cover image for this ministry."
+                label={t('admin_ui.featured_image', 'Featured Image')}
+                helperText={t('admin_ui.upload_a_banner_or_cover_image_for_this_mini', 'Upload a banner or cover image for this ministry.')}
               />
             </div>
           </div>
 
           <div className="bg-white rounded-xl border border-neutral-200 p-6 space-y-4 shadow-xs">
             <h2 className="text-h6 text-neutral-900 font-semibold border-b border-neutral-100 pb-3 flex items-center gap-2">
-              <Users className="w-4 h-4 text-primary-red" /> Leadership & Contact
+              <Users className="w-4 h-4 text-primary-red" /> {t('admin_ui.leadership_contact', 'Leadership & Contact')}
             </h2>
 
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Leader / Director
+                {t('admin_ui.leader_director', 'Leader / Director')}
               </label>
               <input
                 type="text"
                 value={formData.leader || ''}
                 onChange={(e) => setFormData({ ...formData, leader: e.target.value })}
-                placeholder="Pastor John Smith"
+                placeholder={t('admin_ui.pastor_john_smith', 'Pastor John Smith')}
                 className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm"
               />
             </div>
 
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1 flex items-center gap-1">
-                <Mail className="w-3.5 h-3.5 text-neutral-500" /> Contact Email
+                <Mail className="w-3.5 h-3.5 text-neutral-500" /> {t('admin_ui.contact_email', 'Contact Email')}
               </label>
               <input
                 type="email"
@@ -311,7 +313,7 @@ const MinistryFormPage: React.FC = () => {
 
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1 flex items-center gap-1">
-                <Phone className="w-3.5 h-3.5 text-neutral-500" /> Contact Phone
+                <Phone className="w-3.5 h-3.5 text-neutral-500" /> {t('admin_ui.contact_phone', 'Contact Phone')}
               </label>
               <input
                 type="tel"
@@ -325,33 +327,33 @@ const MinistryFormPage: React.FC = () => {
 
           <div className="bg-white rounded-xl border border-neutral-200 p-6 space-y-4 shadow-xs">
             <h2 className="text-h6 text-neutral-900 font-semibold border-b border-neutral-100 pb-3 flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-primary-red" /> Meeting Schedule
+              <Calendar className="w-4 h-4 text-primary-red" /> {t('admin_ui.meeting_schedule', 'Meeting Schedule')}
             </h2>
 
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Meeting Day
+                {t('admin_ui.meeting_day', 'Meeting Day')}
               </label>
               <select
                 value={formData.meeting_day || ''}
                 onChange={(e) => setFormData({ ...formData, meeting_day: e.target.value })}
                 className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm bg-white"
               >
-                <option value="">Select day...</option>
-                <option value="Sunday">Sunday</option>
-                <option value="Monday">Monday</option>
-                <option value="Tuesday">Tuesday</option>
-                <option value="Wednesday">Wednesday</option>
-                <option value="Thursday">Thursday</option>
-                <option value="Friday">Friday</option>
-                <option value="Saturday">Saturday</option>
-                <option value="Various">Various</option>
+                <option value="">{t('admin_ui.select_day', 'Select day...')}</option>
+                <option value="Sunday">{t('admin_ui.sunday', 'Sunday')}</option>
+                <option value="Monday">{t('admin_ui.monday', 'Monday')}</option>
+                <option value="Tuesday">{t('admin_ui.tuesday', 'Tuesday')}</option>
+                <option value="Wednesday">{t('admin_ui.wednesday', 'Wednesday')}</option>
+                <option value="Thursday">{t('admin_ui.thursday', 'Thursday')}</option>
+                <option value="Friday">{t('admin_ui.friday', 'Friday')}</option>
+                <option value="Saturday">{t('admin_ui.saturday', 'Saturday')}</option>
+                <option value="Various">{t('admin_ui.various', 'Various')}</option>
               </select>
             </div>
 
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Meeting Time
+                {t('ministry_detail.meeting_time', 'Meeting Time')}
               </label>
               <input
                 type="time"
@@ -363,13 +365,13 @@ const MinistryFormPage: React.FC = () => {
 
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1 flex items-center gap-1">
-                <MapPin className="w-3.5 h-3.5 text-neutral-500" /> Location
+                <MapPin className="w-3.5 h-3.5 text-neutral-500" /> {t('ministry_detail.location', 'Location')}
               </label>
               <input
                 type="text"
                 value={formData.location || ''}
                 onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                placeholder="Fellowship Hall, Sanctuary, Zoom..."
+                placeholder={t('admin_ui.fellowship_hall_sanctuary_zoom', 'Fellowship Hall, Sanctuary, Zoom...')}
                 className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm"
               />
             </div>
@@ -381,7 +383,7 @@ const MinistryFormPage: React.FC = () => {
               onClick={() => navigate('/admin/ministries')}
               className="px-5 py-2.5 border border-neutral-200 rounded-lg text-body-sm font-medium text-neutral-700 hover:bg-neutral-50"
             >
-              Cancel
+              {t('form.cancel', 'Cancel')}
             </button>
             <button
               type="submit"
@@ -389,7 +391,7 @@ const MinistryFormPage: React.FC = () => {
               className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary-red text-white rounded-lg text-body-sm font-medium hover:bg-primary-dark-red shadow-sm disabled:opacity-50"
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-              {loading ? 'Saving...' : isEdit ? 'Update Ministry' : 'Create Ministry'}
+              {loading ? t('admin_ui.saving', 'Saving...') : isEdit ? t('admin_ui.update_ministry', 'Update Ministry') : t('admin_ui.create_ministry', 'Create Ministry')}
             </button>
           </div>
         </div>

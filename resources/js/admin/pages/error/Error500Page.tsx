@@ -2,7 +2,9 @@ import React from 'react';
 import { AlertCircle, Home, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
+import { useLanguage } from '../../../context/LanguageContext';
 const Error500Page: React.FC = () => {
+  const { t } = useLanguage();
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="max-w-md w-full text-center">
@@ -11,10 +13,10 @@ const Error500Page: React.FC = () => {
         </div>
         
         <h1 className="text-6xl font-bold text-gray-900 mb-2">500</h1>
-        <h2 className="text-2xl font-semibold text-gray-700 mb-4">Server Error</h2>
+        <h2 className="text-2xl font-semibold text-gray-700 mb-4">{t('admin_ui.server_error', 'Server Error')}</h2>
         
         <p className="text-gray-600 mb-8">
-          Something went wrong on our end. Our team has been notified and is working to fix the issue.
+          {t('admin_ui.something_went_wrong_on_our_end_our_team_has', 'Something went wrong on our end. Our team has been notified and is working to fix the issue.')}
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -23,14 +25,14 @@ const Error500Page: React.FC = () => {
             className="inline-flex items-center gap-2 px-6 py-3 bg-accent-blue text-white rounded-lg hover:bg-[#152752] transition-colors font-medium"
           >
             <Home className="w-4 h-4" />
-            Go to Dashboard
+            {t('admin_ui.go_to_dashboard', 'Go to Dashboard')}
           </Link>
           <button
             onClick={() => window.location.reload()}
             className="inline-flex items-center gap-2 px-6 py-3 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
           >
             <ArrowLeft className="w-4 h-4" />
-            Try Again
+            {t('admin_ui.try_again', 'Try Again')}
           </button>
         </div>
       </div>

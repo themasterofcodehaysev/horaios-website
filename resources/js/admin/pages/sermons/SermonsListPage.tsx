@@ -8,7 +8,7 @@ import { sermonService } from '../../services/sermon.service';
 import { useToast } from '../../hooks/useToast';
 import { getImageUrl } from '../../utils/imageUrl';
 import type { SermonItem, Speaker, SermonSeries, SermonCategory, PaginatedResponse, SermonFilters } from '../../types';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage, translate } from '../../../context/LanguageContext';
 
 const SermonsListPage: React.FC = () => {
   const navigate = useNavigate();
@@ -34,7 +34,7 @@ const SermonsListPage: React.FC = () => {
       setSermons(result.data);
       setMeta(result.meta);
     } catch (err: any) {
-      setError(err?.response?.data?.message || 'Failed to load sermons');
+      setError(err?.response?.data?.message || translate('admin_msg.failed_to_load_sermons', 'Failed to load sermons'));
     } finally {
       setLoading(false);
     }
@@ -69,14 +69,14 @@ const SermonsListPage: React.FC = () => {
       const updated = await sermonService.togglePublish(sermon.id);
       setSermons(prev => prev.map(s => s.id === sermon.id ? updated : s));
       addToast({
-        title: updated.status === 'published' ? 'Sermon Published' : 'Sermon Unpublished',
-        message: `"${sermon.title}" is now ${updated.status}.`,
+        title: updated.status === 'published' ? translate('admin_msg.sermon_published', 'Sermon Published') : translate('admin_msg.sermon_unpublished', 'Sermon Unpublished'),
+        message: translate('admin_msg.tpl_q_v0_is_now_v1', '"{0}" is now {1}.', { 0: sermon.title, 1: translate(`status.${updated.status}`, updated.status) }),
         type: 'success',
       });
     } catch (err: any) {
       addToast({
-        title: 'Update Failed',
-        message: err?.response?.data?.message || 'Failed to toggle status',
+        title: t('admin_ui.update_failed', 'Update Failed'),
+        message: err?.response?.data?.message || translate('admin_msg.failed_to_toggle_status', 'Failed to toggle status'),
         type: 'error',
       });
     }
@@ -87,14 +87,14 @@ const SermonsListPage: React.FC = () => {
       const updated = await sermonService.toggleFeatured(sermon.id);
       setSermons(prev => prev.map(s => s.id === sermon.id ? updated : s));
       addToast({
-        title: updated.is_featured ? 'Sermon Featured' : 'Sermon Unfeatured',
-        message: `"${sermon.title}" has been updated.`,
+        title: updated.is_featured ? translate('admin_msg.sermon_featured', 'Sermon Featured') : translate('admin_msg.sermon_unfeatured', 'Sermon Unfeatured'),
+        message: translate('admin_msg.tpl_q_v0_has_been_updated', '"{0}" has been updated.', { 0: sermon.title }),
         type: 'success',
       });
     } catch (err: any) {
       addToast({
-        title: 'Update Failed',
-        message: err?.response?.data?.message || 'Failed to toggle featured state',
+        title: t('admin_ui.update_failed', 'Update Failed'),
+        message: err?.response?.data?.message || translate('admin_msg.failed_to_toggle_featured_state', 'Failed to toggle featured state'),
         type: 'error',
       });
     }
@@ -104,15 +104,15 @@ const SermonsListPage: React.FC = () => {
     try {
       await sermonService.duplicateSermon(sermon.id);
       addToast({
-        title: 'Sermon Duplicated',
-        message: `"${sermon.title}" was duplicated successfully.`,
+        title: t('admin_ui.sermon_duplicated', 'Sermon Duplicated'),
+        message: translate('admin_msg.tpl_q_v0_was_duplicated_successfully', '"{0}" was duplicated successfully.', { 0: sermon.title }),
         type: 'success',
       });
       fetchSermons();
     } catch (err: any) {
       addToast({
-        title: 'Duplicate Failed',
-        message: err?.response?.data?.message || 'Failed to duplicate sermon',
+        title: t('admin_ui.duplicate_failed', 'Duplicate Failed'),
+        message: err?.response?.data?.message || translate('admin_msg.failed_to_duplicate_sermon', 'Failed to duplicate sermon'),
         type: 'error',
       });
     }
@@ -124,16 +124,16 @@ const SermonsListPage: React.FC = () => {
       setDeleting(true);
       await sermonService.deleteSermon(deleteModal.sermon.id);
       addToast({
-        title: 'Sermon Deleted',
-        message: `"${deleteModal.sermon.title}" was deleted.`,
+        title: t('admin_ui.sermon_deleted', 'Sermon Deleted'),
+        message: translate('admin_msg.tpl_q_v0_was_deleted', '"{0}" was deleted.', { 0: deleteModal.sermon.title }),
         type: 'success',
       });
       setDeleteModal({ open: false, sermon: null });
       fetchSermons();
     } catch (err: any) {
       addToast({
-        title: 'Delete Failed',
-        message: err?.response?.data?.message || 'Failed to delete sermon',
+        title: t('admin_ui.delete_failed', 'Delete Failed'),
+        message: err?.response?.data?.message || translate('admin_msg.failed_to_delete_sermon', 'Failed to delete sermon'),
         type: 'error',
       });
     } finally {
@@ -156,25 +156,25 @@ const SermonsListPage: React.FC = () => {
             to="/admin/sermons/speakers"
             className="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-neutral-200 text-neutral-700 rounded-lg text-body-xs font-medium hover:bg-neutral-50 shadow-xs"
           >
-            <UserCheck className="w-3.5 h-3.5 text-neutral-500" /> Speakers
+            <UserCheck className="w-3.5 h-3.5 text-neutral-500" /> {t('admin.breadcrumb.speakers', 'Speakers')}
           </Link>
           <Link
             to="/admin/sermons/series"
             className="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-neutral-200 text-neutral-700 rounded-lg text-body-xs font-medium hover:bg-neutral-50 shadow-xs"
           >
-            <BookOpen className="w-3.5 h-3.5 text-neutral-500" /> Series
+            <BookOpen className="w-3.5 h-3.5 text-neutral-500" /> {t('admin.breadcrumb.series', 'Series')}
           </Link>
           <Link
             to="/admin/sermons/categories"
             className="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-neutral-200 text-neutral-700 rounded-lg text-body-xs font-medium hover:bg-neutral-50 shadow-xs"
           >
-            <Layers className="w-3.5 h-3.5 text-neutral-500" /> Categories
+            <Layers className="w-3.5 h-3.5 text-neutral-500" /> {t('admin.breadcrumb.categories', 'Categories')}
           </Link>
           <Link
             to="/admin/sermons/create"
             className="inline-flex items-center gap-2 px-4 py-2 bg-primary-red text-white rounded-lg text-body-sm font-medium hover:bg-primary-dark-red shadow-sm"
           >
-            <Plus className="w-4 h-4" /> Add Sermon
+            <Plus className="w-4 h-4" /> {t('admin.sermons.add', 'Add Sermon')}
           </Link>
         </div>
       </div>
@@ -185,7 +185,7 @@ const SermonsListPage: React.FC = () => {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
           <input
             type="text"
-            placeholder="Search by title, speaker, scripture, or summary..."
+            placeholder={t('admin_ui.search_by_title_speaker_scripture_or_summary', 'Search by title, speaker, scripture, or summary...')}
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             className="w-full pl-10 pr-9 py-2.5 border border-neutral-200 rounded-lg text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 bg-white"
@@ -202,7 +202,7 @@ const SermonsListPage: React.FC = () => {
             onChange={(e) => setFilters(f => ({ ...f, speaker_id: e.target.value ? Number(e.target.value) : undefined, page: 1 }))}
             className="px-3 py-2.5 border border-neutral-200 rounded-lg text-body-xs bg-white"
           >
-            <option value="">All Speakers</option>
+            <option value="">{t('admin_ui.all_speakers', 'All Speakers')}</option>
             {speakers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
           </select>
           <select
@@ -210,7 +210,7 @@ const SermonsListPage: React.FC = () => {
             onChange={(e) => setFilters(f => ({ ...f, series_id: e.target.value ? Number(e.target.value) : undefined, page: 1 }))}
             className="px-3 py-2.5 border border-neutral-200 rounded-lg text-body-xs bg-white"
           >
-            <option value="">All Series</option>
+            <option value="">{t('admin_ui.all_series', 'All Series')}</option>
             {seriesList.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
           </select>
           <select
@@ -218,7 +218,7 @@ const SermonsListPage: React.FC = () => {
             onChange={(e) => setFilters(f => ({ ...f, category_id: e.target.value ? Number(e.target.value) : undefined, page: 1 }))}
             className="px-3 py-2.5 border border-neutral-200 rounded-lg text-body-xs bg-white"
           >
-            <option value="">All Categories</option>
+            <option value="">{t('sermons.all_categories', 'All Categories')}</option>
             {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
           <select
@@ -226,9 +226,9 @@ const SermonsListPage: React.FC = () => {
             onChange={(e) => setFilters(f => ({ ...f, status: e.target.value || undefined, page: 1 }))}
             className="px-3 py-2.5 border border-neutral-200 rounded-lg text-body-xs bg-white"
           >
-            <option value="">All Status</option>
-            <option value="published">Published</option>
-            <option value="draft">Draft</option>
+            <option value="">{t('admin_ui.all_status', 'All Status')}</option>
+            <option value="published">{t('ui.published', 'Published')}</option>
+            <option value="draft">{t('admin_ui.draft', 'Draft')}</option>
           </select>
         </div>
       </div>
@@ -252,30 +252,30 @@ const SermonsListPage: React.FC = () => {
           <div className="px-5 py-12 text-center">
             <AlertTriangle className="w-8 h-8 text-red-400 mx-auto mb-3" />
             <p className="text-body-sm text-neutral-600 mb-3">{error}</p>
-            <button onClick={fetchSermons} className="text-body-sm text-primary-red font-medium hover:underline">Retry</button>
+            <button onClick={fetchSermons} className="text-body-sm text-primary-red font-medium hover:underline">{t('form.retry', 'Retry')}</button>
           </div>
         ) : sermons.length === 0 ? (
           <div className="px-5 py-12 text-center">
             <Video className="w-8 h-8 text-neutral-300 mx-auto mb-3" />
-            <p className="text-body-sm text-neutral-500 mb-4">No sermons found matching your criteria</p>
+            <p className="text-body-sm text-neutral-500 mb-4">{t('admin_ui.no_sermons_found_matching_your_criteria', 'No sermons found matching your criteria')}</p>
             <Link
               to="/admin/sermons/create"
               className="inline-flex items-center gap-2 px-4 py-2 bg-primary-red text-white rounded-lg text-body-sm font-medium hover:bg-primary-dark-red"
             >
-              <Plus className="w-4 h-4" /> Add First Sermon
+              <Plus className="w-4 h-4" /> {t('admin_ui.add_first_sermon', 'Add First Sermon')}
             </Link>
           </div>
         ) : (
           <>
             <div className="hidden md:grid grid-cols-[30px_60px_1fr_120px_110px_90px_80px_110px] gap-3 px-5 py-3 bg-neutral-50 border-b border-neutral-200 text-body-xs text-neutral-500 font-medium uppercase tracking-wide">
               <span></span>
-              <span>Media</span>
-              <span>Sermon Title & Speaker</span>
-              <span>Series</span>
-              <span>Category</span>
-              <span>Status</span>
-              <span className="text-center">Featured</span>
-              <span className="text-right">Actions</span>
+              <span>{t('admin_ui.media', 'Media')}</span>
+              <span>{t('admin_ui.sermon_title_speaker', 'Sermon Title & Speaker')}</span>
+              <span>{t('admin.breadcrumb.series', 'Series')}</span>
+              <span>{t('prayer.form.category', 'Category')}</span>
+              <span>{t('admin_ui.status', 'Status')}</span>
+              <span className="text-center">{t('cards.featured', 'Featured')}</span>
+              <span className="text-right">{t('admin_ui.actions', 'Actions')}</span>
             </div>
 
             <div className="divide-y divide-neutral-100">
@@ -285,7 +285,7 @@ const SermonsListPage: React.FC = () => {
                     <button
                       onClick={() => handleToggleFeatured(sermon)}
                       className="p-1 text-neutral-300 hover:text-amber-400 transition-colors"
-                      title={sermon.featured ? 'Unfeature sermon' : 'Feature sermon'}
+                      title={sermon.featured ? t('admin_ui.unfeature_sermon', 'Unfeature sermon') : t('admin_ui.feature_sermon', 'Feature sermon')}
                     >
                       <Star className={`w-4 h-4 ${sermon.featured ? 'fill-amber-400 text-amber-400' : ''}`} />
                     </button>
@@ -314,7 +314,7 @@ const SermonsListPage: React.FC = () => {
                       {sermon.title}
                     </Link>
                     <p className="text-body-xs text-neutral-500 truncate">
-                      {sermon.speaker ? sermon.speaker.name : 'Unknown Speaker'}
+                      {sermon.speaker ? sermon.speaker.name : t('admin_ui.unknown_speaker', 'Unknown Speaker')}
                       {sermon.scripture_reference && ` • ${sermon.scripture_reference}`}
                     </p>
                   </div>
@@ -354,10 +354,10 @@ const SermonsListPage: React.FC = () => {
                   <div className="text-center">
                     {sermon.featured ? (
                       <span className="text-body-xs bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-md">
-                        ★ Yes
+                        {t('admin_ui.yes', '★ Yes')}
                       </span>
                     ) : (
-                      <span className="text-body-xs text-neutral-400">No</span>
+                      <span className="text-body-xs text-neutral-400">{t('admin_ui.no', 'No')}</span>
                     )}
                   </div>
 
@@ -367,28 +367,28 @@ const SermonsListPage: React.FC = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="p-1.5 text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 rounded-lg transition-colors"
-                      title="Preview Sermon"
+                      title={t('admin_ui.preview_sermon', 'Preview Sermon')}
                     >
                       <Eye className="w-4 h-4" />
                     </a>
                     <Link
                       to={`/admin/sermons/${sermon.id}/edit`}
                       className="p-1.5 text-neutral-500 hover:text-primary-red hover:bg-neutral-100 rounded-lg transition-colors"
-                      title="Edit Sermon"
+                      title={t('admin_ui.edit_sermon', 'Edit Sermon')}
                     >
                       <Edit2 className="w-4 h-4" />
                     </Link>
                     <button
                       onClick={() => handleDuplicate(sermon)}
                       className="p-1.5 text-neutral-500 hover:text-accent-blue hover:bg-neutral-100 rounded-lg transition-colors"
-                      title="Duplicate Sermon"
+                      title={t('admin_ui.duplicate_sermon', 'Duplicate Sermon')}
                     >
                       <Copy className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => setDeleteModal({ open: true, sermon })}
                       className="p-1.5 text-neutral-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                      title="Delete Sermon"
+                      title={t('admin_ui.delete_sermon', 'Delete Sermon')}
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -404,7 +404,7 @@ const SermonsListPage: React.FC = () => {
       {meta && meta.last_page > 1 && (
         <div className="flex items-center justify-between px-1">
           <span className="text-body-xs text-neutral-500">
-            Showing {meta.from || 0}–{meta.to || 0} of {meta.total} sermons
+            {t('ui.showing', 'Showing')} {meta.from || 0}–{meta.to || 0} {t('ui.of', 'of')} {meta.total} {t('admin_ui.sermons', 'sermons')}
           </span>
           <div className="flex items-center gap-1">
             <button
@@ -415,7 +415,7 @@ const SermonsListPage: React.FC = () => {
               <ChevronLeft className="w-4 h-4" />
             </button>
             <span className="text-body-sm font-medium text-neutral-700 px-3">
-              Page {meta.current_page} of {meta.last_page}
+              {t('ui.page', 'Page')} {meta.current_page} {t('ui.of', 'of')} {meta.last_page}
             </span>
             <button
               disabled={meta.current_page >= meta.last_page}
@@ -436,23 +436,23 @@ const SermonsListPage: React.FC = () => {
             <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
               <AlertTriangle className="w-6 h-6 text-red-600" />
             </div>
-            <h3 className="text-h5 text-neutral-900 text-center font-semibold mb-2">Delete Sermon</h3>
+            <h3 className="text-h5 text-neutral-900 text-center font-semibold mb-2">{t('admin_ui.delete_sermon', 'Delete Sermon')}</h3>
             <p className="text-body-sm text-neutral-500 text-center mb-6">
-              Are you sure you want to delete <strong>"{deleteModal.sermon.title}"</strong>?
+              {t('admin_ui.are_you_sure_you_want_to_delete', 'Are you sure you want to delete')} <strong>"{deleteModal.sermon.title}"</strong>?
             </p>
             <div className="flex gap-3">
               <button
                 onClick={() => setDeleteModal({ open: false, sermon: null })}
                 className="flex-1 px-4 py-2.5 border border-neutral-200 rounded-lg text-body-sm font-medium text-neutral-700 hover:bg-neutral-50"
               >
-                Cancel
+                {t('form.cancel', 'Cancel')}
               </button>
               <button
                 onClick={handleDelete}
                 disabled={deleting}
                 className="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-lg text-body-sm font-medium hover:bg-red-700 disabled:opacity-50"
               >
-                {deleting ? 'Deleting...' : 'Delete Sermon'}
+                {deleting ? t('admin_ui.deleting', 'Deleting...') : t('admin_ui.delete_sermon', 'Delete Sermon')}
               </button>
             </div>
           </div>

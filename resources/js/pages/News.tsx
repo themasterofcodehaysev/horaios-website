@@ -8,7 +8,7 @@ import { Input } from '../components/ui/Input';
 import { Search, Sparkles, Newspaper, Star, Mail, ChevronLeft, ChevronRight, CheckCircle2, AlertCircle } from 'lucide-react';
 import { blogService, contactService } from '../services/publicContent.service';
 import { placeholderImage } from '../lib/placeholderImage';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage, translate, getDateLocale } from '../context/LanguageContext';
 import type { BlogPostPublic, BlogCategoryPublic, PaginatedMeta } from '../types';
 
 export const NewsPage: React.FC = () => {
@@ -50,7 +50,7 @@ export const NewsPage: React.FC = () => {
     } catch (err: any) {
       setNewsletterStatus({
         type: 'error',
-        text: err?.response?.data?.message || 'Failed to subscribe. Please try again later.',
+        text: err?.response?.data?.message || translate('ui.failed_to_subscribe_please_try_again_later', 'Failed to subscribe. Please try again later.'),
       });
     } finally {
       setNewsletterSubmitting(false);
@@ -143,7 +143,7 @@ export const NewsPage: React.FC = () => {
                   : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
               }`}
             >
-              {t('news.all_categories', 'All')}
+              {t('news.filter_all', 'All')}
             </button>
             {categories.map((cat) => (
               <button
@@ -181,7 +181,7 @@ export const NewsPage: React.FC = () => {
             <div className="space-y-5">
               <div className="flex items-center justify-between flex-wrap gap-3">
                 <h2 className="text-h4 font-bold text-neutral-900 flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-amber-500" /> {t('news.featured', 'Featured Articles')}
+                  <Sparkles className="w-5 h-5 text-amber-500" /> {t('news.heading_featured', 'Featured Articles')}
                 </h2>
               </div>
               {featuredLoading ? (
@@ -206,15 +206,15 @@ export const NewsPage: React.FC = () => {
                         <BlogCard
                           title={post.title}
                           excerpt={post.excerpt || ''}
-                          author={post.author?.display_name || 'Horaios Church'}
-                          date={post.published_at ? new Date(post.published_at).toLocaleDateString() : 'Recent'}
+                          author={post.author?.display_name || translate('ui.horaios_church', 'Horaios Church')}
+                          date={post.published_at ? new Date(post.published_at).toLocaleDateString(getDateLocale()) : t('ui.recent', 'Recent')}
                           image={post.featured_image || placeholderImage(400, 250, 'News')}
                           category={post.category?.name || undefined}
                           featured={post.featured}
                         />
                         <div className="absolute top-3 left-3 z-10">
                           <span className="inline-flex items-center gap-1 bg-amber-400 text-neutral-950 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-sm">
-                            <Star className="w-3 h-3 fill-current" /> {t('news.featured', 'Featured')}
+                            <Star className="w-3 h-3 fill-current" /> {t('news.badge_featured', 'Featured')}
                           </span>
                         </div>
                       </div>
@@ -230,14 +230,14 @@ export const NewsPage: React.FC = () => {
               <h2 className="text-h4 font-bold text-neutral-900 flex items-center gap-2">
                 <Newspaper className="w-5 h-5 text-primary-red" />
                 {selectedCategory
-                  ? `${categories.find(c => String(c.id) === selectedCategory)?.name || 'Category'} Articles`
+                  ? translate('ui.category_articles', '{category} Articles', { category: categories.find(c => String(c.id) === selectedCategory)?.name || translate('ui.category', 'Category') })
                   : searchDebounced
-                    ? `Search Results for "${searchDebounced}"`
-                    : t('news.all_articles', 'Latest News')}
+                    ? translate('ui.search_results_for_query', 'Search Results for "{query}"', { query: searchDebounced })
+                    : t('news.heading_latest', 'Latest News')}
               </h2>
               {meta && (
                 <span className="text-body-xs text-neutral-500 font-medium">
-                  {meta.total} {meta.total === 1 ? 'article' : 'articles'}
+                  {meta.total} {meta.total === 1 ? t('ui.count_article', 'article') : t('ui.count_articles', 'articles')}
                 </span>
               )}
             </div>
@@ -259,7 +259,7 @@ export const NewsPage: React.FC = () => {
                 <p className="text-body-sm text-neutral-500 max-w-sm mx-auto mb-6">
                   {hasActiveFilters
                     ? t('news.no_found_desc', 'Try adjusting your search or category filters.')
-                    : t('news.no_found_desc', 'Check back soon for the latest news and updates from our church.')}
+                    : t('news.empty_check_back', 'Check back soon for the latest news and updates from our church.')}
                 </p>
                 {hasActiveFilters && (
                   <Button
@@ -286,8 +286,8 @@ export const NewsPage: React.FC = () => {
                     <BlogCard
                       title={post.title}
                       excerpt={post.excerpt || ''}
-                      author={post.author?.display_name || 'Horaios Church'}
-                      date={post.published_at ? new Date(post.published_at).toLocaleDateString() : 'Recent'}
+                      author={post.author?.display_name || translate('ui.horaios_church', 'Horaios Church')}
+                      date={post.published_at ? new Date(post.published_at).toLocaleDateString(getDateLocale()) : t('ui.recent', 'Recent')}
                       image={post.featured_image || placeholderImage(400, 250, 'News')}
                       category={post.category?.name || undefined}
                       featured={post.featured}
@@ -307,7 +307,7 @@ export const NewsPage: React.FC = () => {
                   <ChevronLeft className="w-5 h-5" />
                 </button>
                 <span className="text-body-sm font-semibold text-neutral-700 px-4">
-                  Page {meta.current_page} of {meta.last_page}
+                  {t('ui.page', 'Page')} {meta.current_page} {t('ui.of', 'of')} {meta.last_page}
                 </span>
                 <button
                   disabled={meta.current_page >= meta.last_page || loading}

@@ -65,9 +65,9 @@ export default {
         'glass-dark': 'rgba(0, 31, 63, 0.1)',
       },
       fontFamily: {
-        sans: "'Instrument Sans', 'Inter', system-ui, -apple-system, sans-serif",
-        serif: "'Lora', 'Playfair Display', Georgia, Cambria, serif",
-        display: "'Playfair Display', 'Lora', Georgia, serif",
+        sans: "'Instrument Sans', 'Inter', 'Khmer OS Siemreap', 'Siemreap', system-ui, -apple-system, sans-serif",
+        serif: "'Lora', 'Playfair Display', 'Khmer OS Siemreap', 'Siemreap', Georgia, Cambria, serif",
+        display: "'Playfair Display', 'Lora', 'Khmer OS Siemreap', 'Siemreap', Georgia, serif",
         mono: "'Fira Code', 'Courier New', monospace",
       },
       fontSize: {

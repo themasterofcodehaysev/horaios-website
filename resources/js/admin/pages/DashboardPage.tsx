@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { dashboardService } from '../services/dashboard.service';
 import type { DashboardData, RecentUser, RecentActivity, RecentContentItem } from '../types';
-import { useLanguage } from '../../context/LanguageContext';
+import { useLanguage, translate, getDateLocale } from '../../context/LanguageContext';
 
 const statCardColors: Record<string, string> = {
   red: 'bg-red-50 text-red-600',
@@ -41,7 +41,7 @@ const DashboardPage: React.FC = () => {
       const result = await dashboardService.getStats();
       setData(result);
     } catch (err: any) {
-      setError(err?.response?.data?.message || 'Failed to load dashboard');
+      setError(err?.response?.data?.message || translate('admin_msg.failed_to_load_dashboard', 'Failed to load dashboard'));
     } finally {
       setLoading(false);
     }
@@ -55,7 +55,7 @@ const DashboardPage: React.FC = () => {
       <div className="text-center">
         <p className="text-body-base text-neutral-500 mb-4">{error}</p>
         <button onClick={fetchDashboard} className="px-4 py-2 bg-neutral-900 text-white rounded-lg text-body-sm">
-          Retry
+          {t('form.retry', 'Retry')}
         </button>
       </div>
     </div>
@@ -65,24 +65,24 @@ const DashboardPage: React.FC = () => {
   const stats = data.stats;
 
   const statCards = [
-    { title: 'Total Users', value: stats.users.total, icon: <Users className="w-5 h-5" />, color: 'blue', href: '/admin/users' },
-    { title: 'Songs', value: stats.content.songs, icon: <Music className="w-5 h-5" />, color: 'purple', href: '/admin/songs' },
-    { title: 'Sermons', value: stats.content.sermons, icon: <BookOpen className="w-5 h-5" />, color: 'red', href: '/admin/sermons' },
-    { title: 'Events', value: stats.content.events, icon: <Calendar className="w-5 h-5" />, color: 'orange', href: '/admin/events' },
-    { title: 'News', value: stats.content.blog_posts, icon: <FileText className="w-5 h-5" />, color: 'cyan', href: '/admin/news' },
-    { title: 'Ministries', value: stats.content.ministries, icon: <Heart className="w-5 h-5" />, color: 'pink', href: '/admin/ministries' },
-    { title: 'Prayer Requests', value: stats.content.prayer_requests, icon: <MessageCircle className="w-5 h-5" />, color: 'green', href: '/admin/prayer-requests' },
-    { title: 'Contact Messages', value: stats.content.contact_messages, icon: <Mail className="w-5 h-5" />, color: 'gray', href: '/admin/contact-messages' },
+    { title: t('admin_ui.total_users', 'Total Users'), value: stats.users.total, icon: <Users className="w-5 h-5" />, color: 'blue', href: '/admin/users' },
+    { title: t('footer.songs', 'Songs'), value: stats.content.songs, icon: <Music className="w-5 h-5" />, color: 'purple', href: '/admin/songs' },
+    { title: t('nav.sermons', 'Sermons'), value: stats.content.sermons, icon: <BookOpen className="w-5 h-5" />, color: 'red', href: '/admin/sermons' },
+    { title: t('nav.events', 'Events'), value: stats.content.events, icon: <Calendar className="w-5 h-5" />, color: 'orange', href: '/admin/events' },
+    { title: t('footer.news', 'News'), value: stats.content.blog_posts, icon: <FileText className="w-5 h-5" />, color: 'cyan', href: '/admin/news' },
+    { title: t('nav.ministries', 'Ministries'), value: stats.content.ministries, icon: <Heart className="w-5 h-5" />, color: 'pink', href: '/admin/ministries' },
+    { title: t('nav.prayer', 'Prayer Requests'), value: stats.content.prayer_requests, icon: <MessageCircle className="w-5 h-5" />, color: 'green', href: '/admin/prayer-requests' },
+    { title: t('admin.contact_messages', 'Contact Messages'), value: stats.content.contact_messages, icon: <Mail className="w-5 h-5" />, color: 'gray', href: '/admin/contact-messages' },
   ];
 
   const quickActions = [
-    { title: 'Create Song', icon: <Music className="w-5 h-5" />, href: '/admin/songs', color: 'bg-purple-500' },
-    { title: 'Create Sermon', icon: <BookOpen className="w-5 h-5" />, href: '/admin/sermons', color: 'bg-red-500' },
-    { title: 'Create News Article', icon: <FileText className="w-5 h-5" />, href: '/admin/news/create', color: 'bg-cyan-500' },
-    { title: 'Create Event', icon: <Calendar className="w-5 h-5" />, href: '/admin/events', color: 'bg-orange-500' },
-    { title: 'Create Ministry', icon: <Heart className="w-5 h-5" />, href: '/admin/ministries', color: 'bg-pink-500' },
-    { title: 'Manage Users', icon: <Users className="w-5 h-5" />, href: '/admin/users', color: 'bg-blue-500' },
-    { title: 'Church Settings', icon: <Settings className="w-5 h-5" />, href: '/admin/settings', color: 'bg-neutral-700' },
+    { title: t('admin_ui.create_song', 'Create Song'), icon: <Music className="w-5 h-5" />, href: '/admin/songs', color: 'bg-purple-500' },
+    { title: t('admin_ui.create_sermon', 'Create Sermon'), icon: <BookOpen className="w-5 h-5" />, href: '/admin/sermons', color: 'bg-red-500' },
+    { title: t('admin_ui.create_news_article', 'Create News Article'), icon: <FileText className="w-5 h-5" />, href: '/admin/news/create', color: 'bg-cyan-500' },
+    { title: t('admin_ui.create_event', 'Create Event'), icon: <Calendar className="w-5 h-5" />, href: '/admin/events', color: 'bg-orange-500' },
+    { title: t('admin_ui.create_ministry', 'Create Ministry'), icon: <Heart className="w-5 h-5" />, href: '/admin/ministries', color: 'bg-pink-500' },
+    { title: t('admin_ui.manage_users', 'Manage Users'), icon: <Users className="w-5 h-5" />, href: '/admin/users', color: 'bg-blue-500' },
+    { title: t('admin.settings', 'Church Settings'), icon: <Settings className="w-5 h-5" />, href: '/admin/settings', color: 'bg-neutral-700' },
   ];
 
   return (
@@ -122,7 +122,7 @@ const DashboardPage: React.FC = () => {
       {/* Quick Actions */}
       <div>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-h5 text-neutral-900 font-semibold">Quick Actions</h2>
+          <h2 className="text-h5 text-neutral-900 font-semibold">{t('admin_ui.quick_actions', 'Quick Actions')}</h2>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3">
           {quickActions.map((action) => (
@@ -147,14 +147,14 @@ const DashboardPage: React.FC = () => {
         {/* Recent Users */}
         <div className="bg-white rounded-xl border border-neutral-200">
           <div className="flex items-center justify-between px-5 py-4 border-b border-neutral-100">
-            <h3 className="text-h6 text-neutral-900 font-semibold">Recent Users</h3>
+            <h3 className="text-h6 text-neutral-900 font-semibold">{t('admin_ui.recent_users', 'Recent Users')}</h3>
             <Link to="/admin/users" className="text-body-xs text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1">
-              View All <ChevronRight className="w-3.5 h-3.5" />
+              {t('admin_ui.view_all', 'View All')} <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>
           <div className="divide-y divide-neutral-100">
             {data.recent_users.length === 0 ? (
-              <div className="px-5 py-8 text-center text-body-sm text-neutral-400">No users yet</div>
+              <div className="px-5 py-8 text-center text-body-sm text-neutral-400">{t('admin_ui.no_users_yet', 'No users yet')}</div>
             ) : (
               data.recent_users.map((user: RecentUser) => (
                 <div key={user.id} className="flex items-center gap-3 px-5 py-3 hover:bg-neutral-50 transition-colors">
@@ -179,14 +179,14 @@ const DashboardPage: React.FC = () => {
         {/* Recent Activity */}
         <div className="bg-white rounded-xl border border-neutral-200">
           <div className="flex items-center justify-between px-5 py-4 border-b border-neutral-100">
-            <h3 className="text-h6 text-neutral-900 font-semibold">Recent Activity</h3>
+            <h3 className="text-h6 text-neutral-900 font-semibold">{t('admin_ui.recent_activity', 'Recent Activity')}</h3>
             <Link to="/admin/audit-logs" className="text-body-xs text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1">
-              View All <ChevronRight className="w-3.5 h-3.5" />
+              {t('admin_ui.view_all', 'View All')} <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>
           <div className="divide-y divide-neutral-100">
             {data.recent_activity.length === 0 ? (
-              <div className="px-5 py-8 text-center text-body-sm text-neutral-400">No activity yet</div>
+              <div className="px-5 py-8 text-center text-body-sm text-neutral-400">{t('admin_ui.no_activity_yet', 'No activity yet')}</div>
             ) : (
               data.recent_activity.map((activity: RecentActivity) => (
                 <div key={activity.id} className="flex items-start gap-3 px-5 py-3 hover:bg-neutral-50 transition-colors">
@@ -201,14 +201,14 @@ const DashboardPage: React.FC = () => {
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="text-body-sm text-neutral-900">
-                      <span className="font-medium">{activity.user?.display_name || 'System'}</span>{' '}
+                      <span className="font-medium">{activity.user?.display_name || t('admin_tab.System', 'System')}</span>{' '}
                       <span className="text-neutral-500">{activity.action}</span>{' '}
                       {activity.entity && <span className="text-neutral-700">{activity.entity}</span>}
                     </p>
                     <div className="flex items-center gap-2 mt-0.5">
                       <Clock className="w-3 h-3 text-neutral-400" />
                       <span className="text-body-xs text-neutral-400">
-                        {new Date(activity.created_at).toLocaleString()}
+                        {new Date(activity.created_at).toLocaleString(getDateLocale())}
                       </span>
                     </div>
                   </div>
@@ -224,11 +224,11 @@ const DashboardPage: React.FC = () => {
         {/* Recently Published Content */}
         <div className="bg-white rounded-xl border border-neutral-200">
           <div className="flex items-center justify-between px-5 py-4 border-b border-neutral-100">
-            <h3 className="text-h6 text-neutral-900 font-semibold">Recently Published Content</h3>
+            <h3 className="text-h6 text-neutral-900 font-semibold">{t('admin_ui.recently_published_content', 'Recently Published Content')}</h3>
           </div>
           <div className="divide-y divide-neutral-100">
             {data.recently_published.length === 0 ? (
-              <div className="px-5 py-8 text-center text-body-sm text-neutral-400">Nothing published yet</div>
+              <div className="px-5 py-8 text-center text-body-sm text-neutral-400">{t('admin_ui.nothing_published_yet', 'Nothing published yet')}</div>
             ) : (
               data.recently_published.map((item: RecentContentItem) => {
                 const meta = contentTypeMeta[item.type];
@@ -243,11 +243,11 @@ const DashboardPage: React.FC = () => {
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-body-sm text-neutral-900 font-medium truncate">{item.title}</p>
-                      <p className="text-body-xs text-neutral-500">{meta.label}</p>
+                      <p className="text-body-xs text-neutral-500">{t(`admin_content.${item.type}`, meta.label)}</p>
                     </div>
                     {item.date && (
                       <span className="text-body-xs text-neutral-400 shrink-0">
-                        {new Date(item.date).toLocaleDateString()}
+                        {new Date(item.date).toLocaleDateString(getDateLocale())}
                       </span>
                     )}
                   </Link>
@@ -260,14 +260,14 @@ const DashboardPage: React.FC = () => {
         {/* Draft Content */}
         <div className="bg-white rounded-xl border border-neutral-200">
           <div className="flex items-center justify-between px-5 py-4 border-b border-neutral-100">
-            <h3 className="text-h6 text-neutral-900 font-semibold">Draft Content</h3>
+            <h3 className="text-h6 text-neutral-900 font-semibold">{t('admin_ui.draft_content', 'Draft Content')}</h3>
             <span className="text-body-xs px-2 py-0.5 rounded-full font-medium bg-amber-50 text-amber-700">
-              {data.draft_content.total} awaiting publish
+              {data.draft_content.total} {t('admin_ui.awaiting_publish', 'awaiting publish')}
             </span>
           </div>
           <div className="divide-y divide-neutral-100">
             {data.draft_content.items.length === 0 ? (
-              <div className="px-5 py-8 text-center text-body-sm text-neutral-400">No drafts — everything is published</div>
+              <div className="px-5 py-8 text-center text-body-sm text-neutral-400">{t('admin_ui.no_drafts_everything_is_published', 'No drafts — everything is published')}</div>
             ) : (
               data.draft_content.items.map((item: RecentContentItem) => {
                 const meta = contentTypeMeta[item.type];
@@ -282,11 +282,11 @@ const DashboardPage: React.FC = () => {
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-body-sm text-neutral-900 font-medium truncate">{item.title}</p>
-                      <p className="text-body-xs text-neutral-500">{meta.label}</p>
+                      <p className="text-body-xs text-neutral-500">{t(`admin_content.${item.type}`, meta.label)}</p>
                     </div>
                     {item.date && (
                       <span className="text-body-xs text-neutral-400 shrink-0">
-                        {new Date(item.date).toLocaleDateString()}
+                        {new Date(item.date).toLocaleDateString(getDateLocale())}
                       </span>
                     )}
                   </Link>

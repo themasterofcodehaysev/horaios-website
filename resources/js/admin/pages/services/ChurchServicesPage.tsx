@@ -8,7 +8,7 @@ import { churchServiceService } from '../../services/churchService.service';
 import type { ChurchServiceItem } from '../../types';
 import { IconRenderer } from '../../../components/ui/IconRenderer';
 import { useToast } from '../../hooks/useToast';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage, translate } from '../../../context/LanguageContext';
 
 const PRESET_ICONS = [
   { label: 'Church', html: '<i class="fa-solid fa-church"></i>' },
@@ -70,7 +70,7 @@ export const ChurchServicesPage: React.FC = () => {
       const data = await churchServiceService.getAdminServices();
       setServices(data);
     } catch (err: any) {
-      setError(err?.response?.data?.message || 'Failed to load church services');
+      setError(err?.response?.data?.message || translate('admin_msg.failed_to_load_church_services', 'Failed to load church services'));
     } finally {
       setLoading(false);
     }
@@ -115,8 +115,8 @@ export const ChurchServicesPage: React.FC = () => {
     if (!formData.title.trim() || !formData.day.trim() || !formData.time.trim()) {
       addToast({
         type: 'error',
-        title: 'Validation Error',
-        message: 'Service Title, Day, and Time are required.',
+        title: t('admin_ui.validation_error', 'Validation Error'),
+        message: t('admin_ui.service_title_day_and_time_are_required', 'Service Title, Day, and Time are required.'),
       });
       return;
     }
@@ -128,24 +128,24 @@ export const ChurchServicesPage: React.FC = () => {
         setServices(prev => [...prev, created].sort((a, b) => a.display_order - b.display_order));
         addToast({
           type: 'success',
-          title: 'Service Created',
-          message: `"${created.title}" has been added to services schedule.`,
+          title: t('admin_ui.service_created', 'Service Created'),
+          message: translate('admin_msg.tpl_service_added', '"{0}" has been added to services schedule.', { 0: created.title }),
         });
       } else if (modal.service?.id) {
         const updated = await churchServiceService.updateService(modal.service.id, formData);
         setServices(prev => prev.map(s => s.id === updated.id ? updated : s).sort((a, b) => a.display_order - b.display_order));
         addToast({
           type: 'success',
-          title: 'Service Updated',
-          message: `"${updated.title}" has been updated successfully.`,
+          title: t('admin_ui.service_updated', 'Service Updated'),
+          message: translate('admin_msg.tpl_service_updated', '"{0}" has been updated successfully.', { 0: updated.title }),
         });
       }
       setModal({ open: false, mode: 'create', service: null });
     } catch (err: any) {
       addToast({
         type: 'error',
-        title: 'Save Failed',
-        message: err?.response?.data?.message || 'Failed to save church service.',
+        title: t('admin_ui.save_failed', 'Save Failed'),
+        message: err?.response?.data?.message || translate('admin_msg.failed_to_save_church_service', 'Failed to save church service.'),
       });
     } finally {
       setSubmitting(false);
@@ -158,14 +158,14 @@ export const ChurchServicesPage: React.FC = () => {
       setServices(prev => prev.map(s => s.id === updated.id ? updated : s));
       addToast({
         type: 'success',
-        title: 'Status Updated',
-        message: `Service status set to ${updated.status}.`,
+        title: t('admin_ui.status_updated', 'Status Updated'),
+        message: translate('admin_msg.tpl_service_status', 'Service status set to {0}.', { 0: translate(`status.${updated.status}`, updated.status) }),
       });
     } catch (err: any) {
       addToast({
         type: 'error',
-        title: 'Update Failed',
-        message: err?.response?.data?.message || 'Could not change service status.',
+        title: t('admin_ui.update_failed', 'Update Failed'),
+        message: err?.response?.data?.message || translate('admin_msg.could_not_change_service_status', 'Could not change service status.'),
       });
     }
   };
@@ -178,15 +178,15 @@ export const ChurchServicesPage: React.FC = () => {
       setServices(prev => prev.filter(s => s.id !== deleteModal.service!.id));
       addToast({
         type: 'success',
-        title: 'Service Deleted',
-        message: `"${deleteModal.service.title}" has been removed.`,
+        title: t('admin_ui.service_deleted', 'Service Deleted'),
+        message: translate('admin_msg.tpl_service_removed', '"{0}" has been removed.', { 0: deleteModal.service.title }),
       });
       setDeleteModal({ open: false, service: null });
     } catch (err: any) {
       addToast({
         type: 'error',
-        title: 'Delete Failed',
-        message: err?.response?.data?.message || 'Failed to delete church service.',
+        title: t('admin_ui.delete_failed', 'Delete Failed'),
+        message: err?.response?.data?.message || translate('admin_msg.failed_to_delete_church_service', 'Failed to delete church service.'),
       });
     } finally {
       setDeleting(false);
@@ -211,8 +211,8 @@ export const ChurchServicesPage: React.FC = () => {
     } catch (err: any) {
       addToast({
         type: 'error',
-        title: 'Reorder Failed',
-        message: 'Could not persist display order change.',
+        title: t('admin_ui.reorder_failed', 'Reorder Failed'),
+        message: t('admin_ui.could_not_persist_display_order_change', 'Could not persist display order change.'),
       });
       fetchServices();
     }
@@ -248,7 +248,7 @@ export const ChurchServicesPage: React.FC = () => {
           className="inline-flex items-center gap-2 bg-primary-red hover:bg-primary-dark-red text-white px-4 py-2.5 rounded-xl font-medium shadow-sm transition-all transform active:scale-95"
         >
           <Plus className="w-4 h-4" />
-          Add New Service
+          {t('admin.services.add', 'Add New Service')}
         </button>
       </div>
 
@@ -259,9 +259,9 @@ export const ChurchServicesPage: React.FC = () => {
             <Sparkles className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="text-sm font-bold text-amber-950">FontAwesome & HTML Icons Supported</h4>
+            <h4 className="text-sm font-bold text-amber-950">{t('admin_ui.fontawesome_html_icons_supported', 'FontAwesome & HTML Icons Supported')}</h4>
             <p className="text-xs text-amber-800 mt-0.5">
-              You can paste custom icon HTML (e.g. <code className="bg-white/80 px-1 py-0.5 rounded border border-amber-300 text-amber-900">&lt;i class="fa-solid fa-church"&gt;&lt;/i&gt;</code>) or icon class names directly into any service.
+              {t('admin_ui.you_can_paste_custom_icon_html_e_g', 'You can paste custom icon HTML (e.g.')} <code className="bg-white/80 px-1 py-0.5 rounded border border-amber-300 text-amber-900">&lt;i class="fa-solid fa-church"&gt;&lt;/i&gt;</code>{t('admin_ui.or_icon_class_names_directly_into_any_servic', ') or icon class names directly into any service.')}
             </p>
           </div>
         </div>
@@ -271,7 +271,7 @@ export const ChurchServicesPage: React.FC = () => {
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-900 bg-white hover:bg-amber-100 border border-amber-300 px-3.5 py-2 rounded-lg transition-colors shrink-0 shadow-xs"
         >
-          Browse FontAwesome Icons
+          {t('admin_ui.browse_fontawesome_icons', 'Browse FontAwesome Icons')}
           <ExternalLink className="w-3.5 h-3.5" />
         </a>
       </div>
@@ -282,7 +282,7 @@ export const ChurchServicesPage: React.FC = () => {
           <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search by title, day, time, or location..."
+            placeholder={t('admin_ui.search_by_title_day_time_or_location', 'Search by title, day, time, or location...')}
             value={search}
             onChange={e => setSearch(e.target.value)}
             className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-red/20 focus:border-primary-red bg-white"
@@ -308,7 +308,7 @@ export const ChurchServicesPage: React.FC = () => {
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              {tab} {tab !== 'all' && `(${services.filter(s => s.status === tab).length})`}
+              {t(`status.${tab}`, tab)} {tab !== 'all' && `(${services.filter(s => s.status === tab).length})`}
             </button>
           ))}
         </div>
@@ -318,7 +318,7 @@ export const ChurchServicesPage: React.FC = () => {
       {loading ? (
         <div className="p-12 text-center bg-white rounded-2xl border border-gray-100 shadow-xs">
           <Loader2 className="w-8 h-8 animate-spin text-primary-red mx-auto mb-2" />
-          <p className="text-sm text-gray-500">Loading church services...</p>
+          <p className="text-sm text-gray-500">{t('admin_ui.loading_church_services', 'Loading church services...')}</p>
         </div>
       ) : error ? (
         <div className="p-8 text-center bg-red-50 rounded-2xl border border-red-200">
@@ -328,15 +328,15 @@ export const ChurchServicesPage: React.FC = () => {
             onClick={fetchServices}
             className="mt-3 px-4 py-1.5 bg-red-600 text-white rounded-lg text-xs font-medium hover:bg-red-700"
           >
-            Retry
+            {t('form.retry', 'Retry')}
           </button>
         </div>
       ) : filteredServices.length === 0 ? (
         <div className="p-12 text-center bg-white rounded-2xl border border-gray-200">
           <Clock className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-          <h3 className="text-base font-bold text-gray-800">No Services Found</h3>
+          <h3 className="text-base font-bold text-gray-800">{t('admin_ui.no_services_found', 'No Services Found')}</h3>
           <p className="text-sm text-gray-500 mt-1 max-w-sm mx-auto">
-            {search ? 'No services matched your search term.' : 'Get started by creating your first weekly church service.'}
+            {search ? t('admin_ui.no_services_matched_your_search_term', 'No services matched your search term.') : t('admin_ui.get_started_by_creating_your_first_weekly_ch', 'Get started by creating your first weekly church service.')}
           </p>
           {!search && (
             <button
@@ -344,7 +344,7 @@ export const ChurchServicesPage: React.FC = () => {
               className="mt-4 inline-flex items-center gap-2 bg-primary-red text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-primary-dark-red"
             >
               <Plus className="w-4 h-4" />
-              Add First Service
+              {t('admin_ui.add_first_service', 'Add First Service')}
             </button>
           )}
         </div>
@@ -355,12 +355,12 @@ export const ChurchServicesPage: React.FC = () => {
               <thead className="bg-gray-50/80 border-b border-gray-200 text-xs font-bold text-gray-500 uppercase tracking-wider">
                 <tr>
                   <th className="py-3 px-4 w-12 text-center">#</th>
-                  <th className="py-3 px-4 w-14 text-center">Icon</th>
-                  <th className="py-3 px-4">Service & Timing</th>
-                  <th className="py-3 px-4">Location</th>
-                  <th className="py-3 px-4 w-28 text-center">Status</th>
-                  <th className="py-3 px-4 w-24 text-center">Order</th>
-                  <th className="py-3 px-4 w-28 text-right">Actions</th>
+                  <th className="py-3 px-4 w-14 text-center">{t('admin_ui.icon', 'Icon')}</th>
+                  <th className="py-3 px-4">{t('admin_ui.service_timing', 'Service & Timing')}</th>
+                  <th className="py-3 px-4">{t('ministry_detail.location', 'Location')}</th>
+                  <th className="py-3 px-4 w-28 text-center">{t('admin_ui.status', 'Status')}</th>
+                  <th className="py-3 px-4 w-24 text-center">{t('admin_ui.order', 'Order')}</th>
+                  <th className="py-3 px-4 w-28 text-right">{t('admin_ui.actions', 'Actions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -412,7 +412,7 @@ export const ChurchServicesPage: React.FC = () => {
                           <span className="truncate max-w-[200px]">{service.location}</span>
                         </div>
                       ) : (
-                        <span className="text-xs text-gray-400 italic">Sanctuary</span>
+                        <span className="text-xs text-gray-400 italic">{t('admin_ui.sanctuary', 'Sanctuary')}</span>
                       )}
                     </td>
 
@@ -425,17 +425,17 @@ export const ChurchServicesPage: React.FC = () => {
                             ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200'
                             : 'bg-gray-100 text-gray-600 hover:bg-gray-200 border border-gray-200'
                         }`}
-                        title="Click to toggle status"
+                        title={t('admin_ui.click_to_toggle_status', 'Click to toggle status')}
                       >
                         {service.status === 'active' ? (
                           <>
                             <CheckCircle className="w-3.5 h-3.5 text-emerald-600" />
-                            Active
+                            {t('admin_ui.active', 'Active')}
                           </>
                         ) : (
                           <>
                             <XCircle className="w-3.5 h-3.5 text-gray-400" />
-                            Inactive
+                            {t('admin_ui.inactive', 'Inactive')}
                           </>
                         )}
                       </button>
@@ -448,7 +448,7 @@ export const ChurchServicesPage: React.FC = () => {
                           disabled={index === 0}
                           onClick={() => handleMoveOrder(index, 'up')}
                           className="p-1 rounded text-gray-500 hover:text-gray-900 hover:bg-white disabled:opacity-20 disabled:hover:bg-transparent"
-                          title="Move up"
+                          title={t('admin_ui.move_up', 'Move up')}
                         >
                           ▲
                         </button>
@@ -457,7 +457,7 @@ export const ChurchServicesPage: React.FC = () => {
                           disabled={index === services.length - 1}
                           onClick={() => handleMoveOrder(index, 'down')}
                           className="p-1 rounded text-gray-500 hover:text-gray-900 hover:bg-white disabled:opacity-20 disabled:hover:bg-transparent"
-                          title="Move down"
+                          title={t('admin_ui.move_down', 'Move down')}
                         >
                           ▼
                         </button>
@@ -470,14 +470,14 @@ export const ChurchServicesPage: React.FC = () => {
                         <button
                           onClick={() => openEditModal(service)}
                           className="p-2 rounded-lg text-gray-500 hover:text-primary-navy hover:bg-gray-100 transition-colors"
-                          title="Edit Service"
+                          title={t('admin_ui.edit_service', 'Edit Service')}
                         >
                           <Edit2 className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => setDeleteModal({ open: true, service })}
                           className="p-2 rounded-lg text-gray-500 hover:text-red-600 hover:bg-red-50 transition-colors"
-                          title="Delete Service"
+                          title={t('admin_ui.delete_service', 'Delete Service')}
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -498,7 +498,7 @@ export const ChurchServicesPage: React.FC = () => {
             <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
               <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
                 <Clock className="w-5 h-5 text-primary-red" />
-                {modal.mode === 'create' ? 'Create Church Service' : 'Edit Church Service'}
+                {modal.mode === 'create' ? t('admin_ui.create_church_service', 'Create Church Service') : t('admin_ui.edit_church_service', 'Edit Church Service')}
               </h3>
               <button
                 onClick={() => setModal({ open: false, mode: 'create', service: null })}
@@ -512,12 +512,12 @@ export const ChurchServicesPage: React.FC = () => {
               {/* Service Title */}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                  Service Title / Name *
+                  {t('admin_ui.service_title_name', 'Service Title / Name *')}
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Main Sunday Worship, Mid-Week Prayer & Study"
+                  placeholder={t('admin_ui.e_g_main_sunday_worship_mid_week_prayer_stud', 'e.g. Main Sunday Worship, Mid-Week Prayer & Study')}
                   value={formData.title}
                   onChange={e => setFormData(f => ({ ...f, title: e.target.value }))}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary-red/20 focus:border-primary-red"
@@ -528,12 +528,12 @@ export const ChurchServicesPage: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                    Day *
+                    {t('admin_ui.day', 'Day *')}
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Sunday Morning, Wednesday"
+                    placeholder={t('admin_ui.e_g_sunday_morning_wednesday', 'e.g. Sunday Morning, Wednesday')}
                     value={formData.day}
                     onChange={e => setFormData(f => ({ ...f, day: e.target.value }))}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary-red/20 focus:border-primary-red mb-2"
@@ -551,7 +551,7 @@ export const ChurchServicesPage: React.FC = () => {
                             : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100'
                         }`}
                       >
-                        {d}
+                        {t(`admin_day.${d}`, d)}
                       </button>
                     ))}
                   </div>
@@ -559,17 +559,17 @@ export const ChurchServicesPage: React.FC = () => {
 
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                    Time *
+                    {t('admin_ui.time', 'Time *')}
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. 9:00 AM & 11:00 AM, 7:00 PM"
+                    placeholder={t('admin_ui.e_g_9_00_am_11_00_am_7_00_pm', 'e.g. 9:00 AM & 11:00 AM, 7:00 PM')}
                     value={formData.time}
                     onChange={e => setFormData(f => ({ ...f, time: e.target.value }))}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary-red/20 focus:border-primary-red"
                   />
-                  <p className="text-[11px] text-gray-400 mt-1">Accepts multiple services (e.g. "9:00 AM & 11:00 AM")</p>
+                  <p className="text-[11px] text-gray-400 mt-1">{t('admin_ui.accepts_multiple_services_e_g_9_00_am_11_00_', 'Accepts multiple services (e.g. "9:00 AM & 11:00 AM")')}</p>
                 </div>
               </div>
 
@@ -577,11 +577,11 @@ export const ChurchServicesPage: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                    Type / Category
+                    {t('admin_ui.type_category', 'Type / Category')}
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. Main Worship Service, Prayer Meeting"
+                    placeholder={t('admin_ui.e_g_main_worship_service_prayer_meeting', 'e.g. Main Worship Service, Prayer Meeting')}
                     value={formData.type}
                     onChange={e => setFormData(f => ({ ...f, type: e.target.value }))}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary-red/20 focus:border-primary-red"
@@ -590,11 +590,11 @@ export const ChurchServicesPage: React.FC = () => {
 
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                    Location / Venue
+                    {t('admin_ui.location_venue', 'Location / Venue')}
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. Main Sanctuary & Live Stream, Room 204"
+                    placeholder={t('admin_ui.e_g_main_sanctuary_live_stream_room_204', 'e.g. Main Sanctuary & Live Stream, Room 204')}
                     value={formData.location}
                     onChange={e => setFormData(f => ({ ...f, location: e.target.value }))}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary-red/20 focus:border-primary-red"
@@ -606,7 +606,7 @@ export const ChurchServicesPage: React.FC = () => {
               <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
                 <div className="flex items-center justify-between">
                   <label className="block text-xs font-bold uppercase tracking-wider text-gray-800">
-                    Icon HTML / FontAwesome Code
+                    {t('admin_ui.icon_html_fontawesome_code', 'Icon HTML / FontAwesome Code')}
                   </label>
                   <a
                     href="https://fontawesome.com/search?o=r&m=free"
@@ -614,7 +614,7 @@ export const ChurchServicesPage: React.FC = () => {
                     rel="noopener noreferrer"
                     className="text-[11px] font-semibold text-primary-red hover:underline flex items-center gap-1"
                   >
-                    Get FontAwesome Icons <ExternalLink className="w-3 h-3" />
+                    {t('admin_ui.get_fontawesome_icons', 'Get FontAwesome Icons')} <ExternalLink className="w-3 h-3" />
                   </a>
                 </div>
 
@@ -638,7 +638,7 @@ export const ChurchServicesPage: React.FC = () => {
 
                 {/* Preset icon buttons */}
                 <div>
-                  <span className="text-[11px] font-semibold text-gray-500 block mb-1.5">Quick Presets:</span>
+                  <span className="text-[11px] font-semibold text-gray-500 block mb-1.5">{t('admin_ui.quick_presets', 'Quick Presets:')}</span>
                   <div className="flex flex-wrap gap-1.5">
                     {PRESET_ICONS.map(p => (
                       <button
@@ -652,7 +652,7 @@ export const ChurchServicesPage: React.FC = () => {
                         }`}
                       >
                         <span dangerouslySetInnerHTML={{ __html: p.html }} className="text-xs" />
-                        <span>{p.label}</span>
+                        <span>{t(`admin_preset.${p.label}`, p.label)}</span>
                       </button>
                     ))}
                   </div>
@@ -662,11 +662,11 @@ export const ChurchServicesPage: React.FC = () => {
               {/* Description */}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                  Description / Service Details (Optional)
+                  {t('admin_ui.description_service_details_optional', 'Description / Service Details (Optional)')}
                 </label>
                 <textarea
                   rows={2}
-                  placeholder="Brief description of the service, who it's for, languages spoken, etc."
+                  placeholder={t('admin_ui.brief_description_of_the_service_who_it_s_fo', 'Brief description of the service, who it\'s for, languages spoken, etc.')}
                   value={formData.description}
                   onChange={e => setFormData(f => ({ ...f, description: e.target.value }))}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary-red/20 focus:border-primary-red"
@@ -677,7 +677,7 @@ export const ChurchServicesPage: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                    Display Order
+                    {t('admin_ui.display_order', 'Display Order')}
                   </label>
                   <input
                     type="number"
@@ -690,15 +690,15 @@ export const ChurchServicesPage: React.FC = () => {
 
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                    Status
+                    {t('admin_ui.status', 'Status')}
                   </label>
                   <select
                     value={formData.status}
                     onChange={e => setFormData(f => ({ ...f, status: e.target.value as 'active' | 'inactive' }))}
                     className="w-full px-3.5 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary-red/20 focus:border-primary-red bg-white"
                   >
-                    <option value="active">Active (Visible on Website)</option>
-                    <option value="inactive">Inactive (Hidden)</option>
+                    <option value="active">{t('admin_ui.active_visible_on_website', 'Active (Visible on Website)')}</option>
+                    <option value="inactive">{t('admin_ui.inactive_hidden', 'Inactive (Hidden)')}</option>
                   </select>
                 </div>
               </div>
@@ -710,7 +710,7 @@ export const ChurchServicesPage: React.FC = () => {
                   onClick={() => setModal({ open: false, mode: 'create', service: null })}
                   className="px-4 py-2 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors"
                 >
-                  Cancel
+                  {t('form.cancel', 'Cancel')}
                 </button>
                 <button
                   type="submit"
@@ -718,7 +718,7 @@ export const ChurchServicesPage: React.FC = () => {
                   className="inline-flex items-center gap-2 bg-primary-red hover:bg-primary-dark-red text-white px-5 py-2 rounded-xl text-sm font-semibold shadow-xs disabled:opacity-50 transition-all"
                 >
                   {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
-                  {modal.mode === 'create' ? 'Create Service' : 'Save Changes'}
+                  {modal.mode === 'create' ? t('admin_ui.create_service', 'Create Service') : t('admin_ui.save_changes', 'Save Changes')}
                 </button>
               </div>
             </form>
@@ -734,9 +734,9 @@ export const ChurchServicesPage: React.FC = () => {
               <AlertTriangle className="w-6 h-6" />
             </div>
             <div className="text-center">
-              <h3 className="text-lg font-bold text-gray-900">Delete Church Service?</h3>
+              <h3 className="text-lg font-bold text-gray-900">{t('admin_ui.delete_church_service', 'Delete Church Service?')}</h3>
               <p className="text-sm text-gray-500 mt-1">
-                Are you sure you want to remove <strong className="text-gray-800">"{deleteModal.service.title}"</strong> ({deleteModal.service.day})? This action cannot be undone.
+                {t('admin_ui.are_you_sure_you_want_to_remove', 'Are you sure you want to remove')} <strong className="text-gray-800">"{deleteModal.service.title}"</strong> ({deleteModal.service.day}{t('admin_ui.this_action_cannot_be_undone_947197', ')? This action cannot be undone.')}
               </p>
             </div>
             <div className="flex items-center justify-end gap-3 pt-2">
@@ -746,7 +746,7 @@ export const ChurchServicesPage: React.FC = () => {
                 onClick={() => setDeleteModal({ open: false, service: null })}
                 className="px-4 py-2 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-100"
               >
-                Cancel
+                {t('form.cancel', 'Cancel')}
               </button>
               <button
                 type="button"
@@ -755,7 +755,7 @@ export const ChurchServicesPage: React.FC = () => {
                 className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-sm font-semibold disabled:opacity-50"
               >
                 {deleting && <Loader2 className="w-4 h-4 animate-spin" />}
-                Confirm Delete
+                {t('admin_ui.confirm_delete', 'Confirm Delete')}
               </button>
             </div>
           </div>

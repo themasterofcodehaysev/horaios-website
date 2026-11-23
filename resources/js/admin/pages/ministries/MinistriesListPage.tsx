@@ -8,7 +8,7 @@ import { ministryService } from '../../services/ministry.service';
 import type { MinistryItem, MinistryCategory, PaginatedResponse, MinistryFilters } from '../../types';
 import { getImageUrl } from '../../utils/imageUrl';
 import { useToast } from '../../hooks/useToast';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage, translate } from '../../../context/LanguageContext';
 
 const MinistriesListPage: React.FC = () => {
   const navigate = useNavigate();
@@ -34,7 +34,7 @@ const MinistriesListPage: React.FC = () => {
       setMinistries(result.data);
       setMeta(result.meta);
     } catch (err: any) {
-      setError(err?.response?.data?.message || 'Failed to load ministries');
+      setError(err?.response?.data?.message || translate('admin_msg.failed_to_load_ministries', 'Failed to load ministries'));
     } finally {
       setLoading(false);
     }
@@ -63,14 +63,14 @@ const MinistriesListPage: React.FC = () => {
       setMinistries(prev => prev.map(x => x.id === m.id ? updated : x));
       addToast({
         type: 'success',
-        title: updated.status === 'published' ? 'Ministry Published' : 'Ministry Set to Draft',
-        message: `"${m.name}" is now ${updated.status}.`,
+        title: updated.status === 'published' ? translate('admin_msg.ministry_published', 'Ministry Published') : translate('admin_msg.ministry_set_to_draft', 'Ministry Set to Draft'),
+        message: translate('admin_msg.tpl_q_v0_is_now_v1', '"{0}" is now {1}.', { 0: m.name, 1: translate(`status.${updated.status}`, updated.status) }),
       });
     } catch (err: any) {
       addToast({
         type: 'error',
-        title: 'Failed to update status',
-        message: err?.response?.data?.message || 'Please try again.',
+        title: t('admin_ui.failed_to_update_status', 'Failed to update status'),
+        message: err?.response?.data?.message || translate('admin_msg.please_try_again', 'Please try again.'),
       });
     }
   };
@@ -81,14 +81,14 @@ const MinistriesListPage: React.FC = () => {
       setMinistries(prev => prev.map(x => x.id === m.id ? updated : x));
       addToast({
         type: 'success',
-        title: updated.featured ? 'Ministry Featured' : 'Ministry Unfeatured',
-        message: `"${m.name}" is now ${updated.featured ? 'featured' : 'unfeatured'}.`,
+        title: updated.featured ? translate('admin_msg.ministry_featured', 'Ministry Featured') : translate('admin_msg.ministry_unfeatured', 'Ministry Unfeatured'),
+        message: translate('admin_msg.tpl_q_v0_is_now_v1', '"{0}" is now {1}.', { 0: m.name, 1: updated.featured ? translate('status.featured', 'featured') : translate('status.unfeatured', 'unfeatured') }),
       });
     } catch (err: any) {
       addToast({
         type: 'error',
-        title: 'Failed to update ministry',
-        message: err?.response?.data?.message || 'Failed to toggle featured state',
+        title: t('admin_ui.failed_to_update_ministry', 'Failed to update ministry'),
+        message: err?.response?.data?.message || translate('admin_msg.failed_to_toggle_featured_state', 'Failed to toggle featured state'),
       });
     }
   };
@@ -99,14 +99,14 @@ const MinistriesListPage: React.FC = () => {
       fetchMinistries();
       addToast({
         type: 'success',
-        title: 'Ministry Duplicated',
-        message: `A draft copy of "${m.name}" has been created.`,
+        title: t('admin_ui.ministry_duplicated', 'Ministry Duplicated'),
+        message: translate('admin_msg.tpl_q_a_draft_copy_of_v0_has_been_created', 'A draft copy of "{0}" has been created.', { 0: m.name }),
       });
     } catch (err: any) {
       addToast({
         type: 'error',
-        title: 'Failed to duplicate ministry',
-        message: err?.response?.data?.message || 'Please try again.',
+        title: t('admin_ui.failed_to_duplicate_ministry', 'Failed to duplicate ministry'),
+        message: err?.response?.data?.message || translate('admin_msg.please_try_again', 'Please try again.'),
       });
     }
   };
@@ -118,14 +118,14 @@ const MinistriesListPage: React.FC = () => {
       setReorderId(null);
       addToast({
         type: 'success',
-        title: 'Order Updated',
-        message: `Display order for "${m.name}" set to ${reorderValue}.`,
+        title: t('admin_ui.order_updated', 'Order Updated'),
+        message: translate('admin_msg.tpl_q_display_order_for_v0_set_to_v1', 'Display order for "{0}" set to {1}.', { 0: m.name, 1: reorderValue }),
       });
     } catch (err: any) {
       addToast({
         type: 'error',
-        title: 'Failed to reorder ministry',
-        message: err?.response?.data?.message || 'Please try again.',
+        title: t('admin_ui.failed_to_reorder_ministry', 'Failed to reorder ministry'),
+        message: err?.response?.data?.message || translate('admin_msg.please_try_again', 'Please try again.'),
       });
     }
   };
@@ -140,14 +140,14 @@ const MinistriesListPage: React.FC = () => {
       fetchMinistries();
       addToast({
         type: 'success',
-        title: 'Ministry Deleted',
-        message: `"${name}" has been deleted.`,
+        title: t('admin_ui.ministry_deleted', 'Ministry Deleted'),
+        message: translate('admin_msg.tpl_q_v0_has_been_deleted', '"{0}" has been deleted.', { 0: name }),
       });
     } catch (err: any) {
       addToast({
         type: 'error',
-        title: 'Failed to delete ministry',
-        message: err?.response?.data?.message || 'Please try again.',
+        title: t('admin_ui.failed_to_delete_ministry', 'Failed to delete ministry'),
+        message: err?.response?.data?.message || translate('admin_msg.please_try_again', 'Please try again.'),
       });
     } finally {
       setDeleting(false);
@@ -168,19 +168,19 @@ const MinistriesListPage: React.FC = () => {
             to="/admin/ministries/categories"
             className="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-neutral-200 text-neutral-700 rounded-lg text-body-xs font-medium hover:bg-neutral-50 shadow-xs"
           >
-            <Layers className="w-3.5 h-3.5 text-neutral-500" /> Categories
+            <Layers className="w-3.5 h-3.5 text-neutral-500" /> {t('admin.breadcrumb.categories', 'Categories')}
           </Link>
           <Link
             to="/admin/ministries/join-requests"
             className="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-neutral-200 text-neutral-700 rounded-lg text-body-xs font-medium hover:bg-neutral-50 shadow-xs"
           >
-            <Users className="w-3.5 h-3.5 text-neutral-500" /> Join Requests
+            <Users className="w-3.5 h-3.5 text-neutral-500" /> {t('admin_ui.join_requests', 'Join Requests')}
           </Link>
           <Link
             to="/admin/ministries/create"
             className="inline-flex items-center gap-2 px-4 py-2 bg-primary-red text-white rounded-lg text-body-sm font-medium hover:bg-primary-dark-red shadow-sm"
           >
-            <Plus className="w-4 h-4" /> Add Ministry
+            <Plus className="w-4 h-4" /> {t('admin.ministries.add', 'Add Ministry')}
           </Link>
         </div>
       </div>
@@ -190,7 +190,7 @@ const MinistriesListPage: React.FC = () => {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
           <input
             type="text"
-            placeholder="Search by name, leader, meeting day, or location..."
+            placeholder={t('admin_ui.search_by_name_leader_meeting_day_or_locatio', 'Search by name, leader, meeting day, or location...')}
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             className="w-full pl-10 pr-9 py-2.5 border border-neutral-200 rounded-lg text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 bg-white"
@@ -207,7 +207,7 @@ const MinistriesListPage: React.FC = () => {
             onChange={(e) => setFilters(f => ({ ...f, category_id: e.target.value ? Number(e.target.value) : undefined, page: 1 }))}
             className="px-3 py-2.5 border border-neutral-200 rounded-lg text-body-xs bg-white"
           >
-            <option value="">All Categories</option>
+            <option value="">{t('sermons.all_categories', 'All Categories')}</option>
             {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
           <select
@@ -215,9 +215,9 @@ const MinistriesListPage: React.FC = () => {
             onChange={(e) => setFilters(f => ({ ...f, status: e.target.value || undefined, page: 1 }))}
             className="px-3 py-2.5 border border-neutral-200 rounded-lg text-body-xs bg-white"
           >
-            <option value="">All Status</option>
-            <option value="published">Published</option>
-            <option value="draft">Draft</option>
+            <option value="">{t('admin_ui.all_status', 'All Status')}</option>
+            <option value="published">{t('ui.published', 'Published')}</option>
+            <option value="draft">{t('admin_ui.draft', 'Draft')}</option>
           </select>
           <select
             value={filters.featured === undefined || filters.featured === '' ? '' : String(filters.featured)}
@@ -227,9 +227,9 @@ const MinistriesListPage: React.FC = () => {
             }}
             className="px-3 py-2.5 border border-neutral-200 rounded-lg text-body-xs bg-white"
           >
-            <option value="">All Featured</option>
-            <option value="true">Featured Only</option>
-            <option value="false">Not Featured</option>
+            <option value="">{t('admin_ui.all_featured', 'All Featured')}</option>
+            <option value="true">{t('admin_ui.featured_only', 'Featured Only')}</option>
+            <option value="false">{t('admin_ui.not_featured', 'Not Featured')}</option>
           </select>
         </div>
       </div>
@@ -252,29 +252,29 @@ const MinistriesListPage: React.FC = () => {
           <div className="px-5 py-12 text-center">
             <AlertTriangle className="w-8 h-8 text-red-400 mx-auto mb-3" />
             <p className="text-body-sm text-neutral-600 mb-3">{error}</p>
-            <button onClick={fetchMinistries} className="text-body-sm text-primary-red font-medium hover:underline">Retry</button>
+            <button onClick={fetchMinistries} className="text-body-sm text-primary-red font-medium hover:underline">{t('form.retry', 'Retry')}</button>
           </div>
         ) : ministries.length === 0 ? (
           <div className="px-5 py-12 text-center">
             <Heart className="w-8 h-8 text-neutral-300 mx-auto mb-3" />
-            <p className="text-body-sm text-neutral-500 mb-4">No ministries found matching your criteria</p>
+            <p className="text-body-sm text-neutral-500 mb-4">{t('admin_ui.no_ministries_found_matching_your_criteria', 'No ministries found matching your criteria')}</p>
             <Link
               to="/admin/ministries/create"
               className="inline-flex items-center gap-2 px-4 py-2 bg-primary-red text-white rounded-lg text-body-sm font-medium hover:bg-primary-dark-red"
             >
-              <Plus className="w-4 h-4" /> Add First Ministry
+              <Plus className="w-4 h-4" /> {t('admin_ui.add_first_ministry', 'Add First Ministry')}
             </Link>
           </div>
         ) : (
           <>
             <div className="hidden md:grid grid-cols-[30px_60px_1fr_90px_70px_90px_130px] gap-3 px-5 py-3 bg-neutral-50 border-b border-neutral-200 text-body-xs text-neutral-500 font-medium uppercase tracking-wide">
               <span></span>
-              <span>Image</span>
-              <span>Ministry & Leader</span>
-              <span>Status</span>
-              <span className="text-center">Featured</span>
-              <span className="text-center">Order</span>
-              <span className="text-center">Actions</span>
+              <span>{t('admin_ui.image', 'Image')}</span>
+              <span>{t('admin_ui.ministry_leader', 'Ministry & Leader')}</span>
+              <span>{t('admin_ui.status', 'Status')}</span>
+              <span className="text-center">{t('cards.featured', 'Featured')}</span>
+              <span className="text-center">{t('admin_ui.order', 'Order')}</span>
+              <span className="text-center">{t('admin_ui.actions', 'Actions')}</span>
             </div>
 
             <div className="divide-y divide-neutral-100">
@@ -284,7 +284,7 @@ const MinistriesListPage: React.FC = () => {
                     <button
                       onClick={() => handleToggleFeatured(m)}
                       className="p-1 text-neutral-300 hover:text-amber-400 transition-colors"
-                      title={m.featured ? 'Unfeature ministry' : 'Feature ministry'}
+                      title={m.featured ? t('admin_ui.unfeature_ministry', 'Unfeature ministry') : t('admin_ui.feature_ministry', 'Feature ministry')}
                     >
                       <Star className={`w-4 h-4 ${m.featured ? 'fill-amber-400 text-amber-400' : ''}`} />
                     </button>
@@ -306,7 +306,7 @@ const MinistriesListPage: React.FC = () => {
                       {m.name}
                     </Link>
                     <p className="text-body-xs text-neutral-500 truncate">
-                      {m.category ? m.category.name : 'Uncategorized'}
+                      {m.category ? m.category.name : t('admin_ui.uncategorized', 'Uncategorized')}
                       {m.leader && ` • ${m.leader}`}
                       {m.meeting_day && ` • ${m.meeting_day}`}
                     </p>
@@ -327,10 +327,10 @@ const MinistriesListPage: React.FC = () => {
                   <div className="text-center">
                     {m.featured ? (
                       <span className="text-body-xs bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-md">
-                        ★ Yes
+                        {t('admin_ui.yes', '★ Yes')}
                       </span>
                     ) : (
-                      <span className="text-body-xs text-neutral-400">No</span>
+                      <span className="text-body-xs text-neutral-400">{t('admin_ui.no', 'No')}</span>
                     )}
                   </div>
 
@@ -347,14 +347,14 @@ const MinistriesListPage: React.FC = () => {
                         <button
                           onClick={() => handleReorder(m)}
                           className="p-1 text-primary-red hover:bg-neutral-100 rounded"
-                          title="Save"
+                          title={t('form.save', 'Save')}
                         >
                           <CheckCircle className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => setReorderId(null)}
                           className="p-1 text-neutral-500 hover:bg-neutral-100 rounded"
-                          title="Cancel"
+                          title={t('form.cancel', 'Cancel')}
                         >
                           <XCircle className="w-4 h-4" />
                         </button>
@@ -363,7 +363,7 @@ const MinistriesListPage: React.FC = () => {
                       <button
                         onClick={() => { setReorderId(m.id); setReorderValue(m.display_order); }}
                         className="p-1.5 text-neutral-500 hover:text-primary-red hover:bg-neutral-100 rounded-lg transition-colors mx-auto inline-flex"
-                        title="Reorder"
+                        title={t('admin_ui.reorder', 'Reorder')}
                       >
                         <ArrowUpDown className="w-4 h-4" />
                       </button>
@@ -376,28 +376,28 @@ const MinistriesListPage: React.FC = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="p-1.5 text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 rounded-lg transition-colors"
-                      title="Preview Ministry"
+                      title={t('admin_ui.preview_ministry', 'Preview Ministry')}
                     >
                       <Eye className="w-4 h-4" />
                     </a>
                     <Link
                       to={`/admin/ministries/${m.id}/edit`}
                       className="p-1.5 text-neutral-500 hover:text-primary-red hover:bg-neutral-100 rounded-lg transition-colors"
-                      title="Edit"
+                      title={t('admin.breadcrumb.edit', 'Edit')}
                     >
                       <Edit2 className="w-4 h-4" />
                     </Link>
                     <button
                       onClick={() => handleDuplicate(m)}
                       className="p-1.5 text-neutral-500 hover:text-accent-blue hover:bg-neutral-100 rounded-lg transition-colors"
-                      title="Duplicate"
+                      title={t('admin_ui.duplicate', 'Duplicate')}
                     >
                       <Copy className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => setDeleteModal({ open: true, ministry: m })}
                       className="p-1.5 text-neutral-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                      title="Delete"
+                      title={t('form.delete', 'Delete')}
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -412,7 +412,7 @@ const MinistriesListPage: React.FC = () => {
       {meta && meta.last_page > 1 && (
         <div className="flex items-center justify-between px-1">
           <span className="text-body-xs text-neutral-500">
-            Showing {meta.from || 0}–{meta.to || 0} of {meta.total} ministries
+            {t('ui.showing', 'Showing')} {meta.from || 0}–{meta.to || 0} {t('ui.of', 'of')} {meta.total} {t('ui.ministries', 'ministries')}
           </span>
           <div className="flex items-center gap-1">
             <button
@@ -423,7 +423,7 @@ const MinistriesListPage: React.FC = () => {
               <ChevronLeft className="w-4 h-4" />
             </button>
             <span className="text-body-sm font-medium text-neutral-700 px-3">
-              Page {meta.current_page} of {meta.last_page}
+              {t('ui.page', 'Page')} {meta.current_page} {t('ui.of', 'of')} {meta.last_page}
             </span>
             <button
               disabled={meta.current_page >= meta.last_page}
@@ -443,23 +443,23 @@ const MinistriesListPage: React.FC = () => {
             <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
               <AlertTriangle className="w-6 h-6 text-red-600" />
             </div>
-            <h3 className="text-h5 text-neutral-900 text-center font-semibold mb-2">Delete Ministry</h3>
+            <h3 className="text-h5 text-neutral-900 text-center font-semibold mb-2">{t('admin_ui.delete_ministry', 'Delete Ministry')}</h3>
             <p className="text-body-sm text-neutral-500 text-center mb-6">
-              Are you sure you want to delete <strong>&quot;{deleteModal.ministry.name}&quot;</strong>?
+              {t('admin_ui.are_you_sure_you_want_to_delete', 'Are you sure you want to delete')} <strong>&quot;{deleteModal.ministry.name}&quot;</strong>?
             </p>
             <div className="flex gap-3">
               <button
                 onClick={() => setDeleteModal({ open: false, ministry: null })}
                 className="flex-1 px-4 py-2.5 border border-neutral-200 rounded-lg text-body-sm font-medium text-neutral-700 hover:bg-neutral-50"
               >
-                Cancel
+                {t('form.cancel', 'Cancel')}
               </button>
               <button
                 onClick={handleDelete}
                 disabled={deleting}
                 className="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-lg text-body-sm font-medium hover:bg-red-700 disabled:opacity-50"
               >
-                {deleting ? 'Deleting...' : 'Delete Ministry'}
+                {deleting ? t('admin_ui.deleting', 'Deleting...') : t('admin_ui.delete_ministry', 'Delete Ministry')}
               </button>
             </div>
           </div>

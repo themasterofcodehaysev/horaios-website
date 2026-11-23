@@ -7,7 +7,7 @@ import { Alert } from '../components/ui/Alert';
 import { Send, CheckCircle, AlertTriangle } from 'lucide-react';
 import { contactService } from '../services/publicContent.service';
 import { useSiteSettings } from '../context/SiteSettingsContext';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage, translate } from '../context/LanguageContext';
 
 export const ContactPage: React.FC = () => {
   const { settings } = useSiteSettings();
@@ -43,7 +43,7 @@ export const ContactPage: React.FC = () => {
         setSubmitted(false);
       }, 5000);
     } catch (err: any) {
-      setError(err?.response?.data?.message || 'Failed to send message. Please try again.');
+      setError(err?.response?.data?.message || translate('ui.failed_to_send_message_please_try_again', 'Failed to send message. Please try again.'));
     } finally {
       setSubmitting(false);
     }

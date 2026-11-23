@@ -7,7 +7,7 @@ import {
 import { songService } from '../../services/song.service';
 import { useToast } from '../../hooks/useToast';
 import type { SongItem, SongCategory, PaginatedResponse, SongFilters } from '../../types';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage, translate, getDateLocale } from '../../../context/LanguageContext';
 
 const SongsListPage: React.FC = () => {
   const navigate = useNavigate();
@@ -31,7 +31,7 @@ const SongsListPage: React.FC = () => {
       setSongs(result.data);
       setMeta(result.meta);
     } catch (err: any) {
-      setError(err?.response?.data?.message || 'Failed to load songs');
+      setError(err?.response?.data?.message || translate('admin_msg.failed_to_load_songs', 'Failed to load songs'));
     } finally {
       setLoading(false);
     }
@@ -60,14 +60,14 @@ const SongsListPage: React.FC = () => {
       const updated = await songService.togglePublish(song.id);
       setSongs(prev => prev.map(s => s.id === song.id ? updated : s));
       addToast({
-        title: updated.status === 'published' ? 'Song Published' : 'Song Unpublished',
-        message: `"${song.title}" is now ${updated.status}.`,
+        title: updated.status === 'published' ? translate('admin_msg.song_published', 'Song Published') : translate('admin_msg.song_unpublished', 'Song Unpublished'),
+        message: translate('admin_msg.tpl_q_v0_is_now_v1', '"{0}" is now {1}.', { 0: song.title, 1: translate(`status.${updated.status}`, updated.status) }),
         type: 'success',
       });
     } catch (err: any) {
       addToast({
-        title: 'Update Failed',
-        message: err?.response?.data?.message || 'Failed to toggle status',
+        title: t('admin_ui.update_failed', 'Update Failed'),
+        message: err?.response?.data?.message || translate('admin_msg.failed_to_toggle_status', 'Failed to toggle status'),
         type: 'error',
       });
     }
@@ -78,14 +78,14 @@ const SongsListPage: React.FC = () => {
       const updated = await songService.toggleFeatured(song.id);
       setSongs(prev => prev.map(s => s.id === song.id ? updated : s));
       addToast({
-        title: updated.is_featured ? 'Song Featured' : 'Song Unfeatured',
-        message: `"${song.title}" has been updated.`,
+        title: updated.is_featured ? translate('admin_msg.song_featured', 'Song Featured') : translate('admin_msg.song_unfeatured', 'Song Unfeatured'),
+        message: translate('admin_msg.tpl_q_v0_has_been_updated', '"{0}" has been updated.', { 0: song.title }),
         type: 'success',
       });
     } catch (err: any) {
       addToast({
-        title: 'Update Failed',
-        message: err?.response?.data?.message || 'Failed to toggle featured state',
+        title: t('admin_ui.update_failed', 'Update Failed'),
+        message: err?.response?.data?.message || translate('admin_msg.failed_to_toggle_featured_state', 'Failed to toggle featured state'),
         type: 'error',
       });
     }
@@ -95,15 +95,15 @@ const SongsListPage: React.FC = () => {
     try {
       await songService.duplicateSong(song.id);
       addToast({
-        title: 'Song Duplicated',
-        message: `"${song.title}" was duplicated successfully.`,
+        title: t('admin_ui.song_duplicated', 'Song Duplicated'),
+        message: translate('admin_msg.tpl_q_v0_was_duplicated_successfully', '"{0}" was duplicated successfully.', { 0: song.title }),
         type: 'success',
       });
       fetchSongs(); // Refresh the list to show the duplicated song
     } catch (err: any) {
       addToast({
-        title: 'Duplicate Failed',
-        message: err?.response?.data?.message || 'Failed to duplicate song',
+        title: t('admin_ui.duplicate_failed', 'Duplicate Failed'),
+        message: err?.response?.data?.message || translate('admin_msg.failed_to_duplicate_song', 'Failed to duplicate song'),
         type: 'error',
       });
     }
@@ -115,16 +115,16 @@ const SongsListPage: React.FC = () => {
       setDeleting(true);
       await songService.deleteSong(deleteModal.song.id);
       addToast({
-        title: 'Song Deleted',
-        message: `"${deleteModal.song.title}" was deleted.`,
+        title: t('admin_ui.song_deleted', 'Song Deleted'),
+        message: translate('admin_msg.tpl_q_v0_was_deleted', '"{0}" was deleted.', { 0: deleteModal.song.title }),
         type: 'success',
       });
       setDeleteModal({ open: false, song: null });
       fetchSongs();
     } catch (err: any) {
       addToast({
-        title: 'Delete Failed',
-        message: err?.response?.data?.message || 'Failed to delete song',
+        title: t('admin_ui.delete_failed', 'Delete Failed'),
+        message: err?.response?.data?.message || translate('admin_msg.failed_to_delete_song', 'Failed to delete song'),
         type: 'error',
       });
     } finally {
@@ -148,14 +148,14 @@ const SongsListPage: React.FC = () => {
             className="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-neutral-200 text-neutral-700 rounded-lg text-body-sm font-medium hover:bg-neutral-50 transition-colors shadow-xs"
           >
             <Layers className="w-4 h-4 text-neutral-500" />
-            Categories
+            {t('admin.breadcrumb.categories', 'Categories')}
           </Link>
           <Link
             to="/admin/songs/create"
             className="inline-flex items-center gap-2 px-4 py-2.5 bg-primary-red text-white rounded-lg text-body-sm font-medium hover:bg-primary-dark-red transition-colors shadow-sm"
           >
             <Plus className="w-4 h-4" />
-            Add Song
+            {t('admin.songs.add', 'Add Song')}
           </Link>
         </div>
       </div>
@@ -166,7 +166,7 @@ const SongsListPage: React.FC = () => {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
           <input
             type="text"
-            placeholder="Search by title, artist, or lyrics..."
+            placeholder={t('songs.search_placeholder', 'Search by title, artist, or lyrics...')}
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             className="w-full pl-10 pr-9 py-2.5 border border-neutral-200 rounded-lg text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 bg-white"
@@ -182,7 +182,7 @@ const SongsListPage: React.FC = () => {
           onChange={(e) => setFilters(f => ({ ...f, category_id: e.target.value ? Number(e.target.value) : undefined, page: 1 }))}
           className="px-3 py-2.5 border border-neutral-200 rounded-lg text-body-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500/20"
         >
-          <option value="">All Categories</option>
+          <option value="">{t('sermons.all_categories', 'All Categories')}</option>
           {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
         </select>
         <select
@@ -190,18 +190,18 @@ const SongsListPage: React.FC = () => {
           onChange={(e) => setFilters(f => ({ ...f, status: e.target.value || undefined, page: 1 }))}
           className="px-3 py-2.5 border border-neutral-200 rounded-lg text-body-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500/20"
         >
-          <option value="">All Status</option>
-          <option value="published">Published</option>
-          <option value="draft">Draft</option>
+          <option value="">{t('admin_ui.all_status', 'All Status')}</option>
+          <option value="published">{t('ui.published', 'Published')}</option>
+          <option value="draft">{t('admin_ui.draft', 'Draft')}</option>
         </select>
         <select
           value={filters.featured === undefined ? '' : String(filters.featured)}
           onChange={(e) => setFilters(f => ({ ...f, featured: e.target.value, page: 1 }))}
           className="px-3 py-2.5 border border-neutral-200 rounded-lg text-body-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500/20"
         >
-          <option value="">All Types</option>
-          <option value="true">Featured Only</option>
-          <option value="false">Standard Only</option>
+          <option value="">{t('admin_ui.all_types', 'All Types')}</option>
+          <option value="true">{t('admin_ui.featured_only', 'Featured Only')}</option>
+          <option value="false">{t('admin_ui.standard_only', 'Standard Only')}</option>
         </select>
       </div>
 
@@ -224,17 +224,17 @@ const SongsListPage: React.FC = () => {
           <div className="px-5 py-12 text-center">
             <AlertTriangle className="w-8 h-8 text-red-400 mx-auto mb-3" />
             <p className="text-body-sm text-neutral-600 mb-3">{error}</p>
-            <button onClick={fetchSongs} className="text-body-sm text-primary-red font-medium hover:underline">Retry</button>
+            <button onClick={fetchSongs} className="text-body-sm text-primary-red font-medium hover:underline">{t('form.retry', 'Retry')}</button>
           </div>
         ) : songs.length === 0 ? (
           <div className="px-5 py-12 text-center">
             <Music className="w-8 h-8 text-neutral-300 mx-auto mb-3" />
-            <p className="text-body-sm text-neutral-500 mb-4">No worship songs found</p>
+            <p className="text-body-sm text-neutral-500 mb-4">{t('admin_ui.no_worship_songs_found', 'No worship songs found')}</p>
             <Link
               to="/admin/songs/create"
               className="inline-flex items-center gap-2 px-4 py-2 bg-primary-red text-white rounded-lg text-body-sm font-medium hover:bg-primary-dark-red"
             >
-              <Plus className="w-4 h-4" /> Add First Song
+              <Plus className="w-4 h-4" /> {t('admin_ui.add_first_song', 'Add First Song')}
             </Link>
           </div>
         ) : (
@@ -242,13 +242,13 @@ const SongsListPage: React.FC = () => {
             {/* Table Header */}
             <div className="hidden md:grid grid-cols-[30px_1fr_120px_100px_90px_120px_110px_120px] gap-3 px-5 py-3 bg-neutral-50 border-b border-neutral-200 text-body-xs text-neutral-500 font-medium uppercase tracking-wide">
               <span></span>
-              <span>Song Title & Artist</span>
-              <span>Category</span>
-              <span>Status</span>
-              <span className="text-center">Featured</span>
-              <span>Created By</span>
-              <span>Updated At</span>
-              <span className="text-right">Actions</span>
+              <span>{t('admin_ui.song_title_artist', 'Song Title & Artist')}</span>
+              <span>{t('prayer.form.category', 'Category')}</span>
+              <span>{t('admin_ui.status', 'Status')}</span>
+              <span className="text-center">{t('cards.featured', 'Featured')}</span>
+              <span>{t('admin_ui.created_by', 'Created By')}</span>
+              <span>{t('admin_ui.updated_at', 'Updated At')}</span>
+              <span className="text-right">{t('admin_ui.actions', 'Actions')}</span>
             </div>
 
             {/* Rows */}
@@ -260,7 +260,7 @@ const SongsListPage: React.FC = () => {
                     <button
                       onClick={() => handleToggleFeatured(song)}
                       className="p-1 text-neutral-300 hover:text-amber-400 transition-colors"
-                      title={song.featured ? 'Unfeature song' : 'Feature song'}
+                      title={song.featured ? t('admin_ui.unfeature_song', 'Unfeature song') : t('admin_ui.feature_song', 'Feature song')}
                     >
                       <Star className={`w-4 h-4 ${song.featured ? 'fill-amber-400 text-amber-400' : ''}`} />
                     </button>
@@ -275,7 +275,7 @@ const SongsListPage: React.FC = () => {
                       {song.title}
                     </Link>
                     <p className="text-body-xs text-neutral-500 truncate">
-                      {song.artist || 'Unknown Artist'} {song.composer && `• ${song.composer}`}
+                      {song.artist || translate('admin_msg.unknown_artist', 'Unknown Artist')} {song.composer && `• ${song.composer}`}
                     </p>
                   </div>
 
@@ -307,24 +307,24 @@ const SongsListPage: React.FC = () => {
                   <div className="text-center">
                     {song.featured ? (
                       <span className="text-body-xs bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-md">
-                        ★ Yes
+                        {t('admin_ui.yes', '★ Yes')}
                       </span>
                     ) : (
-                      <span className="text-body-xs text-neutral-400">No</span>
+                      <span className="text-body-xs text-neutral-400">{t('admin_ui.no', 'No')}</span>
                     )}
                   </div>
 
                   {/* Created By */}
                   <div>
                     <span className="text-body-xs text-neutral-600 block truncate">
-                      {song.created_by?.display_name || 'System'}
+                      {song.created_by?.display_name || t('admin_tab.System', 'System')}
                     </span>
                   </div>
 
                   {/* Updated At */}
                   <div>
                     <span className="text-body-xs text-neutral-500 block">
-                      {new Date(song.updated_at).toLocaleDateString()}
+                      {new Date(song.updated_at).toLocaleDateString(getDateLocale())}
                     </span>
                   </div>
 
@@ -335,28 +335,28 @@ const SongsListPage: React.FC = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="p-1.5 text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 rounded-lg transition-colors"
-                      title="Preview Song Details"
+                      title={t('admin_ui.preview_song_details', 'Preview Song Details')}
                     >
                       <Eye className="w-4 h-4" />
                     </a>
                     <Link
                       to={`/admin/songs/${song.id}/edit`}
                       className="p-1.5 text-neutral-500 hover:text-primary-red hover:bg-neutral-100 rounded-lg transition-colors"
-                      title="Edit Song"
+                      title={t('admin_ui.edit_song', 'Edit Song')}
                     >
                       <Edit2 className="w-4 h-4" />
                     </Link>
                     <button
                       onClick={() => handleDuplicate(song)}
                       className="p-1.5 text-neutral-500 hover:text-accent-blue hover:bg-neutral-100 rounded-lg transition-colors"
-                      title="Duplicate Song"
+                      title={t('admin_ui.duplicate_song', 'Duplicate Song')}
                     >
                       <Copy className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => setDeleteModal({ open: true, song })}
                       className="p-1.5 text-neutral-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                      title="Delete Song"
+                      title={t('admin_ui.delete_song', 'Delete Song')}
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -372,7 +372,7 @@ const SongsListPage: React.FC = () => {
       {meta && meta.last_page > 1 && (
         <div className="flex items-center justify-between px-1">
           <span className="text-body-xs text-neutral-500">
-            Showing {meta.from || 0}–{meta.to || 0} of {meta.total} songs
+            {t('ui.showing', 'Showing')} {meta.from || 0}–{meta.to || 0} {t('ui.of', 'of')} {meta.total} {t('admin_ui.songs', 'songs')}
           </span>
           <div className="flex items-center gap-1">
             <button
@@ -383,7 +383,7 @@ const SongsListPage: React.FC = () => {
               <ChevronLeft className="w-4 h-4" />
             </button>
             <span className="text-body-sm font-medium text-neutral-700 px-3">
-              Page {meta.current_page} of {meta.last_page}
+              {t('ui.page', 'Page')} {meta.current_page} {t('ui.of', 'of')} {meta.last_page}
             </span>
             <button
               disabled={meta.current_page >= meta.last_page}
@@ -404,23 +404,23 @@ const SongsListPage: React.FC = () => {
             <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
               <AlertTriangle className="w-6 h-6 text-red-600" />
             </div>
-            <h3 className="text-h5 text-neutral-900 text-center font-semibold mb-2">Delete Song</h3>
+            <h3 className="text-h5 text-neutral-900 text-center font-semibold mb-2">{t('admin_ui.delete_song', 'Delete Song')}</h3>
             <p className="text-body-sm text-neutral-500 text-center mb-6">
-              Are you sure you want to delete <strong>"{deleteModal.song.title}"</strong>?
+              {t('admin_ui.are_you_sure_you_want_to_delete', 'Are you sure you want to delete')} <strong>"{deleteModal.song.title}"</strong>?
             </p>
             <div className="flex gap-3">
               <button
                 onClick={() => setDeleteModal({ open: false, song: null })}
                 className="flex-1 px-4 py-2.5 border border-neutral-200 rounded-lg text-body-sm font-medium text-neutral-700 hover:bg-neutral-50"
               >
-                Cancel
+                {t('form.cancel', 'Cancel')}
               </button>
               <button
                 onClick={handleDelete}
                 disabled={deleting}
                 className="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-lg text-body-sm font-medium hover:bg-red-700 disabled:opacity-50"
               >
-                {deleting ? 'Deleting...' : 'Delete Song'}
+                {deleting ? t('admin_ui.deleting', 'Deleting...') : t('admin_ui.delete_song', 'Delete Song')}
               </button>
             </div>
           </div>

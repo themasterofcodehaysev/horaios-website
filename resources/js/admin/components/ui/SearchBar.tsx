@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, X } from 'lucide-react';
 
+import { translate } from '../../../context/LanguageContext';
 export interface SearchBarProps {
   value: string;
   onChange: (value: string) => void;
@@ -11,7 +12,7 @@ export interface SearchBarProps {
 export const SearchBar: React.FC<SearchBarProps> = ({ 
   value, 
   onChange, 
-  placeholder = 'Search...', 
+  placeholder = translate('admin_msg.search', 'Search...'), 
   className = '' 
 }) => {
   const [localValue, setLocalValue] = useState(value);

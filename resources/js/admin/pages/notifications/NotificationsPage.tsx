@@ -3,7 +3,9 @@ import { Bell, Check, CheckCircle, Trash2, ChevronLeft, ChevronRight, AlertTrian
 import { notificationService } from '../../services/notification.service';
 import type { Notification, PaginatedResponse } from '../../types';
 
+import { useLanguage, translate, getDateLocale } from '../../../context/LanguageContext';
 const NotificationsPage: React.FC = () => {
+  const { t } = useLanguage();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [meta, setMeta] = useState<PaginatedResponse<Notification>['meta'] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -18,7 +20,7 @@ const NotificationsPage: React.FC = () => {
       setNotifications(result.data);
       setMeta(result.meta);
     } catch (err: any) {
-      setError(err?.response?.data?.message || 'Failed to load notifications');
+      setError(err?.response?.data?.message || translate('admin_msg.failed_to_load_notifications', 'Failed to load notifications'));
     } finally {
       setLoading(false);
     }
@@ -40,7 +42,7 @@ const NotificationsPage: React.FC = () => {
       setNotifications(prev => prev.map(n => n.id === notification.id ? { ...n, is_read: true, read_at: new Date().toISOString() } : n));
       fetchUnreadCount();
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to mark as read');
+      alert(err?.response?.data?.message || translate('admin_msg.failed_to_mark_as_read', 'Failed to mark as read'));
     }
   };
 
@@ -50,7 +52,7 @@ const NotificationsPage: React.FC = () => {
       setNotifications(prev => prev.map(n => ({ ...n, is_read: true, read_at: new Date().toISOString() })));
       setUnreadCount(0);
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to mark all as read');
+      alert(err?.response?.data?.message || translate('admin_msg.failed_to_mark_all_as_read', 'Failed to mark all as read'));
     }
   };
 
@@ -60,7 +62,7 @@ const NotificationsPage: React.FC = () => {
       setNotifications(prev => prev.filter(n => n.id !== id));
       fetchUnreadCount();
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to delete notification');
+      alert(err?.response?.data?.message || translate('admin_msg.failed_to_delete_notification', 'Failed to delete notification'));
     }
   };
 
@@ -78,9 +80,9 @@ const NotificationsPage: React.FC = () => {
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-h2 text-neutral-900 font-bold">Notifications</h1>
+          <h1 className="text-h2 text-neutral-900 font-bold">{t('admin.notifications', 'Notifications')}</h1>
           <p className="text-body-sm text-neutral-500 mt-1">
-            Stay updated with important alerts and updates.
+            {t('admin_ui.stay_updated_with_important_alerts_and_updat', 'Stay updated with important alerts and updates.')}
           </p>
         </div>
         {unreadCount > 0 && (
@@ -88,7 +90,7 @@ const NotificationsPage: React.FC = () => {
             onClick={handleMarkAllAsRead}
             className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-neutral-200 text-neutral-700 rounded-lg text-body-sm font-medium hover:bg-neutral-50 shadow-xs"
           >
-            <CheckCircle className="w-4 h-4" /> Mark All as Read
+            <CheckCircle className="w-4 h-4" /> {t('admin_ui.mark_all_as_read_104331', 'Mark All as Read')}
           </button>
         )}
       </div>
@@ -97,18 +99,18 @@ const NotificationsPage: React.FC = () => {
         {loading ? (
           <div className="p-8 text-center">
             <div className="animate-spin w-8 h-8 border-2 border-primary-red border-t-transparent rounded-full mx-auto mb-4" />
-            <p className="text-body-sm text-neutral-500">Loading notifications...</p>
+            <p className="text-body-sm text-neutral-500">{t('admin_ui.loading_notifications', 'Loading notifications...')}</p>
           </div>
         ) : error ? (
           <div className="px-5 py-12 text-center">
             <AlertTriangle className="w-8 h-8 text-red-400 mx-auto mb-3" />
             <p className="text-body-sm text-neutral-600 mb-3">{error}</p>
-            <button onClick={() => fetchNotifications()} className="text-body-sm text-primary-red font-medium hover:underline">Retry</button>
+            <button onClick={() => fetchNotifications()} className="text-body-sm text-primary-red font-medium hover:underline">{t('form.retry', 'Retry')}</button>
           </div>
         ) : notifications.length === 0 ? (
           <div className="px-5 py-12 text-center">
             <Bell className="w-8 h-8 text-neutral-300 mx-auto mb-3" />
-            <p className="text-body-sm text-neutral-500 mb-4">No notifications</p>
+            <p className="text-body-sm text-neutral-500 mb-4">{t('admin_ui.no_notifications', 'No notifications')}</p>
           </div>
         ) : (
           <div className="divide-y divide-neutral-100">
@@ -130,7 +132,7 @@ const NotificationsPage: React.FC = () => {
                     </div>
                     <p className="text-body-sm text-neutral-600 mb-2">{notification.message}</p>
                     <div className="flex items-center gap-3 text-body-xs text-neutral-500">
-                      <span>{new Date(notification.created_at).toLocaleString()}</span>
+                      <span>{new Date(notification.created_at).toLocaleString(getDateLocale())}</span>
                       {notification.link && (
                         <>
                           <span>•</span>
@@ -138,7 +140,7 @@ const NotificationsPage: React.FC = () => {
                             href={notification.link}
                             className="text-primary-red hover:underline flex items-center gap-1"
                           >
-                            View <ExternalLink className="w-3 h-3" />
+                            {t('admin_ui.view', 'View')} <ExternalLink className="w-3 h-3" />
                           </a>
                         </>
                       )}
@@ -149,7 +151,7 @@ const NotificationsPage: React.FC = () => {
                       <button
                         onClick={() => handleMarkAsRead(notification)}
                         className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg"
-                        title="Mark as read"
+                        title={t('admin_ui.mark_as_read', 'Mark as read')}
                       >
                         <Check className="w-4 h-4" />
                       </button>
@@ -157,7 +159,7 @@ const NotificationsPage: React.FC = () => {
                     <button
                       onClick={() => handleDelete(notification.id)}
                       className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg"
-                      title="Delete"
+                      title={t('form.delete', 'Delete')}
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -171,7 +173,7 @@ const NotificationsPage: React.FC = () => {
         {meta && meta.last_page > 1 && (
           <div className="flex items-center justify-between px-5 py-4 border-t border-neutral-200">
             <div className="text-body-xs text-neutral-500">
-              Showing {meta.from} to {meta.to} of {meta.total} results
+              {t('ui.showing', 'Showing')} {meta.from} {t('admin_ui.to', 'to')} {meta.to} {t('ui.of', 'of')} {meta.total} {t('admin_ui.results', 'results')}
             </div>
             <div className="flex items-center gap-2">
               <button
@@ -182,7 +184,7 @@ const NotificationsPage: React.FC = () => {
                 <ChevronLeft className="w-4 h-4" />
               </button>
               <span className="text-body-sm text-neutral-700">
-                Page {meta.current_page} of {meta.last_page}
+                {t('ui.page', 'Page')} {meta.current_page} {t('ui.of', 'of')} {meta.last_page}
               </span>
               <button
                 onClick={() => fetchNotifications(meta.current_page + 1)}

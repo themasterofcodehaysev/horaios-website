@@ -19,7 +19,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Button } from '../ui/Button';
 import { MobileMenu, type NavItem } from './MobileMenu';
 import { useSiteSettings } from '../../context/SiteSettingsContext';
-import { useLanguage } from '../../context/LanguageContext';
+import { useLanguage, translate } from '../../context/LanguageContext';
 
 interface NavigationProps {
   onLinkClick?: (href: string) => void;
@@ -158,7 +158,7 @@ export const Navigation: React.FC<NavigationProps> = ({ onLinkClick }) => {
               <Link to="/" className="flex-shrink-0 flex items-center gap-3 group">
                 <img
                   src={settings.logo || '/images/logo.png'}
-                  alt={`${settings.church_name} Logo`}
+                  alt={translate('ui.name_logo', '{name} Logo', { name: settings.church_name })}
                   className="w-11 h-11 rounded-full object-contain drop-shadow-md group-hover:scale-105 transition-transform"
                 />
                 <div className="hidden sm:block">
@@ -172,7 +172,7 @@ export const Navigation: React.FC<NavigationProps> = ({ onLinkClick }) => {
                     'text-[10px] transition-colors tracking-widest uppercase font-bold',
                     isScrolled ? 'text-primary-red' : 'text-white/80'
                   )}>
-                    CAMBODIA
+                    {t('footer.cambodia', 'CAMBODIA')}
                   </p>
                 </div>
               </Link>
@@ -319,7 +319,7 @@ export const Navigation: React.FC<NavigationProps> = ({ onLinkClick }) => {
                     : 'border-white/20 bg-black/15 text-white hover:bg-white/20 backdrop-blur-sm'
                 )}
                 title={language === 'en' ? 'ប្តូរទៅភាសាខ្មែរ (Khmer)' : 'Switch to English'}
-                aria-label="Toggle language"
+                aria-label={t('ui.toggle_language', 'Toggle language')}
               >
                 <Globe className="w-3.5 h-3.5" />
                 <span className={clsx('tracking-wider', language === 'en' ? 'font-black underline underline-offset-2' : 'opacity-70')}>EN</span>
@@ -343,7 +343,7 @@ export const Navigation: React.FC<NavigationProps> = ({ onLinkClick }) => {
               {/* Mobile Menu Button */}
               <button
                 onClick={() => setIsOpen(!isOpen)}
-                aria-label="Toggle navigation menu"
+                aria-label={t('ui.toggle_navigation_menu', 'Toggle navigation menu')}
                 className={clsx(
                   'lg:hidden p-2 rounded-xl transition-colors',
                   isScrolled

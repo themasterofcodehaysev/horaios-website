@@ -6,7 +6,9 @@ import { sermonService } from '../../services/sermon.service';
 import type { Speaker, SermonSeries, SermonCategory, CreateSermonPayload } from '../../types';
 import ImageUpload from '../../components/ui/ImageUpload';
 
+import { useLanguage, translate } from '../../../context/LanguageContext';
 const SermonFormPage: React.FC = () => {
+  const { t } = useLanguage();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const isEdit = Boolean(id);
@@ -67,7 +69,7 @@ const SermonFormPage: React.FC = () => {
           });
         }
       } catch (err: any) {
-        alert(err?.response?.data?.message || 'Failed to load sermon details');
+        alert(err?.response?.data?.message || translate('admin_msg.failed_to_load_sermon_details', 'Failed to load sermon details'));
         navigate('/admin/sermons');
       } finally {
         setFetching(false);
@@ -87,9 +89,9 @@ const SermonFormPage: React.FC = () => {
 
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
-    if (!formData.title.trim()) newErrors.title = 'Sermon title is required';
+    if (!formData.title.trim()) newErrors.title = translate('admin_msg.sermon_title_is_required', 'Sermon title is required');
     if (formData.youtube_url && !formData.youtube_url.includes('youtube.com') && !formData.youtube_url.includes('youtu.be')) {
-      newErrors.youtube_url = 'Please enter a valid YouTube URL (e.g. https://www.youtube.com/watch?v=...)';
+      newErrors.youtube_url = translate('admin_msg.please_enter_a_valid_youtube_url_e_g_https_www_y', 'Please enter a valid YouTube URL (e.g. https://www.youtube.com/watch?v=...)');
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -108,7 +110,7 @@ const SermonFormPage: React.FC = () => {
       }
       navigate('/admin/sermons');
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to save sermon');
+      alert(err?.response?.data?.message || translate('admin_msg.failed_to_save_sermon', 'Failed to save sermon'));
     } finally {
       setLoading(false);
     }
@@ -140,10 +142,10 @@ const SermonFormPage: React.FC = () => {
           </button>
           <div>
             <h1 className="text-h3 text-neutral-900 font-bold">
-              {isEdit ? 'Edit Sermon' : 'Add New Sermon'}
+              {isEdit ? t('admin_ui.edit_sermon', 'Edit Sermon') : t('admin_ui.add_new_sermon', 'Add New Sermon')}
             </h1>
             <p className="text-body-xs text-neutral-500">
-              {isEdit ? 'Update sermon details, scripture notes, video links, or status' : 'Publish a new sermon message to the church website'}
+              {isEdit ? t('admin_ui.update_sermon_details_scripture_notes_video_', 'Update sermon details, scripture notes, video links, or status') : t('admin_ui.publish_a_new_sermon_message_to_the_church_w', 'Publish a new sermon message to the church website')}
             </p>
           </div>
         </div>
@@ -155,19 +157,19 @@ const SermonFormPage: React.FC = () => {
           {/* General Details Card */}
           <div className="bg-white rounded-xl border border-neutral-200 p-6 space-y-4 shadow-xs">
             <h2 className="text-h6 text-neutral-900 font-semibold border-b border-neutral-100 pb-3">
-              Sermon Overview
+              {t('admin_ui.sermon_overview', 'Sermon Overview')}
             </h2>
 
             {/* Title */}
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Sermon Title <span className="text-red-500">*</span>
+                {t('admin_ui.sermon_title', 'Sermon Title')} <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 value={formData.title}
                 onChange={handleTitleChange}
-                placeholder="e.g. Unashamed of the Gospel"
+                placeholder={t('admin_ui.e_g_unashamed_of_the_gospel', 'e.g. Unashamed of the Gospel')}
                 className={`w-full px-3.5 py-2.5 border rounded-lg text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 ${
                   errors.title ? 'border-red-500 focus:border-red-500' : 'border-neutral-200 focus:border-primary-red'
                 }`}
@@ -178,14 +180,14 @@ const SermonFormPage: React.FC = () => {
             {/* Summary */}
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Short Summary (1-2 sentences)
+                {t('admin_ui.short_summary_1_2_sentences', 'Short Summary (1-2 sentences)')}
               </label>
               <textarea
                 rows={3}
                 maxLength={500}
                 value={formData.summary || ''}
                 onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
-                placeholder="Brief summary displayed on sermon cards and social shares..."
+                placeholder={t('admin_ui.brief_summary_displayed_on_sermon_cards_and_', 'Brief summary displayed on sermon cards and social shares...')}
                 className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20"
               />
               <span className="text-body-xs text-neutral-400 block text-right">
@@ -197,20 +199,20 @@ const SermonFormPage: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                  Scripture Reference
+                  {t('admin_ui.scripture_reference', 'Scripture Reference')}
                 </label>
                 <input
                   type="text"
                   value={formData.scripture_reference || ''}
                   onChange={(e) => setFormData({ ...formData, scripture_reference: e.target.value })}
-                  placeholder="e.g. Romans 1:16-17"
+                  placeholder={t('admin_ui.e_g_romans_1_16_17', 'e.g. Romans 1:16-17')}
                   className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                 />
               </div>
 
               <div>
                 <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                  YouTube Video URL
+                  {t('admin_ui.youtube_video_url', 'YouTube Video URL')}
                 </label>
                 <input
                   type="url"
@@ -232,7 +234,7 @@ const SermonFormPage: React.FC = () => {
           {/* Rich Text Editor Card */}
           <div className="bg-white rounded-xl border border-neutral-200 p-6 space-y-3 shadow-xs">
             <h2 className="text-h6 text-neutral-900 font-semibold border-b border-neutral-100 pb-3">
-              Full Sermon Description & Message Notes
+              {t('admin_ui.full_sermon_description_message_notes', 'Full Sermon Description & Message Notes')}
             </h2>
             <div data-color-mode="light">
               <MDEditor
@@ -249,26 +251,26 @@ const SermonFormPage: React.FC = () => {
           {/* Publishing Settings */}
           <div className="bg-white rounded-xl border border-neutral-200 p-6 space-y-4 shadow-xs">
             <h2 className="text-h6 text-neutral-900 font-semibold border-b border-neutral-100 pb-3">
-              Publishing Options
+              {t('admin_ui.publishing_options', 'Publishing Options')}
             </h2>
 
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Status
+                {t('admin_ui.status', 'Status')}
               </label>
               <select
                 value={formData.status}
                 onChange={(e) => setFormData({ ...formData, status: e.target.value as 'draft' | 'published' })}
                 className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm bg-white font-medium"
               >
-                <option value="published">Published (Public)</option>
-                <option value="draft">Draft (Private)</option>
+                <option value="published">{t('admin_ui.published_public', 'Published (Public)')}</option>
+                <option value="draft">{t('admin_ui.draft_private', 'Draft (Private)')}</option>
               </select>
             </div>
 
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Published Date
+                {t('admin_ui.published_date', 'Published Date')}
               </label>
               <input
                 type="datetime-local"
@@ -280,7 +282,7 @@ const SermonFormPage: React.FC = () => {
 
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Display Order
+                {t('admin_ui.display_order', 'Display Order')}
               </label>
               <input
                 type="number"
@@ -301,10 +303,10 @@ const SermonFormPage: React.FC = () => {
                 />
                 <div>
                   <span className="text-body-sm font-semibold text-neutral-900 block flex items-center gap-1">
-                    <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Featured Sermon
+                    <Sparkles className="w-3.5 h-3.5 text-amber-500" /> {t('admin_ui.featured_sermon', 'Featured Sermon')}
                   </span>
                   <span className="text-body-xs text-neutral-500 block">
-                    Display prominently on homepage and sermon banner
+                    {t('admin_ui.display_prominently_on_homepage_and_sermon_b', 'Display prominently on homepage and sermon banner')}
                   </span>
                 </div>
               </label>
@@ -314,47 +316,47 @@ const SermonFormPage: React.FC = () => {
           {/* Classification Settings */}
           <div className="bg-white rounded-xl border border-neutral-200 p-6 space-y-4 shadow-xs">
             <h2 className="text-h6 text-neutral-900 font-semibold border-b border-neutral-100 pb-3">
-              Relationships & Media
+              {t('admin_ui.relationships_media', 'Relationships & Media')}
             </h2>
 
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Preacher / Speaker
+                {t('ui.preacher_speaker', 'Preacher / Speaker')}
               </label>
               <select
                 value={formData.speaker_id || ''}
                 onChange={(e) => setFormData({ ...formData, speaker_id: e.target.value ? Number(e.target.value) : null })}
                 className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm bg-white"
               >
-                <option value="">No Speaker Selected</option>
-                {speakers.map(s => <option key={s.id} value={s.id}>{s.name} ({s.position || 'Speaker'})</option>)}
+                <option value="">{t('admin_ui.no_speaker_selected', 'No Speaker Selected')}</option>
+                {speakers.map(s => <option key={s.id} value={s.id}>{s.name} ({s.position || translate('admin_msg.speaker', 'Speaker')})</option>)}
               </select>
             </div>
 
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Sermon Series
+                {t('admin.sermons.series_title', 'Sermon Series')}
               </label>
               <select
                 value={formData.series_id || ''}
                 onChange={(e) => setFormData({ ...formData, series_id: e.target.value ? Number(e.target.value) : null })}
                 className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm bg-white"
               >
-                <option value="">Standalone Sermon (No Series)</option>
+                <option value="">{t('admin_ui.standalone_sermon_no_series', 'Standalone Sermon (No Series)')}</option>
                 {seriesList.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
               </select>
             </div>
 
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Category
+                {t('prayer.form.category', 'Category')}
               </label>
               <select
                 value={formData.category_id || ''}
                 onChange={(e) => setFormData({ ...formData, category_id: e.target.value ? Number(e.target.value) : null })}
                 className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm bg-white"
               >
-                <option value="">No Category</option>
+                <option value="">{t('admin_ui.no_category', 'No Category')}</option>
                 {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
             </div>
@@ -364,8 +366,8 @@ const SermonFormPage: React.FC = () => {
                 value={formData.thumbnail}
                 onChange={(url) => setFormData({ ...formData, thumbnail: url })}
                 folder="sermons"
-                label="Thumbnail Image"
-                helperText="Upload a sermon cover or video thumbnail."
+                label={t('admin_ui.thumbnail_image', 'Thumbnail Image')}
+                helperText={t('admin_ui.upload_a_sermon_cover_or_video_thumbnail', 'Upload a sermon cover or video thumbnail.')}
               />
             </div>
           </div>
@@ -377,7 +379,7 @@ const SermonFormPage: React.FC = () => {
               onClick={() => navigate('/admin/sermons')}
               className="px-5 py-2.5 border border-neutral-200 rounded-lg text-body-sm font-medium text-neutral-700 hover:bg-neutral-50"
             >
-              Cancel
+              {t('form.cancel', 'Cancel')}
             </button>
             <button
               type="submit"
@@ -385,7 +387,7 @@ const SermonFormPage: React.FC = () => {
               className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary-red text-white rounded-lg text-body-sm font-medium hover:bg-primary-dark-red shadow-sm disabled:opacity-50"
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-              {loading ? 'Saving...' : isEdit ? 'Update Sermon' : 'Publish Sermon'}
+              {loading ? t('admin_ui.saving', 'Saving...') : isEdit ? t('admin_ui.update_sermon', 'Update Sermon') : t('admin_ui.publish_sermon', 'Publish Sermon')}
             </button>
           </div>
         </div>

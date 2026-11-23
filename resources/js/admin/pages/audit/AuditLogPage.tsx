@@ -3,7 +3,9 @@ import { Search, Calendar, ChevronDown, ChevronRight, Loader2, Download } from '
 import { auditlogService } from '../../services/auditlog.service';
 import { AuditLog } from '../../types';
 
+import { useLanguage, getDateLocale } from '../../../context/LanguageContext';
 export default function AuditLogPage() {
+  const { t } = useLanguage();
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState<number | string | null>(null);
@@ -88,8 +90,8 @@ export default function AuditLogPage() {
     <div className="p-6 max-w-7xl mx-auto space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">Audit Logs</h1>
-          <p className="text-sm text-gray-500 mt-1">Review system activities and user actions.</p>
+          <h1 className="text-2xl font-semibold text-gray-900">{t('admin.audit_logs', 'Audit Logs')}</h1>
+          <p className="text-sm text-gray-500 mt-1">{t('admin_ui.review_system_activities_and_user_actions', 'Review system activities and user actions.')}</p>
         </div>
         <button
           onClick={handleExportCSV}
@@ -97,7 +99,7 @@ export default function AuditLogPage() {
           className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm disabled:opacity-50"
         >
           <Download className="w-4 h-4" />
-          Export CSV
+          {t('admin_ui.export_csv', 'Export CSV')}
         </button>
       </div>
 
@@ -106,7 +108,7 @@ export default function AuditLogPage() {
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
             type="text"
-            placeholder="Search by action or entity..."
+            placeholder={t('admin_ui.search_by_action_or_entity', 'Search by action or entity...')}
             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-accent-blue focus:border-accent-blue"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -122,7 +124,7 @@ export default function AuditLogPage() {
               onChange={(e) => setDateFrom(e.target.value)}
             />
           </div>
-          <span className="text-gray-400 text-sm font-medium">to</span>
+          <span className="text-gray-400 text-sm font-medium">{t('admin_ui.to', 'to')}</span>
           <div className="relative">
             <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
@@ -139,15 +141,15 @@ export default function AuditLogPage() {
         {loading ? (
           <div className="p-12 flex flex-col items-center justify-center text-gray-400">
             <Loader2 className="w-8 h-8 animate-spin text-accent-blue mb-4" />
-            <p className="text-sm">Loading audit logs...</p>
+            <p className="text-sm">{t('admin_ui.loading_audit_logs', 'Loading audit logs...')}</p>
           </div>
         ) : logs.length === 0 ? (
           <div className="p-12 text-center text-gray-500 flex flex-col items-center">
             <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
               <Search className="w-6 h-6 text-gray-400" />
             </div>
-            <p className="text-base font-medium text-gray-900">No logs found</p>
-            <p className="text-sm mt-1">Try adjusting your search or date filters.</p>
+            <p className="text-base font-medium text-gray-900">{t('admin_ui.no_logs_found', 'No logs found')}</p>
+            <p className="text-sm mt-1">{t('admin_ui.try_adjusting_your_search_or_date_filters', 'Try adjusting your search or date filters.')}</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -155,11 +157,11 @@ export default function AuditLogPage() {
               <thead className="bg-gray-50/50 border-b border-gray-100 text-gray-500 font-medium">
                 <tr>
                   <th className="w-10 px-4 py-3.5"></th>
-                  <th className="px-4 py-3.5">User</th>
-                  <th className="px-4 py-3.5">Action</th>
-                  <th className="px-4 py-3.5">Entity</th>
-                  <th className="px-4 py-3.5">IP Address</th>
-                  <th className="px-4 py-3.5">Timestamp</th>
+                  <th className="px-4 py-3.5">{t('admin_ui.user', 'User')}</th>
+                  <th className="px-4 py-3.5">{t('admin_ui.action', 'Action')}</th>
+                  <th className="px-4 py-3.5">{t('admin_ui.entity', 'Entity')}</th>
+                  <th className="px-4 py-3.5">{t('admin_ui.ip_address', 'IP Address')}</th>
+                  <th className="px-4 py-3.5">{t('admin_ui.timestamp', 'Timestamp')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -173,7 +175,7 @@ export default function AuditLogPage() {
                         {expandedId === log.id ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
                       </td>
                       <td className="px-4 py-4">
-                        <div className="font-medium text-gray-900">{log.user?.display_name || 'System'}</div>
+                        <div className="font-medium text-gray-900">{log.user?.display_name || t('admin_tab.System', 'System')}</div>
                         {log.user?.email && <div className="text-xs text-gray-500 mt-0.5">{log.user.email}</div>}
                       </td>
                       <td className="px-4 py-4">
@@ -188,7 +190,7 @@ export default function AuditLogPage() {
                         {log.ip_address || 'N/A'}
                       </td>
                       <td className="px-4 py-4 text-gray-500 text-xs">
-                        {new Date(log.created_at).toLocaleString()}
+                        {new Date(log.created_at).toLocaleString(getDateLocale())}
                       </td>
                     </tr>
                     {expandedId === log.id && (
@@ -199,7 +201,7 @@ export default function AuditLogPage() {
                               <div className="bg-white border border-gray-100 rounded-lg p-4 shadow-sm">
                                 <h4 className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2">
                                   <span className="w-2 h-2 rounded-full bg-red-400"></span>
-                                  Previous Values
+                                  {t('admin_ui.previous_values', 'Previous Values')}
                                 </h4>
                                 <pre className="text-xs text-gray-600 overflow-x-auto whitespace-pre-wrap font-mono">
                                   {JSON.stringify(log.old_values, null, 2)}
@@ -210,7 +212,7 @@ export default function AuditLogPage() {
                               <div className="bg-white border border-gray-100 rounded-lg p-4 shadow-sm">
                                 <h4 className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2">
                                   <span className="w-2 h-2 rounded-full bg-green-400"></span>
-                                  New Values
+                                  {t('admin_ui.new_values', 'New Values')}
                                 </h4>
                                 <pre className="text-xs text-gray-600 overflow-x-auto whitespace-pre-wrap font-mono">
                                   {JSON.stringify(log.new_values, null, 2)}
@@ -219,12 +221,12 @@ export default function AuditLogPage() {
                             )}
                             {(!log.old_values || Object.keys(log.old_values).length === 0) && 
                              (!log.new_values || Object.keys(log.new_values).length === 0) && (
-                              <div className="text-sm text-gray-400 italic py-2">No specific value changes recorded.</div>
+                              <div className="text-sm text-gray-400 italic py-2">{t('admin_ui.no_specific_value_changes_recorded', 'No specific value changes recorded.')}</div>
                             )}
                           </div>
                           {log.user_agent && (
                             <div className="mt-4 pt-4 border-t border-gray-100 flex items-start gap-2">
-                              <span className="text-xs font-semibold text-gray-400 uppercase whitespace-nowrap mt-0.5">User Agent</span>
+                              <span className="text-xs font-semibold text-gray-400 uppercase whitespace-nowrap mt-0.5">{t('admin_ui.user_agent', 'User Agent')}</span>
                               <span className="text-xs text-gray-500 font-mono break-all">{log.user_agent}</span>
                             </div>
                           )}
@@ -241,9 +243,9 @@ export default function AuditLogPage() {
         {pagination.total > 0 && (
           <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-white">
             <span className="text-sm text-gray-500">
-              Showing <span className="font-medium text-gray-900">{pagination.current_page}</span> of <span className="font-medium text-gray-900">{pagination.last_page}</span> 
+              {t('ui.showing', 'Showing')} <span className="font-medium text-gray-900">{pagination.current_page}</span> {t('ui.of', 'of')} <span className="font-medium text-gray-900">{pagination.last_page}</span> 
               <span className="mx-1 text-gray-300">•</span>
-              <span className="font-medium text-gray-900">{pagination.total}</span> total
+              <span className="font-medium text-gray-900">{pagination.total}</span> {t('admin_ui.total', 'total')}
             </span>
             <div className="flex gap-2">
               <button
@@ -251,14 +253,14 @@ export default function AuditLogPage() {
                 onClick={() => fetchLogs(pagination.current_page - 1)}
                 className="px-3 py-1.5 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
               >
-                Previous
+                {t('admin_ui.previous', 'Previous')}
               </button>
               <button
                 disabled={pagination.current_page >= pagination.last_page}
                 onClick={() => fetchLogs(pagination.current_page + 1)}
                 className="px-3 py-1.5 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
               >
-                Next
+                {t('admin_ui.next', 'Next')}
               </button>
             </div>
           </div>

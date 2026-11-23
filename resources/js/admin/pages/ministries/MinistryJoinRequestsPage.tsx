@@ -8,7 +8,9 @@ import {
 import { contactService } from '../../services/contact.service';
 import type { ContactMessage, PaginatedResponse, ContactMessageFilters, ContactMessageStats } from '../../types';
 
+import { useLanguage, translate, getDateLocale } from '../../../context/LanguageContext';
 export const MinistryJoinRequestsPage: React.FC = () => {
+  const { t } = useLanguage();
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [stats, setStats] = useState<ContactMessageStats | null>(null);
   const [meta, setMeta] = useState<PaginatedResponse<ContactMessage>['meta'] | null>(null);
@@ -28,7 +30,7 @@ export const MinistryJoinRequestsPage: React.FC = () => {
       setMessages(result.data);
       setMeta(result.meta);
     } catch (err: any) {
-      setError(err?.response?.data?.message || 'Failed to load ministry join requests');
+      setError(err?.response?.data?.message || translate('admin_msg.failed_to_load_ministry_join_requests', 'Failed to load ministry join requests'));
     } finally {
       setLoading(false);
     }
@@ -65,7 +67,7 @@ export const MinistryJoinRequestsPage: React.FC = () => {
       }
       fetchStats();
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to update status');
+      alert(err?.response?.data?.message || translate('admin_msg.failed_to_update_status', 'Failed to update status'));
     }
   };
 
@@ -81,7 +83,7 @@ export const MinistryJoinRequestsPage: React.FC = () => {
       fetchRequests();
       fetchStats();
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to delete join request');
+      alert(err?.response?.data?.message || translate('admin_msg.failed_to_delete_join_request', 'Failed to delete join request'));
     } finally {
       setDeleting(false);
     }
@@ -124,19 +126,19 @@ export const MinistryJoinRequestsPage: React.FC = () => {
           <Link
             to="/admin/ministries"
             className="p-2 text-neutral-500 hover:bg-neutral-100 rounded-lg transition-colors"
-            title="Back to Ministries"
+            title={t('admin_ui.back_to_ministries', 'Back to Ministries')}
           >
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-h3 text-neutral-900 font-bold">Ministry Join Requests</h1>
+              <h1 className="text-h3 text-neutral-900 font-bold">{t('admin_ui.ministry_join_requests', 'Ministry Join Requests')}</h1>
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary-navy/10 text-primary-navy">
-                Inquiries
+                {t('admin_ui.inquiries', 'Inquiries')}
               </span>
             </div>
             <p className="text-body-xs text-neutral-500 mt-0.5">
-              Review and manage member and visitor applications to join church ministries.
+              {t('admin_ui.review_and_manage_member_and_visitor_applica', 'Review and manage member and visitor applications to join church ministries.')}
             </p>
           </div>
         </div>
@@ -146,13 +148,13 @@ export const MinistryJoinRequestsPage: React.FC = () => {
             to="/admin/ministries"
             className="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-neutral-200 text-neutral-700 rounded-lg text-body-xs font-medium hover:bg-neutral-50 shadow-xs"
           >
-            <Heart className="w-3.5 h-3.5 text-neutral-500" /> Ministries
+            <Heart className="w-3.5 h-3.5 text-neutral-500" /> {t('nav.ministries', 'Ministries')}
           </Link>
           <Link
             to="/admin/ministries/categories"
             className="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-neutral-200 text-neutral-700 rounded-lg text-body-xs font-medium hover:bg-neutral-50 shadow-xs"
           >
-            <Layers className="w-3.5 h-3.5 text-neutral-500" /> Categories
+            <Layers className="w-3.5 h-3.5 text-neutral-500" /> {t('admin.breadcrumb.categories', 'Categories')}
           </Link>
         </div>
       </div>
@@ -161,23 +163,23 @@ export const MinistryJoinRequestsPage: React.FC = () => {
       {stats && (
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
           <div className="bg-white rounded-xl border border-neutral-200 p-4 shadow-xs">
-            <p className="text-body-xs font-medium text-neutral-500">Total Requests</p>
+            <p className="text-body-xs font-medium text-neutral-500">{t('admin_ui.total_requests', 'Total Requests')}</p>
             <p className="text-h3 font-bold text-neutral-900 mt-1">{stats.total}</p>
           </div>
           <div className="bg-white rounded-xl border border-neutral-200 p-4 shadow-xs">
-            <p className="text-body-xs font-medium text-blue-600">Unread / New</p>
+            <p className="text-body-xs font-medium text-blue-600">{t('admin_ui.unread_new', 'Unread / New')}</p>
             <p className="text-h3 font-bold text-blue-600 mt-1">{stats.unread}</p>
           </div>
           <div className="bg-white rounded-xl border border-neutral-200 p-4 shadow-xs">
-            <p className="text-body-xs font-medium text-neutral-600">Reviewed</p>
+            <p className="text-body-xs font-medium text-neutral-600">{t('admin_ui.reviewed', 'Reviewed')}</p>
             <p className="text-h3 font-bold text-neutral-700 mt-1">{stats.read}</p>
           </div>
           <div className="bg-white rounded-xl border border-neutral-200 p-4 shadow-xs">
-            <p className="text-body-xs font-medium text-emerald-600">Connected</p>
+            <p className="text-body-xs font-medium text-emerald-600">{t('admin_ui.connected', 'Connected')}</p>
             <p className="text-h3 font-bold text-emerald-600 mt-1">{stats.replied}</p>
           </div>
           <div className="bg-white rounded-xl border border-neutral-200 p-4 shadow-xs">
-            <p className="text-body-xs font-medium text-amber-600">Archived</p>
+            <p className="text-body-xs font-medium text-amber-600">{t('admin_ui.archived', 'Archived')}</p>
             <p className="text-h3 font-bold text-amber-600 mt-1">{stats.archived}</p>
           </div>
         </div>
@@ -190,7 +192,7 @@ export const MinistryJoinRequestsPage: React.FC = () => {
             <Search className="w-4 h-4 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Search by applicant name, email, ministry, or message..."
+              placeholder={t('admin_ui.search_by_applicant_name_email_ministry_or_m', 'Search by applicant name, email, ministry, or message...')}
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               className="w-full pl-9 pr-4 py-2 text-body-sm border border-neutral-200 rounded-lg focus:outline-none focus:border-primary-red focus:ring-1 focus:ring-primary-red"
@@ -202,11 +204,11 @@ export const MinistryJoinRequestsPage: React.FC = () => {
               onChange={(e) => setFilters((f) => ({ ...f, status: e.target.value || undefined, page: 1 }))}
               className="px-3 py-2 text-body-sm border border-neutral-200 rounded-lg bg-white focus:outline-none focus:border-primary-red"
             >
-              <option value="">All Statuses</option>
-              <option value="unread">Unread / New</option>
-              <option value="read">Reviewed</option>
-              <option value="replied">Connected / Replied</option>
-              <option value="archived">Archived</option>
+              <option value="">{t('admin_ui.all_statuses', 'All Statuses')}</option>
+              <option value="unread">{t('admin_ui.unread_new', 'Unread / New')}</option>
+              <option value="read">{t('admin_ui.reviewed', 'Reviewed')}</option>
+              <option value="replied">{t('admin_ui.connected_replied', 'Connected / Replied')}</option>
+              <option value="archived">{t('admin_ui.archived', 'Archived')}</option>
             </select>
           </div>
         </div>
@@ -228,7 +230,7 @@ export const MinistryJoinRequestsPage: React.FC = () => {
               onClick={fetchRequests}
               className="text-body-sm text-primary-red font-medium hover:underline"
             >
-              Retry
+              {t('form.retry', 'Retry')}
             </button>
           </div>
         ) : messages.length === 0 ? (
@@ -236,15 +238,15 @@ export const MinistryJoinRequestsPage: React.FC = () => {
             <div className="w-14 h-14 rounded-full bg-primary-navy/5 text-primary-navy flex items-center justify-center mx-auto mb-3">
               <Users className="w-7 h-7" />
             </div>
-            <h3 className="text-h5 font-bold text-neutral-900 mb-1">No Ministry Join Requests Found</h3>
+            <h3 className="text-h5 font-bold text-neutral-900 mb-1">{t('admin_ui.no_ministry_join_requests_found', 'No Ministry Join Requests Found')}</h3>
             <p className="text-body-sm text-neutral-500 max-w-md mx-auto mb-4">
-              When church members or visitors click "Join Ministry" on any ministry page and submit their information, their inquiries will appear here.
+              {t('admin_ui.when_church_members_or_visitors_click_join_m', 'When church members or visitors click "Join Ministry" on any ministry page and submit their information, their inquiries will appear here.')}
             </p>
             <Link
               to="/admin/ministries"
               className="inline-flex items-center gap-2 px-4 py-2 bg-primary-navy text-white rounded-lg text-body-sm font-medium hover:bg-primary-navy/90"
             >
-              <Heart className="w-4 h-4" /> View Church Ministries
+              <Heart className="w-4 h-4" /> {t('admin_ui.view_church_ministries', 'View Church Ministries')}
             </Link>
           </div>
         ) : (
@@ -252,12 +254,12 @@ export const MinistryJoinRequestsPage: React.FC = () => {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-neutral-50 border-b border-neutral-200 text-body-xs text-neutral-500 font-semibold uppercase tracking-wider">
-                  <th className="py-3 px-4">Applicant</th>
-                  <th className="py-3 px-4">Ministry Requested</th>
-                  <th className="py-3 px-4">Message Snippet</th>
-                  <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-4">Submitted Date</th>
-                  <th className="py-3 px-4 text-right">Actions</th>
+                  <th className="py-3 px-4">{t('admin_ui.applicant', 'Applicant')}</th>
+                  <th className="py-3 px-4">{t('admin_ui.ministry_requested', 'Ministry Requested')}</th>
+                  <th className="py-3 px-4">{t('admin_ui.message_snippet', 'Message Snippet')}</th>
+                  <th className="py-3 px-4">{t('admin_ui.status', 'Status')}</th>
+                  <th className="py-3 px-4">{t('admin_ui.submitted_date', 'Submitted Date')}</th>
+                  <th className="py-3 px-4 text-right">{t('admin_ui.actions', 'Actions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-neutral-100">
@@ -329,7 +331,7 @@ export const MinistryJoinRequestsPage: React.FC = () => {
                           {msg.status === 'replied' && <CheckCircle className="w-3 h-3" />}
                           {msg.status === 'archived' && <Archive className="w-3 h-3" />}
                           {msg.status === 'unread' && <span className="w-1.5 h-1.5 rounded-full bg-blue-600" />}
-                          <span className="capitalize">{msg.status}</span>
+                          <span className="capitalize">{translate(`status.${msg.status}`, msg.status)}</span>
                         </span>
                       </td>
 
@@ -337,7 +339,7 @@ export const MinistryJoinRequestsPage: React.FC = () => {
                       <td className="py-3.5 px-4 whitespace-nowrap text-body-xs text-neutral-500">
                         <div className="flex items-center gap-1">
                           <Clock className="w-3.5 h-3.5 text-neutral-400" />
-                          {new Date(msg.created_at).toLocaleDateString('en-US', {
+                          {new Date(msg.created_at).toLocaleDateString(getDateLocale('en-US'), {
                             month: 'short',
                             day: 'numeric',
                             year: 'numeric',
@@ -351,7 +353,7 @@ export const MinistryJoinRequestsPage: React.FC = () => {
                           <button
                             onClick={() => openView(msg)}
                             className="p-1.5 text-neutral-500 hover:text-primary-navy hover:bg-neutral-100 rounded-lg transition-colors"
-                            title="View Details"
+                            title={t('admin_ui.view_details', 'View Details')}
                           >
                             <Eye className="w-4 h-4" />
                           </button>
@@ -363,14 +365,14 @@ export const MinistryJoinRequestsPage: React.FC = () => {
                               }
                             }}
                             className="p-1.5 text-neutral-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
-                            title="Reply via Email"
+                            title={t('admin_ui.reply_via_email', 'Reply via Email')}
                           >
                             <Reply className="w-4 h-4" />
                           </a>
                           <button
                             onClick={() => setDeleteModal({ open: true, message: msg })}
                             className="p-1.5 text-neutral-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                            title="Delete Request"
+                            title={t('admin_ui.delete_request', 'Delete Request')}
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -388,8 +390,8 @@ export const MinistryJoinRequestsPage: React.FC = () => {
         {meta && meta.last_page > 1 && (
           <div className="flex items-center justify-between px-6 py-3 border-t border-neutral-200 bg-neutral-50 text-body-xs text-neutral-500">
             <div>
-              Showing page <strong className="text-neutral-900">{meta.current_page}</strong> of{' '}
-              <strong className="text-neutral-900">{meta.last_page}</strong> ({meta.total} requests)
+              {t('admin_ui.showing_page', 'Showing page')} <strong className="text-neutral-900">{meta.current_page}</strong> {t('ui.of', 'of')}{' '}
+              <strong className="text-neutral-900">{meta.last_page}</strong> ({meta.total} {t('admin_ui.requests', 'requests)')}
             </div>
             <div className="flex gap-1">
               <button
@@ -437,7 +439,7 @@ export const MinistryJoinRequestsPage: React.FC = () => {
                   {viewModal.message.name}
                 </h3>
                 <p className="text-body-xs text-neutral-500">
-                  Received on {new Date(viewModal.message.created_at).toLocaleString('en-US')}
+                  {t('admin_ui.received_on', 'Received on')} {new Date(viewModal.message.created_at).toLocaleString(getDateLocale('en-US'))}
                 </p>
               </div>
               <button
@@ -452,7 +454,7 @@ export const MinistryJoinRequestsPage: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-neutral-50 p-4 rounded-xl border border-neutral-100 text-body-sm">
               <div>
                 <p className="text-body-xs font-semibold text-neutral-500 uppercase tracking-wider mb-1">
-                  Email
+                  {t('visit.email', 'Email')}
                 </p>
                 <a
                   href={`mailto:${viewModal.message.email}`}
@@ -464,7 +466,7 @@ export const MinistryJoinRequestsPage: React.FC = () => {
               </div>
               <div>
                 <p className="text-body-xs font-semibold text-neutral-500 uppercase tracking-wider mb-1">
-                  Phone
+                  {t('visit.phone', 'Phone')}
                 </p>
                 {viewModal.message.phone ? (
                   <a
@@ -475,7 +477,7 @@ export const MinistryJoinRequestsPage: React.FC = () => {
                     {viewModal.message.phone}
                   </a>
                 ) : (
-                  <span className="text-neutral-400 italic">Not provided</span>
+                  <span className="text-neutral-400 italic">{t('admin_ui.not_provided', 'Not provided')}</span>
                 )}
               </div>
             </div>
@@ -483,7 +485,7 @@ export const MinistryJoinRequestsPage: React.FC = () => {
             {/* Inquirer's Message */}
             <div>
               <p className="text-body-xs font-semibold text-neutral-500 uppercase tracking-wider mb-2">
-                Inquiry Message
+                {t('admin_ui.inquiry_message', 'Inquiry Message')}
               </p>
               <div className="p-4 bg-neutral-50 rounded-xl border border-neutral-200 text-body-sm text-neutral-800 whitespace-pre-wrap leading-relaxed">
                 {viewModal.message.message}
@@ -493,7 +495,7 @@ export const MinistryJoinRequestsPage: React.FC = () => {
             {/* Actions Footer */}
             <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-neutral-200">
               <div className="flex items-center gap-1.5">
-                <span className="text-body-xs font-medium text-neutral-500 mr-1">Status:</span>
+                <span className="text-body-xs font-medium text-neutral-500 mr-1">{t('admin_ui.status_24a23d', 'Status:')}</span>
                 <button
                   onClick={() => handleUpdateStatus(viewModal.message!, 'read')}
                   className={`px-2.5 py-1 rounded-lg text-xs font-medium border ${
@@ -502,7 +504,7 @@ export const MinistryJoinRequestsPage: React.FC = () => {
                       : 'bg-white text-neutral-700 border-neutral-200 hover:bg-neutral-50'
                   }`}
                 >
-                  Mark Reviewed
+                  {t('admin_ui.mark_reviewed', 'Mark Reviewed')}
                 </button>
                 <button
                   onClick={() => handleUpdateStatus(viewModal.message!, 'replied')}
@@ -512,7 +514,7 @@ export const MinistryJoinRequestsPage: React.FC = () => {
                       : 'bg-white text-neutral-700 border-neutral-200 hover:bg-neutral-50'
                   }`}
                 >
-                  Mark Connected
+                  {t('admin_ui.mark_connected', 'Mark Connected')}
                 </button>
                 <button
                   onClick={() => handleUpdateStatus(viewModal.message!, 'archived')}
@@ -522,7 +524,7 @@ export const MinistryJoinRequestsPage: React.FC = () => {
                       : 'bg-white text-neutral-700 border-neutral-200 hover:bg-neutral-50'
                   }`}
                 >
-                  Archive
+                  {t('admin_ui.archive', 'Archive')}
                 </button>
               </div>
 
@@ -534,7 +536,7 @@ export const MinistryJoinRequestsPage: React.FC = () => {
                   onClick={() => handleUpdateStatus(viewModal.message!, 'replied')}
                   className="inline-flex items-center gap-1.5 px-4 py-2 bg-primary-red text-white rounded-lg text-body-xs font-semibold hover:bg-primary-dark-red shadow-sm transition-colors"
                 >
-                  <Reply className="w-3.5 h-3.5" /> Reply by Email
+                  <Reply className="w-3.5 h-3.5" /> {t('admin_ui.reply_by_email', 'Reply by Email')}
                 </a>
               </div>
             </div>
@@ -554,13 +556,13 @@ export const MinistryJoinRequestsPage: React.FC = () => {
                 <Trash2 className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-h5 font-bold text-neutral-900">Delete Join Request?</h3>
-                <p className="text-body-xs text-neutral-500">This action cannot be undone.</p>
+                <h3 className="text-h5 font-bold text-neutral-900">{t('admin_ui.delete_join_request', 'Delete Join Request?')}</h3>
+                <p className="text-body-xs text-neutral-500">{t('admin_ui.this_action_cannot_be_undone_36fbfc', 'This action cannot be undone.')}</p>
               </div>
             </div>
             <p className="text-body-sm text-neutral-600">
-              Are you sure you want to delete the join request from{' '}
-              <strong className="text-neutral-900">{deleteModal.message.name}</strong> for{' '}
+              {t('admin_ui.are_you_sure_you_want_to_delete_the_join_req', 'Are you sure you want to delete the join request from')}{' '}
+              <strong className="text-neutral-900">{deleteModal.message.name}</strong> {t('admin_ui.for', 'for')}{' '}
               <strong className="text-neutral-900">
                 {extractMinistryName(deleteModal.message.subject)}
               </strong>
@@ -572,14 +574,14 @@ export const MinistryJoinRequestsPage: React.FC = () => {
                 className="px-4 py-2 rounded-lg text-body-xs font-medium border border-neutral-200 text-neutral-700 hover:bg-neutral-50"
                 disabled={deleting}
               >
-                Cancel
+                {t('form.cancel', 'Cancel')}
               </button>
               <button
                 onClick={handleDelete}
                 disabled={deleting}
                 className="px-4 py-2 rounded-lg text-body-xs font-semibold bg-red-600 text-white hover:bg-red-700 transition-colors disabled:opacity-50"
               >
-                {deleting ? 'Deleting...' : 'Delete'}
+                {deleting ? t('admin_ui.deleting', 'Deleting...') : t('form.delete', 'Delete')}
               </button>
             </div>
           </div>

@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight, Star } from 'lucide-react';
 import type { SongItem } from '../../admin/types';
+import { useLanguage, translate } from '../../context/LanguageContext';
 
 interface SongCardProps {
   song: SongItem;
@@ -14,6 +15,7 @@ interface SongCardProps {
 }
 
 export const SongCard: React.FC<SongCardProps> = ({ song, variant = 'grid', className }) => {
+  const { t } = useLanguage();
   const href = `/songs/${song.id}`;
 
   if (variant === 'spotlight') {
@@ -39,14 +41,14 @@ export const SongCard: React.FC<SongCardProps> = ({ song, variant = 'grid', clas
           </h3>
           <p 
             className="text-body-xs text-neutral-300 line-clamp-2"
-            title={song.artist ? `${song.artist}${song.composer ? ` • ${song.composer}` : ''}` : 'Traditional Worship'}
+            title={song.artist ? `${song.artist}${song.composer ? ` • ${song.composer}` : ''}` : t('ui.traditional_worship', translate('ui.traditional_worship', 'Traditional Worship'))}
           >
-            {song.artist || 'Traditional Worship'}
+            {song.artist || translate('ui.traditional_worship', 'Traditional Worship')}
           </p>
         </div>
 
         <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-4 text-body-xs font-medium text-neutral-300 group-hover:text-white">
-          <span>Read Lyrics</span>
+          <span>{t('songs.read_lyrics', 'Read Lyrics')}</span>
           <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </div>
       </Link>
@@ -65,7 +67,7 @@ export const SongCard: React.FC<SongCardProps> = ({ song, variant = 'grid', clas
               {song.category.name}
             </span>
           ) : (
-            <span className="text-body-xs text-neutral-400">Worship</span>
+            <span className="text-body-xs text-neutral-400">{t('songs.worship_tag', 'Worship')}</span>
           )}
           {song.featured && (
             <Star className="w-4 h-4 fill-amber-400 text-amber-400 shrink-0" />
@@ -79,14 +81,14 @@ export const SongCard: React.FC<SongCardProps> = ({ song, variant = 'grid', clas
         </h3>
         <p 
           className="text-body-xs text-neutral-500 line-clamp-2"
-          title={`${song.artist || 'Traditional'}${song.composer ? ` • ${song.composer}` : ''}`}
+          title={`${song.artist || translate('ui.traditional', 'Traditional')}${song.composer ? ` • ${song.composer}` : ''}`}
         >
-          {song.artist || 'Traditional'} {song.composer && `• ${song.composer}`}
+          {song.artist || translate('ui.traditional', 'Traditional')} {song.composer && `• ${song.composer}`}
         </p>
       </div>
 
       <div className="mt-5 pt-3 border-t border-neutral-100 flex items-center justify-between text-body-xs font-semibold text-primary-red">
-        <span>View Lyrics</span>
+        <span>{t('songs.view_lyrics', 'View Lyrics')}</span>
         <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
       </div>
     </Link>

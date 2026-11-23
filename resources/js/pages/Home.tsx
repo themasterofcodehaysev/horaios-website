@@ -31,17 +31,17 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { useSiteSettings } from '../context/SiteSettingsContext';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage, translate, getDateLocale } from '../context/LanguageContext';
 import { getYouTubeId, getSermonThumbnail } from '../utils/youtube';
 
 // Helper for event date badges
 const formatEventDate = (dateStr: string | null) => {
-  if (!dateStr) return { month: 'EVENT', day: '--', dayOfWeek: 'DAY' };
+  if (!dateStr) return { month: translate('ui.event_caps', 'EVENT'), day: '--', dayOfWeek: translate('ui.day_caps', 'DAY') };
   const d = new Date(dateStr);
-  if (isNaN(d.getTime())) return { month: 'EVENT', day: '--', dayOfWeek: 'DAY' };
-  const month = d.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
-  const day = d.toLocaleDateString('en-US', { day: 'numeric' });
-  const dayOfWeek = d.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase();
+  if (isNaN(d.getTime())) return { month: translate('ui.event_caps', 'EVENT'), day: '--', dayOfWeek: translate('ui.day_caps', 'DAY') };
+  const month = d.toLocaleDateString(getDateLocale('en-US'), { month: 'short' }).toUpperCase();
+  const day = d.toLocaleDateString(getDateLocale('en-US'), { day: 'numeric' });
+  const dayOfWeek = d.toLocaleDateString(getDateLocale('en-US'), { weekday: 'short' }).toUpperCase();
   return { month, day, dayOfWeek };
 };
 
@@ -236,28 +236,28 @@ export const HomePage: React.FC = () => {
                     <div className="bg-white rounded-2xl p-5 border border-neutral-200/80 hover:border-primary-navy/40 hover:shadow-elevation-sm transition-all">
                       <div className="flex items-center gap-2 mb-2">
                         <span className="w-2 h-2 rounded-full bg-primary-navy"></span>
-                        <span className="text-label-md font-bold text-neutral-900">Main Sunday Worship</span>
+                        <span className="text-label-md font-bold text-neutral-900">{translate('ui.main_sunday_worship', 'Main Sunday Worship')}</span>
                       </div>
-                      <p className="text-h5 font-extrabold text-primary-navy">9:00 AM & 11:00 AM</p>
-                      <p className="text-caption text-neutral-500 mt-1">Sunday Morning • Main Sanctuary</p>
+                      <p className="text-h5 font-extrabold text-primary-navy">{t('ui.9_00_am_11_00_am', '9:00 AM & 11:00 AM')}</p>
+                      <p className="text-caption text-neutral-500 mt-1">{t('ui.sunday_morning_main_sanctuary', 'Sunday Morning • Main Sanctuary')}</p>
                     </div>
 
                     <div className="bg-white rounded-2xl p-5 border border-neutral-200/80 hover:border-primary-navy/40 hover:shadow-elevation-sm transition-all">
                       <div className="flex items-center gap-2 mb-2">
                         <span className="w-2 h-2 rounded-full bg-primary-navy"></span>
-                        <span className="text-label-md font-bold text-neutral-900">Mid-Week Prayer & Study</span>
+                        <span className="text-label-md font-bold text-neutral-900">{t('ui.mid_week_prayer_study', 'Mid-Week Prayer & Study')}</span>
                       </div>
-                      <p className="text-h5 font-extrabold text-primary-navy">7:00 PM - 8:30 PM</p>
-                      <p className="text-caption text-neutral-500 mt-1">Wednesday Evening • Fellowship Hall</p>
+                      <p className="text-h5 font-extrabold text-primary-navy">{t('ui.7_00_pm_8_30_pm', '7:00 PM - 8:30 PM')}</p>
+                      <p className="text-caption text-neutral-500 mt-1">{t('ui.wednesday_evening_fellowship_hall', 'Wednesday Evening • Fellowship Hall')}</p>
                     </div>
 
                     <div className="bg-white rounded-2xl p-5 border border-neutral-200/80 hover:border-primary-navy/40 hover:shadow-elevation-sm transition-all">
                       <div className="flex items-center gap-2 mb-2">
                         <span className="w-2 h-2 rounded-full bg-primary-navy"></span>
-                        <span className="text-label-md font-bold text-neutral-900">Youth Fellowship & Worship</span>
+                        <span className="text-label-md font-bold text-neutral-900">{translate('ui.youth_fellowship_worship', 'Youth Fellowship & Worship')}</span>
                       </div>
-                      <p className="text-h5 font-extrabold text-primary-navy">2:30 PM - 4:30 PM</p>
-                      <p className="text-caption text-neutral-500 mt-1">Saturday Afternoon • Youth Hall</p>
+                      <p className="text-h5 font-extrabold text-primary-navy">{t('ui.2_30_pm_4_30_pm', '2:30 PM - 4:30 PM')}</p>
+                      <p className="text-caption text-neutral-500 mt-1">{t('ui.saturday_afternoon_youth_hall', 'Saturday Afternoon • Youth Hall')}</p>
                     </div>
                   </>
                 )}
@@ -378,7 +378,7 @@ export const HomePage: React.FC = () => {
                 <div className="relative rounded-3xl overflow-hidden shadow-elevation-lg aspect-[4/5] bg-neutral-100 border border-neutral-200/80">
                   <img
                     src={placeholderImage(600, 750, 'Church Worship & Fellowship')}
-                    alt="Horaios Baptist Church Fellowship"
+                    alt={t('ui.horaios_baptist_church_fellowship', 'Horaios Baptist Church Fellowship')}
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
@@ -387,10 +387,10 @@ export const HomePage: React.FC = () => {
                   <div className="absolute bottom-6 left-6 right-6 p-6 rounded-2xl bg-white/95 backdrop-blur-md shadow-lg border border-white/60 text-neutral-900">
                     <Quote className="w-6 h-6 text-primary-red/40 mb-2" />
                     <p className="font-serif text-sm sm:text-base italic text-neutral-800 leading-relaxed">
-                      "For where two or three gather in my name, there am I with them."
+                      {t('ui.for_where_two_or_three_gather_in_my_name_the', '"For where two or three gather in my name, there am I with them."')}
                     </p>
                     <p className="text-xs font-bold text-primary-red uppercase tracking-wider mt-2.5 font-sans">
-                      — Matthew 18:20
+                      {t('ui.matthew_18_20', '— Matthew 18:20')}
                     </p>
                   </div>
                 </div>
@@ -460,14 +460,14 @@ export const HomePage: React.FC = () => {
 
                       <div className="absolute top-4 left-4">
                         <span className="px-3 py-1 rounded-full bg-primary-red text-white text-caption font-bold uppercase tracking-wider shadow-sm">
-                          {featuredSermon.featured ? 'Featured Message' : 'Recent Message'}
+                          {featuredSermon.featured ? t('ui.featured_message', 'Featured Message') : t('ui.recent_message', 'Recent Message')}
                         </span>
                       </div>
 
                       <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white text-xs font-medium">
                         <span className="flex items-center gap-1.5">
                           <Calendar className="w-4 h-4 text-white/80" /> 
-                          {featuredSermon.published_at ? new Date(featuredSermon.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Sunday Service'}
+                          {featuredSermon.published_at ? new Date(featuredSermon.published_at).toLocaleDateString(getDateLocale('en-US'), { month: 'short', day: 'numeric', year: 'numeric' }) : t('ui.sunday_service', 'Sunday Service')}
                         </span>
                         {featuredSermon.category && (
                           <span className="px-2.5 py-0.5 rounded bg-black/50 text-white/90">
@@ -480,7 +480,7 @@ export const HomePage: React.FC = () => {
                     <div className="p-6 sm:p-8 flex-1 flex flex-col justify-between">
                       <div>
                         <div className="flex items-center gap-2 text-caption font-semibold text-primary-navy uppercase tracking-wide mb-2">
-                          <span>{featuredSermon.series?.name || featuredSermon.category?.name || 'Sermon'}</span>
+                          <span>{featuredSermon.series?.name || featuredSermon.category?.name || translate('ui.sermon', 'Sermon')}</span>
                           {featuredSermon.scripture_reference && (
                             <>
                               <span>•</span>
@@ -497,9 +497,9 @@ export const HomePage: React.FC = () => {
                         </h3>
                         <p 
                           className="text-body-sm text-neutral-600 leading-relaxed line-clamp-2"
-                          title={featuredSermon.summary || featuredSermon.description || 'Listen to this biblical teaching designed to strengthen your faith and obedience to Christ.'}
+                          title={featuredSermon.summary || featuredSermon.description || translate('ui.listen_to_this_biblical_teaching_designed_to', 'Listen to this biblical teaching designed to strengthen your faith and obedience to Christ.')}
                         >
-                          {featuredSermon.summary || featuredSermon.description || 'Listen to this biblical teaching designed to strengthen your faith and obedience to Christ.'}
+                          {featuredSermon.summary || featuredSermon.description || translate('ui.listen_to_this_biblical_teaching_designed_to', 'Listen to this biblical teaching designed to strengthen your faith and obedience to Christ.')}
                         </p>
                       </div>
 
@@ -508,17 +508,17 @@ export const HomePage: React.FC = () => {
                           <div className="w-10 h-10 rounded-full bg-neutral-200 overflow-hidden">
                             <img 
                               src={featuredSermon.speaker?.photo ? getImageUrl(featuredSermon.speaker.photo) : placeholderImage(100, 100, 'Preacher')} 
-                              alt={featuredSermon.speaker?.name || 'Preacher'} 
+                              alt={featuredSermon.speaker?.name || translate('ui.preacher', 'Preacher')} 
                               className="w-full h-full object-cover" 
                             />
                           </div>
                           <div>
-                            <p className="text-label-md font-bold text-neutral-900">{featuredSermon.speaker?.name || 'Pastor'}</p>
-                            <p className="text-caption text-neutral-500">{featuredSermon.speaker?.position || 'Preacher'}</p>
+                            <p className="text-label-md font-bold text-neutral-900">{featuredSermon.speaker?.name || translate('ui.pastor', 'Pastor')}</p>
+                            <p className="text-caption text-neutral-500">{featuredSermon.speaker?.position || translate('ui.preacher', 'Preacher')}</p>
                           </div>
                         </div>
                         <Button variant="primary" size="sm" onClick={() => navigate(`/sermons/${featuredSermon.slug || featuredSermon.id}`)}>
-                          Watch Message
+                          {t('sermons.watch_message', 'Watch Message')}
                         </Button>
                       </div>
                     </div>
@@ -545,7 +545,7 @@ export const HomePage: React.FC = () => {
                           </div>
                           <div className="flex-1 min-w-0">
                             <span className="text-caption font-bold text-primary-navy uppercase tracking-wider truncate block">
-                              {sermon.series?.name || sermon.category?.name || 'Sermon'}
+                              {sermon.series?.name || sermon.category?.name || translate('ui.sermon', 'Sermon')}
                             </span>
                             <h4 
                               className="font-serif text-base sm:text-lg font-bold text-neutral-900 truncate mt-0.5 group-hover:text-primary-navy transition-colors"
@@ -559,7 +559,7 @@ export const HomePage: React.FC = () => {
                               </p>
                             )}
                             <p className="text-caption text-neutral-500 mt-1 line-clamp-1">
-                              {sermon.speaker?.name || 'Pastor'} • {sermon.published_at ? new Date(sermon.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Sunday Service'}
+                              {sermon.speaker?.name || translate('ui.pastor', 'Pastor')} • {sermon.published_at ? new Date(sermon.published_at).toLocaleDateString(getDateLocale('en-US'), { month: 'short', day: 'numeric' }) : t('ui.sunday_service', 'Sunday Service')}
                             </p>
                           </div>
                         </div>
@@ -567,8 +567,8 @@ export const HomePage: React.FC = () => {
                     ) : (
                       <div className="bg-slate-50 rounded-2xl p-8 border border-slate-200/70 text-center flex flex-col items-center justify-center flex-1">
                         <BookOpen className="w-10 h-10 text-neutral-400 mb-3" />
-                        <p className="text-label-md font-bold text-neutral-700">More Biblical Messages Coming Soon</p>
-                        <p className="text-caption text-neutral-500 mt-1">Check back every Sunday for our latest sermons.</p>
+                        <p className="text-label-md font-bold text-neutral-700">{t('ui.more_biblical_messages_coming_soon', 'More Biblical Messages Coming Soon')}</p>
+                        <p className="text-caption text-neutral-500 mt-1">{t('ui.check_back_every_sunday_for_our_latest_sermo', 'Check back every Sunday for our latest sermons.')}</p>
                       </div>
                     )}
                   </div>
@@ -577,7 +577,7 @@ export const HomePage: React.FC = () => {
             })()
           ) : (
             <div className="text-center py-12 bg-slate-50 rounded-3xl border border-slate-200">
-              <p className="text-body-base text-neutral-600">No sermons published yet. Check back soon!</p>
+              <p className="text-body-base text-neutral-600">{t('ui.no_sermons_published_yet_check_back_soon', 'No sermons published yet. Check back soon!')}</p>
             </div>
           )}
         </div>
@@ -651,14 +651,14 @@ export const HomePage: React.FC = () => {
                       </h3>
                       <p 
                         className="text-body-sm text-neutral-600 leading-relaxed line-clamp-2"
-                        title={ministry.description || 'Get involved with our church community and serve together in God’s kingdom.'}
+                        title={ministry.description || translate('ui.get_involved_with_our_church_community_and_s', 'Get involved with our church community and serve together in God’s kingdom.')}
                       >
-                        {ministry.description || 'Get involved with our church community and serve together in God’s kingdom.'}
+                        {ministry.description || translate('ui.get_involved_with_our_church_community_and_s', 'Get involved with our church community and serve together in God’s kingdom.')}
                       </p>
 
                       {ministry.leader && (
                         <p className="text-caption text-neutral-500 mt-3">
-                          Leader: <span className="font-semibold text-neutral-800">{ministry.leader}</span>
+                          {t('cards.leader', 'Leader:')} <span className="font-semibold text-neutral-800">{ministry.leader}</span>
                         </p>
                       )}
                     </div>
@@ -735,7 +735,7 @@ export const HomePage: React.FC = () => {
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2 mb-1">
                           <span className={`px-2.5 py-0.5 rounded-full ${badgeStyle.pill} text-[11px] font-bold uppercase tracking-wider`}>
-                            {event.category?.name || 'Event'}
+                            {event.category?.name || translate('ui.event', 'Event')}
                           </span>
                           {event.start_time && (
                             <span className="text-caption text-neutral-500 flex items-center gap-1">
@@ -757,9 +757,9 @@ export const HomePage: React.FC = () => {
                         </h3>
                         <p 
                           className="text-body-sm text-neutral-600 mt-1 line-clamp-2"
-                          title={event.description || 'Join our church family for this gathering.'}
+                          title={event.description || translate('ui.join_our_church_family_for_this_gathering', 'Join our church family for this gathering.')}
                         >
-                          {event.description || 'Join our church family for this gathering.'}
+                          {event.description || translate('ui.join_our_church_family_for_this_gathering', 'Join our church family for this gathering.')}
                         </p>
                       </div>
                     </div>
@@ -861,10 +861,10 @@ export const HomePage: React.FC = () => {
               <div className="p-8 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15">
                 <Quote className="w-8 h-8 text-amber-200/40 mb-3" />
                 <p className="font-serif text-lg italic text-white/95 leading-relaxed">
-                  "Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion, for God loves a cheerful giver."
+                  {t('ui.each_of_you_should_give_what_you_have_decide', '"Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion, for God loves a cheerful giver."')}
                 </p>
                 <p className="text-xs font-bold text-amber-300 uppercase tracking-widest mt-4 font-sans">
-                  — 2 Corinthians 9:7
+                  {t('ui.2_corinthians_9_7', '— 2 Corinthians 9:7')}
                 </p>
               </div>
             </div>

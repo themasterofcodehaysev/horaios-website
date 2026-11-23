@@ -6,7 +6,9 @@ import { blogService } from '../../services/blog.service';
 import type { BlogCategory, CreateBlogPayload } from '../../types';
 import ImageUpload from '../../components/ui/ImageUpload';
 
+import { useLanguage, translate } from '../../../context/LanguageContext';
 const BlogFormPage: React.FC = () => {
+  const { t } = useLanguage();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const isEdit = Boolean(id);
@@ -48,7 +50,7 @@ const BlogFormPage: React.FC = () => {
           });
         }
       } catch (err: any) {
-        alert(err?.response?.data?.message || 'Failed to load news details');
+        alert(err?.response?.data?.message || translate('admin_msg.failed_to_load_news_details', 'Failed to load news details'));
         navigate('/admin/news');
       } finally {
         setFetching(false);
@@ -68,8 +70,8 @@ const BlogFormPage: React.FC = () => {
 
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
-    if (!formData.title.trim()) newErrors.title = 'News title is required';
-    if (!formData.content || !formData.content.trim()) newErrors.content = 'News content is required';
+    if (!formData.title.trim()) newErrors.title = translate('admin_msg.news_title_is_required', 'News title is required');
+    if (!formData.content || !formData.content.trim()) newErrors.content = translate('admin_msg.news_content_is_required', 'News content is required');
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -87,7 +89,7 @@ const BlogFormPage: React.FC = () => {
       }
       navigate('/admin/news');
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to save news article');
+      alert(err?.response?.data?.message || translate('admin_msg.failed_to_save_news_article', 'Failed to save news article'));
     } finally {
       setLoading(false);
     }
@@ -119,10 +121,10 @@ const BlogFormPage: React.FC = () => {
           </button>
           <div>
             <h1 className="text-h3 text-neutral-900 font-bold">
-              {isEdit ? 'Edit News Article' : 'Create New News Article'}
+              {isEdit ? t('admin_ui.edit_news_article', 'Edit News Article') : t('admin_ui.create_new_news_article', 'Create New News Article')}
             </h1>
             <p className="text-body-xs text-neutral-500">
-              {isEdit ? 'Update article content, metadata, or publishing status' : 'Publish a new article or announcement to the church website'}
+              {isEdit ? t('admin_ui.update_article_content_metadata_or_publishin', 'Update article content, metadata, or publishing status') : t('admin_ui.publish_a_new_article_or_announcement_to_the', 'Publish a new article or announcement to the church website')}
             </p>
           </div>
         </div>
@@ -132,18 +134,18 @@ const BlogFormPage: React.FC = () => {
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white rounded-xl border border-neutral-200 p-6 space-y-4 shadow-xs">
             <h2 className="text-h6 text-neutral-900 font-semibold border-b border-neutral-100 pb-3">
-              Article Overview
+              {t('admin_ui.article_overview', 'Article Overview')}
             </h2>
 
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Title <span className="text-red-500">*</span>
+                {t('admin_ui.title', 'Title')} <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 value={formData.title}
                 onChange={handleTitleChange}
-                placeholder="e.g. Annual Church Retreat Recap"
+                placeholder={t('admin_ui.e_g_annual_church_retreat_recap', 'e.g. Annual Church Retreat Recap')}
                 className={`w-full px-3.5 py-2.5 border rounded-lg text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 ${
                   errors.title ? 'border-red-500 focus:border-red-500' : 'border-neutral-200 focus:border-primary-red'
                 }`}
@@ -153,14 +155,14 @@ const BlogFormPage: React.FC = () => {
 
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Excerpt (Short Summary)
+                {t('admin_ui.excerpt_short_summary', 'Excerpt (Short Summary)')}
               </label>
               <textarea
                 rows={3}
                 maxLength={500}
                 value={formData.excerpt || ''}
                 onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
-                placeholder="Brief summary displayed on news cards..."
+                placeholder={t('admin_ui.brief_summary_displayed_on_news_cards', 'Brief summary displayed on news cards...')}
                 className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20"
               />
               <span className="text-body-xs text-neutral-400 block text-right">
@@ -171,7 +173,7 @@ const BlogFormPage: React.FC = () => {
 
           <div className="bg-white rounded-xl border border-neutral-200 p-6 space-y-3 shadow-xs">
             <h2 className="text-h6 text-neutral-900 font-semibold border-b border-neutral-100 pb-3">
-              Article Content
+              {t('admin_ui.article_content', 'Article Content')}
             </h2>
             {errors.content && <p className="text-body-xs text-red-500">{errors.content}</p>}
             <div data-color-mode="light">
@@ -187,26 +189,26 @@ const BlogFormPage: React.FC = () => {
         <div className="space-y-6">
           <div className="bg-white rounded-xl border border-neutral-200 p-6 space-y-4 shadow-xs">
             <h2 className="text-h6 text-neutral-900 font-semibold border-b border-neutral-100 pb-3">
-              Publishing Options
+              {t('admin_ui.publishing_options', 'Publishing Options')}
             </h2>
 
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Status
+                {t('admin_ui.status', 'Status')}
               </label>
               <select
                 value={formData.status}
                 onChange={(e) => setFormData({ ...formData, status: e.target.value as 'draft' | 'published' })}
                 className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm bg-white font-medium"
               >
-                <option value="published">Published (Public)</option>
-                <option value="draft">Draft (Private)</option>
+                <option value="published">{t('admin_ui.published_public', 'Published (Public)')}</option>
+                <option value="draft">{t('admin_ui.draft_private', 'Draft (Private)')}</option>
               </select>
             </div>
 
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Published Date
+                {t('admin_ui.published_date', 'Published Date')}
               </label>
               <input
                 type="datetime-local"
@@ -226,10 +228,10 @@ const BlogFormPage: React.FC = () => {
                 />
                 <div>
                   <span className="text-body-sm font-semibold text-neutral-900 flex items-center gap-1">
-                    <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Featured Article
+                    <Sparkles className="w-3.5 h-3.5 text-amber-500" /> {t('admin_ui.featured_article', 'Featured Article')}
                   </span>
                   <span className="text-body-xs text-neutral-500 block">
-                    Display prominently on homepage and news section
+                    {t('admin_ui.display_prominently_on_homepage_and_news_sec', 'Display prominently on homepage and news section')}
                   </span>
                 </div>
               </label>
@@ -238,19 +240,19 @@ const BlogFormPage: React.FC = () => {
 
           <div className="bg-white rounded-xl border border-neutral-200 p-6 space-y-4 shadow-xs">
             <h2 className="text-h6 text-neutral-900 font-semibold border-b border-neutral-100 pb-3">
-              Classification & Media
+              {t('admin_ui.classification_media', 'Classification & Media')}
             </h2>
 
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Category
+                {t('prayer.form.category', 'Category')}
               </label>
               <select
                 value={formData.category_id || ''}
                 onChange={(e) => setFormData({ ...formData, category_id: e.target.value ? Number(e.target.value) : null })}
                 className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm bg-white"
               >
-                <option value="">No Category</option>
+                <option value="">{t('admin_ui.no_category', 'No Category')}</option>
                 {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
             </div>
@@ -260,8 +262,8 @@ const BlogFormPage: React.FC = () => {
                 value={formData.featured_image}
                 onChange={(url) => setFormData({ ...formData, featured_image: url })}
                 folder="blogs"
-                label="Featured Image"
-                helperText="Upload a cover image for this news article."
+                label={t('admin_ui.featured_image', 'Featured Image')}
+                helperText={t('admin_ui.upload_a_cover_image_for_this_news_article', 'Upload a cover image for this news article.')}
               />
             </div>
           </div>
@@ -272,7 +274,7 @@ const BlogFormPage: React.FC = () => {
               onClick={() => navigate('/admin/news')}
               className="px-5 py-2.5 border border-neutral-200 rounded-lg text-body-sm font-medium text-neutral-700 hover:bg-neutral-50"
             >
-              Cancel
+              {t('form.cancel', 'Cancel')}
             </button>
             <button
               type="submit"
@@ -280,7 +282,7 @@ const BlogFormPage: React.FC = () => {
               className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary-red text-white rounded-lg text-body-sm font-medium hover:bg-primary-dark-red shadow-sm disabled:opacity-50"
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-              {loading ? 'Saving...' : isEdit ? 'Update News Article' : 'Publish News Article'}
+              {loading ? t('admin_ui.saving', 'Saving...') : isEdit ? t('admin_ui.update_news_article', 'Update News Article') : t('admin_ui.publish_news_article', 'Publish News Article')}
             </button>
           </div>
         </div>

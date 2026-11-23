@@ -8,7 +8,7 @@ import { searchService } from '../../services/search.service';
 import { notificationService } from '../../services/notification.service';
 import type { AuthUser, SearchResult } from '../../types';
 import type { Notification } from '../types';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage, translate, getDateLocale } from '../../../context/LanguageContext';
 import type { Language } from '../../../constants/translations';
 
 const LANGUAGES: Record<Language, string> = {
@@ -78,7 +78,7 @@ const SEARCH_TYPE_CONFIG: Record<string, {
     label: 'Contact Messages',
     icon: <Mail className="w-3.5 h-3.5 text-neutral-500" />,
     getUrl: () => `/admin/contact-messages`,
-    getTitle: (item) => item.subject || 'Contact Inquiry',
+    getTitle: (item) => item.subject || translate('admin_msg.contact_inquiry', 'Contact Inquiry'),
     getSubtitle: (item) => item.name,
   },
 };
@@ -278,8 +278,8 @@ export const AdminTopNav: React.FC<AdminTopNavProps> = ({ user, onLogout, onOpen
   }, []);
 
   const displayName = useMemo(() => 
-    user?.display_name || `${user?.first_name || ''} ${user?.last_name || ''}`.trim() || 'Admin User'
-  , [user?.display_name, user?.first_name, user?.last_name]);
+    user?.display_name || `${user?.first_name || ''} ${user?.last_name || ''}`.trim() || t('admin_msg.admin_user', 'Admin User')
+  , [user?.display_name, user?.first_name, user?.last_name, t]);
 
   return (
     <header className={`sticky top-0 z-30 flex h-16 w-full items-center justify-between px-4 sm:px-6 border-b ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-neutral-200'}`}>
@@ -316,7 +316,7 @@ export const AdminTopNav: React.FC<AdminTopNavProps> = ({ user, onLogout, onOpen
           <button 
             onClick={() => setSearchOpen(!searchOpen)}
             className="p-2 text-neutral-500 hover:bg-neutral-100 rounded-full transition-colors"
-            title="Global Search"
+            title={t('admin_ui.global_search', 'Global Search')}
           >
             <Search size={20} />
           </button>
@@ -329,7 +329,7 @@ export const AdminTopNav: React.FC<AdminTopNavProps> = ({ user, onLogout, onOpen
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search songs, sermons, news, users..."
+                  placeholder={t('admin_ui.search_songs_sermons_news_users', 'Search songs, sermons, news, users...')}
                   className={`w-full pl-9 pr-8 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 ${darkMode ? 'bg-slate-700 border-slate-600 text-white placeholder-slate-400' : 'bg-white border-neutral-300'}`}
                   autoFocus
                 />
@@ -348,7 +348,7 @@ export const AdminTopNav: React.FC<AdminTopNavProps> = ({ user, onLogout, onOpen
               {searching && (
                 <div className="py-4 text-center text-xs text-neutral-500 flex items-center justify-center gap-2">
                   <div className="w-3.5 h-3.5 border-2 border-primary-red border-t-transparent rounded-full animate-spin" />
-                  <span>Searching everything...</span>
+                  <span>{t('admin_ui.searching_everything', 'Searching everything...')}</span>
                 </div>
               )}
               {searchResults && !searching && (
@@ -357,7 +357,7 @@ export const AdminTopNav: React.FC<AdminTopNavProps> = ({ user, onLogout, onOpen
                     const typedItems = (items || []) as any[];
                     if (!Array.isArray(typedItems) || typedItems.length === 0) return null;
                     const config = SEARCH_TYPE_CONFIG[type];
-                    const label = config?.label || type.replace('_', ' ');
+                    const label = t(`admin_search.${type}`, config?.label || type.replace('_', ' '));
 
                     return (
                       <div key={type} className="py-2 first:pt-1 last:pb-1">
@@ -410,8 +410,8 @@ export const AdminTopNav: React.FC<AdminTopNavProps> = ({ user, onLogout, onOpen
                   })}
                   {Object.values(searchResults).every(arr => !Array.isArray(arr) || arr.length === 0) && (
                     <div className="text-center text-sm text-neutral-500 py-6">
-                      <p className="font-medium">No results found</p>
-                      <p className="text-xs text-neutral-400 mt-1">Try searching for songs, sermons, news, or users</p>
+                      <p className="font-medium">{t('admin_ui.no_results_found', 'No results found')}</p>
+                      <p className="text-xs text-neutral-400 mt-1">{t('admin_ui.try_searching_for_songs_sermons_news_or_user', 'Try searching for songs, sermons, news, or users')}</p>
                     </div>
                   )}
                 </div>
@@ -424,7 +424,7 @@ export const AdminTopNav: React.FC<AdminTopNavProps> = ({ user, onLogout, onOpen
           <button
             onClick={() => setLangOpen(!langOpen)}
             className="p-2 text-neutral-500 hover:bg-neutral-100 rounded-full transition-colors"
-            title="Language"
+            title={t('lang.switch', 'Language')}
           >
             <Globe size={20} />
           </button>
@@ -448,7 +448,7 @@ export const AdminTopNav: React.FC<AdminTopNavProps> = ({ user, onLogout, onOpen
         <button
           onClick={toggleDarkMode}
           className={`p-2 rounded-full transition-colors ${darkMode ? 'text-slate-400 hover:bg-slate-700' : 'text-neutral-500 hover:bg-neutral-100'}`}
-          title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+          title={darkMode ? t('admin_ui.switch_to_light_mode', 'Switch to light mode') : t('admin_ui.switch_to_dark_mode', 'Switch to dark mode')}
         >
           {darkMode ? <Sun size={20} /> : <Moon size={20} />}
         </button>
@@ -457,7 +457,7 @@ export const AdminTopNav: React.FC<AdminTopNavProps> = ({ user, onLogout, onOpen
           <button
             onClick={() => setNotificationOpen(!notificationOpen)}
             className={`relative p-2 rounded-full transition-colors ${darkMode ? 'text-slate-400 hover:bg-slate-700' : 'text-neutral-500 hover:bg-neutral-100'}`}
-            title="Notifications"
+            title={t('admin.notifications', 'Notifications')}
           >
             <Bell size={20} />
             {unreadCount > 0 && (
@@ -468,21 +468,21 @@ export const AdminTopNav: React.FC<AdminTopNavProps> = ({ user, onLogout, onOpen
           {notificationOpen && (
             <div className={`absolute right-0 mt-2 w-96 rounded-xl p-4 shadow-lg ring-1 ring-black ring-opacity-5 z-50 ${darkMode ? 'bg-slate-800' : 'bg-white'}`}>
               <div className="flex items-center justify-between mb-3">
-                <h3 className={`font-semibold ${darkMode ? 'text-slate-200' : 'text-neutral-900'}`}>Notifications</h3>
+                <h3 className={`font-semibold ${darkMode ? 'text-slate-200' : 'text-neutral-900'}`}>{t('admin.notifications', 'Notifications')}</h3>
                 {unreadCount > 0 && (
                   <button
                     onClick={handleMarkAllAsRead}
                     className="text-xs text-primary-red hover:text-primary-light-red transition-colors font-medium"
                   >
-                    Mark all as read
+                    {t('admin_ui.mark_all_as_read', 'Mark all as read')}
                   </button>
                 )}
               </div>
 
               {loadingNotifications ? (
-                <div className="text-center py-4 text-sm text-neutral-500">Loading...</div>
+                <div className="text-center py-4 text-sm text-neutral-500">{t('admin_ui.loading', 'Loading...')}</div>
               ) : notifications.length === 0 ? (
-                <div className="text-center py-4 text-sm text-neutral-500">No notifications</div>
+                <div className="text-center py-4 text-sm text-neutral-500">{t('admin_ui.no_notifications', 'No notifications')}</div>
               ) : (
                 <div className="max-h-80 overflow-y-auto space-y-2">
                   {notifications.map((notification) => (
@@ -507,7 +507,7 @@ export const AdminTopNav: React.FC<AdminTopNavProps> = ({ user, onLogout, onOpen
                             {notification.message}
                           </p>
                           <p className={`text-xs mt-1 ${darkMode ? 'text-slate-500' : 'text-neutral-400'}`}>
-                            {new Date(notification.created_at).toLocaleString()}
+                            {new Date(notification.created_at).toLocaleString(getDateLocale())}
                           </p>
                         </div>
                         <div className="flex items-center gap-1 flex-shrink-0">
@@ -515,7 +515,7 @@ export const AdminTopNav: React.FC<AdminTopNavProps> = ({ user, onLogout, onOpen
                             <button
                               onClick={() => handleMarkAsRead(notification.id)}
                               className="p-1 text-neutral-400 hover:text-primary-red transition-colors"
-                              title="Mark as read"
+                              title={t('admin_ui.mark_as_read', 'Mark as read')}
                             >
                               <Check size={14} />
                             </button>
@@ -523,7 +523,7 @@ export const AdminTopNav: React.FC<AdminTopNavProps> = ({ user, onLogout, onOpen
                           <button
                             onClick={() => handleDeleteNotification(notification.id)}
                             className="p-1 text-neutral-400 hover:text-red-600 transition-colors"
-                            title="Delete"
+                            title={t('form.delete', 'Delete')}
                           >
                             <Trash2 size={14} />
                           </button>
@@ -540,7 +540,7 @@ export const AdminTopNav: React.FC<AdminTopNavProps> = ({ user, onLogout, onOpen
                   onClick={() => setNotificationOpen(false)}
                   className="block text-center text-sm text-primary-red hover:text-primary-light-red font-medium transition-colors"
                 >
-                  View all notifications
+                  {t('admin_ui.view_all_notifications', 'View all notifications')}
                 </Link>
               </div>
             </div>
@@ -574,14 +574,14 @@ export const AdminTopNav: React.FC<AdminTopNavProps> = ({ user, onLogout, onOpen
                 onClick={() => setProfileOpen(false)}
                 className={`flex items-center gap-2 px-4 py-2 text-sm hover:bg-neutral-50 ${darkMode ? 'text-slate-200 hover:bg-slate-700' : 'text-neutral-700 hover:bg-neutral-50'}`}
               >
-                <User size={16} /> Account Settings
+                <User size={16} /> {t('admin_ui.account_settings', 'Account Settings')}
               </Link>
               <Link
                 to="/admin/account"
                 onClick={() => setProfileOpen(false)}
                 className={`flex items-center gap-2 px-4 py-2 text-sm hover:bg-neutral-50 ${darkMode ? 'text-slate-200 hover:bg-slate-700' : 'text-neutral-700 hover:bg-neutral-50'}`}
               >
-                <KeyRound size={16} /> Change Password
+                <KeyRound size={16} /> {t('admin_ui.change_password', 'Change Password')}
               </Link>
               <div className={`my-1 border-t ${darkMode ? 'border-slate-700' : 'border-neutral-100'}`} />
               <button
@@ -591,7 +591,7 @@ export const AdminTopNav: React.FC<AdminTopNavProps> = ({ user, onLogout, onOpen
                 }}
                 className="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 text-left"
               >
-                <LogOut size={16} /> Logout
+                <LogOut size={16} /> {t('admin_ui.logout', 'Logout')}
               </button>
             </div>
           )}

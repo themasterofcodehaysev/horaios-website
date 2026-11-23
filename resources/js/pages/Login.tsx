@@ -7,7 +7,9 @@ import { Card } from '../components/ui/Card';
 import { Alert } from '../components/ui/Alert';
 import { authService } from '../admin/services/auth.service';
 
+import { useLanguage, translate } from '../context/LanguageContext';
 export const LoginPage: React.FC = () => {
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
@@ -39,7 +41,7 @@ export const LoginPage: React.FC = () => {
       setError(
         err?.response?.data?.message || 
         err?.response?.data?.errors?.email?.[0] || 
-        'Invalid email or password. Please try again.'
+        translate('ui.invalid_email_or_password_please_try_again', 'Invalid email or password. Please try again.')
       );
     } finally {
       setLoading(false);
@@ -53,20 +55,20 @@ export const LoginPage: React.FC = () => {
           <div className="text-center mb-8">
             <img
               src="/images/logo.png"
-              alt="Horaios Baptist Church Logo"
+              alt={t('ui.horaios_baptist_church_logo', 'Horaios Baptist Church Logo')}
               className="w-16 h-16 rounded-full mx-auto mb-4 object-contain shadow-md"
             />
             <h1 className="text-h4 font-semibold text-neutral-900 mb-2">
-              Horaios CMS Sign In
+              {t('ui.horaios_cms_sign_in', 'Horaios CMS Sign In')}
             </h1>
             <p className="text-body-sm text-neutral-600">
-              Enter your credentials to access the admin dashboard
+              {t('ui.enter_your_credentials_to_access_the_admin_d', 'Enter your credentials to access the admin dashboard')}
             </p>
           </div>
 
           {error && (
             <div className="mb-4">
-              <Alert variant="error" title="Authentication Failed">
+              <Alert variant="error" title={t('ui.authentication_failed', 'Authentication Failed')}>
                 {error}
               </Alert>
             </div>
@@ -74,7 +76,7 @@ export const LoginPage: React.FC = () => {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
-              label="Email"
+              label={t('visit.email', 'Email')}
               type="email"
               name="email"
               placeholder="you@example.com"
@@ -84,7 +86,7 @@ export const LoginPage: React.FC = () => {
             />
 
             <Input
-              label="Password"
+              label={t('ui.password', 'Password')}
               type="password"
               name="password"
               placeholder="••••••••"
@@ -101,21 +103,21 @@ export const LoginPage: React.FC = () => {
                   onChange={(e) => setRememberMe(e.target.checked)}
                   className="rounded text-primary-red focus:ring-primary-red"
                 />
-                <span className="text-neutral-700">Remember me</span>
+                <span className="text-neutral-700">{t('ui.remember_me', 'Remember me')}</span>
               </label>
               <Link to="/forgot-password" className="text-primary-red hover:text-primary-dark-red font-medium">
-                Forgot password?
+                {t('ui.forgot_password', 'Forgot password?')}
               </Link>
             </div>
 
             <Button type="submit" variant="primary" fullWidth size="lg" disabled={loading}>
-              {loading ? 'Signing In...' : 'Sign In'}
+              {loading ? t('ui.signing_in', 'Signing In...') : t('ui.sign_in', 'Sign In')}
             </Button>
           </form>
 
           <div className="mt-8 pt-6 border-t border-neutral-200 text-center">
             <p className="text-body-xs text-neutral-500">
-              Horaios Baptist Church CMS &bull; Production Ready
+              {t('ui.horaios_baptist_church_cms_production_ready', 'Horaios Baptist Church CMS • Production Ready')}
             </p>
           </div>
         </Card>

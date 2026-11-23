@@ -8,18 +8,18 @@ import { Input } from '../components/ui/Input';
 import { Search, Sparkles, CalendarRange, Star, CalendarDays, ChevronLeft, ChevronRight, History, Clock3 } from 'lucide-react';
 import { eventService } from '../services/publicContent.service';
 import { downloadIcsFile, generateMultipleEventsIcs } from '../utils/calendar';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage, translate, getDateLocale } from '../context/LanguageContext';
 import type { EventPublic, EventCategoryPublic, PaginatedMeta } from '../types';
 
 const formatDate = (dateStr: string | null): string => {
-  if (!dateStr) return 'TBD';
-  return new Date(dateStr).toLocaleDateString(undefined, {
+  if (!dateStr) return translate('ui.tbd_caps', 'TBD');
+  return new Date(dateStr).toLocaleDateString(getDateLocale(), {
     weekday: 'short', month: 'short', day: 'numeric',
   });
 };
 
 const formatTime = (timeStr: string | null): string => {
-  if (!timeStr) return 'TBD';
+  if (!timeStr) return translate('ui.tbd_caps', 'TBD');
   const [h, m] = timeStr.split(':');
   const hour = parseInt(h, 10);
   const ampm = hour >= 12 ? 'PM' : 'AM';
@@ -112,16 +112,16 @@ export const EventsPage: React.FC = () => {
   const hasActiveFilters = !!selectedCategory || !!searchDebounced || scope !== 'upcoming';
 
   const scopeOptions: { key: Scope; label: string; icon: React.ReactNode }[] = [
-    { key: 'upcoming', label: t('events.upcoming', 'Upcoming'), icon: <Clock3 className="w-4 h-4" /> },
-    { key: 'past', label: t('events.past', 'Past'), icon: <History className="w-4 h-4" /> },
-    { key: 'all', label: t('events.all_events', 'All'), icon: <CalendarRange className="w-4 h-4" /> },
+    { key: 'upcoming', label: t('events.tab_upcoming', 'Upcoming'), icon: <Clock3 className="w-4 h-4" /> },
+    { key: 'past', label: t('events.tab_past', 'Past'), icon: <History className="w-4 h-4" /> },
+    { key: 'all', label: t('events.tab_all', 'All'), icon: <CalendarRange className="w-4 h-4" /> },
   ];
 
   const groupedByMonth: Record<string, EventPublic[]> = {};
   events.forEach((ev) => {
     const key = ev.start_date
-      ? new Date(ev.start_date).toLocaleDateString(undefined, { year: 'numeric', month: 'long' })
-      : 'Undated';
+      ? new Date(ev.start_date).toLocaleDateString(getDateLocale(), { year: 'numeric', month: 'long' })
+      : translate('ui.undated', 'Undated');
     if (!groupedByMonth[key]) groupedByMonth[key] = [];
     groupedByMonth[key].push(ev);
   });
@@ -174,7 +174,7 @@ export const EventsPage: React.FC = () => {
                     : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
                 }`}
               >
-                {t('events.all_categories', 'All')}
+                {t('events.filter_all', 'All')}
               </button>
               {categories.map((cat) => (
                 <button
@@ -243,7 +243,7 @@ export const EventsPage: React.FC = () => {
                             : formatDate(ev.start_date)
                         }
                         time={formatTime(ev.start_time)}
-                        location={ev.location || 'On Campus'}
+                        location={ev.location || translate('ui.on_campus', 'On Campus')}
                         description={ev.description || undefined}
                         image={ev.featured_image || undefined}
                         featured={ev.featured}
@@ -260,13 +260,13 @@ export const EventsPage: React.FC = () => {
             <div className="flex items-center justify-between flex-wrap gap-3">
               <h2 className="text-h4 font-bold text-neutral-900 flex items-center gap-2">
                 <CalendarDays className="w-5 h-5 text-primary-red" />
-                {scope === 'upcoming' ? t('events.upcoming', 'Upcoming Events') : scope === 'past' ? t('events.past', 'Past Events') : t('events.all_events', 'All Events')}
-                {selectedCategory && ` — ${categories.find(c => String(c.id) === selectedCategory)?.name || 'Category'}`}
-                {searchDebounced && ` matching "${searchDebounced}"`}
+                {scope === 'upcoming' ? t('events.heading_upcoming', 'Upcoming Events') : scope === 'past' ? t('events.past', 'Past Events') : t('events.all_events', 'All Events')}
+                {selectedCategory && ` — ${categories.find(c => String(c.id) === selectedCategory)?.name || translate('ui.category', 'Category')}`}
+                {searchDebounced && translate('ui.matching_query', ' matching "{query}"', { query: searchDebounced })}
               </h2>
               {meta && (
                 <span className="text-body-xs text-neutral-500 font-medium">
-                  {meta.total} {meta.total === 1 ? 'event' : 'events'}
+                  {meta.total} {meta.total === 1 ? t('ui.count_event', 'event') : t('ui.count_events', 'events')}
                 </span>
               )}
             </div>
@@ -285,14 +285,14 @@ export const EventsPage: React.FC = () => {
               <Card padding="lg" className="text-center py-16 bg-white">
                 <CalendarRange className="w-12 h-12 text-neutral-300 mx-auto mb-4" />
                 <h3 className="text-h5 font-bold text-neutral-800 mb-2">
-                  {scope === 'past' ? t('events.past', 'No Past Events') : scope === 'upcoming' ? t('events.no_upcoming', 'No Upcoming Events') : t('events.no_found', 'No Events Found')}
+                  {scope === 'past' ? t('events.empty_past', 'No Past Events') : scope === 'upcoming' ? t('events.empty_upcoming', 'No Upcoming Events') : t('events.empty_none', 'No Events Found')}
                 </h3>
                 <p className="text-body-sm text-neutral-500 max-w-sm mx-auto mb-6">
                   {hasActiveFilters
-                    ? t('events.no_found', 'Try adjusting your search, date range, or category filters.')
+                    ? t('events.empty_filters', 'Try adjusting your search, date range, or category filters.')
                     : scope === 'upcoming'
-                      ? t('events.no_upcoming', 'Check back soon — new events are added regularly.')
-                      : t('events.no_found', 'No events in the history matching these filters yet.')}
+                      ? t('events.empty_upcoming_desc', 'Check back soon — new events are added regularly.')
+                      : t('events.empty_history', 'No events in the history matching these filters yet.')}
                 </p>
                 {hasActiveFilters && (
                   <Button
@@ -337,7 +337,7 @@ export const EventsPage: React.FC = () => {
                                 : formatDate(ev.start_date)
                             }
                             time={formatTime(ev.start_time)}
-                            location={ev.location || 'On Campus'}
+                            location={ev.location || translate('ui.on_campus', 'On Campus')}
                             description={ev.description || undefined}
                             image={ev.featured_image || undefined}
                             featured={ev.featured}
@@ -361,7 +361,7 @@ export const EventsPage: React.FC = () => {
                   <ChevronLeft className="w-5 h-5" />
                 </button>
                 <span className="text-body-sm font-semibold text-neutral-700 px-4">
-                  Page {meta.current_page} of {meta.last_page}
+                  {t('ui.page', 'Page')} {meta.current_page} {t('ui.of', 'of')} {meta.last_page}
                 </span>
                 <button
                   disabled={meta.current_page >= meta.last_page || loading}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { ChevronRight, Home } from 'lucide-react';
 
+import { useLanguage } from '../../context/LanguageContext';
 export interface BreadcrumbItem {
   label: string;
   href?: string;
@@ -12,8 +13,9 @@ interface BreadcrumbProps {
 }
 
 export const Breadcrumb: React.FC<BreadcrumbProps> = ({ items, className = '' }) => {
+  const { t } = useLanguage();
   return (
-    <nav aria-label="Breadcrumb" className={`flex items-center gap-2 text-body-sm text-neutral-600 ${className}`}>
+    <nav aria-label={t('ui.breadcrumb', 'Breadcrumb')} className={`flex items-center gap-2 text-body-sm text-neutral-600 ${className}`}>
       <a href="/" className="flex items-center hover:text-primary-red transition-colors">
         <Home className="w-4 h-4" />
       </a>

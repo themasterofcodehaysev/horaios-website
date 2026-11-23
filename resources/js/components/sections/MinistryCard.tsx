@@ -1,5 +1,5 @@
-import React from 'react';
 import { Card } from '../ui/Card';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface MinistryCardProps {
   name: string;
@@ -22,6 +22,8 @@ export const MinistryCard: React.FC<MinistryCardProps> = ({
   schedule,
   onClick,
 }) => {
+  const { t } = useLanguage();
+
   return (
     <Card hoverable padding="lg" className="cursor-pointer flex flex-col" onClick={onClick}>
       {image ? (
@@ -58,14 +60,14 @@ export const MinistryCard: React.FC<MinistryCardProps> = ({
         {leader && (
           <div className="pt-3 border-t border-neutral-200">
             <p className="text-label-sm font-medium text-neutral-700">
-              Leader: <span className="text-primary-red">{leader}</span>
+              {t('cards.leader', 'Leader:')} <span className="text-primary-red">{leader}</span>
             </p>
           </div>
         )}
 
         {members && (
           <p className="text-body-xs text-neutral-500">
-            {members} members
+            {members} {t('cards.members', 'members')}
           </p>
         )}
 
@@ -76,7 +78,7 @@ export const MinistryCard: React.FC<MinistryCardProps> = ({
         )}
 
         <button className="mt-auto pt-3 border-t border-neutral-200 text-primary-red font-medium text-body-sm hover:text-primary-dark-red transition-colors">
-          Learn More →
+          {t('cards.learn_more', 'Learn More →')}
         </button>
       </div>
     </Card>

@@ -6,9 +6,11 @@ import {
 import { settingsService } from '../../services/settings.service';
 import ImageUpload from '../../components/ui/ImageUpload';
 
+import { useLanguage } from '../../../context/LanguageContext';
 const TABS = ['General', 'Contact', 'Giving', 'Social Media', 'System', 'Advanced'];
 
 export default function ChurchSettingsPage() {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState('General');
   const [settings, setSettings] = useState<Record<string, Record<string, string>>>({});
   const [loading, setLoading] = useState(true);
@@ -67,7 +69,7 @@ export default function ChurchSettingsPage() {
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Church Name</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin_ui.church_name', 'Church Name')}</label>
           <input
             type="text"
             className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
@@ -76,7 +78,7 @@ export default function ChurchSettingsPage() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Short Name</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin_ui.short_name', 'Short Name')}</label>
           <input
             type="text"
             className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
@@ -91,8 +93,8 @@ export default function ChurchSettingsPage() {
             value={settings.general?.logo || ''}
             onChange={url => handleInputChange('general', 'logo', url)}
             folder="general"
-            label="Logo"
-            helperText="Upload the church logo (PNG/SVG recommended)."
+            label={t('admin_ui.logo', 'Logo')}
+            helperText={t('admin_ui.upload_the_church_logo_png_svg_recommended', 'Upload the church logo (PNG/SVG recommended).')}
           />
         </div>
         <div>
@@ -100,23 +102,23 @@ export default function ChurchSettingsPage() {
             value={settings.general?.favicon || ''}
             onChange={url => handleInputChange('general', 'favicon', url)}
             folder="general"
-            label="Favicon"
-            helperText="Upload the favicon (ICO or PNG, 32×32)."
+            label={t('admin_ui.favicon', 'Favicon')}
+            helperText={t('admin_ui.upload_the_favicon_ico_or_png_32_32', 'Upload the favicon (ICO or PNG, 32×32).')}
           />
         </div>
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Footer Text</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin_ui.footer_text', 'Footer Text')}</label>
         <textarea
           rows={2}
           className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
           value={settings.general?.footer_text || ''}
           onChange={e => handleInputChange('general', 'footer_text', e.target.value)}
-          placeholder="Footer text description"
+          placeholder={t('admin_ui.footer_text_description', 'Footer text description')}
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Copyright</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin_ui.copyright', 'Copyright')}</label>
         <input
           type="text"
           className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
@@ -132,7 +134,7 @@ export default function ChurchSettingsPage() {
           className="bg-accent-blue hover:bg-[#152752] text-white px-5 py-2.5 rounded-lg flex items-center gap-2 transition-colors shadow-sm disabled:opacity-50 font-medium"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-          Save Changes
+          {t('admin_ui.save_changes', 'Save Changes')}
         </button>
       </div>
     </div>
@@ -141,7 +143,7 @@ export default function ChurchSettingsPage() {
   const renderContactTab = () => (
     <div className="space-y-6">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{t('visit.address', 'Address')}</label>
         <textarea
           rows={3}
           className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
@@ -151,7 +153,7 @@ export default function ChurchSettingsPage() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">{t('visit.phone', 'Phone')}</label>
           <input
             type="text"
             className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
@@ -160,7 +162,7 @@ export default function ChurchSettingsPage() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">{t('visit.email', 'Email')}</label>
           <input
             type="email"
             className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
@@ -169,7 +171,7 @@ export default function ChurchSettingsPage() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Website</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin_ui.website', 'Website')}</label>
           <input
             type="url"
             className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
@@ -178,7 +180,7 @@ export default function ChurchSettingsPage() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Google Maps Embed URL</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin_ui.google_maps_embed_url', 'Google Maps Embed URL')}</label>
           <input
             type="text"
             className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
@@ -191,10 +193,10 @@ export default function ChurchSettingsPage() {
             }}
             placeholder="https://www.google.com/maps/embed?pb=..."
           />
-          <p className="text-xs text-gray-500 mt-1">Use the embed URL or paste the full iframe code from Google Maps Share &gt; Embed a map</p>
+          <p className="text-xs text-gray-500 mt-1">{t('admin_ui.use_the_embed_url_or_paste_the_full_iframe_c', 'Use the embed URL or paste the full iframe code from Google Maps Share > Embed a map')}</p>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Google Maps Directions URL</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin_ui.google_maps_directions_url', 'Google Maps Directions URL')}</label>
           <input
             type="url"
             className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
@@ -202,12 +204,12 @@ export default function ChurchSettingsPage() {
             onChange={e => handleInputChange('contact', 'google_map_directions_url', e.target.value)}
             placeholder="https://maps.app.goo.gl/..."
           />
-          <p className="text-xs text-gray-500 mt-1">Use the short URL for directions (opens in new tab)</p>
+          <p className="text-xs text-gray-500 mt-1">{t('admin_ui.use_the_short_url_for_directions_opens_in_ne', 'Use the short URL for directions (opens in new tab)')}</p>
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Latitude</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin_ui.latitude', 'Latitude')}</label>
           <input
             type="text"
             className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
@@ -217,7 +219,7 @@ export default function ChurchSettingsPage() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Longitude</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin_ui.longitude', 'Longitude')}</label>
           <input
             type="text"
             className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
@@ -234,7 +236,7 @@ export default function ChurchSettingsPage() {
           className="bg-accent-blue hover:bg-[#152752] text-white px-5 py-2.5 rounded-lg flex items-center gap-2 transition-colors shadow-sm disabled:opacity-50 font-medium"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-          Save Changes
+          {t('admin_ui.save_changes', 'Save Changes')}
         </button>
       </div>
     </div>
@@ -248,10 +250,9 @@ export default function ChurchSettingsPage() {
           <Heart className="w-5 h-5" />
         </div>
         <div>
-          <h4 className="font-semibold text-blue-950 mb-0.5">Generous Giving & Receiving Account Configuration</h4>
+          <h4 className="font-semibold text-blue-950 mb-0.5">{t('admin_ui.generous_giving_receiving_account_configurat', 'Generous Giving & Receiving Account Configuration')}</h4>
           <p className="text-blue-800/80 text-xs leading-relaxed">
-            Configure the receiving accounts and settings for all 4 giving channels: <strong>One-Time Card</strong>, <strong>Monthly Recurring</strong>, <strong>Bank Transfer</strong>, and <strong>Mobile Banking</strong>.
-            These details will be displayed to church members and online donors on the public <strong>Generous Giving</strong> page.
+            {t('admin_ui.configure_the_receiving_accounts_and_setting', 'Configure the receiving accounts and settings for all 4 giving channels:')} <strong>{t('admin_ui.one_time_card', 'One-Time Card')}</strong>, <strong>{t('ui.monthly_recurring', 'Monthly Recurring')}</strong>, <strong>{t('ui.bank_transfer', 'Bank Transfer')}</strong>{t('admin_ui.and', ', and')} <strong>{t('ui.mobile_banking', 'Mobile Banking')}</strong>{t('admin_ui.these_details_will_be_displayed_to_church_me', '. These details will be displayed to church members and online donors on the public')} <strong>{t('give.hero.title', 'Generous Giving')}</strong> {t('admin_ui.page', 'page.')}
           </p>
         </div>
       </div>
@@ -260,47 +261,47 @@ export default function ChurchSettingsPage() {
       <div className="p-5 bg-gray-50/70 rounded-xl border border-gray-200/80 space-y-4">
         <h4 className="font-semibold text-gray-900 text-sm flex items-center gap-2">
           <Info className="w-4 h-4 text-gray-500" />
-          <span>General Giving Configuration</span>
+          <span>{t('admin_ui.general_giving_configuration', 'General Giving Configuration')}</span>
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1">
-              Overall Online Giving Status
+              {t('admin_ui.overall_online_giving_status', 'Overall Online Giving Status')}
             </label>
             <select
               className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue text-sm bg-white"
               value={settings.giving?.giving_enabled ?? 'true'}
               onChange={e => handleInputChange('giving', 'giving_enabled', e.target.value)}
             >
-              <option value="true">Enabled (Accept Contributions Online)</option>
-              <option value="false">Disabled (Temporarily Pause Online Giving)</option>
+              <option value="true">{t('admin_ui.enabled_accept_contributions_online', 'Enabled (Accept Contributions Online)')}</option>
+              <option value="false">{t('admin_ui.disabled_temporarily_pause_online_giving', 'Disabled (Temporarily Pause Online Giving)')}</option>
             </select>
           </div>
 
           <div>
             <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1">
-              Accepted Currencies
+              {t('ui.accepted_currencies', 'Accepted Currencies')}
             </label>
             <input
               type="text"
               className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue text-sm bg-white"
               value={settings.giving?.giving_currency || ''}
               onChange={e => handleInputChange('giving', 'giving_currency', e.target.value)}
-              placeholder="e.g. USD / KHR"
+              placeholder={t('admin_ui.e_g_usd_khr', 'e.g. USD / KHR')}
             />
           </div>
         </div>
 
         <div>
           <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1">
-            General Offering Note & Tax Receipt Notice
+            {t('admin_ui.general_offering_note_tax_receipt_notice', 'General Offering Note & Tax Receipt Notice')}
           </label>
           <textarea
             rows={2}
             className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue text-sm bg-white"
             value={settings.giving?.giving_note || ''}
             onChange={e => handleInputChange('giving', 'giving_note', e.target.value)}
-            placeholder="Notice regarding tax receipts, thank you message, or inquiries contact..."
+            placeholder={t('admin_ui.notice_regarding_tax_receipts_thank_you_mess', 'Notice regarding tax receipts, thank you message, or inquiries contact...')}
           />
         </div>
       </div>
@@ -313,32 +314,32 @@ export default function ChurchSettingsPage() {
               <CreditCard className="w-4 h-4" />
             </div>
             <div>
-              <h4 className="font-semibold text-gray-900 text-sm">1. One-Time Card Giving Channel</h4>
-              <p className="text-xs text-gray-500">Credit or debit card processing (Visa, Mastercard, UnionPay)</p>
+              <h4 className="font-semibold text-gray-900 text-sm">{t('admin_ui.1_one_time_card_giving_channel', '1. One-Time Card Giving Channel')}</h4>
+              <p className="text-xs text-gray-500">{t('admin_ui.credit_or_debit_card_processing_visa_masterc', 'Credit or debit card processing (Visa, Mastercard, UnionPay)')}</p>
             </div>
           </div>
           <span className="text-xs bg-gray-100 text-gray-700 px-2.5 py-0.5 rounded-full font-medium">
-            Credit / Debit Card
+            {t('admin_ui.credit_debit_card', 'Credit / Debit Card')}
           </span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-medium text-gray-700 mb-1">
-              Merchant / Receiving Account Name
+              {t('admin_ui.merchant_receiving_account_name', 'Merchant / Receiving Account Name')}
             </label>
             <input
               type="text"
               className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue text-sm"
               value={settings.giving?.giving_onetime_merchant_name || ''}
               onChange={e => handleInputChange('giving', 'giving_onetime_merchant_name', e.target.value)}
-              placeholder="e.g. Horaios Baptist Church Online"
+              placeholder={t('admin_ui.e_g_horaios_baptist_church_online', 'e.g. Horaios Baptist Church Online')}
             />
           </div>
 
           <div>
             <label className="block text-xs font-medium text-gray-700 mb-1">
-              External One-Time Portal Link (Optional)
+              {t('admin_ui.external_one_time_portal_link_optional', 'External One-Time Portal Link (Optional)')}
             </label>
             <input
               type="url"
@@ -352,14 +353,14 @@ export default function ChurchSettingsPage() {
 
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1">
-            One-Time Card Giving Notes / Security Guidelines
+            {t('admin_ui.one_time_card_giving_notes_security_guidelin', 'One-Time Card Giving Notes / Security Guidelines')}
           </label>
           <textarea
             rows={2}
             className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue text-sm"
             value={settings.giving?.giving_onetime_notes || ''}
             onChange={e => handleInputChange('giving', 'giving_onetime_notes', e.target.value)}
-            placeholder="e.g. 256-bit SSL encrypted. Digital receipts sent automatically to donor email."
+            placeholder={t('admin_ui.e_g_256_bit_ssl_encrypted_digital_receipts_s', 'e.g. 256-bit SSL encrypted. Digital receipts sent automatically to donor email.')}
           />
         </div>
       </div>
@@ -372,32 +373,32 @@ export default function ChurchSettingsPage() {
               <RefreshCw className="w-4 h-4" />
             </div>
             <div>
-              <h4 className="font-semibold text-gray-900 text-sm">2. Monthly Recurring Giving Channel</h4>
-              <p className="text-xs text-gray-500">Scheduled monthly partnership & automatic standing gifts</p>
+              <h4 className="font-semibold text-gray-900 text-sm">{t('admin_ui.2_monthly_recurring_giving_channel', '2. Monthly Recurring Giving Channel')}</h4>
+              <p className="text-xs text-gray-500">{t('admin_ui.scheduled_monthly_partnership_automatic_stan', 'Scheduled monthly partnership & automatic standing gifts')}</p>
             </div>
           </div>
           <span className="text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded-full font-medium">
-            Monthly Recurring
+            {t('ui.monthly_recurring', 'Monthly Recurring')}
           </span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-medium text-gray-700 mb-1">
-              Recurring Receiving Account / Fund Name
+              {t('admin_ui.recurring_receiving_account_fund_name', 'Recurring Receiving Account / Fund Name')}
             </label>
             <input
               type="text"
               className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue text-sm"
               value={settings.giving?.giving_recurring_account_name || ''}
               onChange={e => handleInputChange('giving', 'giving_recurring_account_name', e.target.value)}
-              placeholder="e.g. Horaios Baptist Church - Monthly Stewardship"
+              placeholder={t('admin_ui.e_g_horaios_baptist_church_monthly_stewardsh', 'e.g. Horaios Baptist Church - Monthly Stewardship')}
             />
           </div>
 
           <div>
             <label className="block text-xs font-medium text-gray-700 mb-1">
-              Recurring Standing Order Reference / Code
+              {t('admin_ui.recurring_standing_order_reference_code', 'Recurring Standing Order Reference / Code')}
             </label>
             <input
               type="text"
@@ -411,7 +412,7 @@ export default function ChurchSettingsPage() {
 
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1">
-            External Recurring Subscription URL (Optional)
+            {t('admin_ui.external_recurring_subscription_url_optional', 'External Recurring Subscription URL (Optional)')}
           </label>
           <input
             type="url"
@@ -424,14 +425,14 @@ export default function ChurchSettingsPage() {
 
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1">
-            Recurring Giving Instructions & Setup Guide
+            {t('admin_ui.recurring_giving_instructions_setup_guide', 'Recurring Giving Instructions & Setup Guide')}
           </label>
           <textarea
             rows={2}
             className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue text-sm"
             value={settings.giving?.giving_recurring_instructions || ''}
             onChange={e => handleInputChange('giving', 'giving_recurring_instructions', e.target.value)}
-            placeholder="Instructions for donors to schedule recurring standing transfers in their banking app or card..."
+            placeholder={t('admin_ui.instructions_for_donors_to_schedule_recurrin', 'Instructions for donors to schedule recurring standing transfers in their banking app or card...')}
           />
         </div>
       </div>
@@ -444,19 +445,19 @@ export default function ChurchSettingsPage() {
               <Building2 className="w-4 h-4" />
             </div>
             <div>
-              <h4 className="font-semibold text-gray-900 text-sm">3. Bank Transfer & Wire Information</h4>
-              <p className="text-xs text-gray-500">Direct deposit, local ACH, and international SWIFT wire transfers</p>
+              <h4 className="font-semibold text-gray-900 text-sm">{t('admin_ui.3_bank_transfer_wire_information', '3. Bank Transfer & Wire Information')}</h4>
+              <p className="text-xs text-gray-500">{t('admin_ui.direct_deposit_local_ach_and_international_s', 'Direct deposit, local ACH, and international SWIFT wire transfers')}</p>
             </div>
           </div>
           <span className="text-xs bg-blue-50 text-blue-700 border border-blue-200 px-2.5 py-0.5 rounded-full font-medium">
-            Bank Transfer
+            {t('ui.bank_transfer', 'Bank Transfer')}
           </span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-medium text-gray-700 mb-1">
-              Beneficiary Account Name <span className="text-primary-red">*</span>
+              {t('admin_ui.beneficiary_account_name', 'Beneficiary Account Name')} <span className="text-primary-red">*</span>
             </label>
             <input
               type="text"
@@ -472,14 +473,14 @@ export default function ChurchSettingsPage() {
 
           <div>
             <label className="block text-xs font-medium text-gray-700 mb-1">
-              Bank / Financial Institution Name <span className="text-primary-red">*</span>
+              {t('admin_ui.bank_financial_institution_name', 'Bank / Financial Institution Name')} <span className="text-primary-red">*</span>
             </label>
             <input
               type="text"
               className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue text-sm"
               value={settings.giving?.giving_bank_name || ''}
               onChange={e => handleInputChange('giving', 'giving_bank_name', e.target.value)}
-              placeholder="e.g. ABA Bank / Canadia Bank"
+              placeholder={t('admin_ui.e_g_aba_bank_canadia_bank', 'e.g. ABA Bank / Canadia Bank')}
             />
           </div>
         </div>
@@ -487,7 +488,7 @@ export default function ChurchSettingsPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="block text-xs font-medium text-gray-700 mb-1">
-              USD Account Number <span className="text-primary-red">*</span>
+              {t('ui.usd_account_number', 'USD Account Number')} <span className="text-primary-red">*</span>
             </label>
             <input
               type="text"
@@ -503,7 +504,7 @@ export default function ChurchSettingsPage() {
 
           <div>
             <label className="block text-xs font-medium text-gray-700 mb-1">
-              KHR (Riel) Account Number
+              {t('admin_ui.khr_riel_account_number', 'KHR (Riel) Account Number')}
             </label>
             <input
               type="text"
@@ -516,7 +517,7 @@ export default function ChurchSettingsPage() {
 
           <div>
             <label className="block text-xs font-medium text-gray-700 mb-1">
-              SWIFT / BIC Code
+              {t('ui.swift_bic_code', 'SWIFT / BIC Code')}
             </label>
             <input
               type="text"
@@ -531,41 +532,41 @@ export default function ChurchSettingsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-medium text-gray-700 mb-1">
-              Bank Branch & Physical Address
+              {t('admin_ui.bank_branch_physical_address', 'Bank Branch & Physical Address')}
             </label>
             <input
               type="text"
               className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue text-sm"
               value={settings.giving?.giving_bank_branch || ''}
               onChange={e => handleInputChange('giving', 'giving_bank_branch', e.target.value)}
-              placeholder="e.g. Boeung Tompun Branch, Phnom Penh, Cambodia"
+              placeholder={t('admin_ui.e_g_boeung_tompun_branch_phnom_penh_cambodia', 'e.g. Boeung Tompun Branch, Phnom Penh, Cambodia')}
             />
           </div>
 
           <div>
             <label className="block text-xs font-medium text-gray-700 mb-1">
-              Wire Transfer Memo / Reference Template
+              {t('admin_ui.wire_transfer_memo_reference_template', 'Wire Transfer Memo / Reference Template')}
             </label>
             <input
               type="text"
               className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue text-sm"
               value={settings.giving?.giving_bank_wire_memo || ''}
               onChange={e => handleInputChange('giving', 'giving_bank_wire_memo', e.target.value)}
-              placeholder="e.g. [Your Name] - Tithe/Offering"
+              placeholder={t('admin_ui.e_g_your_name_tithe_offering', 'e.g. [Your Name] - Tithe/Offering')}
             />
           </div>
         </div>
 
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1">
-            Bank Transfer & Wire Instructions
+            {t('admin_ui.bank_transfer_wire_instructions', 'Bank Transfer & Wire Instructions')}
           </label>
           <textarea
             rows={2}
             className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue text-sm"
             value={settings.giving?.giving_bank_instructions || ''}
             onChange={e => handleInputChange('giving', 'giving_bank_instructions', e.target.value)}
-            placeholder="Detailed instructions for domestic and international wire transfers..."
+            placeholder={t('admin_ui.detailed_instructions_for_domestic_and_inter', 'Detailed instructions for domestic and international wire transfers...')}
           />
         </div>
       </div>
@@ -578,12 +579,12 @@ export default function ChurchSettingsPage() {
               <Smartphone className="w-4 h-4" />
             </div>
             <div>
-              <h4 className="font-semibold text-gray-900 text-sm">4. Mobile Banking & QR Code Channel</h4>
-              <p className="text-xs text-gray-500">ABA Mobile, Bakong, Wing, Acleda, and KHQR mobile scan</p>
+              <h4 className="font-semibold text-gray-900 text-sm">{t('admin_ui.4_mobile_banking_qr_code_channel', '4. Mobile Banking & QR Code Channel')}</h4>
+              <p className="text-xs text-gray-500">{t('admin_ui.aba_mobile_bakong_wing_acleda_and_khqr_mobil', 'ABA Mobile, Bakong, Wing, Acleda, and KHQR mobile scan')}</p>
             </div>
           </div>
           <span className="text-xs bg-purple-50 text-purple-700 border border-purple-200 px-2.5 py-0.5 rounded-full font-medium">
-            Mobile Banking
+            {t('ui.mobile_banking', 'Mobile Banking')}
           </span>
         </div>
 
@@ -593,28 +594,28 @@ export default function ChurchSettingsPage() {
               value={settings.giving?.giving_qr_image || ''}
               onChange={url => handleInputChange('giving', 'giving_qr_image', url)}
               folder="giving"
-              label="Banking KHQR Code Image"
-              helperText="Upload the official KHQR / Bakong / ABA QR code image for members to scan on mobile."
+              label={t('admin_ui.banking_khqr_code_image', 'Banking KHQR Code Image')}
+              helperText={t('admin_ui.upload_the_official_khqr_bakong_aba_qr_code_', 'Upload the official KHQR / Bakong / ABA QR code image for members to scan on mobile.')}
             />
           </div>
 
           <div className="space-y-4">
             <div>
               <label className="block text-xs font-medium text-gray-700 mb-1">
-                Supported Mobile Apps / Providers
+                {t('admin_ui.supported_mobile_apps_providers', 'Supported Mobile Apps / Providers')}
               </label>
               <input
                 type="text"
                 className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue text-sm"
                 value={settings.giving?.giving_mobile_provider || ''}
                 onChange={e => handleInputChange('giving', 'giving_mobile_provider', e.target.value)}
-                placeholder="e.g. ABA Mobile, Bakong, Wing, Acleda"
+                placeholder={t('admin_ui.e_g_aba_mobile_bakong_wing_acleda', 'e.g. ABA Mobile, Bakong, Wing, Acleda')}
               />
             </div>
 
             <div>
               <label className="block text-xs font-medium text-gray-700 mb-1">
-                Mobile Account Beneficiary Name
+                {t('admin_ui.mobile_account_beneficiary_name', 'Mobile Account Beneficiary Name')}
               </label>
               <input
                 type="text"
@@ -628,7 +629,7 @@ export default function ChurchSettingsPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">
-                  Mobile Account / Bakong ID
+                  {t('admin_ui.mobile_account_bakong_id', 'Mobile Account / Bakong ID')}
                 </label>
                 <input
                   type="text"
@@ -641,7 +642,7 @@ export default function ChurchSettingsPage() {
 
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">
-                  Payee Contact Phone
+                  {t('admin_ui.payee_contact_phone', 'Payee Contact Phone')}
                 </label>
                 <input
                   type="text"
@@ -657,7 +658,7 @@ export default function ChurchSettingsPage() {
 
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1">
-            Mobile Banking Step-by-Step Instructions
+            {t('admin_ui.mobile_banking_step_by_step_instructions', 'Mobile Banking Step-by-Step Instructions')}
           </label>
           <textarea
             rows={3}
@@ -667,7 +668,7 @@ export default function ChurchSettingsPage() {
               handleInputChange('giving', 'giving_mobile_instructions', e.target.value);
               handleInputChange('giving', 'giving_instructions', e.target.value);
             }}
-            placeholder="1. Open ABA Mobile, Bakong, or Wing...&#10;2. Tap Transfer or Scan KHQR...&#10;3. Enter account or scan QR..."
+            placeholder={t('admin_msg.mobile_steps_placeholder', '1. Open ABA Mobile, Bakong, or Wing...\n2. Tap Transfer or Scan KHQR...\n3. Enter account or scan QR...')}
           />
         </div>
       </div>
@@ -680,7 +681,7 @@ export default function ChurchSettingsPage() {
           className="bg-accent-blue hover:bg-[#152752] text-white px-6 py-2.5 rounded-lg flex items-center gap-2 transition-colors shadow-sm disabled:opacity-50 font-medium text-sm"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-          Save Giving Settings
+          {t('admin_ui.save_giving_settings', 'Save Giving Settings')}
         </button>
       </div>
     </div>
@@ -707,7 +708,7 @@ export default function ChurchSettingsPage() {
           className="bg-accent-blue hover:bg-[#152752] text-white px-5 py-2.5 rounded-lg flex items-center gap-2 transition-colors shadow-sm disabled:opacity-50 font-medium"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-          Save Changes
+          {t('admin_ui.save_changes', 'Save Changes')}
         </button>
       </div>
     </div>
@@ -717,7 +718,7 @@ export default function ChurchSettingsPage() {
   const renderLocalizationTab = () => (
     <div className="space-y-6">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Timezone</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin_ui.timezone', 'Timezone')}</label>
         <select
           className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
           value={settings.system?.timezone || 'UTC'}
@@ -731,15 +732,15 @@ export default function ChurchSettingsPage() {
         </select>
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Default Language</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin_ui.default_language', 'Default Language')}</label>
         <select
           className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
           value={settings.system?.default_language || 'en'}
           onChange={e => handleInputChange('system', 'default_language', e.target.value)}
         >
-          <option value="en">English</option>
-          <option value="km">Khmer</option>
-          <option value="zh">Chinese</option>
+          <option value="en">{t('lang.en', 'English')}</option>
+          <option value="km">{t('admin_ui.khmer', 'Khmer')}</option>
+          <option value="zh">{t('admin_ui.chinese', 'Chinese')}</option>
         </select>
       </div>
       <div className="flex justify-end pt-4 border-t border-gray-100">
@@ -749,7 +750,7 @@ export default function ChurchSettingsPage() {
           className="bg-accent-blue hover:bg-[#152752] text-white px-5 py-2.5 rounded-lg flex items-center gap-2 transition-colors shadow-sm disabled:opacity-50 font-medium"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-          Save Changes
+          {t('admin_ui.save_changes', 'Save Changes')}
         </button>
       </div>
     </div>
@@ -765,20 +766,20 @@ export default function ChurchSettingsPage() {
           onChange={e => handleInputChange('advanced', 'maintenance_mode', e.target.checked ? 'true' : 'false')}
           className="w-4 h-4 text-accent-blue border-gray-300 rounded focus:ring-accent-blue"
         />
-        <label htmlFor="maintenance_mode" className="text-sm font-medium text-gray-700">Maintenance Mode</label>
+        <label htmlFor="maintenance_mode" className="text-sm font-medium text-gray-700">{t('admin_ui.maintenance_mode', 'Maintenance Mode')}</label>
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Maintenance Message</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin_ui.maintenance_message', 'Maintenance Message')}</label>
         <textarea
           rows={3}
           className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
           value={settings.advanced?.maintenance_message || ''}
           onChange={e => handleInputChange('advanced', 'maintenance_message', e.target.value)}
-          placeholder="Message to show during maintenance"
+          placeholder={t('admin_ui.message_to_show_during_maintenance', 'Message to show during maintenance')}
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Analytics ID</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin_ui.analytics_id', 'Analytics ID')}</label>
         <input
           type="text"
           className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue"
@@ -788,7 +789,7 @@ export default function ChurchSettingsPage() {
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Custom CSS</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin_ui.custom_css', 'Custom CSS')}</label>
         <textarea
           rows={5}
           className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue font-mono text-sm"
@@ -798,7 +799,7 @@ export default function ChurchSettingsPage() {
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Custom JavaScript</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin_ui.custom_javascript', 'Custom JavaScript')}</label>
         <textarea
           rows={5}
           className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-accent-blue focus:border-accent-blue font-mono text-sm"
@@ -814,7 +815,7 @@ export default function ChurchSettingsPage() {
           className="bg-accent-blue hover:bg-[#152752] text-white px-5 py-2.5 rounded-lg flex items-center gap-2 transition-colors shadow-sm disabled:opacity-50 font-medium"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-          Save Changes
+          {t('admin_ui.save_changes', 'Save Changes')}
         </button>
       </div>
     </div>
@@ -823,8 +824,8 @@ export default function ChurchSettingsPage() {
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900">Church Settings</h1>
-        <p className="text-sm text-gray-500 mt-1">Manage global configuration and details for the church.</p>
+        <h1 className="text-2xl font-semibold text-gray-900">{t('admin.settings', 'Church Settings')}</h1>
+        <p className="text-sm text-gray-500 mt-1">{t('admin_ui.manage_global_configuration_and_details_for_', 'Manage global configuration and details for the church.')}</p>
       </div>
 
       {message && (
@@ -844,7 +845,7 @@ export default function ChurchSettingsPage() {
                 activeTab === tab ? 'text-accent-blue' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50/50'
               }`}
             >
-              {tab}
+              {t(`admin_tab.${tab}`, tab)}
               {activeTab === tab && (
                 <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent-blue rounded-t-full" />
               )}
@@ -853,7 +854,7 @@ export default function ChurchSettingsPage() {
         </div>
         
         <div className="p-6 md:p-8">
-          <h2 className="text-lg font-semibold text-gray-900 mb-6">{activeTab} Settings</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-6">{t('admin_ui.settings', 'Settings')} {t(`admin_tab.${activeTab}`, activeTab)}</h2>
           {activeTab === 'General' && renderGeneralTab()}
           {activeTab === 'Contact' && renderContactTab()}
           {activeTab === 'Giving' && renderGivingTab()}

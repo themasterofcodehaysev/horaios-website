@@ -24,7 +24,7 @@ import { leaderService } from '../admin/services/leader.service';
 import type { Leader } from '../admin/types';
 import { getImageUrl } from '../utils/imageUrl';
 import { useSiteSettings } from '../context/SiteSettingsContext';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage, translate } from '../context/LanguageContext';
 
 export const AboutPage: React.FC = () => {
   const navigate = useNavigate();
@@ -105,13 +105,13 @@ export const AboutPage: React.FC = () => {
               <div className="relative rounded-3xl overflow-hidden shadow-elevation-lg aspect-[4/3] bg-neutral-100 border border-neutral-200/60">
                 <img 
                   src={placeholderImage(600, 450, 'Church Building & Worship')} 
-                  alt="Horaios Baptist Church Sanctuary" 
+                  alt={t('ui.horaios_baptist_church_sanctuary', 'Horaios Baptist Church Sanctuary')} 
                   className="w-full h-full object-cover" 
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                 <div className="absolute bottom-4 left-4 right-4 p-4 rounded-xl bg-white/95 backdrop-blur-md border border-white/40 shadow-sm">
-                  <p className="text-label-md font-bold text-neutral-900">Horaios Baptist Church Cambodia</p>
-                  <p className="text-caption text-primary-red font-semibold">Boeung Tompun, Phnom Penh</p>
+                  <p className="text-label-md font-bold text-neutral-900">{t('ui.horaios_baptist_church_cambodia', 'Horaios Baptist Church Cambodia')}</p>
+                  <p className="text-caption text-primary-red font-semibold">{t('ui.boeung_tompun_phnom_penh', 'Boeung Tompun, Phnom Penh')}</p>
                 </div>
               </div>
             </div>
@@ -204,7 +204,7 @@ export const AboutPage: React.FC = () => {
                 </p>
               </div>
               <div className="pt-3 border-t border-neutral-100 text-caption font-bold text-primary-navy">
-                2 Timothy 3:16-17
+                {t('ui.2_timothy_3_16_17', '2 Timothy 3:16-17')}
               </div>
             </div>
 
@@ -221,7 +221,7 @@ export const AboutPage: React.FC = () => {
                 </p>
               </div>
               <div className="pt-3 border-t border-neutral-100 text-caption font-bold text-primary-red">
-                Matthew 28:19
+                {t('ui.matthew_28_19', 'Matthew 28:19')}
               </div>
             </div>
 
@@ -238,7 +238,7 @@ export const AboutPage: React.FC = () => {
                 </p>
               </div>
               <div className="pt-3 border-t border-neutral-100 text-caption font-bold text-amber-700">
-                John 14:6 • Ephesians 2:8-9
+                {t('ui.john_14_6_ephesians_2_8_9', 'John 14:6 • Ephesians 2:8-9')}
               </div>
             </div>
 
@@ -255,7 +255,7 @@ export const AboutPage: React.FC = () => {
                 </p>
               </div>
               <div className="pt-3 border-t border-neutral-100 text-caption font-bold text-emerald-700">
-                Acts 2:42-47 • Matthew 28:19
+                {t('ui.acts_2_42_47_matthew_28_19', 'Acts 2:42-47 • Matthew 28:19')}
               </div>
             </div>
 
@@ -327,11 +327,11 @@ export const AboutPage: React.FC = () => {
           {loadingLeaders ? (
             <div className="py-16 flex justify-center items-center gap-3 text-neutral-500">
               <Loader2 className="w-7 h-7 animate-spin text-primary-red" />
-              <span className="text-body-base font-medium">Loading leadership team...</span>
+              <span className="text-body-base font-medium">{t('ui.loading_leadership_team', 'Loading leadership team...')}</span>
             </div>
           ) : leaders.length === 0 ? (
             <div className="text-center py-12 text-neutral-500 text-body-base">
-              No leadership members published yet.
+              {t('ui.no_leadership_members_published_yet', 'No leadership members published yet.')}
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -351,7 +351,7 @@ export const AboutPage: React.FC = () => {
                     ) : (
                       <div className="w-full h-full flex flex-col items-center justify-center text-neutral-400">
                         <User className="w-16 h-16 opacity-40" />
-                        <span className="text-[11px] font-semibold text-neutral-400 mt-2">Pastoral Leader</span>
+                        <span className="text-[11px] font-semibold text-neutral-400 mt-2">{t('ui.pastoral_leader', 'Pastoral Leader')}</span>
                       </div>
                     )}
 
@@ -377,7 +377,7 @@ export const AboutPage: React.FC = () => {
                         </h4>
                         <div className="w-8 h-0.5 bg-white/40 my-2.5 rounded-full" />
                         <p className="text-xs text-white/90 leading-relaxed line-clamp-6 font-normal">
-                          {leader.bio || "Dedicated servant of Christ Jesus, fostering discipleship and spiritual growth within the church family."}
+                          {leader.bio || translate('ui.dedicated_servant_of_christ_jesus_fostering_', 'Dedicated servant of Christ Jesus, fostering discipleship and spiritual growth within the church family.')}
                         </p>
                       </div>
 
@@ -387,7 +387,7 @@ export const AboutPage: React.FC = () => {
                           <a
                             href={`mailto:${leader.email}`}
                             className="w-8 h-8 rounded-lg bg-white/20 hover:bg-white text-white hover:text-primary-red flex items-center justify-center transition-colors shadow-xs"
-                            title={`Email ${leader.name}`}
+                            title={translate('ui.email_name', 'Email {name}', { name: leader.name })}
                           >
                             <Mail className="w-3.5 h-3.5" />
                           </a>
@@ -396,7 +396,7 @@ export const AboutPage: React.FC = () => {
                           <a
                             href={`tel:${leader.phone}`}
                             className="w-8 h-8 rounded-lg bg-white/20 hover:bg-white text-white hover:text-primary-red flex items-center justify-center transition-colors shadow-xs"
-                            title={`Call ${leader.name}`}
+                            title={translate('ui.call_name', 'Call {name}', { name: leader.name })}
                           >
                             <Phone className="w-3.5 h-3.5" />
                           </a>
@@ -407,13 +407,13 @@ export const AboutPage: React.FC = () => {
                             target="_blank"
                             rel="noreferrer"
                             className="w-8 h-8 rounded-lg bg-white/20 hover:bg-white text-white hover:text-primary-red flex items-center justify-center transition-colors shadow-xs"
-                            title="Facebook Profile"
+                            title={t('ui.facebook_profile', 'Facebook Profile')}
                           >
                             <Globe className="w-3.5 h-3.5" />
                           </a>
                         )}
                         <span className="text-[10px] text-white/80 ml-auto font-semibold tracking-wide">
-                          Reach Out →
+                          {t('ui.reach_out', 'Reach Out →')}
                         </span>
                       </div>
                     </div>

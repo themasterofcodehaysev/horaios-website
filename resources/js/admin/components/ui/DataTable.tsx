@@ -3,6 +3,7 @@ import { SkeletonLoader } from './SkeletonLoader';
 import { EmptyState } from './EmptyState';
 import { Inbox } from 'lucide-react';
 
+import { translate } from '../../../context/LanguageContext';
 export interface Column<T> {
   key: string;
   label: string;
@@ -24,7 +25,7 @@ export function DataTable<T extends Record<string, any>>({
   columns,
   data,
   loading = false,
-  emptyMessage = 'No data available',
+  emptyMessage = translate('admin_msg.no_data_available', 'No data available'),
   onRowClick
 }: DataTableProps<T>) {
   if (loading) {

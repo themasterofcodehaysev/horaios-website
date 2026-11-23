@@ -4,7 +4,7 @@ import { Layout } from '../components/layout';
 import { SongCard } from '../components/sections';
 import { songService } from '../admin/services/song.service';
 import type { SongItem, SongCategory, PaginatedResponse } from '../admin/types';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage, translate } from '../context/LanguageContext';
 
 export const SongsPage: React.FC = () => {
   const { t } = useLanguage();
@@ -150,11 +150,11 @@ export const SongsPage: React.FC = () => {
         <div>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-h4 font-bold text-neutral-900">
-              {selectedCategory ? `${categories.find(c => String(c.id) === selectedCategory)?.name || 'Category'} Songs` : t('songs.all_songs', 'All Worship Songs')}
+              {selectedCategory ? translate('ui.category_songs', '{category} Songs', { category: categories.find(c => String(c.id) === selectedCategory)?.name || translate('ui.category', 'Category') }) : t('songs.all_songs', 'All Worship Songs')}
             </h2>
             {meta && (
               <span className="text-body-xs text-neutral-500 font-medium">
-                {meta.total} {meta.total === 1 ? 'song' : 'songs'} available
+                {meta.total} {meta.total === 1 ? t('ui.count_song', 'song') : t('ui.count_songs', 'songs')} {t('ui.available', 'available')}
               </span>
             )}
           </div>
@@ -203,7 +203,7 @@ export const SongsPage: React.FC = () => {
               <ChevronLeft className="w-5 h-5" />
             </button>
             <span className="text-body-sm font-semibold text-neutral-700 px-4">
-              Page {meta.current_page} of {meta.last_page}
+              {t('ui.page', 'Page')} {meta.current_page} {t('ui.of', 'of')} {meta.last_page}
             </span>
             <button
               disabled={meta.current_page >= meta.last_page}

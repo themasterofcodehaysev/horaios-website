@@ -4,6 +4,7 @@ import { Badge } from '../ui/Badge';
 import { Play } from 'lucide-react';
 import { getImageUrl } from '../../utils/imageUrl';
 import { getYouTubeThumbnail } from '../../utils/youtube';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface SermonCardProps {
   title: string;
@@ -26,6 +27,7 @@ export const SermonCard: React.FC<SermonCardProps> = ({
   description,
   onClick,
 }) => {
+  const { t } = useLanguage();
   const thumbUrl = image ? getImageUrl(image) : (videoUrl ? getYouTubeThumbnail(videoUrl) : null);
 
   return (
@@ -83,7 +85,7 @@ export const SermonCard: React.FC<SermonCardProps> = ({
 
         <div className="pt-3 border-t border-neutral-200 mt-auto">
           <button className="text-primary-red font-medium text-body-sm hover:text-primary-dark-red transition-colors">
-            Watch Sermon →
+            {t('sermons.watch_sermon_card', 'Watch Sermon →')}
           </button>
         </div>
       </div>

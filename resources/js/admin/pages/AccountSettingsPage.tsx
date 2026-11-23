@@ -5,7 +5,9 @@ import { useAuth } from '../context/AuthContext';
 import { useToast } from '../hooks/useToast';
 import { authService } from '../services/auth.service';
 
+import { useLanguage, translate } from '../../context/LanguageContext';
 export default function AccountSettingsPage() {
+  const { t } = useLanguage();
   const { user } = useAuth();
   const { addToast } = useToast();
 
@@ -25,21 +27,21 @@ export default function AccountSettingsPage() {
     setError(null);
 
     if (newPassword !== confirmPassword) {
-      setError('New password and confirmation do not match.');
+      setError(t('admin_ui.new_password_and_confirmation_do_not_match', 'New password and confirmation do not match.'));
       return;
     }
 
     setSaving(true);
     try {
       await authService.changePassword(currentPassword, newPassword);
-      addToast({ type: 'success', title: 'Password changed', message: 'Your password has been updated.' });
+      addToast({ type: 'success', title: t('admin_ui.password_changed', 'Password changed'), message: t('admin_ui.your_password_has_been_updated', 'Your password has been updated.') });
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
     } catch (err: any) {
-      const message = err?.response?.data?.message || 'Failed to change password. Please check your current password.';
+      const message = err?.response?.data?.message || translate('admin_msg.failed_to_change_password_please_check_your_curr', 'Failed to change password. Please check your current password.');
       setError(message);
-      addToast({ type: 'error', title: 'Could not change password', message });
+      addToast({ type: 'error', title: t('admin_ui.could_not_change_password', 'Could not change password'), message });
     } finally {
       setSaving(false);
     }
@@ -47,25 +49,25 @@ export default function AccountSettingsPage() {
 
   return (
     <div>
-      <PageHeader title="Account Settings" description="Manage your profile and password." />
+      <PageHeader title={t('admin_ui.account_settings', 'Account Settings')} description={t('admin_ui.manage_your_profile_and_password', 'Manage your profile and password.')} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="bg-white border border-gray-200 rounded-xl p-6">
           <div className="flex items-center gap-2 mb-4">
             <UserCircle className="w-5 h-5 text-gray-400" />
-            <h2 className="text-lg font-semibold text-gray-900">Profile</h2>
+            <h2 className="text-lg font-semibold text-gray-900">{t('admin_ui.profile', 'Profile')}</h2>
           </div>
           <dl className="space-y-3 text-sm">
             <div>
-              <dt className="text-gray-500">Name</dt>
+              <dt className="text-gray-500">{t('contact.form.name', 'Name')}</dt>
               <dd className="font-medium text-gray-900">{displayName || '—'}</dd>
             </div>
             <div>
-              <dt className="text-gray-500">Email</dt>
+              <dt className="text-gray-500">{t('visit.email', 'Email')}</dt>
               <dd className="font-medium text-gray-900">{user?.email || '—'}</dd>
             </div>
             <div>
-              <dt className="text-gray-500">Role</dt>
+              <dt className="text-gray-500">{t('admin_ui.role', 'Role')}</dt>
               <dd className="font-medium text-gray-900">{user?.role?.display_name || user?.role?.name || '—'}</dd>
             </div>
           </dl>
@@ -74,7 +76,7 @@ export default function AccountSettingsPage() {
         <div className="lg:col-span-2 bg-white border border-gray-200 rounded-xl p-6">
           <div className="flex items-center gap-2 mb-4">
             <KeyRound className="w-5 h-5 text-gray-400" />
-            <h2 className="text-lg font-semibold text-gray-900">Change Password</h2>
+            <h2 className="text-lg font-semibold text-gray-900">{t('admin_ui.change_password', 'Change Password')}</h2>
           </div>
 
           {error && (
@@ -85,7 +87,7 @@ export default function AccountSettingsPage() {
 
           <form onSubmit={handleChangePassword} className="space-y-4 max-w-sm">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin_ui.current_password', 'Current Password')}</label>
               <div className="relative">
                 <input
                   type={showCurrentPassword ? 'text' : 'password'}
@@ -99,15 +101,15 @@ export default function AccountSettingsPage() {
                   onClick={() => setShowCurrentPassword(!showCurrentPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1 focus:outline-none cursor-pointer"
                   tabIndex={-1}
-                  aria-label={showCurrentPassword ? 'Hide password' : 'Show password'}
-                  title={showCurrentPassword ? 'Hide password' : 'Show password'}
+                  aria-label={showCurrentPassword ? t('ui.hide_password', 'Hide password') : t('ui.show_password', 'Show password')}
+                  title={showCurrentPassword ? t('ui.hide_password', 'Hide password') : t('ui.show_password', 'Show password')}
                 >
                   {showCurrentPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('ui.new_password', 'New Password')}</label>
               <div className="relative">
                 <input
                   type={showNewPassword ? 'text' : 'password'}
@@ -121,15 +123,15 @@ export default function AccountSettingsPage() {
                   onClick={() => setShowNewPassword(!showNewPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1 focus:outline-none cursor-pointer"
                   tabIndex={-1}
-                  aria-label={showNewPassword ? 'Hide password' : 'Show password'}
-                  title={showNewPassword ? 'Hide password' : 'Show password'}
+                  aria-label={showNewPassword ? t('ui.hide_password', 'Hide password') : t('ui.show_password', 'Show password')}
+                  title={showNewPassword ? t('ui.hide_password', 'Hide password') : t('ui.show_password', 'Show password')}
                 >
                   {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('ui.confirm_new_password', 'Confirm New Password')}</label>
               <div className="relative">
                 <input
                   type={showConfirmPassword ? 'text' : 'password'}
@@ -143,8 +145,8 @@ export default function AccountSettingsPage() {
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1 focus:outline-none cursor-pointer"
                   tabIndex={-1}
-                  aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
-                  title={showConfirmPassword ? 'Hide password' : 'Show password'}
+                  aria-label={showConfirmPassword ? t('ui.hide_password', 'Hide password') : t('ui.show_password', 'Show password')}
+                  title={showConfirmPassword ? t('ui.hide_password', 'Hide password') : t('ui.show_password', 'Show password')}
                 >
                   {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -155,7 +157,7 @@ export default function AccountSettingsPage() {
               disabled={saving}
               className="px-5 py-2.5 bg-neutral-900 text-white rounded-lg text-sm font-medium hover:bg-neutral-800 transition-colors disabled:opacity-50"
             >
-              {saving ? 'Saving...' : 'Update Password'}
+              {saving ? t('admin_ui.saving', 'Saving...') : t('admin_ui.update_password', 'Update Password')}
             </button>
           </form>
         </div>

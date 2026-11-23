@@ -126,7 +126,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       >
         <div className={`flex items-center justify-between h-16 px-4 border-b ${darkMode ? 'border-slate-700' : 'border-neutral-200'}`}>
           <div className="flex items-center gap-3 overflow-hidden">
-            <img src="/images/logo.png" alt="Logo" className="w-8 h-8 object-contain flex-shrink-0" />
+            <img src="/images/logo.png" alt={t('admin_ui.logo', 'Logo')} className="w-8 h-8 object-contain flex-shrink-0" />
             {!collapsed && (
               <span className={`font-semibold truncate ${darkMode ? 'text-slate-200' : 'text-neutral-900'}`}>Horaios Admin</span>
             )}
@@ -189,7 +189,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
           <button
             onClick={onToggleCollapse}
             className={`flex w-full items-center justify-center p-2 rounded-md transition-colors hidden lg:flex ${darkMode ? 'text-slate-400 hover:bg-slate-700' : 'text-neutral-500 hover:bg-neutral-100'}`}
-            title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            title={collapsed ? t('admin_ui.expand_sidebar', 'Expand sidebar') : t('admin_ui.collapse_sidebar', 'Collapse sidebar')}
           >
             {collapsed ? <ChevronsRight size={20} /> : <ChevronsLeft size={20} />}
           </button>

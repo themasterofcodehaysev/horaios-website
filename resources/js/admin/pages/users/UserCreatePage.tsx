@@ -5,7 +5,9 @@ import { userService } from '../../services/user.service';
 import { roleService } from '../../services/role.service';
 import { Role } from '../../types';
 
+import { useLanguage, translate } from '../../../context/LanguageContext';
 export default function UserCreatePage() {
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [roles, setRoles] = useState<Role[]>([]);
@@ -44,16 +46,16 @@ export default function UserCreatePage() {
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
-    if (!formData.first_name) newErrors.first_name = 'First name is required';
-    if (!formData.last_name) newErrors.last_name = 'Last name is required';
-    if (!formData.email) newErrors.email = 'Email is required';
-    else if (!/^\S+@\S+\.\S+$/.test(formData.email)) newErrors.email = 'Invalid email format';
+    if (!formData.first_name) newErrors.first_name = translate('admin_msg.first_name_is_required', 'First name is required');
+    if (!formData.last_name) newErrors.last_name = translate('admin_msg.last_name_is_required', 'Last name is required');
+    if (!formData.email) newErrors.email = translate('admin_msg.email_is_required', 'Email is required');
+    else if (!/^\S+@\S+\.\S+$/.test(formData.email)) newErrors.email = translate('admin_msg.invalid_email_format', 'Invalid email format');
     
-    if (!formData.password) newErrors.password = 'Password is required';
-    else if (formData.password.length < 8) newErrors.password = 'Password must be at least 8 characters';
+    if (!formData.password) newErrors.password = translate('admin_msg.password_is_required', 'Password is required');
+    else if (formData.password.length < 8) newErrors.password = translate('admin_msg.password_must_be_at_least_8_characters', 'Password must be at least 8 characters');
     
-    if (formData.password !== formData.confirm_password) newErrors.confirm_password = 'Passwords do not match';
-    if (!formData.role_id) newErrors.role_id = 'Role is required';
+    if (formData.password !== formData.confirm_password) newErrors.confirm_password = translate('admin_msg.passwords_do_not_match', 'Passwords do not match');
+    if (!formData.role_id) newErrors.role_id = translate('admin_msg.role_is_required', 'Role is required');
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -114,20 +116,20 @@ export default function UserCreatePage() {
           <ArrowLeft size={20} />
         </button>
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">Create User</h1>
-          <p className="text-sm text-gray-500">Add a new user to the system</p>
+          <h1 className="text-2xl font-semibold text-gray-900">{t('admin_ui.create_user', 'Create User')}</h1>
+          <p className="text-sm text-gray-500">{t('admin_ui.add_a_new_user_to_the_system', 'Add a new user to the system')}</p>
         </div>
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-100">
-          <h2 className="text-lg font-medium text-gray-900">User Information</h2>
+          <h2 className="text-lg font-medium text-gray-900">{t('admin_ui.user_information', 'User Information')}</h2>
         </div>
         
         <form onSubmit={handleSubmit} className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin_ui.first_name', 'First Name *')}</label>
               <input
                 type="text"
                 name="first_name"
@@ -139,7 +141,7 @@ export default function UserCreatePage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Last Name *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin_ui.last_name', 'Last Name *')}</label>
               <input
                 type="text"
                 name="last_name"
@@ -151,11 +153,11 @@ export default function UserCreatePage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Display Name</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin_ui.display_name', 'Display Name')}</label>
               <input
                 type="text"
                 name="display_name"
-                placeholder="Leave blank to use First + Last name"
+                placeholder={t('admin_ui.leave_blank_to_use_first_last_name', 'Leave blank to use First + Last name')}
                 value={formData.display_name}
                 onChange={handleChange}
                 className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-primary-navy focus:border-transparent outline-none transition-all ${errors.display_name ? 'border-red-500' : 'border-gray-200'}`}
@@ -164,7 +166,7 @@ export default function UserCreatePage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin_ui.email', 'Email *')}</label>
               <input
                 type="email"
                 name="email"
@@ -176,7 +178,7 @@ export default function UserCreatePage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('visit.phone', 'Phone')}</label>
               <input
                 type="text"
                 name="phone"
@@ -187,7 +189,7 @@ export default function UserCreatePage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Password *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin_ui.password', 'Password *')}</label>
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
@@ -201,8 +203,8 @@ export default function UserCreatePage() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1 focus:outline-none cursor-pointer"
                   tabIndex={-1}
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
-                  title={showPassword ? 'Hide password' : 'Show password'}
+                  aria-label={showPassword ? t('ui.hide_password', 'Hide password') : t('ui.show_password', 'Show password')}
+                  title={showPassword ? t('ui.hide_password', 'Hide password') : t('ui.show_password', 'Show password')}
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -211,7 +213,7 @@ export default function UserCreatePage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin_ui.confirm_password', 'Confirm Password *')}</label>
               <div className="relative">
                 <input
                   type={showConfirmPassword ? 'text' : 'password'}
@@ -225,8 +227,8 @@ export default function UserCreatePage() {
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1 focus:outline-none cursor-pointer"
                   tabIndex={-1}
-                  aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
-                  title={showConfirmPassword ? 'Hide password' : 'Show password'}
+                  aria-label={showConfirmPassword ? t('ui.hide_password', 'Hide password') : t('ui.show_password', 'Show password')}
+                  title={showConfirmPassword ? t('ui.hide_password', 'Hide password') : t('ui.show_password', 'Show password')}
                 >
                   {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -235,7 +237,7 @@ export default function UserCreatePage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Role *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin_ui.role_442e8e', 'Role *')}</label>
               <select
                 name="role_id"
                 value={formData.role_id}
@@ -243,7 +245,7 @@ export default function UserCreatePage() {
                 disabled={loadingRoles}
                 className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-primary-navy focus:border-transparent outline-none transition-all bg-white ${errors.role_id ? 'border-red-500' : 'border-gray-200'}`}
               >
-                <option value="">Select a role</option>
+                <option value="">{t('admin_ui.select_a_role', 'Select a role')}</option>
                 {roles.map(role => (
                   <option key={role.id} value={role.id}>{role.name}</option>
                 ))}
@@ -252,15 +254,15 @@ export default function UserCreatePage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin_ui.status', 'Status')}</label>
               <select
                 name="status"
                 value={formData.status}
                 onChange={handleChange}
                 className="w-full rounded-lg border border-gray-200 px-4 py-2 focus:ring-2 focus:ring-primary-navy focus:border-transparent outline-none transition-all bg-white"
               >
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
+                <option value="active">{t('admin_ui.active', 'Active')}</option>
+                <option value="inactive">{t('admin_ui.inactive', 'Inactive')}</option>
               </select>
             </div>
           </div>
@@ -271,7 +273,7 @@ export default function UserCreatePage() {
               onClick={() => navigate('/admin/users')}
               className="px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg border border-gray-200 transition-colors"
             >
-              Cancel
+              {t('form.cancel', 'Cancel')}
             </button>
             <button
               type="submit"
@@ -279,7 +281,7 @@ export default function UserCreatePage() {
               className="flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-primary-red hover:bg-primary-dark-red rounded-lg transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {loading ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
-              {loading ? 'Saving...' : 'Create User'}
+              {loading ? t('admin_ui.saving', 'Saving...') : t('admin_ui.create_user', 'Create User')}
             </button>
           </div>
         </form>

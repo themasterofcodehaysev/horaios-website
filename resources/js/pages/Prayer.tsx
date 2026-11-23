@@ -8,7 +8,7 @@ import { Input } from '../components/ui/Input';
 import { Heart, Send, CheckCircle2, AlertTriangle, Shield, Users, Sparkles, Clock, Lock } from 'lucide-react';
 import { prayerService } from '../services/publicContent.service';
 import { useSiteSettings } from '../context/SiteSettingsContext';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage, translate } from '../context/LanguageContext';
 
 export const PrayerPage: React.FC = () => {
   const navigate = useNavigate();
@@ -57,7 +57,7 @@ export const PrayerPage: React.FC = () => {
       setError(
         err?.response?.data?.message || 
         err?.response?.data?.errors?.[Object.keys(err?.response?.data?.errors || {})[0]]?.[0] || 
-        'Failed to submit prayer request. Please check the fields and try again.'
+        translate('ui.failed_to_submit_prayer_request_please_check', 'Failed to submit prayer request. Please check the fields and try again.')
       );
     } finally {
       setSubmitting(false);
@@ -200,7 +200,7 @@ export const PrayerPage: React.FC = () => {
                           required
                           value={formData.name}
                           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                          placeholder="e.g. John Doe"
+                          placeholder={t('ui.e_g_john_doe', 'e.g. John Doe')}
                         />
                       </div>
                       <div>

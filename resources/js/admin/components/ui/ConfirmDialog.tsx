@@ -1,6 +1,7 @@
 import React from 'react';
 import { AlertTriangle } from 'lucide-react';
 
+import { useLanguage, translate } from '../../../context/LanguageContext';
 export interface ConfirmDialogProps {
   isOpen: boolean;
   onClose: () => void;
@@ -18,10 +19,11 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   onConfirm,
   title,
   message,
-  confirmLabel = 'Confirm',
+  confirmLabel = translate('admin_msg.confirm', 'Confirm'),
   confirmVariant = 'primary',
   loading = false,
 }) => {
+  const { t } = useLanguage();
   if (!isOpen) return null;
 
   const isDanger = confirmVariant === 'danger';
@@ -59,7 +61,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
             onClick={onClose}
             disabled={loading}
           >
-            Cancel
+            {t('form.cancel', 'Cancel')}
           </button>
           <button
             type="button"
@@ -71,7 +73,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
             onClick={onConfirm}
             disabled={loading}
           >
-            {loading ? 'Processing...' : confirmLabel}
+            {loading ? t('admin_ui.processing', 'Processing...') : confirmLabel}
           </button>
         </div>
       </div>

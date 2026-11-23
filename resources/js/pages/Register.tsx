@@ -4,7 +4,9 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Card } from '../components/ui/Card';
 
+import { useLanguage } from '../context/LanguageContext';
 export const RegisterPage: React.FC = () => {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -24,11 +26,11 @@ export const RegisterPage: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match');
+      alert(t('ui.passwords_do_not_match', 'Passwords do not match'));
       return;
     }
     if (!agreed) {
-      alert('Please agree to the terms');
+      alert(t('ui.please_agree_to_the_terms', 'Please agree to the terms'));
       return;
     }
     console.log('Register:', formData);
@@ -41,30 +43,30 @@ export const RegisterPage: React.FC = () => {
           <div className="text-center mb-8">
             <img
               src="/images/logo.png"
-              alt="Horaios Baptist Church Logo"
+              alt={t('ui.horaios_baptist_church_logo', 'Horaios Baptist Church Logo')}
               className="w-16 h-16 rounded-full mx-auto mb-4 object-contain shadow-md"
             />
             <h1 className="text-h4 font-semibold text-neutral-900 mb-2">
-              Create Account
+              {t('ui.create_account', 'Create Account')}
             </h1>
             <p className="text-body-sm text-neutral-600">
-              Join our faith community
+              {t('ui.join_our_faith_community', 'Join our faith community')}
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
-              label="Full Name"
+              label={t('ui.full_name', 'Full Name')}
               type="text"
               name="name"
-              placeholder="John Doe"
+              placeholder={t('ui.john_doe', 'John Doe')}
               value={formData.name}
               onChange={handleChange}
               required
             />
 
             <Input
-              label="Email"
+              label={t('visit.email', 'Email')}
               type="email"
               name="email"
               placeholder="you@example.com"
@@ -74,7 +76,7 @@ export const RegisterPage: React.FC = () => {
             />
 
             <Input
-              label="Password"
+              label={t('ui.password', 'Password')}
               type="password"
               name="password"
               placeholder="••••••••"
@@ -84,7 +86,7 @@ export const RegisterPage: React.FC = () => {
             />
 
             <Input
-              label="Confirm Password"
+              label={t('ui.confirm_password', 'Confirm Password')}
               type="password"
               name="confirmPassword"
               placeholder="••••••••"
@@ -101,25 +103,25 @@ export const RegisterPage: React.FC = () => {
                 className="mt-1"
               />
               <span className="text-body-sm text-neutral-600">
-                I agree to the{' '}
+                {t('ui.i_agree_to_the', 'I agree to the')}{' '}
                 <a href="#" className="text-primary-red hover:text-primary-dark-red font-medium">
-                  Terms of Service
+                  {t('footer.terms_of_service', 'Terms of Service')}
                 </a>{' '}
-                and{' '}
+                {t('ui.and', 'and')}{' '}
                 <a href="#" className="text-primary-red hover:text-primary-dark-red font-medium">
-                  Privacy Policy
+                  {t('footer.privacy_policy', 'Privacy Policy')}
                 </a>
               </span>
             </label>
 
             <Button type="submit" variant="primary" fullWidth size="lg">
-              Create Account
+              {t('ui.create_account', 'Create Account')}
             </Button>
 
             <p className="text-center text-body-sm text-neutral-600">
-              Already have an account?{' '}
+              {t('ui.already_have_an_account', 'Already have an account?')}{' '}
               <a href="/login" className="text-primary-red hover:text-primary-dark-red font-medium">
-                Sign in
+                {t('ui.sign_in_b6d422', 'Sign in')}
               </a>
             </p>
           </form>

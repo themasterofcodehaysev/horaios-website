@@ -7,7 +7,9 @@ import type { EventCategory, CreateEventPayload } from '../../types';
 import ImageUpload from '../../components/ui/ImageUpload';
 import { useToast } from '../../hooks/useToast';
 
+import { useLanguage, translate } from '../../../context/LanguageContext';
 const EventFormPage: React.FC = () => {
+  const { t } = useLanguage();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { addToast } = useToast();
@@ -65,8 +67,8 @@ const EventFormPage: React.FC = () => {
         }
       } catch (err: any) {
         addToast({
-          title: 'Error',
-          message: err?.response?.data?.message || 'Failed to load event details',
+          title: translate('admin_ui.error', 'Error'),
+          message: err?.response?.data?.message || translate('admin_msg.failed_to_load_event_details', 'Failed to load event details'),
           type: 'error',
         });
         navigate('/admin/events');
@@ -88,21 +90,21 @@ const EventFormPage: React.FC = () => {
 
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
-    if (!formData.title.trim()) newErrors.title = 'Event title is required';
-    if (!formData.start_date) newErrors.start_date = 'Start date is required';
+    if (!formData.title.trim()) newErrors.title = translate('admin_msg.event_title_is_required', 'Event title is required');
+    if (!formData.start_date) newErrors.start_date = translate('admin_msg.start_date_is_required', 'Start date is required');
     if (formData.end_date && formData.start_date) {
       if (formData.end_date < formData.start_date) {
-        newErrors.end_date = 'End date cannot be before start date';
+        newErrors.end_date = translate('admin_msg.end_date_cannot_be_before_start_date', 'End date cannot be before start date');
       } else if (formData.end_date === formData.start_date && formData.start_time && formData.end_time) {
         if (formData.end_time <= formData.start_time) {
-          newErrors.end_time = 'End time must be after start time for same-day events';
+          newErrors.end_time = translate('admin_msg.end_time_must_be_after_start_time_for_same_day_e', 'End time must be after start time for same-day events');
         }
       }
     }
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) {
       addToast({
-        title: 'Validation Error',
+        title: t('admin_ui.validation_error', 'Validation Error'),
         message: Object.values(newErrors)[0],
         type: 'error',
       });
@@ -123,14 +125,14 @@ const EventFormPage: React.FC = () => {
         await eventService.createEvent(formData);
       }
       addToast({
-        title: 'Success',
-        message: isEdit ? 'Event updated successfully' : 'Event created successfully',
+        title: t('admin_ui.success', 'Success'),
+        message: isEdit ? translate('admin_msg.event_updated_successfully', 'Event updated successfully') : translate('admin_msg.event_created_successfully', 'Event created successfully'),
         type: 'success',
       });
       navigate('/admin/events');
     } catch (err: any) {
       const serverErrors = err?.response?.data?.errors;
-      const message = err?.response?.data?.message || 'Failed to save event';
+      const message = err?.response?.data?.message || translate('admin_msg.failed_to_save_event', 'Failed to save event');
 
       if (serverErrors && typeof serverErrors === 'object') {
         const fieldErrors: Record<string, string> = {};
@@ -142,13 +144,13 @@ const EventFormPage: React.FC = () => {
         });
         setErrors(prev => ({ ...prev, ...fieldErrors }));
         addToast({
-          title: 'Validation Error',
+          title: t('admin_ui.validation_error', 'Validation Error'),
           message: errorList[0] || message,
           type: 'error',
         });
       } else {
         addToast({
-          title: 'Error',
+          title: t('admin_ui.error', 'Error'),
           message,
           type: 'error',
         });
@@ -184,10 +186,10 @@ const EventFormPage: React.FC = () => {
           </button>
           <div>
             <h1 className="text-h3 text-neutral-900 font-bold">
-              {isEdit ? 'Edit Event' : 'Create New Event'}
+              {isEdit ? t('admin_ui.edit_event', 'Edit Event') : t('admin_ui.create_new_event', 'Create New Event')}
             </h1>
             <p className="text-body-xs text-neutral-500">
-              {isEdit ? 'Update event schedule, location, and registration settings' : 'Schedule a new event, service, or gathering for the community'}
+              {isEdit ? t('admin_ui.update_event_schedule_location_and_registrat', 'Update event schedule, location, and registration settings') : t('admin_ui.schedule_a_new_event_service_or_gathering_fo', 'Schedule a new event, service, or gathering for the community')}
             </p>
           </div>
         </div>
@@ -197,18 +199,18 @@ const EventFormPage: React.FC = () => {
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white rounded-xl border border-neutral-200 p-6 space-y-4 shadow-xs">
             <h2 className="text-h6 text-neutral-900 font-semibold border-b border-neutral-100 pb-3">
-              Event Overview
+              {t('admin_ui.event_overview', 'Event Overview')}
             </h2>
 
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Title <span className="text-red-500">*</span>
+                {t('admin_ui.title', 'Title')} <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 value={formData.title}
                 onChange={handleTitleChange}
-                placeholder="e.g. Annual Church Conference 2026"
+                placeholder={t('admin_ui.e_g_annual_church_conference_2026', 'e.g. Annual Church Conference 2026')}
                 className={`w-full px-3.5 py-2.5 border rounded-lg text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 ${
                   errors.title ? 'border-red-500 focus:border-red-500' : 'border-neutral-200 focus:border-primary-red'
                 }`}
@@ -219,13 +221,13 @@ const EventFormPage: React.FC = () => {
 
           <div className="bg-white rounded-xl border border-neutral-200 p-6 space-y-4 shadow-xs">
             <h2 className="text-h6 text-neutral-900 font-semibold border-b border-neutral-100 pb-3 flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-primary-red" /> Schedule
+              <Calendar className="w-4 h-4 text-primary-red" /> {t('admin_ui.schedule', 'Schedule')}
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                  Start Date <span className="text-red-500">*</span>
+                  {t('admin_ui.start_date', 'Start Date')} <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="date"
@@ -239,7 +241,7 @@ const EventFormPage: React.FC = () => {
               </div>
               <div>
                 <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                  End Date
+                  {t('admin_ui.end_date', 'End Date')}
                 </label>
                 <input
                   type="date"
@@ -260,7 +262,7 @@ const EventFormPage: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                  Start Time
+                  {t('admin_ui.start_time', 'Start Time')}
                 </label>
                 <input
                   type="time"
@@ -274,7 +276,7 @@ const EventFormPage: React.FC = () => {
               </div>
               <div>
                 <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                  End Time
+                  {t('admin_ui.end_time', 'End Time')}
                 </label>
                 <input
                   type="time"
@@ -294,25 +296,25 @@ const EventFormPage: React.FC = () => {
 
           <div className="bg-white rounded-xl border border-neutral-200 p-6 space-y-4 shadow-xs">
             <h2 className="text-h6 text-neutral-900 font-semibold border-b border-neutral-100 pb-3 flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-primary-red" /> Location
+              <MapPin className="w-4 h-4 text-primary-red" /> {t('ministry_detail.location', 'Location')}
             </h2>
 
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Venue / Location
+                {t('admin_ui.venue_location', 'Venue / Location')}
               </label>
               <input
                 type="text"
                 value={formData.location || ''}
                 onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                placeholder="e.g. Main Sanctuary, 123 Faith Avenue"
+                placeholder={t('admin_ui.e_g_main_sanctuary_123_faith_avenue', 'e.g. Main Sanctuary, 123 Faith Avenue')}
                 className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20"
               />
             </div>
 
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Google Maps Embed URL
+                {t('admin_ui.google_maps_embed_url', 'Google Maps Embed URL')}
               </label>
               <input
                 type="text"
@@ -330,16 +332,16 @@ const EventFormPage: React.FC = () => {
                 className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm"
               />
               <p className="text-body-xs text-neutral-400 mt-1">
-                Go to Google Maps → Share → Embed a map → copy only the{' '}
+                {t('admin_ui.go_to_google_maps_share_embed_a_map_copy_onl', 'Go to Google Maps → Share → Embed a map → copy only the')}{' '}
                 <code className="text-neutral-600 bg-neutral-100 px-1 rounded">src="..."</code>{' '}
-                URL inside the iframe code. You can also paste the full iframe code and it will be extracted automatically.
+                {t('admin_ui.url_inside_the_iframe_code_you_can_also_past', 'URL inside the iframe code. You can also paste the full iframe code and it will be extracted automatically.')}
               </p>
             </div>
           </div>
 
           <div className="bg-white rounded-xl border border-neutral-200 p-6 space-y-3 shadow-xs">
             <h2 className="text-h6 text-neutral-900 font-semibold border-b border-neutral-100 pb-3">
-              Event Description
+              {t('admin_ui.event_description', 'Event Description')}
             </h2>
             <div data-color-mode="light">
               <MDEditor
@@ -354,27 +356,27 @@ const EventFormPage: React.FC = () => {
         <div className="space-y-6">
           <div className="bg-white rounded-xl border border-neutral-200 p-6 space-y-4 shadow-xs">
             <h2 className="text-h6 text-neutral-900 font-semibold border-b border-neutral-100 pb-3">
-              Publishing Options
+              {t('admin_ui.publishing_options', 'Publishing Options')}
             </h2>
 
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Status
+                {t('admin_ui.status', 'Status')}
               </label>
               <select
                 value={formData.status}
                 onChange={(e) => setFormData({ ...formData, status: e.target.value as 'draft' | 'published' | 'cancelled' })}
                 className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm bg-white font-medium"
               >
-                <option value="published">Published (Public)</option>
-                <option value="draft">Draft (Private)</option>
-                <option value="cancelled">Cancelled</option>
+                <option value="published">{t('admin_ui.published_public', 'Published (Public)')}</option>
+                <option value="draft">{t('admin_ui.draft_private', 'Draft (Private)')}</option>
+                <option value="cancelled">{t('ui.cancelled', 'Cancelled')}</option>
               </select>
             </div>
 
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Published Date
+                {t('admin_ui.published_date', 'Published Date')}
               </label>
               <input
                 type="datetime-local"
@@ -394,10 +396,10 @@ const EventFormPage: React.FC = () => {
                 />
                 <div>
                   <span className="text-body-sm font-semibold text-neutral-900 flex items-center gap-1">
-                    <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Featured Event
+                    <Sparkles className="w-3.5 h-3.5 text-amber-500" /> {t('admin_ui.featured_event', 'Featured Event')}
                   </span>
                   <span className="text-body-xs text-neutral-500 block">
-                    Display prominently on homepage and events calendar
+                    {t('admin_ui.display_prominently_on_homepage_and_events_c', 'Display prominently on homepage and events calendar')}
                   </span>
                 </div>
               </label>
@@ -406,7 +408,7 @@ const EventFormPage: React.FC = () => {
 
           <div className="bg-white rounded-xl border border-neutral-200 p-6 space-y-4 shadow-xs">
             <h2 className="text-h6 text-neutral-900 font-semibold border-b border-neutral-100 pb-3">
-              Registration
+              {t('admin_ui.registration', 'Registration')}
             </h2>
 
             <div>
@@ -419,10 +421,10 @@ const EventFormPage: React.FC = () => {
                 />
                 <div>
                   <span className="text-body-sm font-semibold text-neutral-900 block">
-                    Registration Required
+                    {t('ui.registration_required', 'Registration Required')}
                   </span>
                   <span className="text-body-xs text-neutral-500 block">
-                    Require attendees to register for this event
+                    {t('admin_ui.require_attendees_to_register_for_this_event', 'Require attendees to register for this event')}
                   </span>
                 </div>
               </label>
@@ -431,14 +433,14 @@ const EventFormPage: React.FC = () => {
             {formData.registration_required && (
               <div>
                 <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                  Registration Limit
+                  {t('admin_ui.registration_limit', 'Registration Limit')}
                 </label>
                 <input
                   type="number"
                   min="0"
                   value={formData.registration_limit ?? ''}
                   onChange={(e) => setFormData({ ...formData, registration_limit: e.target.value ? Number(e.target.value) : null })}
-                  placeholder="Leave blank for unlimited"
+                  placeholder={t('admin_ui.leave_blank_for_unlimited', 'Leave blank for unlimited')}
                   className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm"
                 />
               </div>
@@ -447,19 +449,19 @@ const EventFormPage: React.FC = () => {
 
           <div className="bg-white rounded-xl border border-neutral-200 p-6 space-y-4 shadow-xs">
             <h2 className="text-h6 text-neutral-900 font-semibold border-b border-neutral-100 pb-3">
-              Classification & Media
+              {t('admin_ui.classification_media', 'Classification & Media')}
             </h2>
 
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Category
+                {t('prayer.form.category', 'Category')}
               </label>
               <select
                 value={formData.category_id || ''}
                 onChange={(e) => setFormData({ ...formData, category_id: e.target.value ? Number(e.target.value) : null })}
                 className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm bg-white"
               >
-                <option value="">No Category</option>
+                <option value="">{t('admin_ui.no_category', 'No Category')}</option>
                 {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
             </div>
@@ -469,8 +471,8 @@ const EventFormPage: React.FC = () => {
                 value={formData.featured_image}
                 onChange={(url) => setFormData({ ...formData, featured_image: url })}
                 folder="events"
-                label="Featured Image"
-                helperText="Upload a banner or promotional image for this event."
+                label={t('admin_ui.featured_image', 'Featured Image')}
+                helperText={t('admin_ui.upload_a_banner_or_promotional_image_for_thi', 'Upload a banner or promotional image for this event.')}
               />
             </div>
           </div>
@@ -481,7 +483,7 @@ const EventFormPage: React.FC = () => {
               onClick={() => navigate('/admin/events')}
               className="px-5 py-2.5 border border-neutral-200 rounded-lg text-body-sm font-medium text-neutral-700 hover:bg-neutral-50"
             >
-              Cancel
+              {t('form.cancel', 'Cancel')}
             </button>
             <button
               type="submit"
@@ -489,7 +491,7 @@ const EventFormPage: React.FC = () => {
               className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary-red text-white rounded-lg text-body-sm font-medium hover:bg-primary-dark-red shadow-sm disabled:opacity-50"
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-              {loading ? 'Saving...' : isEdit ? 'Update Event' : 'Create Event'}
+              {loading ? t('admin_ui.saving', 'Saving...') : isEdit ? t('admin_ui.update_event', 'Update Event') : t('admin_ui.create_event', 'Create Event')}
             </button>
           </div>
         </div>

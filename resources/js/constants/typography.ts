@@ -1,8 +1,8 @@
 // Typography Configuration
 export const TYPOGRAPHY = {
   fonts: {
-    primary: "'Instrument Sans', 'Inter', system-ui, -apple-system, sans-serif",
-    display: "'Instrument Sans', 'Inter', system-ui, -apple-system, sans-serif",
+    primary: "'Instrument Sans', 'Inter', 'Khmer OS Siemreap', 'Siemreap', system-ui, -apple-system, sans-serif",
+    display: "'Instrument Sans', 'Inter', 'Khmer OS Siemreap', 'Siemreap', system-ui, -apple-system, sans-serif",
     mono: "'Fira Code', 'Courier New', monospace",
   },
   sizes: {

@@ -17,10 +17,11 @@ import { Input } from '../components/ui/Input';
 import { eventService, contactService } from '../services/publicContent.service';
 import { downloadIcsFile, generateSingleEventIcs, getGoogleCalendarUrl } from '../utils/calendar';
 import type { EventPublic, EventStatus } from '../types';
+import { useLanguage, translate, getDateLocale } from '../context/LanguageContext';
 
 const formatDate = (dateStr: string | null): string => {
   if (!dateStr) return '';
-  return new Date(dateStr).toLocaleDateString(undefined, {
+  return new Date(dateStr).toLocaleDateString(getDateLocale(), {
     weekday: 'short', year: 'numeric', month: 'short', day: 'numeric',
   });
 };
@@ -65,6 +66,7 @@ const eventStatusConfig: Record<EventStatus, { label: string; className: string;
 export const EventDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [event, setEvent] = useState<EventPublic | null>(null);
   const [relatedEvents, setRelatedEvents] = useState<EventPublic[]>([]);
   const [loading, setLoading] = useState(true);
@@ -100,7 +102,7 @@ export const EventDetailPage: React.FC = () => {
       setRegError(
         err?.response?.data?.message ||
         err?.response?.data?.errors?.[Object.keys(err?.response?.data?.errors || {})[0]]?.[0] ||
-        'Failed to complete registration. Please try again.'
+        translate('ui.failed_to_complete_registration_please_try_a', 'Failed to complete registration. Please try again.')
       );
     } finally {
       setRegSubmitting(false);
@@ -170,9 +172,9 @@ export const EventDetailPage: React.FC = () => {
       } catch (err: any) {
         const status = err?.response?.status;
         if (status === 404) {
-          setError('The requested event was not found.');
+          setError(translate('ui.the_requested_event_was_not_found', 'The requested event was not found.'));
         } else {
-          setError(err?.response?.data?.message || 'Unable to load event.');
+          setError(err?.response?.data?.message || translate('ui.unable_to_load_event', 'Unable to load event.'));
         }
       } finally {
         setLoading(false);
@@ -219,15 +221,15 @@ export const EventDetailPage: React.FC = () => {
       <Layout>
         <div className="max-w-md mx-auto py-24 px-4 text-center">
           <CalendarRange className="w-14 h-14 text-neutral-300 mx-auto mb-5" />
-          <h2 className="text-h4 font-bold text-neutral-800 mb-2">Event Not Found</h2>
+          <h2 className="text-h4 font-bold text-neutral-800 mb-2">{t('ui.event_not_found', 'Event Not Found')}</h2>
           <p className="text-body-sm text-neutral-500 mb-8">
-            {error || 'This event may have been removed or does not exist.'}
+            {error || translate('ui.this_event_may_have_been_removed_or_does_not', 'This event may have been removed or does not exist.')}
           </p>
           <button
             onClick={() => navigate('/events')}
             className="px-5 py-2.5 bg-primary-red text-white rounded-lg font-medium text-body-sm hover:bg-primary-dark-red transition-colors"
           >
-            Back to All Events
+            {t('ui.back_to_all_events', 'Back to All Events')}
           </button>
         </div>
       </Layout>
@@ -259,12 +261,12 @@ export const EventDetailPage: React.FC = () => {
             to="/events"
             className="inline-flex items-center gap-1.5 text-body-sm font-medium text-neutral-600 hover:text-primary-red transition-colors"
           >
-            <ArrowLeft className="w-4 h-4" /> Back to All Events
+            <ArrowLeft className="w-4 h-4" /> {t('ui.back_to_all_events', 'Back to All Events')}
           </Link>
 
         <Breadcrumb
           items={[
-            { label: 'Events', href: '/events' },
+            { label: t('nav.events', 'Events'), href: '/events' },
             ...(event.category ? [{ label: event.category.name }] : []),
             { label: event.title },
           ]}
@@ -286,11 +288,11 @@ export const EventDetailPage: React.FC = () => {
               <Badge variant="primary" size="sm">{event.category.name}</Badge>
             )}
             <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-body-xs font-bold uppercase tracking-wider ${statusCfg.className}`}>
-              {statusCfg.icon} {statusCfg.label}
+              {statusCfg.icon} {translate(`event_status.${status}`, statusCfg.label)}
             </span>
             {event.featured && (
               <span className="text-body-xs font-bold px-3 py-1 rounded-full bg-amber-100 text-amber-800">
-                ★ Featured
+                {t('ui.featured', '★ Featured')}
               </span>
             )}
           </div>
@@ -303,21 +305,21 @@ export const EventDetailPage: React.FC = () => {
           <div className="lg:col-span-2 space-y-6">
             <section className="bg-white rounded-3xl border border-neutral-200 p-6 sm:p-8 shadow-xs space-y-4">
               <h2 className="text-h4 font-bold text-neutral-900 border-b border-neutral-100 pb-3">
-                About This Event
+                {t('event_detail.about_title', 'About This Event')}
               </h2>
               {event.description ? (
                 <div data-color-mode="light" className="prose prose-neutral max-w-none prose-headings:font-bold prose-h3:text-h5 prose-p:text-body-base prose-p:leading-relaxed">
                   <MarkdownPreview source={event.description} style={{ backgroundColor: 'transparent', color: 'inherit' }} />
                 </div>
               ) : (
-                <p className="text-body-base text-neutral-500 italic">No description provided.</p>
+                <p className="text-body-base text-neutral-500 italic">{t('ui.no_description_provided', 'No description provided.')}</p>
               )}
             </section>
 
             <ShareBar
               title={event.title}
               description={event.location || event.category?.name || ''}
-              label="Share Event"
+              label={t('ui.share_event', 'Share Event')}
             />
           </div>
 
@@ -325,7 +327,7 @@ export const EventDetailPage: React.FC = () => {
             <Card padding="lg" shadow="md" className="space-y-6">
               <div>
                 <h3 className="text-h6 font-bold text-neutral-900 mb-4 flex items-center gap-2">
-                  <CalendarRange className="w-5 h-5 text-primary-red" /> Event Details
+                  <CalendarRange className="w-5 h-5 text-primary-red" /> {t('event_detail.details_title', 'Event Details')}
                 </h3>
                 <ul className="space-y-4">
                   <li className="flex items-start gap-3">
@@ -333,8 +335,8 @@ export const EventDetailPage: React.FC = () => {
                       <Calendar className="w-4 h-4 text-primary-red" />
                     </div>
                     <div>
-                      <p className="text-body-xs font-semibold text-neutral-500 uppercase tracking-wider">Date</p>
-                      <p className="text-body-sm font-bold text-neutral-900">{dateRange || 'TBD'}</p>
+                      <p className="text-body-xs font-semibold text-neutral-500 uppercase tracking-wider">{t('event_detail.date', 'Date')}</p>
+                      <p className="text-body-sm font-bold text-neutral-900">{dateRange || translate('ui.tbd_caps', 'TBD')}</p>
                     </div>
                   </li>
                   {timeRange && (
@@ -343,7 +345,7 @@ export const EventDetailPage: React.FC = () => {
                         <Clock className="w-4 h-4 text-primary-red" />
                       </div>
                       <div>
-                        <p className="text-body-xs font-semibold text-neutral-500 uppercase tracking-wider">Time</p>
+                        <p className="text-body-xs font-semibold text-neutral-500 uppercase tracking-wider">{t('event_detail.time', 'Time')}</p>
                         <p className="text-body-sm font-bold text-neutral-900">{timeRange}</p>
                       </div>
                     </li>
@@ -354,7 +356,7 @@ export const EventDetailPage: React.FC = () => {
                         <MapPin className="w-4 h-4 text-emerald-600" />
                       </div>
                       <div>
-                        <p className="text-body-xs font-semibold text-neutral-500 uppercase tracking-wider">Location</p>
+                        <p className="text-body-xs font-semibold text-neutral-500 uppercase tracking-wider">{t('event_detail.location', 'Location')}</p>
                         <p className="text-body-sm font-bold text-neutral-900 leading-snug">{event.location}</p>
                       </div>
                     </li>
@@ -366,7 +368,7 @@ export const EventDetailPage: React.FC = () => {
                 <div className="rounded-xl overflow-hidden border border-neutral-200 aspect-[4/3] bg-neutral-100">
                   <iframe
                     src={event.google_map_url}
-                    title={`${event.title} map`}
+                    title={translate('ui.title_map', '{title} map', { title: event.title })}
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
                     className="w-full h-full border-0"
@@ -393,18 +395,18 @@ export const EventDetailPage: React.FC = () => {
                     )}
                     <div>
                       <p className="text-body-sm font-bold text-neutral-900">
-                        {status === 'cancelled' ? 'Registration Cancelled' : 'Registration Required'}
+                        {status === 'cancelled' ? t('ui.registration_cancelled', 'Registration Cancelled') : t('ui.registration_required', 'Registration Required')}
                       </p>
                       {event.registration_limit !== null && (
                         <p className="text-body-xs text-neutral-600 mt-0.5">
                           {event.registrations_count !== undefined && (
                             <>
-                              {event.registrations_count}/{event.registration_limit} registered
-                              {spotsLeft !== null && spotsLeft > 0 && ` • ${spotsLeft} spots left`}
-                              {spotsLeft !== null && spotsLeft <= 0 && ' • Event is full'}
+                              {event.registrations_count}/{event.registration_limit} {t('ui.registered', 'registered')}
+                              {spotsLeft !== null && spotsLeft > 0 && translate('ui.count_spots_left', ' • {count} spots left', { count: spotsLeft })}
+                              {spotsLeft !== null && spotsLeft <= 0 && translate('ui.event_is_full', ' • Event is full')}
                             </>
                           )}
-                          {event.registrations_count === undefined && `Limit: ${event.registration_limit} attendees`}
+                          {event.registrations_count === undefined && translate('ui.limit_count_attendees', 'Limit: {count} attendees', { count: event.registration_limit })}
                         </p>
                       )}
                     </div>
@@ -421,12 +423,12 @@ export const EventDetailPage: React.FC = () => {
                       }}
                     >
                       <Users className="w-4 h-4 mr-2" />
-                      Register Now
+                      {t('event_detail.register_now', 'Register Now')}
                     </Button>
                   )}
                   {spotsLeft !== null && spotsLeft <= 0 && status !== 'cancelled' && status !== 'completed' && (
                     <p className="text-body-xs font-semibold text-center text-amber-700">
-                      This event is currently at capacity.
+                      {t('ui.this_event_is_currently_at_capacity', 'This event is currently at capacity.')}
                     </p>
                   )}
                 </div>
@@ -435,9 +437,9 @@ export const EventDetailPage: React.FC = () => {
 
             <Card padding="lg" className="text-center border-dashed border-2 bg-neutral-50/70 space-y-3">
               <Calendar className="w-8 h-8 text-primary-red mx-auto" />
-              <h4 className="text-h6 font-bold text-neutral-900">Add to Calendar</h4>
+              <h4 className="text-h6 font-bold text-neutral-900">{t('event_detail.add_calendar', 'Add to Calendar')}</h4>
               <p className="text-body-xs text-neutral-500">
-                Never miss this event. Sync it directly with your calendar.
+                {t('ui.never_miss_this_event_sync_it_directly_with_', 'Never miss this event. Sync it directly with your calendar.')}
               </p>
               <div className="flex flex-col gap-2 pt-1">
                 <Button
@@ -456,7 +458,7 @@ export const EventDetailPage: React.FC = () => {
                   onClick={() => downloadIcsFile(generateSingleEventIcs(event), `${event.slug || 'event'}.ics`)}
                 >
                   <CalendarDays className="w-4 h-4 mr-2" />
-                  Download .ics
+                  {t('ui.download_ics', 'Download .ics')}
                 </Button>
               </div>
             </Card>
@@ -466,7 +468,7 @@ export const EventDetailPage: React.FC = () => {
         {relatedEvents.length > 0 && (
           <section className="space-y-5 pt-6 border-t border-neutral-200">
             <h3 className="text-h4 font-bold text-neutral-900 flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-amber-500" /> Related Events
+              <Sparkles className="w-5 h-5 text-amber-500" /> {t('ui.related_events', 'Related Events')}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {relatedEvents.map((rel) => (
@@ -478,8 +480,8 @@ export const EventDetailPage: React.FC = () => {
                   <EventCard
                     title={rel.title}
                     date={formatDate(rel.start_date)}
-                    time={formatTime(rel.start_time) || 'TBD'}
-                    location={rel.location || 'TBD'}
+                    time={formatTime(rel.start_time) || translate('ui.tbd_caps', 'TBD')}
+                    location={rel.location || translate('ui.tbd_caps', 'TBD')}
                     description={rel.description || undefined}
                     image={rel.featured_image || undefined}
                     featured={rel.featured}
@@ -493,9 +495,9 @@ export const EventDetailPage: React.FC = () => {
 
         <Card padding="lg" className="text-center bg-gradient-to-r from-primary-red via-primary-red to-primary-red border-0 !text-white">
           <CalendarDays className="w-10 h-10 text-primary-100 mx-auto mb-4" />
-          <h2 className="text-h3 font-bold mb-3">Add This Event to Your Calendar</h2>
+          <h2 className="text-h3 font-bold mb-3">{t('ui.add_this_event_to_your_calendar', 'Add This Event to Your Calendar')}</h2>
           <p className="text-body-lg text-primary-100 max-w-xl mx-auto mb-6">
-            Easily save this gathering to Apple Calendar, Outlook, or Google Calendar so you don't miss it.
+            {t('ui.easily_save_this_gathering_to_apple_calendar', 'Easily save this gathering to Apple Calendar, Outlook, or Google Calendar so you don\'t miss it.')}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button
@@ -505,7 +507,7 @@ export const EventDetailPage: React.FC = () => {
               onClick={() => downloadIcsFile(generateSingleEventIcs(event), `${event.slug || 'event'}.ics`)}
             >
               <Calendar className="w-5 h-5 mr-2" />
-              Download .ics
+              {t('ui.download_ics', 'Download .ics')}
             </Button>
             <Button
               variant="secondary"
@@ -525,7 +527,7 @@ export const EventDetailPage: React.FC = () => {
       <Modal
         isOpen={isRegisterModalOpen}
         onClose={() => setIsRegisterModalOpen(false)}
-        title={`Register for ${event.title}`}
+        title={`${t('event_detail.modal_title', 'Register for')} ${event.title}`}
         size="md"
       >
         {regSuccess ? (
@@ -534,12 +536,12 @@ export const EventDetailPage: React.FC = () => {
               <CheckCircle2 className="w-9 h-9" />
             </div>
             <span className="inline-block px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider rounded-full">
-              Registration Received
+              {t('event_detail.reg_received', 'Registration Received')}
             </span>
-            <h3 className="text-h4 font-bold text-neutral-900">You're Registered!</h3>
+            <h3 className="text-h4 font-bold text-neutral-900">{t('event_detail.reg_success', "You're Registered!")}</h3>
             <p className="text-body-sm text-neutral-600 max-w-sm mx-auto leading-relaxed">
-              Thank you, <span className="font-semibold text-neutral-900">{regForm.name}</span>! Your spot for{' '}
-              <span className="font-semibold text-neutral-900">{event.title}</span> ({regForm.attendees} {regForm.attendees === 1 ? 'attendee' : 'attendees'}) has been received. We look forward to having you!
+              {t('ui.thank_you', 'Thank you,')} <span className="font-semibold text-neutral-900">{regForm.name}</span>{t('ui.your_spot_for', '! Your spot for')}{' '}
+              <span className="font-semibold text-neutral-900">{event.title}</span> ({regForm.attendees} {regForm.attendees === 1 ? translate('ui.attendee', 'attendee') : translate('ui.attendees', 'attendees')}{t('ui.has_been_received_we_look_forward_to_having_', ') has been received. We look forward to having you!')}
             </p>
             <div className="flex flex-col sm:flex-row gap-2 justify-center pt-3">
               <Button
@@ -554,7 +556,7 @@ export const EventDetailPage: React.FC = () => {
                 size="sm"
                 onClick={() => downloadIcsFile(generateSingleEventIcs(event), `${event.slug || 'event'}.ics`)}
               >
-                <Calendar className="w-4 h-4 mr-1.5" /> Download .ics
+                <Calendar className="w-4 h-4 mr-1.5" /> {t('ui.download_ics', 'Download .ics')}
               </Button>
             </div>
             <div className="pt-2">
@@ -562,7 +564,7 @@ export const EventDetailPage: React.FC = () => {
                 onClick={() => setIsRegisterModalOpen(false)}
                 className="text-body-xs font-semibold text-neutral-500 hover:text-neutral-800"
               >
-                Done
+                {t('form.done', 'Done')}
               </button>
             </div>
           </div>
@@ -581,15 +583,15 @@ export const EventDetailPage: React.FC = () => {
             </div>
 
             <Input
-              label="Full Name"
+              label={t('ui.full_name', 'Full Name')}
               required
               value={regForm.name}
               onChange={(e) => setRegForm({ ...regForm, name: e.target.value })}
-              placeholder="e.g. John Doe"
+              placeholder={t('ui.e_g_john_doe', 'e.g. John Doe')}
             />
 
             <Input
-              label="Email Address"
+              label={t('form.email', 'Email Address')}
               type="email"
               required
               value={regForm.email}
@@ -598,7 +600,7 @@ export const EventDetailPage: React.FC = () => {
             />
 
             <Input
-              label="Phone Number"
+              label={t('form.phone', 'Phone Number')}
               type="tel"
               required
               value={regForm.phone}
@@ -608,7 +610,7 @@ export const EventDetailPage: React.FC = () => {
 
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Number of Attendees
+                {t('event_detail.attendees', 'Number of Attendees')}
               </label>
               <input
                 type="number"
@@ -622,13 +624,13 @@ export const EventDetailPage: React.FC = () => {
 
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Notes / Special Requests (Optional)
+                {t('event_detail.notes_label', 'Notes / Special Requests (Optional)')}
               </label>
               <textarea
                 rows={2}
                 value={regForm.notes}
                 onChange={(e) => setRegForm({ ...regForm, notes: e.target.value })}
-                placeholder="Dietary requirements, children attending, accessibility assistance, etc."
+                placeholder={t('ui.dietary_requirements_children_attending_acce', 'Dietary requirements, children attending, accessibility assistance, etc.')}
                 className="w-full px-3 py-2 border border-neutral-300 rounded-xl text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-red/30"
               />
             </div>
@@ -640,14 +642,14 @@ export const EventDetailPage: React.FC = () => {
                 onClick={() => setIsRegisterModalOpen(false)}
                 disabled={regSubmitting}
               >
-                Cancel
+                {t('form.cancel', 'Cancel')}
               </Button>
               <Button
                 type="submit"
                 variant="primary"
                 disabled={regSubmitting}
               >
-                {regSubmitting ? 'Registering...' : 'Complete Registration'}
+                {regSubmitting ? t('ui.registering', 'Registering...') : t('event_detail.register_btn', 'Register')}
               </Button>
             </div>
           </form>

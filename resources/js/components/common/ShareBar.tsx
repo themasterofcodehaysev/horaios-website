@@ -16,6 +16,7 @@ import {
   LinkedinIcon,
 } from './SocialIcons';
 
+import { useLanguage, translate } from '../../context/LanguageContext';
 export interface ShareBarProps {
   title: string;
   description?: string;
@@ -28,9 +29,10 @@ export const ShareBar: React.FC<ShareBarProps> = ({
   title,
   description,
   url,
-  label = 'Share This Page',
+  label = translate('ui.share_this_page', 'Share This Page'),
   className = '',
 }) => {
+  const { t } = useLanguage();
   const [copied, setCopied] = useState(false);
   const [modalCopied, setModalCopied] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -60,7 +62,7 @@ export const ShareBar: React.FC<ShareBarProps> = ({
       }
       onSuccess();
     } catch {
-      prompt('Copy link to clipboard:', targetUrl);
+      prompt(translate('ui.copy_link_to_clipboard_msg', 'Copy link to clipboard:'), targetUrl);
     }
   }, [getTargetUrl]);
 
@@ -195,7 +197,7 @@ export const ShareBar: React.FC<ShareBarProps> = ({
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-body-xs font-semibold shadow-xs transition-all bg-[#1877F2] hover:bg-[#166fe5] text-white"
-            title="Share on Facebook"
+            title={t('ui.share_on_facebook', 'Share on Facebook')}
           >
             <FacebookIcon className="w-3.5 h-3.5" />
             <span>Facebook</span>
@@ -207,7 +209,7 @@ export const ShareBar: React.FC<ShareBarProps> = ({
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-body-xs font-semibold shadow-xs transition-all bg-[#25D366] hover:bg-[#20ba5a] text-white"
-            title="Share on WhatsApp"
+            title={t('ui.share_on_whatsapp', 'Share on WhatsApp')}
           >
             <WhatsAppIcon className="w-3.5 h-3.5" />
             <span>WhatsApp</span>
@@ -217,7 +219,7 @@ export const ShareBar: React.FC<ShareBarProps> = ({
           <button
             onClick={handleCopyLink}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-neutral-200 text-neutral-700 rounded-lg text-body-xs font-medium hover:bg-neutral-100 transition-colors shadow-xs"
-            title="Copy link to clipboard"
+            title={t('ui.copy_link_to_clipboard', 'Copy link to clipboard')}
           >
             {copied ? (
               <Check className="w-3.5 h-3.5 text-emerald-600 animate-scale-in" />
@@ -225,7 +227,7 @@ export const ShareBar: React.FC<ShareBarProps> = ({
               <Copy className="w-3.5 h-3.5 text-neutral-500" />
             )}
             <span className={copied ? 'text-emerald-700 font-bold' : ''}>
-              {copied ? 'Copied!' : 'Copy Link'}
+              {copied ? t('ui.copied', 'Copied!') : t('ui.copy_link', 'Copy Link')}
             </span>
           </button>
 
@@ -233,10 +235,10 @@ export const ShareBar: React.FC<ShareBarProps> = ({
           <button
             onClick={() => setIsModalOpen(true)}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-neutral-200/80 hover:bg-neutral-300 text-neutral-800 rounded-lg text-body-xs font-semibold transition-colors shadow-xs"
-            title="More sharing options"
+            title={t('ui.more_sharing_options', 'More sharing options')}
           >
             <MoreHorizontal className="w-4 h-4" />
-            <span>More</span>
+            <span>{t('ui.more', 'More')}</span>
           </button>
         </div>
       </div>
@@ -262,15 +264,15 @@ export const ShareBar: React.FC<ShareBarProps> = ({
                 </div>
                 <div>
                   <h3 id="share-modal-title" className="text-h5 font-bold text-neutral-900">
-                    Share
+                    {t('ui.share', 'Share')}
                   </h3>
-                  <p className="text-[11px] text-neutral-500">Choose how you'd like to share this</p>
+                  <p className="text-[11px] text-neutral-500">{t('ui.choose_how_you_d_like_to_share_this', 'Choose how you\'d like to share this')}</p>
                 </div>
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
                 className="w-8 h-8 rounded-lg flex items-center justify-center text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 transition-colors"
-                aria-label="Close share dialog"
+                aria-label={t('ui.close_share_dialog', 'Close share dialog')}
               >
                 <X className="w-5 h-5" />
               </button>
@@ -296,7 +298,7 @@ export const ShareBar: React.FC<ShareBarProps> = ({
               {/* Copy Link Input Field */}
               <div className="space-y-1.5">
                 <label className="text-body-xs font-semibold text-neutral-600 block">
-                  Page Link
+                  {t('ui.page_link', 'Page Link')}
                 </label>
                 <div className="flex items-center gap-2">
                   <input
@@ -315,7 +317,7 @@ export const ShareBar: React.FC<ShareBarProps> = ({
                     ) : (
                       <Copy className="w-3.5 h-3.5" />
                     )}
-                    <span>{modalCopied ? 'Copied!' : 'Copy'}</span>
+                    <span>{modalCopied ? t('ui.copied', 'Copied!') : t('ui.copy', 'Copy')}</span>
                   </button>
                 </div>
               </div>
@@ -323,7 +325,7 @@ export const ShareBar: React.FC<ShareBarProps> = ({
               {/* Share Channels Grid */}
               <div className="space-y-2">
                 <label className="text-body-xs font-semibold text-neutral-600 block">
-                  Share To
+                  {t('ui.share_to', 'Share To')}
                 </label>
                 <div className="grid grid-cols-3 gap-2.5">
                   {allShareDestinations.map((dest) => {
@@ -358,7 +360,7 @@ export const ShareBar: React.FC<ShareBarProps> = ({
                         <Smartphone className="w-5 h-5" />
                       </div>
                       <span className="text-[11px] font-medium text-neutral-700 text-center truncate max-w-full">
-                        Device Apps
+                        {t('ui.device_apps', 'Device Apps')}
                       </span>
                     </button>
                   )}
@@ -372,7 +374,7 @@ export const ShareBar: React.FC<ShareBarProps> = ({
                 onClick={() => setIsModalOpen(false)}
                 className="px-4 py-1.5 text-body-xs font-semibold text-neutral-600 hover:text-neutral-900 transition-colors"
               >
-                Close
+                {t('ui.close', 'Close')}
               </button>
             </div>
           </div>

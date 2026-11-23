@@ -3,6 +3,7 @@ import { Upload, X, Image as ImageIcon, Loader2, AlertCircle } from 'lucide-reac
 import { uploadService } from '../../services/upload.service';
 import { getImageUrl } from '../../utils/imageUrl';
 
+import { useLanguage, translate } from '../../../context/LanguageContext';
 interface ImageUploadProps {
   value?: string | null;
   onChange: (url: string) => void;
@@ -22,6 +23,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
   className = '',
   disabled = false,
 }) => {
+  const { t } = useLanguage();
   const [isDragging, setIsDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -43,12 +45,12 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      setError('Please select an image file (JPG, PNG, WebP, GIF).');
+      setError(t('admin_ui.please_select_an_image_file_jpg_png_webp_gif', 'Please select an image file (JPG, PNG, WebP, GIF).'));
       return;
     }
 
     if (file.size > 10 * 1024 * 1024) {
-      setError('Image size must be less than 10MB.');
+      setError(t('admin_ui.image_size_must_be_less_than_10mb', 'Image size must be less than 10MB.'));
       return;
     }
 
@@ -72,7 +74,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
       setLocalPreview(url);
     } catch (err: any) {
       console.error('Upload failed:', err);
-      const message = err.response?.data?.message || 'Failed to upload image. Please try again.';
+      const message = err.response?.data?.message || translate('admin_msg.failed_to_upload_image_please_try_again', 'Failed to upload image. Please try again.');
       setError(message);
       // Revert preview on failure
       if (blobUrlRef.current && blobUrlRef.current.startsWith('blob:')) {
@@ -157,7 +159,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
           <img
             key={displaySrc}
             src={displaySrc}
-            alt="Uploaded preview"
+            alt={t('admin_ui.uploaded_preview', 'Uploaded preview')}
             className="max-h-56 w-full object-cover rounded-xl"
             onError={(e) => {
               const target = e.target as HTMLImageElement;
@@ -174,7 +176,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
               <Loader2 className="w-8 h-8 animate-spin text-white" />
               <div className="w-full max-w-xs space-y-1">
                 <div className="flex justify-between text-xs font-medium">
-                  <span>Uploading...</span>
+                  <span>{t('admin_ui.uploading', 'Uploading...')}</span>
                   <span>{progress}%</span>
                 </div>
                 <div className="w-full bg-white/30 rounded-full h-1.5 overflow-hidden">
@@ -194,14 +196,14 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
                 disabled={disabled || uploading}
                 className="px-3 py-1.5 bg-white text-gray-800 text-xs font-semibold rounded-lg shadow hover:bg-gray-100 transition-colors"
               >
-                Change
+                {t('admin_ui.change', 'Change')}
               </button>
               <button
                 type="button"
                 onClick={handleRemove}
                 disabled={disabled || uploading}
                 className="p-1.5 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 transition-colors"
-                title="Remove image"
+                title={t('admin_ui.remove_image', 'Remove image')}
               >
                 <X className="w-4 h-4" />
               </button>
@@ -226,7 +228,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
                 <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
                 <div className="w-full max-w-xs space-y-1">
                   <div className="flex justify-between text-xs text-gray-600 font-medium">
-                    <span>Uploading...</span>
+                    <span>{t('admin_ui.uploading', 'Uploading...')}</span>
                     <span>{progress}%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
@@ -244,12 +246,12 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
                 </div>
                 <div className="text-sm">
                   <span className="font-semibold text-indigo-600 hover:text-indigo-500">
-                    Click to upload
+                    {t('admin_ui.click_to_upload', 'Click to upload')}
                   </span>{' '}
-                  <span className="text-gray-500">or drag and drop</span>
+                  <span className="text-gray-500">{t('admin_ui.or_drag_and_drop', 'or drag and drop')}</span>
                 </div>
                 <p className="text-xs text-gray-400">
-                  PNG, JPG, WebP, or GIF up to 10MB
+                  {t('admin_ui.png_jpg_webp_or_gif_up_to_10mb', 'PNG, JPG, WebP, or GIF up to 10MB')}
                 </p>
               </>
             )}

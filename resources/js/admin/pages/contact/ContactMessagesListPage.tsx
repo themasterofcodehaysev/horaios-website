@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { contactService } from '../../services/contact.service';
 import type { ContactMessage, PaginatedResponse, ContactMessageFilters, ContactMessageStats } from '../../types';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage, translate, getDateLocale } from '../../../context/LanguageContext';
 
 const ContactMessagesListPage: React.FC = () => {
   const { t } = useLanguage();
@@ -28,7 +28,7 @@ const ContactMessagesListPage: React.FC = () => {
       setMessages(result.data);
       setMeta(result.meta);
     } catch (err: any) {
-      setError(err?.response?.data?.message || 'Failed to load contact messages');
+      setError(err?.response?.data?.message || translate('admin_msg.failed_to_load_contact_messages', 'Failed to load contact messages'));
     } finally {
       setLoading(false);
     }
@@ -57,7 +57,7 @@ const ContactMessagesListPage: React.FC = () => {
       setMessages(prev => prev.map(m => m.id === message.id ? updated : m));
       fetchStats();
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to update status');
+      alert(err?.response?.data?.message || translate('admin_msg.failed_to_update_status', 'Failed to update status'));
     }
   };
 
@@ -70,7 +70,7 @@ const ContactMessagesListPage: React.FC = () => {
       fetchMessages();
       fetchStats();
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to delete contact message');
+      alert(err?.response?.data?.message || translate('admin_msg.failed_to_delete_contact_message', 'Failed to delete contact message'));
     } finally {
       setDeleting(false);
     }
@@ -100,23 +100,23 @@ const ContactMessagesListPage: React.FC = () => {
       {stats && (
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
           <div className="bg-white rounded-lg border border-neutral-200 p-3 shadow-xs">
-            <div className="text-body-xs text-neutral-500 mb-1">Total</div>
+            <div className="text-body-xs text-neutral-500 mb-1">{t('admin_ui.total_96b014', 'Total')}</div>
             <div className="text-h3 text-neutral-900 font-semibold">{stats.total}</div>
           </div>
           <div className="bg-white rounded-lg border border-neutral-200 p-3 shadow-xs">
-            <div className="text-body-xs text-neutral-500 mb-1">Unread</div>
+            <div className="text-body-xs text-neutral-500 mb-1">{t('admin_ui.unread', 'Unread')}</div>
             <div className="text-h3 text-blue-600 font-semibold">{stats.unread}</div>
           </div>
           <div className="bg-white rounded-lg border border-neutral-200 p-3 shadow-xs">
-            <div className="text-body-xs text-neutral-500 mb-1">Read</div>
+            <div className="text-body-xs text-neutral-500 mb-1">{t('admin_ui.read', 'Read')}</div>
             <div className="text-h3 text-gray-600 font-semibold">{stats.read}</div>
           </div>
           <div className="bg-white rounded-lg border border-neutral-200 p-3 shadow-xs">
-            <div className="text-body-xs text-neutral-500 mb-1">Replied</div>
+            <div className="text-body-xs text-neutral-500 mb-1">{t('admin_ui.replied', 'Replied')}</div>
             <div className="text-h3 text-green-600 font-semibold">{stats.replied}</div>
           </div>
           <div className="bg-white rounded-lg border border-neutral-200 p-3 shadow-xs">
-            <div className="text-body-xs text-neutral-500 mb-1">Archived</div>
+            <div className="text-body-xs text-neutral-500 mb-1">{t('admin_ui.archived', 'Archived')}</div>
             <div className="text-h3 text-yellow-600 font-semibold">{stats.archived}</div>
           </div>
         </div>
@@ -127,7 +127,7 @@ const ContactMessagesListPage: React.FC = () => {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
           <input
             type="text"
-            placeholder="Search by name, email, subject, or message..."
+            placeholder={t('admin_ui.search_by_name_email_subject_or_message', 'Search by name, email, subject, or message...')}
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             className="w-full pl-10 pr-9 py-2.5 border border-neutral-200 rounded-lg text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 bg-white"
@@ -144,11 +144,11 @@ const ContactMessagesListPage: React.FC = () => {
             onChange={(e) => setFilters(f => ({ ...f, status: e.target.value || undefined, page: 1 }))}
             className="px-3 py-2.5 border border-neutral-200 rounded-lg text-body-xs bg-white"
           >
-            <option value="">All Status</option>
-            <option value="unread">Unread</option>
-            <option value="read">Read</option>
-            <option value="replied">Replied</option>
-            <option value="archived">Archived</option>
+            <option value="">{t('admin_ui.all_status', 'All Status')}</option>
+            <option value="unread">{t('admin_ui.unread', 'Unread')}</option>
+            <option value="read">{t('admin_ui.read', 'Read')}</option>
+            <option value="replied">{t('admin_ui.replied', 'Replied')}</option>
+            <option value="archived">{t('admin_ui.archived', 'Archived')}</option>
           </select>
         </div>
       </div>
@@ -170,12 +170,12 @@ const ContactMessagesListPage: React.FC = () => {
           <div className="px-5 py-12 text-center">
             <AlertTriangle className="w-8 h-8 text-red-400 mx-auto mb-3" />
             <p className="text-body-sm text-neutral-600 mb-3">{error}</p>
-            <button onClick={fetchMessages} className="text-body-sm text-primary-red font-medium hover:underline">Retry</button>
+            <button onClick={fetchMessages} className="text-body-sm text-primary-red font-medium hover:underline">{t('form.retry', 'Retry')}</button>
           </div>
         ) : messages.length === 0 ? (
           <div className="px-5 py-12 text-center">
             <Mail className="w-8 h-8 text-neutral-300 mx-auto mb-3" />
-            <p className="text-body-sm text-neutral-500 mb-4">No contact messages found matching your criteria</p>
+            <p className="text-body-sm text-neutral-500 mb-4">{t('admin_ui.no_contact_messages_found_matching_your_crit', 'No contact messages found matching your criteria')}</p>
           </div>
         ) : (
           <div className="divide-y divide-neutral-100">
@@ -195,7 +195,7 @@ const ContactMessagesListPage: React.FC = () => {
                       <span>•</span>
                       <span>{message.email}</span>
                       <span>•</span>
-                      <span>{new Date(message.created_at).toLocaleDateString()}</span>
+                      <span>{new Date(message.created_at).toLocaleDateString(getDateLocale())}</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -207,7 +207,7 @@ const ContactMessagesListPage: React.FC = () => {
                         <button
                           onClick={() => handleUpdateStatus(message, 'read')}
                           className="p-1.5 text-gray-600 hover:bg-gray-50 rounded-lg"
-                          title="Mark as Read"
+                          title={t('admin_ui.mark_as_read_0bda45', 'Mark as Read')}
                         >
                           <Eye className="w-4 h-4" />
                         </button>
@@ -216,7 +216,7 @@ const ContactMessagesListPage: React.FC = () => {
                         <button
                           onClick={() => handleUpdateStatus(message, 'replied')}
                           className="p-1.5 text-green-600 hover:bg-green-50 rounded-lg"
-                          title="Mark as Replied"
+                          title={t('admin_ui.mark_as_replied', 'Mark as Replied')}
                         >
                           <Reply className="w-4 h-4" />
                         </button>
@@ -225,7 +225,7 @@ const ContactMessagesListPage: React.FC = () => {
                         <button
                           onClick={() => handleUpdateStatus(message, 'archived')}
                           className="p-1.5 text-yellow-600 hover:bg-yellow-50 rounded-lg"
-                          title="Archive"
+                          title={t('admin_ui.archive', 'Archive')}
                         >
                           <Archive className="w-4 h-4" />
                         </button>
@@ -233,7 +233,7 @@ const ContactMessagesListPage: React.FC = () => {
                       <button
                         onClick={() => setDeleteModal({ open: true, message })}
                         className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg"
-                        title="Delete"
+                        title={t('form.delete', 'Delete')}
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -248,7 +248,7 @@ const ContactMessagesListPage: React.FC = () => {
         {meta && meta.last_page > 1 && (
           <div className="flex items-center justify-between px-5 py-4 border-t border-neutral-200">
             <div className="text-body-xs text-neutral-500">
-              Showing {meta.from} to {meta.to} of {meta.total} results
+              {t('ui.showing', 'Showing')} {meta.from} {t('admin_ui.to', 'to')} {meta.to} {t('ui.of', 'of')} {meta.total} {t('admin_ui.results', 'results')}
             </div>
             <div className="flex items-center gap-2">
               <button
@@ -259,7 +259,7 @@ const ContactMessagesListPage: React.FC = () => {
                 <ChevronLeft className="w-4 h-4" />
               </button>
               <span className="text-body-sm text-neutral-700">
-                Page {meta.current_page} of {meta.last_page}
+                {t('ui.page', 'Page')} {meta.current_page} {t('ui.of', 'of')} {meta.last_page}
               </span>
               <button
                 onClick={() => setFilters(f => ({ ...f, page: f.page! + 1 }))}
@@ -276,23 +276,23 @@ const ContactMessagesListPage: React.FC = () => {
       {deleteModal.open && deleteModal.message && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4 shadow-lg">
-            <h3 className="text-h3 text-neutral-900 font-semibold mb-2">Delete Contact Message</h3>
+            <h3 className="text-h3 text-neutral-900 font-semibold mb-2">{t('admin_ui.delete_contact_message', 'Delete Contact Message')}</h3>
             <p className="text-body-sm text-neutral-600 mb-6">
-              Are you sure you want to delete this message from {deleteModal.message.name}? This action cannot be undone.
+              {t('admin_ui.are_you_sure_you_want_to_delete_this_message', 'Are you sure you want to delete this message from')} {deleteModal.message.name}{t('admin_ui.this_action_cannot_be_undone', '? This action cannot be undone.')}
             </p>
             <div className="flex items-center justify-end gap-3">
               <button
                 onClick={() => setDeleteModal({ open: false, message: null })}
                 className="px-4 py-2 text-body-sm font-medium text-neutral-700 hover:bg-neutral-100 rounded-lg"
               >
-                Cancel
+                {t('form.cancel', 'Cancel')}
               </button>
               <button
                 onClick={handleDelete}
                 disabled={deleting}
                 className="px-4 py-2 text-body-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg disabled:opacity-50"
               >
-                {deleting ? 'Deleting...' : 'Delete'}
+                {deleting ? t('admin_ui.deleting', 'Deleting...') : t('form.delete', 'Delete')}
               </button>
             </div>
           </div>

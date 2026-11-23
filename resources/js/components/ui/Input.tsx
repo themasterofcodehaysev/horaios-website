@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import clsx from 'clsx';
 import { Eye, EyeOff } from 'lucide-react';
 
+import { useLanguage } from '../../context/LanguageContext';
 interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
   label?: string;
   error?: string;
@@ -39,6 +40,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     },
     ref
   ) => {
+  const { t } = useLanguage();
     const [passwordVisible, setPasswordVisible] = useState(false);
     const isPasswordField = type === 'password';
     const effectiveType = isPasswordField && passwordVisible ? 'text' : type;
@@ -80,8 +82,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
               onClick={() => setPasswordVisible(!passwordVisible)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-700 transition-colors p-1 focus:outline-none cursor-pointer"
               tabIndex={-1}
-              aria-label={passwordVisible ? 'Hide password' : 'Show password'}
-              title={passwordVisible ? 'Hide password' : 'Show password'}
+              aria-label={passwordVisible ? t('ui.hide_password', 'Hide password') : t('ui.show_password', 'Show password')}
+              title={passwordVisible ? t('ui.hide_password', 'Hide password') : t('ui.show_password', 'Show password')}
             >
               {passwordVisible ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>

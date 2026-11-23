@@ -17,11 +17,32 @@ const LanguageContext = createContext<LanguageContextType>({
 
 const STORAGE_KEY = 'horaios_lang';
 
+let currentLanguage: Language = 'en';
+
+/**
+ * Translates using the language active at call time. Use inside memoized
+ * callbacks and effects, where a captured `t` could hold a previous language.
+ */
+export const translate = (
+  key: string,
+  fallback?: string,
+  vars?: Record<string, string | number>,
+): string => {
+  const text = translations[currentLanguage]?.[key] || translations.en[key] || (fallback !== undefined ? fallback : key);
+  if (!vars) return text;
+  return text.replace(/\{(\w+)\}/g, (match, name) => (name in vars ? String(vars[name]) : match));
+};
+
+/** Locale for date formatting. English keeps each caller's existing locale. */
+export const getDateLocale = (englishLocale?: string): string | undefined =>
+  currentLanguage === 'km' ? 'km-KH' : englishLocale;
+
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('admin_language');
       if (saved === 'km' || saved === 'en') {
+        currentLanguage = saved;
         return saved;
       }
     } catch {
@@ -31,6 +52,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   });
 
   const setLanguage = useCallback((lang: Language) => {
+    currentLanguage = lang;
     setLanguageState(lang);
     try {
       localStorage.setItem(STORAGE_KEY, lang);

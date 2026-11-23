@@ -6,7 +6,7 @@ import { sermonService } from '../admin/services/sermon.service';
 import { getImageUrl } from '../utils/imageUrl';
 import { getSermonThumbnail } from '../utils/youtube';
 import type { SermonItem, SermonCategory, SermonSeries, Speaker, PaginatedResponse } from '../admin/types';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage, translate, getDateLocale } from '../context/LanguageContext';
 
 export const SermonsPage: React.FC = () => {
   const { t } = useLanguage();
@@ -219,11 +219,11 @@ export const SermonsPage: React.FC = () => {
         <div>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-h4 font-bold text-neutral-900">
-              {selectedCategory ? `${categories.find(c => String(c.id) === selectedCategory)?.name || 'Category'} Sermons` : t('sermons.all_sermons', 'All Sermons & Messages')}
+              {selectedCategory ? translate('ui.category_sermons', '{category} Sermons', { category: categories.find(c => String(c.id) === selectedCategory)?.name || translate('ui.category', 'Category') }) : t('sermons.all_sermons', 'All Sermons & Messages')}
             </h2>
             {meta && (
               <span className="text-body-xs text-neutral-500 font-medium">
-                {meta.total} {meta.total === 1 ? 'sermon' : 'sermons'} available
+                {meta.total} {meta.total === 1 ? t('ui.count_sermon', 'sermon') : t('ui.count_sermons', 'sermons')} {t('ui.available', 'available')}
               </span>
             )}
           </div>
@@ -277,7 +277,7 @@ export const SermonsPage: React.FC = () => {
                       )}
                       {sermon.youtube_url && (
                         <div className="absolute bottom-2 right-2 bg-red-600 text-white px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">
-                          Video
+                          {t('ui.video', 'Video')}
                         </div>
                       )}
                     </div>
@@ -330,7 +330,7 @@ export const SermonsPage: React.FC = () => {
                   <div className="p-5 pt-3 border-t border-neutral-100 flex items-center justify-between text-body-xs font-semibold text-primary-red">
                     <span className="flex items-center gap-1 text-neutral-400 font-normal">
                       <Calendar className="w-3.5 h-3.5" />
-                      {sermon.published_at ? new Date(sermon.published_at).toLocaleDateString() : 'Recent'}
+                      {sermon.published_at ? new Date(sermon.published_at).toLocaleDateString(getDateLocale()) : t('ui.recent', 'Recent')}
                     </span>
                     <span className="flex items-center gap-1 group-hover:translate-x-1 transition-transform">
                       {t('sermons.watch_sermon', 'Watch Sermon')} <ChevronRight className="w-4 h-4" />
@@ -353,7 +353,7 @@ export const SermonsPage: React.FC = () => {
               <ChevronLeft className="w-5 h-5" />
             </button>
             <span className="text-body-sm font-semibold text-neutral-700 px-4">
-              Page {meta.current_page} of {meta.last_page}
+              {t('ui.page', 'Page')} {meta.current_page} {t('ui.of', 'of')} {meta.last_page}
             </span>
             <button
               disabled={meta.current_page >= meta.last_page}

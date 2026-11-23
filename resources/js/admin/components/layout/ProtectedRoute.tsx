@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
+import { useLanguage } from '../../../context/LanguageContext';
 interface ProtectedRouteProps {
   permission?: string;
 }
@@ -18,6 +19,7 @@ const userHasPermission = (perms: any[] | undefined, permission: string): boolea
 };
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ permission }) => {
+  const { t } = useLanguage();
   const location = useLocation();
   const { user, isAuthenticated, isLoading: authLoading, hasPermission } = useAuth();
   const [localAuthorized, setLocalAuthorized] = useState<boolean | null>(null);
@@ -49,7 +51,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ permission }) =>
       <div className="flex items-center justify-center min-h-screen bg-neutral-50">
         <div className="flex flex-col items-center">
           <div className="w-10 h-10 border-4 border-neutral-200 border-t-primary-red rounded-full animate-spin" />
-          <p className="mt-4 text-body-sm text-neutral-500 font-medium">Verifying access...</p>
+          <p className="mt-4 text-body-sm text-neutral-500 font-medium">{t('admin_ui.verifying_access', 'Verifying access...')}</p>
         </div>
       </div>
     );
@@ -68,13 +70,13 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ permission }) =>
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
           </div>
-          <h2 className="text-h4 text-neutral-900 font-bold mb-2">Access Denied</h2>
-          <p className="text-body-sm text-neutral-500 mb-6">You don't have the required permissions to view this page.</p>
+          <h2 className="text-h4 text-neutral-900 font-bold mb-2">{t('admin_ui.access_denied', 'Access Denied')}</h2>
+          <p className="text-body-sm text-neutral-500 mb-6">{t('admin_ui.you_don_t_have_the_required_permissions_to_v', 'You don\'t have the required permissions to view this page.')}</p>
           <button
             onClick={() => window.history.back()}
             className="w-full py-2.5 px-4 bg-neutral-900 text-white rounded-lg text-body-sm font-medium hover:bg-neutral-800 transition-colors"
           >
-            Go Back
+            {t('admin_ui.go_back', 'Go Back')}
           </button>
         </div>
       </div>

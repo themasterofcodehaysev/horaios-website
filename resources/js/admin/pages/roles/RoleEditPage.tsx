@@ -4,6 +4,7 @@ import { ArrowLeft, Save, Loader2, ShieldAlert } from 'lucide-react';
 import { roleService } from '../../services/role.service';
 import type { Role, Permission } from '../../types';
 
+import { useLanguage, translate } from '../../../context/LanguageContext';
 const GROUP_LABELS: Record<string, string> = {
   users: 'User Management',
   content: 'Content Management',
@@ -18,6 +19,7 @@ const GROUP_LABELS: Record<string, string> = {
 };
 
 export default function RoleEditPage() {
+  const { t } = useLanguage();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -60,7 +62,7 @@ export default function RoleEditPage() {
         setSelectedPermissions(currentPerms);
       } catch (err) {
         console.error('Failed to fetch role data', err);
-        setErrorState('Failed to load role details.');
+        setErrorState(translate('admin_msg.failed_to_load_role_details', 'Failed to load role details.'));
       } finally {
         setFetching(false);
       }
@@ -105,9 +107,9 @@ export default function RoleEditPage() {
     return (
       <div className="max-w-5xl mx-auto py-6">
         <div className="bg-red-50 border border-red-200 text-red-600 rounded-xl p-6 text-center">
-          <p>{errorState || 'Role not found.'}</p>
+          <p>{errorState || translate('admin_msg.role_not_found', 'Role not found.')}</p>
           <button onClick={() => navigate('/admin/roles')} className="mt-4 text-primary-navy hover:underline">
-            Back to Roles
+            {t('admin_ui.back_to_roles', 'Back to Roles')}
           </button>
         </div>
       </div>
@@ -132,8 +134,8 @@ export default function RoleEditPage() {
           <ArrowLeft size={20} />
         </button>
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">Edit Role: {role.display_name || role.name}</h1>
-          <p className="text-sm text-gray-500">{role.description || 'Manage permissions for this role'}</p>
+          <h1 className="text-2xl font-semibold text-gray-900">{t('admin_ui.edit_role', 'Edit Role:')} {role.display_name || role.name}</h1>
+          <p className="text-sm text-gray-500">{role.description || translate('admin_msg.manage_permissions_for_this_role', 'Manage permissions for this role')}</p>
         </div>
       </div>
 
@@ -142,9 +144,9 @@ export default function RoleEditPage() {
           <div className="bg-primary-navy/10 px-6 py-4 border-b border-primary-navy/20 flex items-start gap-3">
             <ShieldAlert className="text-primary-navy shrink-0 mt-0.5" size={20} />
             <div>
-              <h3 className="text-sm font-medium text-primary-navy">System Administrator Role</h3>
+              <h3 className="text-sm font-medium text-primary-navy">{t('admin_ui.system_administrator_role', 'System Administrator Role')}</h3>
               <p className="text-sm text-primary-navy/80 mt-1">
-                This is a core system role. Super Administrators automatically have full access to all permissions. These settings cannot be modified.
+                {t('admin_ui.this_is_a_core_system_role_super_administrat', 'This is a core system role. Super Administrators automatically have full access to all permissions. These settings cannot be modified.')}
               </p>
             </div>
           </div>
@@ -155,7 +157,7 @@ export default function RoleEditPage() {
             {Object.entries(groupedPermissions).map(([group, perms]) => (
               <div key={group} className="border border-gray-100 rounded-xl overflow-hidden">
                 <div className="bg-gray-50 px-4 py-3 border-b border-gray-100">
-                  <h3 className="font-medium text-gray-900">{GROUP_LABELS[group] || group.replace('_', ' ')}</h3>
+                  <h3 className="font-medium text-gray-900">{t(`admin_perm.${group}`, GROUP_LABELS[group] || group.replace('_', ' '))}</h3>
                 </div>
                 <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {perms.map(perm => {
@@ -195,7 +197,7 @@ export default function RoleEditPage() {
                 onClick={() => navigate('/admin/roles')}
                 className="px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg border border-gray-200 transition-colors"
               >
-                Cancel
+                {t('form.cancel', 'Cancel')}
               </button>
               <button
                 type="button"
@@ -204,7 +206,7 @@ export default function RoleEditPage() {
                 className="flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-primary-red hover:bg-primary-dark-red rounded-lg transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
               >
                 {loading ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
-                {loading ? 'Saving...' : 'Save Permissions'}
+                {loading ? t('admin_ui.saving', 'Saving...') : t('admin_ui.save_permissions', 'Save Permissions')}
               </button>
             </div>
           )}

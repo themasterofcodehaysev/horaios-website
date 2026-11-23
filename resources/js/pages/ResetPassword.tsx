@@ -7,7 +7,9 @@ import { Card } from '../components/ui/Card';
 import { Alert } from '../components/ui/Alert';
 import { authService } from '../admin/services/auth.service';
 
+import { useLanguage, translate } from '../context/LanguageContext';
 export const ResetPasswordPage: React.FC = () => {
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const { token } = useParams<{ token: string }>();
   const [searchParams] = useSearchParams();
@@ -24,12 +26,12 @@ export const ResetPasswordPage: React.FC = () => {
     setError(null);
 
     if (password !== passwordConfirmation) {
-      setError('Passwords do not match.');
+      setError(t('ui.passwords_do_not_match_01b0a9', 'Passwords do not match.'));
       return;
     }
 
     if (!token || !email) {
-      setError('This reset link is invalid. Please request a new one.');
+      setError(t('ui.this_reset_link_is_invalid_please_request_a_', 'This reset link is invalid. Please request a new one.'));
       return;
     }
 
@@ -42,7 +44,7 @@ export const ResetPasswordPage: React.FC = () => {
       setError(
         err?.response?.data?.errors?.token?.[0] ||
         err?.response?.data?.message ||
-        'This reset link is invalid or has expired. Please request a new one.'
+        translate('ui.this_reset_link_is_invalid_or_has_expired_pl', 'This reset link is invalid or has expired. Please request a new one.')
       );
     } finally {
       setLoading(false);
@@ -56,33 +58,33 @@ export const ResetPasswordPage: React.FC = () => {
           <div className="text-center mb-8">
             <img
               src="/images/logo.png"
-              alt="Horaios Baptist Church Logo"
+              alt={t('ui.horaios_baptist_church_logo', 'Horaios Baptist Church Logo')}
               className="w-16 h-16 rounded-full mx-auto mb-4 object-contain shadow-md"
             />
             <h1 className="text-h4 font-semibold text-neutral-900 mb-2">
-              Set a new password
+              {t('ui.set_a_new_password', 'Set a new password')}
             </h1>
             <p className="text-body-sm text-neutral-600">
-              {email ? `For ${email}` : 'Choose a strong password for your account.'}
+              {email ? translate('ui.for_email', 'For {email}', { email }) : t('ui.choose_a_strong_password_for_your_account', 'Choose a strong password for your account.')}
             </p>
           </div>
 
           {error && (
             <div className="mb-4">
-              <Alert variant="error" title="Couldn't reset password">
+              <Alert variant="error" title={t('ui.couldn_t_reset_password', 'Couldn\'t reset password')}>
                 {error}
               </Alert>
             </div>
           )}
 
           {done ? (
-            <Alert variant="success" title="Password updated">
-              Redirecting you to sign in...
+            <Alert variant="success" title={t('ui.password_updated', 'Password updated')}>
+              {t('ui.redirecting_you_to_sign_in', 'Redirecting you to sign in...')}
             </Alert>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <Input
-                label="New Password"
+                label={t('ui.new_password', 'New Password')}
                 type="password"
                 name="password"
                 placeholder="••••••••"
@@ -91,7 +93,7 @@ export const ResetPasswordPage: React.FC = () => {
                 required
               />
               <Input
-                label="Confirm New Password"
+                label={t('ui.confirm_new_password', 'Confirm New Password')}
                 type="password"
                 name="password_confirmation"
                 placeholder="••••••••"
@@ -101,14 +103,14 @@ export const ResetPasswordPage: React.FC = () => {
               />
 
               <Button type="submit" variant="primary" fullWidth size="lg" disabled={loading}>
-                {loading ? 'Resetting...' : 'Reset Password'}
+                {loading ? t('ui.resetting', 'Resetting...') : t('ui.reset_password', 'Reset Password')}
               </Button>
             </form>
           )}
 
           <div className="mt-8 pt-6 border-t border-neutral-200 text-center">
             <Link to="/login" className="text-body-sm text-primary-red hover:text-primary-dark-red font-medium">
-              Back to sign in
+              {t('ui.back_to_sign_in', 'Back to sign in')}
             </Link>
           </div>
         </Card>

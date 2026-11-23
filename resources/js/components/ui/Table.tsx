@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { translate } from '../../context/LanguageContext';
 export interface Column<T> {
   header: string;
   accessor: keyof T | ((item: T) => React.ReactNode);
@@ -17,7 +18,7 @@ export function Table<T>({
   columns,
   data,
   keyExtractor,
-  emptyMessage = 'No data available',
+  emptyMessage = translate('ui.no_data_available', 'No data available'),
 }: TableProps<T>) {
   return (
     <div className="w-full overflow-x-auto rounded-lg border border-neutral-200 shadow-elevation-sm">

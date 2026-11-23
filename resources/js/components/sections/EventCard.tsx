@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { Star } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { getImageUrl } from '../../utils/imageUrl';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface EventCardProps {
   title: string;
@@ -27,6 +28,7 @@ export const EventCard: React.FC<EventCardProps> = ({
   category,
   onClick,
 }) => {
+  const { t } = useLanguage();
   const imageUrl = image ? getImageUrl(image) : null;
 
   return (
@@ -47,7 +49,7 @@ export const EventCard: React.FC<EventCardProps> = ({
             {featured && (
               <div className="absolute top-2.5 right-2.5 z-10">
                 <span className="inline-flex items-center gap-1 bg-amber-400 text-neutral-950 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-md">
-                  <Star className="w-3 h-3 fill-current" /> Featured
+                  <Star className="w-3 h-3 fill-current" /> {t('cards.featured', 'Featured')}
                 </span>
               </div>
             )}
@@ -72,7 +74,7 @@ export const EventCard: React.FC<EventCardProps> = ({
             </h3>
             {featured && !imageUrl && (
               <span className="inline-flex items-center gap-1 bg-amber-400 text-neutral-950 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-sm shrink-0">
-                <Star className="w-3 h-3 fill-current" /> Featured
+                <Star className="w-3 h-3 fill-current" /> {t('cards.featured', 'Featured')}
               </span>
             )}
           </div>
@@ -102,7 +104,7 @@ export const EventCard: React.FC<EventCardProps> = ({
 
       <div className="pt-3 border-t border-neutral-200 mt-4">
         <button className="text-primary-red font-medium text-body-sm hover:text-primary-dark-red transition-colors">
-          Learn More →
+          {t('cards.learn_more', 'Learn More →')}
         </button>
       </div>
     </Card>

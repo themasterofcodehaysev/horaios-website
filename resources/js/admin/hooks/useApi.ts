@@ -1,3 +1,4 @@
+import { translate } from '../../context/LanguageContext';
 import { useState, useEffect, useCallback } from 'react';
 
 export function useApi<T>(fetcher: () => Promise<T>, dependencies: any[] = []): { data: T | null; loading: boolean; error: string | null; refetch: () => void } {
@@ -12,7 +13,7 @@ export function useApi<T>(fetcher: () => Promise<T>, dependencies: any[] = []): 
       const result = await fetcher();
       setData(result);
     } catch (err: any) {
-      setError(err.message || 'An error occurred');
+      setError(err.message || translate('admin_msg.an_error_occurred', 'An error occurred'));
     } finally {
       setLoading(false);
     }
@@ -31,7 +32,7 @@ export function useApi<T>(fetcher: () => Promise<T>, dependencies: any[] = []): 
       })
       .catch(err => {
         if (mounted) {
-          setError(err.message || 'An error occurred');
+          setError(err.message || translate('admin_msg.an_error_occurred', 'An error occurred'));
           setLoading(false);
         }
       });

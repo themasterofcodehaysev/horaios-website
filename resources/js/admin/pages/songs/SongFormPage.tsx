@@ -4,7 +4,9 @@ import { ArrowLeft, Save, Loader2, Eye, EyeOff, Sparkles } from 'lucide-react';
 import { songService } from '../../services/song.service';
 import type { SongCategory, CreateSongPayload } from '../../types';
 
+import { useLanguage, translate } from '../../../context/LanguageContext';
 const SongFormPage: React.FC = () => {
+  const { t } = useLanguage();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const isEdit = Boolean(id);
@@ -46,7 +48,7 @@ const SongFormPage: React.FC = () => {
           });
         }
       } catch (err: any) {
-        alert(err?.response?.data?.message || 'Failed to load song');
+        alert(err?.response?.data?.message || translate('admin_msg.failed_to_load_song', 'Failed to load song'));
         navigate('/admin/songs');
       } finally {
         setFetching(false);
@@ -66,8 +68,8 @@ const SongFormPage: React.FC = () => {
 
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
-    if (!formData.title.trim()) newErrors.title = 'Song title is required';
-    if (!formData.lyrics.trim()) newErrors.lyrics = 'Song lyrics are required';
+    if (!formData.title.trim()) newErrors.title = translate('admin_msg.song_title_is_required', 'Song title is required');
+    if (!formData.lyrics.trim()) newErrors.lyrics = translate('admin_msg.song_lyrics_are_required', 'Song lyrics are required');
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -85,7 +87,7 @@ const SongFormPage: React.FC = () => {
       }
       navigate('/admin/songs');
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to save song');
+      alert(err?.response?.data?.message || translate('admin_msg.failed_to_save_song', 'Failed to save song'));
     } finally {
       setLoading(false);
     }
@@ -117,10 +119,10 @@ const SongFormPage: React.FC = () => {
           </button>
           <div>
             <h1 className="text-h3 text-neutral-900 font-bold">
-              {isEdit ? 'Edit Worship Song' : 'Create Worship Song'}
+              {isEdit ? t('admin_ui.edit_worship_song', 'Edit Worship Song') : t('admin_ui.create_worship_song', 'Create Worship Song')}
             </h1>
             <p className="text-body-xs text-neutral-500">
-              {isEdit ? 'Update lyrics, details, or publishing status' : 'Add a new song to the worship library'}
+              {isEdit ? t('admin_ui.update_lyrics_details_or_publishing_status', 'Update lyrics, details, or publishing status') : t('admin_ui.add_a_new_song_to_the_worship_library', 'Add a new song to the worship library')}
             </p>
           </div>
         </div>
@@ -132,7 +134,7 @@ const SongFormPage: React.FC = () => {
           }`}
         >
           {showPreview ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-          {showPreview ? 'Hide Lyrics Preview' : 'Preview Lyrics'}
+          {showPreview ? t('admin_ui.hide_lyrics_preview', 'Hide Lyrics Preview') : t('admin_ui.preview_lyrics', 'Preview Lyrics')}
         </button>
       </div>
 
@@ -142,19 +144,19 @@ const SongFormPage: React.FC = () => {
           {/* General Details Card */}
           <div className="bg-white rounded-xl border border-neutral-200 p-6 space-y-4 shadow-xs">
             <h2 className="text-h6 text-neutral-900 font-semibold border-b border-neutral-100 pb-3">
-              Song Information
+              {t('admin_ui.song_information', 'Song Information')}
             </h2>
 
             {/* Title */}
             <div>
               <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                Song Title <span className="text-red-500">*</span>
+                {t('admin_ui.song_title', 'Song Title')} <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 value={formData.title}
                 onChange={handleTitleChange}
-                placeholder="e.g. Amazing Grace (How Sweet the Sound)"
+                placeholder={t('admin_ui.e_g_amazing_grace_how_sweet_the_sound', 'e.g. Amazing Grace (How Sweet the Sound)')}
                 className={`w-full px-3.5 py-2.5 border rounded-lg text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 ${
                   errors.title ? 'border-red-500 focus:border-red-500' : 'border-neutral-200 focus:border-primary-red'
                 }`}
@@ -166,26 +168,26 @@ const SongFormPage: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                  Artist / Performer
+                  {t('admin_ui.artist_performer', 'Artist / Performer')}
                 </label>
                 <input
                   type="text"
                   value={formData.artist || ''}
                   onChange={(e) => setFormData({ ...formData, artist: e.target.value })}
-                  placeholder="e.g. Chris Tomlin, Hillsong"
+                  placeholder={t('admin_ui.e_g_chris_tomlin_hillsong', 'e.g. Chris Tomlin, Hillsong')}
                   className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                 />
               </div>
 
               <div>
                 <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                  Composer / Writer
+                  {t('admin_ui.composer_writer', 'Composer / Writer')}
                 </label>
                 <input
                   type="text"
                   value={formData.composer || ''}
                   onChange={(e) => setFormData({ ...formData, composer: e.target.value })}
-                  placeholder="e.g. John Newton"
+                  placeholder={t('admin_ui.e_g_john_newton', 'e.g. John Newton')}
                   className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                 />
               </div>
@@ -195,14 +197,14 @@ const SongFormPage: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
               <div>
                 <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                  Category
+                  {t('prayer.form.category', 'Category')}
                 </label>
                 <select
                   value={formData.category_id || ''}
                   onChange={(e) => setFormData({ ...formData, category_id: e.target.value ? Number(e.target.value) : null })}
                   className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                 >
-                  <option value="">No Category</option>
+                  <option value="">{t('admin_ui.no_category', 'No Category')}</option>
                   {categories.map(c => (
                     <option key={c.id} value={c.id}>{c.name}</option>
                   ))}
@@ -211,21 +213,21 @@ const SongFormPage: React.FC = () => {
 
               <div>
                 <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                  Status
+                  {t('admin_ui.status', 'Status')}
                 </label>
                 <select
                   value={formData.status}
                   onChange={(e) => setFormData({ ...formData, status: e.target.value as 'draft' | 'published' })}
                   className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-body-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500/20 font-medium"
                 >
-                  <option value="published">Published (Public)</option>
-                  <option value="draft">Draft (Private)</option>
+                  <option value="published">{t('admin_ui.published_public', 'Published (Public)')}</option>
+                  <option value="draft">{t('admin_ui.draft_private', 'Draft (Private)')}</option>
                 </select>
               </div>
 
               <div>
                 <label className="block text-body-xs font-semibold text-neutral-700 mb-1">
-                  Display Order
+                  {t('admin_ui.display_order', 'Display Order')}
                 </label>
                 <input
                   type="number"
@@ -247,9 +249,9 @@ const SongFormPage: React.FC = () => {
                   className="w-4 h-4 text-primary-red rounded border-neutral-300 focus:ring-primary-red"
                 />
                 <div>
-                  <span className="text-body-sm font-semibold text-neutral-900 block">Featured Song</span>
+                  <span className="text-body-sm font-semibold text-neutral-900 block">{t('admin_ui.featured_song', 'Featured Song')}</span>
                   <span className="text-body-xs text-neutral-500 block">
-                    Display prominently on the public songs homepage banner
+                    {t('admin_ui.display_prominently_on_the_public_songs_home', 'Display prominently on the public songs homepage banner')}
                   </span>
                 </div>
               </label>
@@ -261,10 +263,10 @@ const SongFormPage: React.FC = () => {
             <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
               <div>
                 <h2 className="text-h6 text-neutral-900 font-semibold">
-                  Lyrics Editor <span className="text-red-500">*</span>
+                  {t('admin_ui.lyrics_editor', 'Lyrics Editor')} <span className="text-red-500">*</span>
                 </h2>
                 <p className="text-body-xs text-neutral-500">
-                  Plain text editor. Line breaks and verse headers (e.g., VERSE 1, CHORUS) will be preserved exactly.
+                  {t('admin_ui.plain_text_editor_line_breaks_and_verse_head', 'Plain text editor. Line breaks and verse headers (e.g., VERSE 1, CHORUS) will be preserved exactly.')}
                 </p>
               </div>
             </div>
@@ -291,7 +293,7 @@ const SongFormPage: React.FC = () => {
               onClick={() => navigate('/admin/songs')}
               className="px-5 py-2.5 border border-neutral-200 rounded-lg text-body-sm font-medium text-neutral-700 hover:bg-neutral-50 transition-colors"
             >
-              Cancel
+              {t('form.cancel', 'Cancel')}
             </button>
             <button
               type="submit"
@@ -299,7 +301,7 @@ const SongFormPage: React.FC = () => {
               className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary-red text-white rounded-lg text-body-sm font-medium hover:bg-primary-dark-red transition-colors shadow-sm disabled:opacity-50"
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-              {loading ? 'Saving...' : isEdit ? 'Update Song' : 'Create Song'}
+              {loading ? t('admin_ui.saving', 'Saving...') : isEdit ? t('admin_ui.update_song', 'Update Song') : t('admin_ui.create_song', 'Create Song')}
             </button>
           </div>
         </form>
@@ -309,21 +311,21 @@ const SongFormPage: React.FC = () => {
           <div className="bg-white rounded-xl border border-neutral-200 p-6 space-y-4 shadow-sm h-fit sticky top-20 animate-fade-in">
             <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
               <span className="text-body-xs font-bold text-accent-blue uppercase tracking-wide flex items-center gap-1.5">
-                <Sparkles className="w-4 h-4 text-amber-500" /> Public View Preview
+                <Sparkles className="w-4 h-4 text-amber-500" /> {t('admin_ui.public_view_preview', 'Public View Preview')}
               </span>
               <span className="text-body-xs bg-neutral-100 text-neutral-600 px-2 py-0.5 rounded font-mono">
-                Worship Mode Preview
+                {t('admin_ui.worship_mode_preview', 'Worship Mode Preview')}
               </span>
             </div>
 
             <div>
               <h3 className="text-h4 font-bold text-neutral-900 leading-tight">
-                {formData.title || 'Untitled Song'}
+                {formData.title || translate('admin_msg.untitled_song', 'Untitled Song')}
               </h3>
               {(formData.artist || formData.composer) && (
                 <p className="text-body-xs text-neutral-500 mt-1">
-                  {formData.artist && `By ${formData.artist}`}
-                  {formData.composer && ` • Composed by ${formData.composer}`}
+                  {formData.artist && translate('admin_msg.tpl_by_v0', 'By {0}', { 0: formData.artist })}
+                  {formData.composer && translate('admin_msg.tpl_composed_by_v0', ' • Composed by {0}', { 0: formData.composer })}
                 </p>
               )}
             </div>
@@ -331,7 +333,7 @@ const SongFormPage: React.FC = () => {
             {/* Rendered Lyrics */}
             <div className="bg-neutral-900 text-neutral-100 p-6 rounded-xl overflow-y-auto max-h-[500px]">
               <pre className="font-sans text-body-base leading-relaxed whitespace-pre-wrap font-medium">
-                {formData.lyrics || '(No lyrics entered yet)'}
+                {formData.lyrics || translate('admin_msg.no_lyrics_entered_yet', '(No lyrics entered yet)')}
               </pre>
             </div>
           </div>

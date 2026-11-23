@@ -6,7 +6,9 @@ import { roleService } from '../../services/role.service';
 import { useToast } from '../../hooks/useToast';
 import { Role } from '../../types';
 
+import { useLanguage, translate } from '../../../context/LanguageContext';
 export default function UserEditPage() {
+  const { t } = useLanguage();
   const { uuid } = useParams<{ uuid: string }>();
   const navigate = useNavigate();
   const { addToast } = useToast();
@@ -64,8 +66,8 @@ export default function UserEditPage() {
         setRoles(Array.isArray(rolesRes) ? rolesRes : []);
       } catch (err) {
         console.error('Failed to fetch data', err);
-        setErrorState('Failed to load user data. They may not exist.');
-        addToast({ type: 'error', title: 'Failed to load user', message: 'The user data could not be loaded. They may not exist.' });
+        setErrorState(translate('admin_msg.failed_to_load_user_data_they_may_not_exist', 'Failed to load user data. They may not exist.'));
+        addToast({ type: 'error', title: translate('admin_ui.failed_to_load_user', 'Failed to load user'), message: translate('admin_ui.the_user_data_could_not_be_loaded_they_may_n', 'The user data could not be loaded. They may not exist.') });
       } finally {
         setFetching(false);
       }
@@ -75,17 +77,17 @@ export default function UserEditPage() {
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
-    if (!formData.first_name) newErrors.first_name = 'First name is required';
-    if (!formData.last_name) newErrors.last_name = 'Last name is required';
-    if (!formData.email) newErrors.email = 'Email is required';
-    else if (!/^\S+@\S+\.\S+$/.test(formData.email)) newErrors.email = 'Invalid email format';
+    if (!formData.first_name) newErrors.first_name = translate('admin_msg.first_name_is_required', 'First name is required');
+    if (!formData.last_name) newErrors.last_name = translate('admin_msg.last_name_is_required', 'Last name is required');
+    if (!formData.email) newErrors.email = translate('admin_msg.email_is_required', 'Email is required');
+    else if (!/^\S+@\S+\.\S+$/.test(formData.email)) newErrors.email = translate('admin_msg.invalid_email_format', 'Invalid email format');
     
     if (formData.password) {
-      if (formData.password.length < 8) newErrors.password = 'Password must be at least 8 characters';
-      if (formData.password !== formData.confirm_password) newErrors.confirm_password = 'Passwords do not match';
+      if (formData.password.length < 8) newErrors.password = translate('admin_msg.password_must_be_at_least_8_characters', 'Password must be at least 8 characters');
+      if (formData.password !== formData.confirm_password) newErrors.confirm_password = translate('admin_msg.passwords_do_not_match', 'Passwords do not match');
     }
     
-    if (!formData.role_id) newErrors.role_id = 'Role is required';
+    if (!formData.role_id) newErrors.role_id = translate('admin_msg.role_is_required', 'Role is required');
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -128,11 +130,11 @@ export default function UserEditPage() {
       if (!payload.password) delete payload.password;
       
       await userService.update(uuid!, payload);
-      addToast({ type: 'success', title: 'User updated', message: 'The user was updated successfully.' });
+      addToast({ type: 'success', title: t('admin_ui.user_updated', 'User updated'), message: t('admin_ui.the_user_was_updated_successfully', 'The user was updated successfully.') });
       navigate('/admin/users');
     } catch (err: any) {
       console.error('Failed to update user', err);
-      addToast({ type: 'error', title: 'Failed to update user', message: err?.response?.data?.message || 'Please try again.' });
+      addToast({ type: 'error', title: t('admin_ui.failed_to_update_user', 'Failed to update user'), message: err?.response?.data?.message || translate('admin_msg.please_try_again', 'Please try again.') });
     } finally {
       setLoading(false);
     }
@@ -141,11 +143,11 @@ export default function UserEditPage() {
   const handleDelete = async () => {
     try {
       await userService.delete(uuid!);
-      addToast({ type: 'success', title: 'User deleted', message: 'The user was deleted successfully.' });
+      addToast({ type: 'success', title: t('admin_ui.user_deleted', 'User deleted'), message: t('admin_ui.the_user_was_deleted_successfully', 'The user was deleted successfully.') });
       navigate('/admin/users');
     } catch (err: any) {
       console.error('Failed to delete user', err);
-      addToast({ type: 'error', title: 'Failed to delete user', message: err?.response?.data?.message || 'Please try again.' });
+      addToast({ type: 'error', title: t('admin_ui.failed_to_delete_user', 'Failed to delete user'), message: err?.response?.data?.message || translate('admin_msg.please_try_again', 'Please try again.') });
     }
   };
 
@@ -170,7 +172,7 @@ export default function UserEditPage() {
         <div className="bg-red-50 border border-red-200 text-red-600 rounded-xl p-6 text-center">
           <p>{errorState}</p>
           <button onClick={() => navigate('/admin/users')} className="mt-4 text-primary-navy hover:underline">
-            Back to Users
+            {t('admin_ui.back_to_users', 'Back to Users')}
           </button>
         </div>
       </div>
@@ -187,20 +189,20 @@ export default function UserEditPage() {
           <ArrowLeft size={20} />
         </button>
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">Edit User</h1>
-          <p className="text-sm text-gray-500">Update user information</p>
+          <h1 className="text-2xl font-semibold text-gray-900">{t('admin_ui.edit_user', 'Edit User')}</h1>
+          <p className="text-sm text-gray-500">{t('admin_ui.update_user_information', 'Update user information')}</p>
         </div>
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-100">
-          <h2 className="text-lg font-medium text-gray-900">User Information</h2>
+          <h2 className="text-lg font-medium text-gray-900">{t('admin_ui.user_information', 'User Information')}</h2>
         </div>
         
         <form onSubmit={handleSubmit} className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin_ui.first_name', 'First Name *')}</label>
               <input
                 type="text"
                 name="first_name"
@@ -212,7 +214,7 @@ export default function UserEditPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Last Name *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin_ui.last_name', 'Last Name *')}</label>
               <input
                 type="text"
                 name="last_name"
@@ -224,11 +226,11 @@ export default function UserEditPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Display Name</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin_ui.display_name', 'Display Name')}</label>
               <input
                 type="text"
                 name="display_name"
-                placeholder="Leave blank to use First + Last name"
+                placeholder={t('admin_ui.leave_blank_to_use_first_last_name', 'Leave blank to use First + Last name')}
                 value={formData.display_name}
                 onChange={handleChange}
                 className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-primary-navy focus:border-transparent outline-none transition-all ${errors.display_name ? 'border-red-500' : 'border-gray-200'}`}
@@ -237,7 +239,7 @@ export default function UserEditPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin_ui.email', 'Email *')}</label>
               <input
                 type="email"
                 name="email"
@@ -249,7 +251,7 @@ export default function UserEditPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('visit.phone', 'Phone')}</label>
               <input
                 type="text"
                 name="phone"
@@ -260,12 +262,12 @@ export default function UserEditPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('ui.password', 'Password')}</label>
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
                   name="password"
-                  placeholder="Leave blank to keep current password"
+                  placeholder={t('admin_ui.leave_blank_to_keep_current_password', 'Leave blank to keep current password')}
                   value={formData.password}
                   onChange={handleChange}
                   className={`w-full rounded-lg border px-4 py-2 pr-11 focus:ring-2 focus:ring-primary-navy focus:border-transparent outline-none transition-all ${errors.password ? 'border-red-500' : 'border-gray-200'}`}
@@ -275,8 +277,8 @@ export default function UserEditPage() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1 focus:outline-none cursor-pointer"
                   tabIndex={-1}
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
-                  title={showPassword ? 'Hide password' : 'Show password'}
+                  aria-label={showPassword ? t('ui.hide_password', 'Hide password') : t('ui.show_password', 'Show password')}
+                  title={showPassword ? t('ui.hide_password', 'Hide password') : t('ui.show_password', 'Show password')}
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -285,7 +287,7 @@ export default function UserEditPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('ui.confirm_password', 'Confirm Password')}</label>
               <div className="relative">
                 <input
                   type={showConfirmPassword ? 'text' : 'password'}
@@ -301,8 +303,8 @@ export default function UserEditPage() {
                   disabled={!formData.password}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1 focus:outline-none cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
                   tabIndex={-1}
-                  aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
-                  title={showConfirmPassword ? 'Hide password' : 'Show password'}
+                  aria-label={showConfirmPassword ? t('ui.hide_password', 'Hide password') : t('ui.show_password', 'Show password')}
+                  title={showConfirmPassword ? t('ui.hide_password', 'Hide password') : t('ui.show_password', 'Show password')}
                 >
                   {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -311,14 +313,14 @@ export default function UserEditPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Role *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin_ui.role_442e8e', 'Role *')}</label>
               <select
                 name="role_id"
                 value={formData.role_id}
                 onChange={handleChange}
                 className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-primary-navy focus:border-transparent outline-none transition-all bg-white ${errors.role_id ? 'border-red-500' : 'border-gray-200'}`}
               >
-                <option value="">Select a role</option>
+                <option value="">{t('admin_ui.select_a_role', 'Select a role')}</option>
                 {roles.map(role => (
                   <option key={role.id} value={role.id}>{role.name}</option>
                 ))}
@@ -327,15 +329,15 @@ export default function UserEditPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin_ui.status', 'Status')}</label>
               <select
                 name="status"
                 value={formData.status}
                 onChange={handleChange}
                 className="w-full rounded-lg border border-gray-200 px-4 py-2 focus:ring-2 focus:ring-primary-navy focus:border-transparent outline-none transition-all bg-white"
               >
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
+                <option value="active">{t('admin_ui.active', 'Active')}</option>
+                <option value="inactive">{t('admin_ui.inactive', 'Inactive')}</option>
               </select>
             </div>
           </div>
@@ -347,7 +349,7 @@ export default function UserEditPage() {
               className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors"
             >
               <Trash2 size={16} />
-              Delete User
+              {t('admin_ui.delete_user', 'Delete User')}
             </button>
             <div className="flex gap-3">
               <button
@@ -355,7 +357,7 @@ export default function UserEditPage() {
                 onClick={() => navigate('/admin/users')}
                 className="px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg border border-gray-200 transition-colors"
               >
-                Cancel
+                {t('form.cancel', 'Cancel')}
               </button>
               <button
                 type="submit"
@@ -363,7 +365,7 @@ export default function UserEditPage() {
                 className="flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-primary-red hover:bg-primary-dark-red rounded-lg transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
               >
                 {loading ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
-                {loading ? 'Saving...' : 'Save Changes'}
+                {loading ? t('admin_ui.saving', 'Saving...') : t('admin_ui.save_changes', 'Save Changes')}
               </button>
             </div>
           </div>
@@ -373,20 +375,20 @@ export default function UserEditPage() {
       {showConfirmDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
           <div className="bg-white rounded-xl shadow-lg max-w-md w-full p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Delete User?</h3>
-            <p className="text-sm text-gray-500 mb-6">Are you sure you want to delete this user? This action cannot be undone.</p>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">{t('admin_ui.delete_user_b8a0cb', 'Delete User?')}</h3>
+            <p className="text-sm text-gray-500 mb-6">{t('admin_ui.are_you_sure_you_want_to_delete_this_user_th', 'Are you sure you want to delete this user? This action cannot be undone.')}</p>
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setShowConfirmDelete(false)}
                 className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
               >
-                Cancel
+                {t('form.cancel', 'Cancel')}
               </button>
               <button
                 onClick={handleDelete}
                 className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors"
               >
-                Delete
+                {t('form.delete', 'Delete')}
               </button>
             </div>
           </div>

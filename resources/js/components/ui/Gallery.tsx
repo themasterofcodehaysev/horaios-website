@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+import { translate } from '../../context/LanguageContext';
 export interface GalleryItem {
   id: string;
   url: string;
@@ -32,7 +33,7 @@ export const Gallery: React.FC<GalleryProps> = ({ items, columns = 3 }) => {
           >
             <img
               src={item.url}
-              alt={item.caption || 'Church photo'}
+              alt={item.caption || translate('ui.church_photo', 'Church photo')}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
@@ -51,7 +52,7 @@ export const Gallery: React.FC<GalleryProps> = ({ items, columns = 3 }) => {
           <div className="max-w-4xl w-full max-h-[90vh] flex flex-col items-center">
             <img
               src={selectedImage.url}
-              alt={selectedImage.caption || 'Expanded view'}
+              alt={selectedImage.caption || translate('ui.expanded_view', 'Expanded view')}
               className="max-h-[80vh] w-auto object-contain rounded-lg shadow-elevation-xl"
             />
             {selectedImage.caption && (

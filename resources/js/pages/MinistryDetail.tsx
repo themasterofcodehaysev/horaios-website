@@ -16,10 +16,12 @@ import { Modal } from '../components/ui/Modal';
 import { Input } from '../components/ui/Input';
 import { ministryService, contactService } from '../services/publicContent.service';
 import type { MinistryPublic } from '../types';
+import { useLanguage, translate } from '../context/LanguageContext';
 
 export const MinistryDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [ministry, setMinistry] = useState<MinistryPublic | null>(null);
   const [relatedMinistries, setRelatedMinistries] = useState<MinistryPublic[]>([]);
   const [loading, setLoading] = useState(true);
@@ -52,7 +54,7 @@ export const MinistryDetailPage: React.FC = () => {
     if (!ministry) return;
 
     if (joinFormData.message.trim().length < 10) {
-      setJoinError('Please provide a message with at least 10 characters.');
+      setJoinError(translate('ui.please_provide_a_message_with_at_least_10_ch', 'Please provide a message with at least 10 characters.'));
       return;
     }
 
@@ -69,7 +71,7 @@ export const MinistryDetailPage: React.FC = () => {
       });
       setJoinSuccess(true);
     } catch (err: any) {
-      setJoinError(err?.response?.data?.message || 'Failed to submit request. Please try again.');
+      setJoinError(err?.response?.data?.message || translate('ui.failed_to_submit_request_please_try_again', 'Failed to submit request. Please try again.'));
     } finally {
       setSubmittingJoin(false);
     }
@@ -104,9 +106,9 @@ export const MinistryDetailPage: React.FC = () => {
       } catch (err: any) {
         const status = err?.response?.status;
         if (status === 404) {
-          setError('The requested ministry was not found.');
+          setError(translate('ui.the_requested_ministry_was_not_found', 'The requested ministry was not found.'));
         } else {
-          setError(err?.response?.data?.message || 'Unable to load ministry.');
+          setError(err?.response?.data?.message || translate('ui.unable_to_load_ministry', 'Unable to load ministry.'));
         }
       } finally {
         setLoading(false);
@@ -153,15 +155,15 @@ export const MinistryDetailPage: React.FC = () => {
       <Layout>
         <div className="max-w-md mx-auto py-24 px-4 text-center">
           <Heart className="w-14 h-14 text-neutral-300 mx-auto mb-5" />
-          <h2 className="text-h4 font-bold text-neutral-800 mb-2">Ministry Not Found</h2>
+          <h2 className="text-h4 font-bold text-neutral-800 mb-2">{t('ui.ministry_not_found', 'Ministry Not Found')}</h2>
           <p className="text-body-sm text-neutral-500 mb-8">
-            {error || 'This ministry may have been removed or does not exist.'}
+            {error || translate('ui.this_ministry_may_have_been_removed_or_does_', 'This ministry may have been removed or does not exist.')}
           </p>
           <button
             onClick={() => navigate('/ministries')}
             className="px-5 py-2.5 bg-primary-red text-white rounded-lg font-medium text-body-sm hover:bg-primary-dark-red transition-colors"
           >
-            Back to All Ministries
+            {t('ui.back_to_all_ministries', 'Back to All Ministries')}
           </button>
         </div>
       </Layout>
@@ -190,12 +192,12 @@ export const MinistryDetailPage: React.FC = () => {
             to="/ministries"
             className="inline-flex items-center gap-1.5 text-body-sm font-medium text-primary-100 hover:text-white transition-colors"
           >
-            <ArrowLeft className="w-4 h-4" /> Back to All Ministries
+            <ArrowLeft className="w-4 h-4" /> {t('ui.back_to_all_ministries', 'Back to All Ministries')}
           </Link>
 
           <Breadcrumb
             items={[
-              { label: 'Ministries', href: '/ministries' },
+              { label: t('nav.ministries', 'Ministries'), href: '/ministries' },
               ...(ministry.category ? [{ label: ministry.category.name }] : []),
               { label: ministry.name },
             ]}
@@ -209,7 +211,7 @@ export const MinistryDetailPage: React.FC = () => {
             )}
             {ministry.featured && (
               <span className="text-body-xs font-bold px-3 py-1 rounded-full bg-amber-400 text-neutral-900">
-                ★ Featured Ministry
+                {t('ui.featured_ministry', '★ Featured Ministry')}
               </span>
             )}
           </div>
@@ -220,7 +222,7 @@ export const MinistryDetailPage: React.FC = () => {
             </h1>
             {ministry.leader && (
               <p className="text-body-lg font-medium text-primary-100 flex items-center gap-2">
-                <User className="w-4 h-4 text-amber-300" /> Led by <span className="text-white font-semibold">{ministry.leader}</span>
+                <User className="w-4 h-4 text-amber-300" /> {t('ui.led_by', 'Led by')} <span className="text-white font-semibold">{ministry.leader}</span>
               </p>
             )}
           </div>
@@ -232,14 +234,14 @@ export const MinistryDetailPage: React.FC = () => {
           <div className="lg:col-span-2 space-y-6">
             <Card padding="lg" shadow="sm" className="space-y-5">
               <h2 className="text-h4 font-bold text-neutral-900 border-b border-neutral-100 pb-4">
-                About This Ministry
+                {t('ui.about_this_ministry', 'About This Ministry')}
               </h2>
               {ministry.description ? (
                 <div data-color-mode="light" className="prose prose-neutral max-w-none prose-headings:font-bold prose-h3:text-h5 prose-p:text-body-base prose-p:leading-relaxed prose-li:text-body-base">
                   <MarkdownPreview source={ministry.description} style={{ backgroundColor: 'transparent', color: 'inherit' }} />
                 </div>
               ) : (
-                <p className="text-body-base text-neutral-500 italic">No description provided.</p>
+                <p className="text-body-base text-neutral-500 italic">{t('ui.no_description_provided', 'No description provided.')}</p>
               )}
             </Card>
 
@@ -248,10 +250,10 @@ export const MinistryDetailPage: React.FC = () => {
                 <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-amber-300">
                   <HandHeart className="w-6 h-6" />
                 </div>
-                <h3 className="text-h4 font-bold">Ready to Join This Ministry?</h3>
+                <h3 className="text-h4 font-bold">{t('ministry_detail.ready_title', 'Ready to Join This Ministry?')}</h3>
               </div>
               <p className="text-body-lg text-slate-200 max-w-2xl">
-                We'd love to have you serve with us. Take the next step — connect with the ministry leader and discover how your gifts can make an impact.
+                {t('ministry_detail.ready_desc', "We'd love to have you serve with us. Take the next step — connect with the ministry leader and discover how your gifts can make an impact.")}
               </p>
               <div className="flex flex-wrap gap-3">
                 <Button
@@ -262,14 +264,14 @@ export const MinistryDetailPage: React.FC = () => {
                   onClick={openJoinModal}
                 >
                   <Users className="w-5 h-5 mr-2" />
-                  Join {ministry.name}
+                  {t('ministry_detail.join_btn', 'Join')} {ministry.name}
                 </Button>
                 {ministry.email && (
                   <a
                     href={`mailto:${ministry.email}`}
                     className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white/10 text-white text-body-sm font-semibold border border-white/15 hover:bg-white/15 transition-colors"
                   >
-                    <Mail className="w-4 h-4" /> Email Leader
+                    <Mail className="w-4 h-4" /> {t('ministry_detail.email_leader', 'Email Leader')}
                   </a>
                 )}
               </div>
@@ -278,14 +280,14 @@ export const MinistryDetailPage: React.FC = () => {
             <ShareBar
               title={ministry.name}
               description={ministry.short_description || `Learn more about ${ministry.name} at Horaios Baptist Church.`}
-              label="Share Ministry"
+              label={t('ui.share_ministry', 'Share Ministry')}
             />
           </div>
 
           <aside className="lg:sticky lg:top-28 h-fit space-y-5">
             <Card padding="lg" shadow="md" className="space-y-6">
               <h3 className="text-h6 font-bold text-neutral-900 flex items-center gap-2">
-                <MessageCircle className="w-5 h-5 text-primary-navy" /> Ministry Information
+                <MessageCircle className="w-5 h-5 text-primary-navy" /> {t('ministry_detail.info_title', 'Ministry Information')}
               </h3>
               <ul className="space-y-5">
                 {ministry.leader && (
@@ -294,7 +296,7 @@ export const MinistryDetailPage: React.FC = () => {
                       <User className="w-4 h-4 text-primary-navy" />
                     </div>
                     <div>
-                      <p className="text-body-xs font-semibold text-neutral-500 uppercase tracking-wider">Leader</p>
+                      <p className="text-body-xs font-semibold text-neutral-500 uppercase tracking-wider">{t('ministry_detail.leader', 'Leader')}</p>
                       <p className="text-body-sm font-bold text-neutral-900">{ministry.leader}</p>
                     </div>
                   </li>
@@ -305,7 +307,7 @@ export const MinistryDetailPage: React.FC = () => {
                       <Clock className="w-4 h-4 text-primary-navy" />
                     </div>
                     <div>
-                      <p className="text-body-xs font-semibold text-neutral-500 uppercase tracking-wider">Meeting Time</p>
+                      <p className="text-body-xs font-semibold text-neutral-500 uppercase tracking-wider">{t('ministry_detail.meeting_time', 'Meeting Time')}</p>
                       <p className="text-body-sm font-bold text-neutral-900">{meetingSchedule}</p>
                     </div>
                   </li>
@@ -316,7 +318,7 @@ export const MinistryDetailPage: React.FC = () => {
                       <MapPin className="w-4 h-4 text-emerald-600" />
                     </div>
                     <div>
-                      <p className="text-body-xs font-semibold text-neutral-500 uppercase tracking-wider">Location</p>
+                      <p className="text-body-xs font-semibold text-neutral-500 uppercase tracking-wider">{t('ministry_detail.location', 'Location')}</p>
                       <p className="text-body-sm font-bold text-neutral-900 leading-snug">{ministry.location}</p>
                     </div>
                   </li>
@@ -327,7 +329,7 @@ export const MinistryDetailPage: React.FC = () => {
                       <Mail className="w-4 h-4 text-violet-600" />
                     </div>
                     <div className="space-y-1">
-                      <p className="text-body-xs font-semibold text-neutral-500 uppercase tracking-wider">Contact</p>
+                      <p className="text-body-xs font-semibold text-neutral-500 uppercase tracking-wider">{t('footer.contact', 'Contact')}</p>
                       {ministry.email && (
                         <a
                           href={`mailto:${ministry.email}`}
@@ -356,7 +358,7 @@ export const MinistryDetailPage: React.FC = () => {
                 onClick={openJoinModal}
               >
                 <HandHeart className="w-4 h-4 mr-2" />
-                Join Ministry
+                {t('ui.join_ministry', 'Join Ministry')}
               </Button>
             </Card>
           </aside>
@@ -366,10 +368,10 @@ export const MinistryDetailPage: React.FC = () => {
       <section className="py-16 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 space-y-10">
           <div className="text-center space-y-3">
-            <span className="inline-flex items-center px-3 py-1 rounded-full bg-primary-navy/10 text-primary-navy text-xs font-bold uppercase tracking-wider">Next Steps</span>
-            <h2 className="text-h3 font-bold text-neutral-900">How to Get Involved</h2>
+            <span className="inline-flex items-center px-3 py-1 rounded-full bg-primary-navy/10 text-primary-navy text-xs font-bold uppercase tracking-wider">{t('ui.next_steps', 'Next Steps')}</span>
+            <h2 className="text-h3 font-bold text-neutral-900">{t('ministries.how_to', 'How to Get Involved')}</h2>
             <p className="text-body-base text-neutral-600 max-w-xl mx-auto">
-              Three simple steps to connect, grow, and serve through our ministry community.
+              {t('ui.three_simple_steps_to_connect_grow_and_serve', 'Three simple steps to connect, grow, and serve through our ministry community.')}
             </p>
           </div>
 
@@ -378,10 +380,10 @@ export const MinistryDetailPage: React.FC = () => {
               <div className="w-14 h-14 rounded-2xl bg-primary-navy/10 text-primary-navy flex items-center justify-center mx-auto mb-4">
                 <Search className="w-7 h-7" />
               </div>
-              <div className="text-body-xs font-bold text-primary-navy uppercase tracking-wider mb-2">Step 1</div>
-              <h4 className="text-h6 font-bold text-neutral-900 mb-3">Explore</h4>
+              <div className="text-body-xs font-bold text-primary-navy uppercase tracking-wider mb-2">{t('ui.step_1', 'Step 1')}</div>
+              <h4 className="text-h6 font-bold text-neutral-900 mb-3">{t('ministries.explore_title', 'Explore')}</h4>
               <p className="text-body-sm text-neutral-600 leading-relaxed">
-                Browse ministries and learn more about each one — their mission, values, and how they serve our church.
+                {t('ui.browse_ministries_and_learn_more_about_each_', 'Browse ministries and learn more about each one — their mission, values, and how they serve our church.')}
               </p>
             </Card>
 
@@ -389,10 +391,10 @@ export const MinistryDetailPage: React.FC = () => {
               <div className="w-14 h-14 rounded-2xl bg-primary-navy/10 text-primary-navy flex items-center justify-center mx-auto mb-4">
                 <MessageCircle className="w-7 h-7" />
               </div>
-              <div className="text-body-xs font-bold text-primary-navy uppercase tracking-wider mb-2">Step 2</div>
-              <h4 className="text-h6 font-bold text-neutral-900 mb-3">Connect</h4>
+              <div className="text-body-xs font-bold text-primary-navy uppercase tracking-wider mb-2">{t('ui.step_2', 'Step 2')}</div>
+              <h4 className="text-h6 font-bold text-neutral-900 mb-3">{t('ministries.connect_title', 'Connect')}</h4>
               <p className="text-body-sm text-neutral-600 leading-relaxed">
-                Reach out to the ministry leader. Ask questions, share your heart, and find where you fit best.
+                {t('ui.reach_out_to_the_ministry_leader_ask_questio', 'Reach out to the ministry leader. Ask questions, share your heart, and find where you fit best.')}
               </p>
             </Card>
 
@@ -400,10 +402,10 @@ export const MinistryDetailPage: React.FC = () => {
               <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center mx-auto mb-4">
                 <HandHeart className="w-7 h-7" />
               </div>
-              <div className="text-body-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Step 3</div>
-              <h4 className="text-h6 font-bold text-neutral-900 mb-3">Serve</h4>
+              <div className="text-body-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">{t('ui.step_3', 'Step 3')}</div>
+              <h4 className="text-h6 font-bold text-neutral-900 mb-3">{t('ministries.serve_title', 'Serve')}</h4>
               <p className="text-body-sm text-neutral-600 leading-relaxed">
-                Use your unique gifts. Jump in, attend meetings, and begin making an eternal difference with others.
+                {t('ui.use_your_unique_gifts_jump_in_attend_meeting', 'Use your unique gifts. Jump in, attend meetings, and begin making an eternal difference with others.')}
               </p>
             </Card>
           </div>
@@ -415,7 +417,7 @@ export const MinistryDetailPage: React.FC = () => {
               onClick={openJoinModal}
             >
               <Heart className="w-5 h-5 mr-2" />
-              Get Connected Today
+              {t('ui.get_connected_today', 'Get Connected Today')}
             </Button>
           </div>
         </div>
@@ -426,13 +428,13 @@ export const MinistryDetailPage: React.FC = () => {
           <div className="max-w-6xl mx-auto px-4 sm:px-6 space-y-6">
             <div className="flex items-center justify-between flex-wrap gap-3">
               <h3 className="text-h4 font-bold text-neutral-900 flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-amber-500" /> Explore Other Ministries
+                <Sparkles className="w-5 h-5 text-amber-500" /> {t('ui.explore_other_ministries', 'Explore Other Ministries')}
               </h3>
               <Link
                 to="/ministries"
                 className="inline-flex items-center gap-1 text-body-sm font-semibold text-primary-red hover:underline"
               >
-                View All Ministries <ArrowLeft className="w-4 h-4 rotate-180" />
+                {t('ui.view_all_ministries', 'View All Ministries')} <ArrowLeft className="w-4 h-4 rotate-180" />
               </Link>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -460,7 +462,7 @@ export const MinistryDetailPage: React.FC = () => {
       <Modal
         isOpen={isJoinModalOpen}
         onClose={() => setIsJoinModalOpen(false)}
-        title={ministry ? `Get Connected: ${ministry.name}` : 'Join Ministry'}
+        title={ministry ? `${t('ministry_detail.modal_title', 'Get Connected:')} ${ministry.name}` : t('ui.join_ministry', 'Join Ministry')}
         size="md"
       >
         {joinSuccess ? (
@@ -469,14 +471,14 @@ export const MinistryDetailPage: React.FC = () => {
               <CheckCircle2 className="w-10 h-10" />
             </div>
             <div className="space-y-2">
-              <h3 className="text-h4 font-bold text-neutral-900">Request Sent!</h3>
+              <h3 className="text-h4 font-bold text-neutral-900">{t('ministry_detail.success_title', 'Request Sent!')}</h3>
               <p className="text-body-sm text-neutral-600 max-w-sm mx-auto">
-                Thank you, <strong className="text-neutral-900">{joinFormData.name}</strong>! Your message expressing interest in joining <strong>{ministry?.name}</strong> has been sent to our ministry leadership.
+                {t('ui.thank_you', 'Thank you,')} <strong className="text-neutral-900">{joinFormData.name}</strong>{t('ui.your_message_expressing_interest_in_joining', '! Your message expressing interest in joining')} <strong>{ministry?.name}</strong> {t('ui.has_been_sent_to_our_ministry_leadership', 'has been sent to our ministry leadership.')}
               </p>
             </div>
             <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-100 text-body-xs text-emerald-800 text-left space-y-1">
-              <p className="font-semibold">What happens next?</p>
-              <p>Our ministry team will review your details and reach out to you directly via {joinFormData.email}{joinFormData.phone ? ` or ${joinFormData.phone}` : ''}.</p>
+              <p className="font-semibold">{t('ui.what_happens_next', 'What happens next?')}</p>
+              <p>{t('ui.our_ministry_team_will_review_your_details_a', 'Our ministry team will review your details and reach out to you directly via')} {joinFormData.email}{joinFormData.phone ? translate('ui.or_phone', ' or {phone}', { phone: joinFormData.phone }) : ''}.</p>
             </div>
             <Button
               variant="primary"
@@ -486,7 +488,7 @@ export const MinistryDetailPage: React.FC = () => {
                 setJoinSuccess(false);
               }}
             >
-              Done
+              {t('form.done', 'Done')}
             </Button>
           </div>
         ) : (
@@ -496,9 +498,9 @@ export const MinistryDetailPage: React.FC = () => {
                 <HandHeart className="w-5 h-5" />
               </div>
               <div className="text-body-xs space-y-0.5">
-                <p className="font-bold text-neutral-900">Join {ministry?.name}</p>
+                <p className="font-bold text-neutral-900">{t('ministry_detail.join_btn', 'Join')} {ministry?.name}</p>
                 <p className="text-neutral-600">
-                  {ministry?.leader ? `Led by ${ministry.leader}. ` : ''}Leave your information below and our ministry coordinators will connect with you about getting involved.
+                  {ministry?.leader ? translate('ui.led_by_name', 'Led by {name}. ', { name: ministry.leader }) : ''}{t('ui.leave_your_information_below_and_our_ministr', 'Leave your information below and our ministry coordinators will connect with you about getting involved.')}
                 </p>
               </div>
             </div>
@@ -511,16 +513,16 @@ export const MinistryDetailPage: React.FC = () => {
             )}
 
             <Input
-              label="Your Full Name"
+              label={t('form.full_name', 'Your Full Name')}
               type="text"
               required
-              placeholder="e.g. John Doe"
+              placeholder={t('ui.e_g_john_doe', 'e.g. John Doe')}
               value={joinFormData.name}
               onChange={(e) => setJoinFormData((prev) => ({ ...prev, name: e.target.value }))}
             />
 
             <Input
-              label="Email Address"
+              label={t('form.email', 'Email Address')}
               type="email"
               required
               placeholder="you@example.com"
@@ -529,7 +531,7 @@ export const MinistryDetailPage: React.FC = () => {
             />
 
             <Input
-              label="Phone Number (Optional)"
+              label={t('form.phone_optional', 'Phone Number (Optional)')}
               type="tel"
               placeholder="+855 12 345 678"
               value={joinFormData.phone}
@@ -538,17 +540,17 @@ export const MinistryDetailPage: React.FC = () => {
 
             <div>
               <label className="block text-label-md text-neutral-700 mb-1.5 font-medium">
-                Message or Note <span className="text-error ml-1">*</span>
+                {t('form.message', 'Message or Note')} <span className="text-error ml-1">*</span>
               </label>
               <textarea
                 required
                 rows={3}
                 className="w-full px-3 py-2 text-body-sm rounded-lg border border-neutral-300 focus:border-primary-red focus:outline-none focus:ring-1 focus:ring-primary-red transition-all"
-                placeholder="Tell us a little about yourself or what areas you'd like to get involved in..."
+                placeholder={t('ui.tell_us_a_little_about_yourself_or_what_area', 'Tell us a little about yourself or what areas you\'d like to get involved in...')}
                 value={joinFormData.message}
                 onChange={(e) => setJoinFormData((prev) => ({ ...prev, message: e.target.value }))}
               />
-              <p className="text-[11px] text-neutral-400 mt-1">Minimum 10 characters.</p>
+              <p className="text-[11px] text-neutral-400 mt-1">{t('ui.minimum_10_characters', 'Minimum 10 characters.')}</p>
             </div>
 
             <div className="flex items-center justify-end gap-2 pt-3 border-t border-neutral-100">
@@ -558,7 +560,7 @@ export const MinistryDetailPage: React.FC = () => {
                 onClick={() => setIsJoinModalOpen(false)}
                 disabled={submittingJoin}
               >
-                Cancel
+                {t('form.cancel', 'Cancel')}
               </Button>
               <Button
                 type="submit"
@@ -566,7 +568,7 @@ export const MinistryDetailPage: React.FC = () => {
                 disabled={submittingJoin}
                 icon={<Send className="w-4 h-4" />}
               >
-                {submittingJoin ? 'Sending...' : 'Send Request'}
+                {submittingJoin ? t('contact.form.sending', 'Sending...') : t('form.send_request', 'Send Request')}
               </Button>
             </div>
           </form>

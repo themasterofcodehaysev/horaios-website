@@ -9,7 +9,7 @@ import type { EventItem, EventCategory, PaginatedResponse, EventFilters } from '
 import { getImageUrl } from '../../utils/imageUrl';
 import { useConfirm } from '../../context/ConfirmContext';
 import { useToast } from '../../hooks/useToast';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage, translate, getDateLocale } from '../../../context/LanguageContext';
 
 const EventsListPage: React.FC = () => {
   const navigate = useNavigate();
@@ -34,7 +34,7 @@ const EventsListPage: React.FC = () => {
       setEvents(result.data);
       setMeta(result.meta);
     } catch (err: any) {
-      setError(err?.response?.data?.message || 'Failed to load events');
+      setError(err?.response?.data?.message || translate('admin_msg.failed_to_load_events', 'Failed to load events'));
     } finally {
       setLoading(false);
     }
@@ -63,14 +63,14 @@ const EventsListPage: React.FC = () => {
       setEvents(prev => prev.map(e => e.id === ev.id ? updated : e));
       addToast({
         type: 'success',
-        title: updated.featured ? 'Event Featured' : 'Event Unfeatured',
-        message: `"${ev.title}" has been ${updated.featured ? 'featured' : 'unfeatured'}.`,
+        title: updated.featured ? translate('admin_msg.event_featured', 'Event Featured') : translate('admin_msg.event_unfeatured', 'Event Unfeatured'),
+        message: translate('admin_msg.tpl_q_v0_has_been_v1', '"{0}" has been {1}.', { 0: ev.title, 1: updated.featured ? translate('status.featured', 'featured') : translate('status.unfeatured', 'unfeatured') }),
       });
     } catch (err: any) {
       addToast({
         type: 'error',
-        title: 'Failed to update event',
-        message: err?.response?.data?.message || 'Failed to toggle featured state',
+        title: t('admin_ui.failed_to_update_event', 'Failed to update event'),
+        message: err?.response?.data?.message || translate('admin_msg.failed_to_toggle_featured_state', 'Failed to toggle featured state'),
       });
     }
   };
@@ -81,29 +81,29 @@ const EventsListPage: React.FC = () => {
       fetchEvents();
       addToast({
         type: 'success',
-        title: 'Event Duplicated',
-        message: `A draft copy of "${ev.title}" has been created.`,
+        title: t('admin_ui.event_duplicated', 'Event Duplicated'),
+        message: translate('admin_msg.tpl_q_a_draft_copy_of_v0_has_been_created', 'A draft copy of "{0}" has been created.', { 0: ev.title }),
       });
     } catch (err: any) {
       addToast({
         type: 'error',
-        title: 'Failed to duplicate event',
-        message: err?.response?.data?.message || 'Please try again.',
+        title: t('admin_ui.failed_to_duplicate_event', 'Failed to duplicate event'),
+        message: err?.response?.data?.message || translate('admin_msg.please_try_again', 'Please try again.'),
       });
     }
   };
 
   const handleCancel = async (ev: EventItem) => {
     const ok = await confirm({
-      title: 'Cancel Event',
+      title: t('admin_ui.cancel_event', 'Cancel Event'),
       message: (
         <span>
-          Are you sure you want to cancel <strong>"{ev.title}"</strong>?
+          {t('admin_ui.are_you_sure_you_want_to_cancel', 'Are you sure you want to cancel')} <strong>"{ev.title}"</strong>?
           <br />
-          This will update the event status to cancelled.
+          {t('admin_ui.this_will_update_the_event_status_to_cancell', 'This will update the event status to cancelled.')}
         </span>
       ),
-      confirmLabel: 'Cancel Event',
+      confirmLabel: t('admin_ui.cancel_event', 'Cancel Event'),
       variant: 'warning',
       icon: 'ban',
     });
@@ -114,14 +114,14 @@ const EventsListPage: React.FC = () => {
       setEvents(prev => prev.map(e => e.id === ev.id ? updated : e));
       addToast({
         type: 'success',
-        title: 'Event Cancelled',
-        message: `"${ev.title}" has been marked as cancelled.`,
+        title: t('admin_ui.event_cancelled', 'Event Cancelled'),
+        message: translate('admin_msg.tpl_q_v0_has_been_marked_as_cancelled', '"{0}" has been marked as cancelled.', { 0: ev.title }),
       });
     } catch (err: any) {
       addToast({
         type: 'error',
-        title: 'Failed to cancel event',
-        message: err?.response?.data?.message || 'Please try again.',
+        title: t('admin_ui.failed_to_cancel_event', 'Failed to cancel event'),
+        message: err?.response?.data?.message || translate('admin_msg.please_try_again', 'Please try again.'),
       });
     }
   };
@@ -136,14 +136,14 @@ const EventsListPage: React.FC = () => {
       fetchEvents();
       addToast({
         type: 'success',
-        title: 'Event Deleted',
-        message: `"${title}" has been deleted.`,
+        title: t('admin_ui.event_deleted', 'Event Deleted'),
+        message: translate('admin_msg.tpl_q_v0_has_been_deleted', '"{0}" has been deleted.', { 0: title }),
       });
     } catch (err: any) {
       addToast({
         type: 'error',
-        title: 'Failed to delete event',
-        message: err?.response?.data?.message || 'Please try again.',
+        title: t('admin_ui.failed_to_delete_event', 'Failed to delete event'),
+        message: err?.response?.data?.message || translate('admin_msg.please_try_again', 'Please try again.'),
       });
     } finally {
       setDeleting(false);
@@ -152,12 +152,12 @@ const EventsListPage: React.FC = () => {
 
   const formatDateTime = (ev: EventItem) => {
     const start = new Date(ev.start_date);
-    const dateStr = start.toLocaleDateString();
-    const timeStr = ev.start_time ? ` at ${ev.start_time.slice(0, 5)}` : '';
+    const dateStr = start.toLocaleDateString(getDateLocale());
+    const timeStr = ev.start_time ? translate('admin_msg.tpl_at_v0', ' at {0}', { 0: ev.start_time.slice(0, 5) }) : '';
     if (ev.end_date) {
       const end = new Date(ev.end_date);
       if (end.toDateString() !== start.toDateString()) {
-        return `${dateStr}${timeStr} – ${end.toLocaleDateString()}`;
+        return `${dateStr}${timeStr} – ${end.toLocaleDateString(getDateLocale())}`;
       }
     }
     if (ev.end_time) {
@@ -189,19 +189,19 @@ const EventsListPage: React.FC = () => {
             to="/admin/events/registrations"
             className="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-neutral-200 text-neutral-700 rounded-lg text-body-xs font-medium hover:bg-neutral-50 shadow-xs"
           >
-            <Ticket className="w-3.5 h-3.5 text-neutral-500" /> Registrations
+            <Ticket className="w-3.5 h-3.5 text-neutral-500" /> {t('admin_ui.registrations', 'Registrations')}
           </Link>
           <Link
             to="/admin/events/categories"
             className="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-neutral-200 text-neutral-700 rounded-lg text-body-xs font-medium hover:bg-neutral-50 shadow-xs"
           >
-            <Layers className="w-3.5 h-3.5 text-neutral-500" /> Categories
+            <Layers className="w-3.5 h-3.5 text-neutral-500" /> {t('admin.breadcrumb.categories', 'Categories')}
           </Link>
           <Link
             to="/admin/events/create"
             className="inline-flex items-center gap-2 px-4 py-2 bg-primary-red text-white rounded-lg text-body-sm font-medium hover:bg-primary-dark-red shadow-sm"
           >
-            <Plus className="w-4 h-4" /> Add Event
+            <Plus className="w-4 h-4" /> {t('admin.events.add', 'Add Event')}
           </Link>
         </div>
       </div>
@@ -211,7 +211,7 @@ const EventsListPage: React.FC = () => {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
           <input
             type="text"
-            placeholder="Search by title, location, or description..."
+            placeholder={t('admin_ui.search_by_title_location_or_description', 'Search by title, location, or description...')}
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             className="w-full pl-10 pr-9 py-2.5 border border-neutral-200 rounded-lg text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 bg-white"
@@ -228,7 +228,7 @@ const EventsListPage: React.FC = () => {
             onChange={(e) => setFilters(f => ({ ...f, category_id: e.target.value ? Number(e.target.value) : undefined, page: 1 }))}
             className="px-3 py-2.5 border border-neutral-200 rounded-lg text-body-xs bg-white"
           >
-            <option value="">All Categories</option>
+            <option value="">{t('sermons.all_categories', 'All Categories')}</option>
             {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
           <select
@@ -236,10 +236,10 @@ const EventsListPage: React.FC = () => {
             onChange={(e) => setFilters(f => ({ ...f, status: e.target.value || undefined, page: 1 }))}
             className="px-3 py-2.5 border border-neutral-200 rounded-lg text-body-xs bg-white"
           >
-            <option value="">All Status</option>
-            <option value="published">Published</option>
-            <option value="draft">Draft</option>
-            <option value="cancelled">Cancelled</option>
+            <option value="">{t('admin_ui.all_status', 'All Status')}</option>
+            <option value="published">{t('ui.published', 'Published')}</option>
+            <option value="draft">{t('admin_ui.draft', 'Draft')}</option>
+            <option value="cancelled">{t('ui.cancelled', 'Cancelled')}</option>
           </select>
           <select
             value={filters.featured === undefined || filters.featured === '' ? '' : String(filters.featured)}
@@ -249,22 +249,22 @@ const EventsListPage: React.FC = () => {
             }}
             className="px-3 py-2.5 border border-neutral-200 rounded-lg text-body-xs bg-white"
           >
-            <option value="">All Featured</option>
-            <option value="true">Featured Only</option>
-            <option value="false">Not Featured</option>
+            <option value="">{t('admin_ui.all_featured', 'All Featured')}</option>
+            <option value="true">{t('admin_ui.featured_only', 'Featured Only')}</option>
+            <option value="false">{t('admin_ui.not_featured', 'Not Featured')}</option>
           </select>
           <input
             type="date"
             value={filters.start_date_from || ''}
             onChange={(e) => setFilters(f => ({ ...f, start_date_from: e.target.value || undefined, page: 1 }))}
-            placeholder="From"
+            placeholder={t('admin_ui.from', 'From')}
             className="px-3 py-2.5 border border-neutral-200 rounded-lg text-body-xs bg-white"
           />
           <input
             type="date"
             value={filters.start_date_to || ''}
             onChange={(e) => setFilters(f => ({ ...f, start_date_to: e.target.value || undefined, page: 1 }))}
-            placeholder="To"
+            placeholder={t('admin_ui.to_e12167', 'To')}
             className="px-3 py-2.5 border border-neutral-200 rounded-lg text-body-xs bg-white"
           />
         </div>
@@ -288,29 +288,29 @@ const EventsListPage: React.FC = () => {
           <div className="px-5 py-12 text-center">
             <AlertTriangle className="w-8 h-8 text-red-400 mx-auto mb-3" />
             <p className="text-body-sm text-neutral-600 mb-3">{error}</p>
-            <button onClick={fetchEvents} className="text-body-sm text-primary-red font-medium hover:underline">Retry</button>
+            <button onClick={fetchEvents} className="text-body-sm text-primary-red font-medium hover:underline">{t('form.retry', 'Retry')}</button>
           </div>
         ) : events.length === 0 ? (
           <div className="px-5 py-12 text-center">
             <Calendar className="w-8 h-8 text-neutral-300 mx-auto mb-3" />
-            <p className="text-body-sm text-neutral-500 mb-4">No events found matching your criteria</p>
+            <p className="text-body-sm text-neutral-500 mb-4">{t('admin_ui.no_events_found_matching_your_criteria', 'No events found matching your criteria')}</p>
             <Link
               to="/admin/events/create"
               className="inline-flex items-center gap-2 px-4 py-2 bg-primary-red text-white rounded-lg text-body-sm font-medium hover:bg-primary-dark-red"
             >
-              <Plus className="w-4 h-4" /> Add First Event
+              <Plus className="w-4 h-4" /> {t('admin_ui.add_first_event', 'Add First Event')}
             </Link>
           </div>
         ) : (
           <>
             <div className="hidden md:grid grid-cols-[30px_60px_1fr_150px_130px_100px_140px] gap-3 px-5 py-3 bg-neutral-50 border-b border-neutral-200 text-body-xs text-neutral-500 font-medium uppercase tracking-wide">
               <span></span>
-              <span>Image</span>
-              <span>Title & Category</span>
-              <span>Date & Time</span>
-              <span>Location</span>
-              <span>Status</span>
-              <span className="text-right">Actions</span>
+              <span>{t('admin_ui.image', 'Image')}</span>
+              <span>{t('admin_ui.title_category', 'Title & Category')}</span>
+              <span>{t('admin_ui.date_time', 'Date & Time')}</span>
+              <span>{t('ministry_detail.location', 'Location')}</span>
+              <span>{t('admin_ui.status', 'Status')}</span>
+              <span className="text-right">{t('admin_ui.actions', 'Actions')}</span>
             </div>
 
             <div className="divide-y divide-neutral-100">
@@ -320,7 +320,7 @@ const EventsListPage: React.FC = () => {
                     <button
                       onClick={() => handleToggleFeatured(ev)}
                       className="p-1 text-neutral-300 hover:text-amber-400 transition-colors"
-                      title={ev.featured ? 'Unfeature event' : 'Feature event'}
+                      title={ev.featured ? t('admin_ui.unfeature_event', 'Unfeature event') : t('admin_ui.feature_event', 'Feature event')}
                     >
                       <Star className={`w-4 h-4 ${ev.featured ? 'fill-amber-400 text-amber-400' : ''}`} />
                     </button>
@@ -342,7 +342,7 @@ const EventsListPage: React.FC = () => {
                       {ev.title}
                     </Link>
                     <p className="text-body-xs text-neutral-500 truncate">
-                      {ev.category ? ev.category.name : 'Uncategorized'}
+                      {ev.category ? ev.category.name : t('admin_ui.uncategorized', 'Uncategorized')}
                     </p>
                   </div>
 
@@ -352,7 +352,7 @@ const EventsListPage: React.FC = () => {
                       <p className="text-body-xs text-neutral-700 font-medium">{formatDateTime(ev)}</p>
                       {ev.registration_required && (
                         <p className="text-[10px] text-accent-blue font-semibold mt-0.5">
-                          Registration Required
+                          {t('ui.registration_required', 'Registration Required')}
                         </p>
                       )}
                     </div>
@@ -378,21 +378,21 @@ const EventsListPage: React.FC = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="p-1.5 text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 rounded-lg transition-colors"
-                      title="Preview Event"
+                      title={t('admin_ui.preview_event', 'Preview Event')}
                     >
                       <Eye className="w-4 h-4" />
                     </a>
                     <Link
                       to={`/admin/events/${ev.id}/edit`}
                       className="p-1.5 text-neutral-500 hover:text-primary-red hover:bg-neutral-100 rounded-lg transition-colors"
-                      title="Edit Event"
+                      title={t('admin_ui.edit_event', 'Edit Event')}
                     >
                       <Edit2 className="w-4 h-4" />
                     </Link>
                     <button
                       onClick={() => handleDuplicate(ev)}
                       className="p-1.5 text-neutral-500 hover:text-accent-blue hover:bg-neutral-100 rounded-lg transition-colors"
-                      title="Duplicate Event"
+                      title={t('admin_ui.duplicate_event', 'Duplicate Event')}
                     >
                       <Copy className="w-4 h-4" />
                     </button>
@@ -400,7 +400,7 @@ const EventsListPage: React.FC = () => {
                       <button
                         onClick={() => handleCancel(ev)}
                         className="p-1.5 text-neutral-500 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
-                        title="Cancel Event"
+                        title={t('admin_ui.cancel_event', 'Cancel Event')}
                       >
                         <Ban className="w-4 h-4" />
                       </button>
@@ -408,7 +408,7 @@ const EventsListPage: React.FC = () => {
                     <button
                       onClick={() => setDeleteModal({ open: true, event: ev })}
                       className="p-1.5 text-neutral-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                      title="Delete Event"
+                      title={t('admin_ui.delete_event', 'Delete Event')}
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -423,7 +423,7 @@ const EventsListPage: React.FC = () => {
       {meta && meta.last_page > 1 && (
         <div className="flex items-center justify-between px-1">
           <span className="text-body-xs text-neutral-500">
-            Showing {meta.from || 0}–{meta.to || 0} of {meta.total} events
+            {t('ui.showing', 'Showing')} {meta.from || 0}–{meta.to || 0} {t('ui.of', 'of')} {meta.total} {t('admin_ui.events', 'events')}
           </span>
           <div className="flex items-center gap-1">
             <button
@@ -434,7 +434,7 @@ const EventsListPage: React.FC = () => {
               <ChevronLeft className="w-4 h-4" />
             </button>
             <span className="text-body-sm font-medium text-neutral-700 px-3">
-              Page {meta.current_page} of {meta.last_page}
+              {t('ui.page', 'Page')} {meta.current_page} {t('ui.of', 'of')} {meta.last_page}
             </span>
             <button
               disabled={meta.current_page >= meta.last_page}
@@ -454,23 +454,23 @@ const EventsListPage: React.FC = () => {
             <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
               <AlertTriangle className="w-6 h-6 text-red-600" />
             </div>
-            <h3 className="text-h5 text-neutral-900 text-center font-semibold mb-2">Delete Event</h3>
+            <h3 className="text-h5 text-neutral-900 text-center font-semibold mb-2">{t('admin_ui.delete_event', 'Delete Event')}</h3>
             <p className="text-body-sm text-neutral-500 text-center mb-6">
-              Are you sure you want to delete <strong>"{deleteModal.event.title}"</strong>?
+              {t('admin_ui.are_you_sure_you_want_to_delete', 'Are you sure you want to delete')} <strong>"{deleteModal.event.title}"</strong>?
             </p>
             <div className="flex gap-3">
               <button
                 onClick={() => setDeleteModal({ open: false, event: null })}
                 className="flex-1 px-4 py-2.5 border border-neutral-200 rounded-lg text-body-sm font-medium text-neutral-700 hover:bg-neutral-50"
               >
-                Cancel
+                {t('form.cancel', 'Cancel')}
               </button>
               <button
                 onClick={handleDelete}
                 disabled={deleting}
                 className="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-lg text-body-sm font-medium hover:bg-red-700 disabled:opacity-50"
               >
-                {deleting ? 'Deleting...' : 'Delete Event'}
+                {deleting ? t('admin_ui.deleting', 'Deleting...') : t('admin_ui.delete_event', 'Delete Event')}
               </button>
             </div>
           </div>

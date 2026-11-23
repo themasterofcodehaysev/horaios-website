@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { prayerService } from '../../services/prayer.service';
 import type { PrayerRequest, PaginatedResponse, PrayerRequestFilters, PrayerRequestStats } from '../../types';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage, translate, getDateLocale } from '../../../context/LanguageContext';
 
 const PrayerRequestsListPage: React.FC = () => {
   const { t } = useLanguage();
@@ -28,7 +28,7 @@ const PrayerRequestsListPage: React.FC = () => {
       setPrayers(result.data);
       setMeta(result.meta);
     } catch (err: any) {
-      setError(err?.response?.data?.message || 'Failed to load prayer requests');
+      setError(err?.response?.data?.message || translate('admin_msg.failed_to_load_prayer_requests', 'Failed to load prayer requests'));
     } finally {
       setLoading(false);
     }
@@ -57,7 +57,7 @@ const PrayerRequestsListPage: React.FC = () => {
       setPrayers(prev => prev.map(p => p.id === prayer.id ? updated : p));
       fetchStats();
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to update status');
+      alert(err?.response?.data?.message || translate('admin_msg.failed_to_update_status', 'Failed to update status'));
     }
   };
 
@@ -70,7 +70,7 @@ const PrayerRequestsListPage: React.FC = () => {
       fetchPrayers();
       fetchStats();
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to delete prayer request');
+      alert(err?.response?.data?.message || translate('admin_msg.failed_to_delete_prayer_request', 'Failed to delete prayer request'));
     } finally {
       setDeleting(false);
     }
@@ -111,35 +111,35 @@ const PrayerRequestsListPage: React.FC = () => {
       {stats && (
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
           <div className="bg-white rounded-lg border border-neutral-200 p-3 shadow-xs">
-            <div className="text-body-xs text-neutral-500 mb-1">Total</div>
+            <div className="text-body-xs text-neutral-500 mb-1">{t('admin_ui.total_96b014', 'Total')}</div>
             <div className="text-h3 text-neutral-900 font-semibold">{stats.total}</div>
           </div>
           <div className="bg-white rounded-lg border border-neutral-200 p-3 shadow-xs">
-            <div className="text-body-xs text-neutral-500 mb-1">Pending</div>
+            <div className="text-body-xs text-neutral-500 mb-1">{t('admin_ui.pending', 'Pending')}</div>
             <div className="text-h3 text-yellow-600 font-semibold">{stats.pending}</div>
           </div>
           <div className="bg-white rounded-lg border border-neutral-200 p-3 shadow-xs">
-            <div className="text-body-xs text-neutral-500 mb-1">Reviewed</div>
+            <div className="text-body-xs text-neutral-500 mb-1">{t('admin_ui.reviewed', 'Reviewed')}</div>
             <div className="text-h3 text-blue-600 font-semibold">{stats.reviewed}</div>
           </div>
           <div className="bg-white rounded-lg border border-neutral-200 p-3 shadow-xs">
-            <div className="text-body-xs text-neutral-500 mb-1">Praying</div>
+            <div className="text-body-xs text-neutral-500 mb-1">{t('admin_ui.praying', 'Praying')}</div>
             <div className="text-h3 text-purple-600 font-semibold">{stats.praying}</div>
           </div>
           <div className="bg-white rounded-lg border border-neutral-200 p-3 shadow-xs">
-            <div className="text-body-xs text-neutral-500 mb-1">Completed</div>
+            <div className="text-body-xs text-neutral-500 mb-1">{t('ui.completed', 'Completed')}</div>
             <div className="text-h3 text-green-600 font-semibold">{stats.completed}</div>
           </div>
           <div className="bg-white rounded-lg border border-neutral-200 p-3 shadow-xs">
-            <div className="text-body-xs text-neutral-500 mb-1">Archived</div>
+            <div className="text-body-xs text-neutral-500 mb-1">{t('admin_ui.archived', 'Archived')}</div>
             <div className="text-h3 text-gray-600 font-semibold">{stats.archived}</div>
           </div>
           <div className="bg-white rounded-lg border border-neutral-200 p-3 shadow-xs">
-            <div className="text-body-xs text-neutral-500 mb-1">Urgent</div>
+            <div className="text-body-xs text-neutral-500 mb-1">{t('admin_ui.urgent', 'Urgent')}</div>
             <div className="text-h3 text-red-600 font-semibold">{stats.urgent}</div>
           </div>
           <div className="bg-white rounded-lg border border-neutral-200 p-3 shadow-xs">
-            <div className="text-body-xs text-neutral-500 mb-1">Public</div>
+            <div className="text-body-xs text-neutral-500 mb-1">{t('admin_ui.public', 'Public')}</div>
             <div className="text-h3 text-primary-red font-semibold">{stats.public}</div>
           </div>
         </div>
@@ -150,7 +150,7 @@ const PrayerRequestsListPage: React.FC = () => {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
           <input
             type="text"
-            placeholder="Search by name, title, or request..."
+            placeholder={t('admin_ui.search_by_name_title_or_request', 'Search by name, title, or request...')}
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             className="w-full pl-10 pr-9 py-2.5 border border-neutral-200 rounded-lg text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 bg-white"
@@ -167,35 +167,35 @@ const PrayerRequestsListPage: React.FC = () => {
             onChange={(e) => setFilters(f => ({ ...f, status: e.target.value || undefined, page: 1 }))}
             className="px-3 py-2.5 border border-neutral-200 rounded-lg text-body-xs bg-white"
           >
-            <option value="">All Status</option>
-            <option value="pending">Pending</option>
-            <option value="reviewed">Reviewed</option>
-            <option value="praying">Praying</option>
-            <option value="completed">Completed</option>
-            <option value="archived">Archived</option>
+            <option value="">{t('admin_ui.all_status', 'All Status')}</option>
+            <option value="pending">{t('admin_ui.pending', 'Pending')}</option>
+            <option value="reviewed">{t('admin_ui.reviewed', 'Reviewed')}</option>
+            <option value="praying">{t('admin_ui.praying', 'Praying')}</option>
+            <option value="completed">{t('ui.completed', 'Completed')}</option>
+            <option value="archived">{t('admin_ui.archived', 'Archived')}</option>
           </select>
           <select
             value={filters.urgency || ''}
             onChange={(e) => setFilters(f => ({ ...f, urgency: e.target.value || undefined, page: 1 }))}
             className="px-3 py-2.5 border border-neutral-200 rounded-lg text-body-xs bg-white"
           >
-            <option value="">All Urgency</option>
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-            <option value="urgent">Urgent</option>
+            <option value="">{t('admin_ui.all_urgency', 'All Urgency')}</option>
+            <option value="low">{t('admin_ui.low', 'Low')}</option>
+            <option value="medium">{t('admin_ui.medium', 'Medium')}</option>
+            <option value="high">{t('admin_ui.high', 'High')}</option>
+            <option value="urgent">{t('admin_ui.urgent', 'Urgent')}</option>
           </select>
           <select
             value={filters.request_type || ''}
             onChange={(e) => setFilters(f => ({ ...f, request_type: e.target.value || undefined, page: 1 }))}
             className="px-3 py-2.5 border border-neutral-200 rounded-lg text-body-xs bg-white"
           >
-            <option value="">All Types</option>
-            <option value="general">General</option>
-            <option value="healing">Healing</option>
-            <option value="guidance">Guidance</option>
-            <option value="thanksgiving">Thanksgiving</option>
-            <option value="emergency">Emergency</option>
+            <option value="">{t('admin_ui.all_types', 'All Types')}</option>
+            <option value="general">{t('admin_ui.general', 'General')}</option>
+            <option value="healing">{t('admin_ui.healing', 'Healing')}</option>
+            <option value="guidance">{t('admin_ui.guidance', 'Guidance')}</option>
+            <option value="thanksgiving">{t('admin_ui.thanksgiving', 'Thanksgiving')}</option>
+            <option value="emergency">{t('admin_ui.emergency', 'Emergency')}</option>
           </select>
           <select
             value={filters.allow_public_prayer === undefined || filters.allow_public_prayer === '' ? '' : String(filters.allow_public_prayer)}
@@ -205,9 +205,9 @@ const PrayerRequestsListPage: React.FC = () => {
             }}
             className="px-3 py-2.5 border border-neutral-200 rounded-lg text-body-xs bg-white"
           >
-            <option value="">Public Prayer</option>
-            <option value="true">Yes</option>
-            <option value="false">No</option>
+            <option value="">{t('admin_ui.public_prayer', 'Public Prayer')}</option>
+            <option value="true">{t('admin_ui.yes_93cba0', 'Yes')}</option>
+            <option value="false">{t('admin_ui.no', 'No')}</option>
           </select>
         </div>
       </div>
@@ -229,12 +229,12 @@ const PrayerRequestsListPage: React.FC = () => {
           <div className="px-5 py-12 text-center">
             <AlertTriangle className="w-8 h-8 text-red-400 mx-auto mb-3" />
             <p className="text-body-sm text-neutral-600 mb-3">{error}</p>
-            <button onClick={fetchPrayers} className="text-body-sm text-primary-red font-medium hover:underline">Retry</button>
+            <button onClick={fetchPrayers} className="text-body-sm text-primary-red font-medium hover:underline">{t('form.retry', 'Retry')}</button>
           </div>
         ) : prayers.length === 0 ? (
           <div className="px-5 py-12 text-center">
             <Heart className="w-8 h-8 text-neutral-300 mx-auto mb-3" />
-            <p className="text-body-sm text-neutral-500 mb-4">No prayer requests found matching your criteria</p>
+            <p className="text-body-sm text-neutral-500 mb-4">{t('admin_ui.no_prayer_requests_found_matching_your_crite', 'No prayer requests found matching your criteria')}</p>
           </div>
         ) : (
           <div className="divide-y divide-neutral-100">
@@ -250,13 +250,13 @@ const PrayerRequestsListPage: React.FC = () => {
                     </div>
                     <p className="text-body-xs text-neutral-600 line-clamp-2 mb-2">{prayer.request}</p>
                     <div className="flex items-center gap-3 text-body-xs text-neutral-500">
-                      <span>{prayer.is_anonymous ? 'Anonymous' : prayer.name}</span>
+                      <span>{prayer.is_anonymous ? t('admin_ui.anonymous', 'Anonymous') : prayer.name}</span>
                       <span>•</span>
-                      <span>{new Date(prayer.created_at).toLocaleDateString()}</span>
+                      <span>{new Date(prayer.created_at).toLocaleDateString(getDateLocale())}</span>
                       {prayer.allow_public_prayer && (
                         <>
                           <span>•</span>
-                          <span className="text-primary-red">Public</span>
+                          <span className="text-primary-red">{t('admin_ui.public', 'Public')}</span>
                         </>
                       )}
                     </div>
@@ -270,7 +270,7 @@ const PrayerRequestsListPage: React.FC = () => {
                         <button
                           onClick={() => handleUpdateStatus(prayer, 'reviewed')}
                           className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg"
-                          title="Mark as Reviewed"
+                          title={t('admin_ui.mark_as_reviewed', 'Mark as Reviewed')}
                         >
                           <Eye className="w-4 h-4" />
                         </button>
@@ -279,7 +279,7 @@ const PrayerRequestsListPage: React.FC = () => {
                         <button
                           onClick={() => handleUpdateStatus(prayer, 'praying')}
                           className="p-1.5 text-purple-600 hover:bg-purple-50 rounded-lg"
-                          title="Mark as Praying"
+                          title={t('admin_ui.mark_as_praying', 'Mark as Praying')}
                         >
                           <Heart className="w-4 h-4" />
                         </button>
@@ -288,7 +288,7 @@ const PrayerRequestsListPage: React.FC = () => {
                         <button
                           onClick={() => handleUpdateStatus(prayer, 'completed')}
                           className="p-1.5 text-green-600 hover:bg-green-50 rounded-lg"
-                          title="Mark as Completed"
+                          title={t('admin_ui.mark_as_completed', 'Mark as Completed')}
                         >
                           <CheckCircle className="w-4 h-4" />
                         </button>
@@ -296,7 +296,7 @@ const PrayerRequestsListPage: React.FC = () => {
                       <button
                         onClick={() => setDeleteModal({ open: true, prayer })}
                         className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg"
-                        title="Delete"
+                        title={t('form.delete', 'Delete')}
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -311,7 +311,7 @@ const PrayerRequestsListPage: React.FC = () => {
         {meta && meta.last_page > 1 && (
           <div className="flex items-center justify-between px-5 py-4 border-t border-neutral-200">
             <div className="text-body-xs text-neutral-500">
-              Showing {meta.from} to {meta.to} of {meta.total} results
+              {t('ui.showing', 'Showing')} {meta.from} {t('admin_ui.to', 'to')} {meta.to} {t('ui.of', 'of')} {meta.total} {t('admin_ui.results', 'results')}
             </div>
             <div className="flex items-center gap-2">
               <button
@@ -322,7 +322,7 @@ const PrayerRequestsListPage: React.FC = () => {
                 <ChevronLeft className="w-4 h-4" />
               </button>
               <span className="text-body-sm text-neutral-700">
-                Page {meta.current_page} of {meta.last_page}
+                {t('ui.page', 'Page')} {meta.current_page} {t('ui.of', 'of')} {meta.last_page}
               </span>
               <button
                 onClick={() => setFilters(f => ({ ...f, page: f.page! + 1 }))}
@@ -339,23 +339,23 @@ const PrayerRequestsListPage: React.FC = () => {
       {deleteModal.open && deleteModal.prayer && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4 shadow-lg">
-            <h3 className="text-h3 text-neutral-900 font-semibold mb-2">Delete Prayer Request</h3>
+            <h3 className="text-h3 text-neutral-900 font-semibold mb-2">{t('admin_ui.delete_prayer_request', 'Delete Prayer Request')}</h3>
             <p className="text-body-sm text-neutral-600 mb-6">
-              Are you sure you want to delete this prayer request from {deleteModal.prayer.name}? This action cannot be undone.
+              {t('admin_ui.are_you_sure_you_want_to_delete_this_prayer_', 'Are you sure you want to delete this prayer request from')} {deleteModal.prayer.name}{t('admin_ui.this_action_cannot_be_undone', '? This action cannot be undone.')}
             </p>
             <div className="flex items-center justify-end gap-3">
               <button
                 onClick={() => setDeleteModal({ open: false, prayer: null })}
                 className="px-4 py-2 text-body-sm font-medium text-neutral-700 hover:bg-neutral-100 rounded-lg"
               >
-                Cancel
+                {t('form.cancel', 'Cancel')}
               </button>
               <button
                 onClick={handleDelete}
                 disabled={deleting}
                 className="px-4 py-2 text-body-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg disabled:opacity-50"
               >
-                {deleting ? 'Deleting...' : 'Delete'}
+                {deleting ? t('admin_ui.deleting', 'Deleting...') : t('form.delete', 'Delete')}
               </button>
             </div>
           </div>

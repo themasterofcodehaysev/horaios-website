@@ -134,7 +134,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
               )}
             >
               <Globe className="w-4 h-4" />
-              English
+              {t('lang.en', 'English')}
             </button>
             <button
               onClick={() => setLanguage('km')}

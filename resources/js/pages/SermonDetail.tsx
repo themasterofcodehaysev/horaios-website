@@ -13,6 +13,7 @@ import { getImageUrl } from '../utils/imageUrl';
 import { getYouTubeId, getSermonThumbnail } from '../utils/youtube';
 import type { SermonItem } from '../admin/types';
 
+import { useLanguage, translate, getDateLocale } from '../context/LanguageContext';
 const SITE_NAME = 'Horaios Baptist Church';
 
 function stripMarkdown(markdown: string): string {
@@ -70,6 +71,7 @@ function buildSermonSeo(sermon: SermonItem) {
 }
 
 export const SermonDetailPage: React.FC = () => {
+  const { t } = useLanguage();
   const { id } = useParams<{ id: string }>();
   const [sermon, setSermon] = useState<SermonItem | null>(null);
   const [relatedSermons, setRelatedSermons] = useState<SermonItem[]>([]);
@@ -97,7 +99,7 @@ export const SermonDetailPage: React.FC = () => {
           setRelatedSermons([]);
         }
       } catch (err: any) {
-        setError(err?.response?.data?.message || 'Sermon not found.');
+        setError(err?.response?.data?.message || translate('ui.sermon_not_found_msg', 'Sermon not found.'));
       } finally {
         setLoading(false);
       }
@@ -123,10 +125,10 @@ export const SermonDetailPage: React.FC = () => {
       <Layout>
         <div className="max-w-md mx-auto pt-32 pb-20 px-4 text-center">
           <Video className="w-12 h-12 text-neutral-300 mx-auto mb-4" />
-          <h2 className="text-h4 font-bold text-neutral-800 mb-2">Sermon Not Found</h2>
-          <p className="text-body-sm text-neutral-500 mb-6">{error || 'The requested sermon does not exist or has been removed.'}</p>
+          <h2 className="text-h4 font-bold text-neutral-800 mb-2">{t('ui.sermon_not_found', 'Sermon Not Found')}</h2>
+          <p className="text-body-sm text-neutral-500 mb-6">{error || translate('ui.the_requested_sermon_does_not_exist_or_has_b', 'The requested sermon does not exist or has been removed.')}</p>
           <Link to="/sermons" className="px-5 py-2.5 bg-primary-red text-white rounded-lg font-medium text-body-sm hover:bg-primary-dark-red">
-            Back to Sermons Library
+            {t('ui.back_to_sermons_library', 'Back to Sermons Library')}
           </Link>
         </div>
       </Layout>
@@ -154,7 +156,7 @@ export const SermonDetailPage: React.FC = () => {
               to="/sermons"
               className="inline-flex items-center gap-1.5 text-body-sm font-medium text-neutral-600 hover:text-primary-red transition-colors"
             >
-              <ArrowLeft className="w-4 h-4" /> Back to Sermons Library
+              <ArrowLeft className="w-4 h-4" /> {t('ui.back_to_sermons_library', 'Back to Sermons Library')}
             </Link>
           </div>
 
@@ -168,12 +170,12 @@ export const SermonDetailPage: React.FC = () => {
             )}
             {sermon.series && (
               <span className="text-body-xs font-medium px-3 py-1 rounded-full bg-neutral-100 text-neutral-700">
-                Series: {sermon.series.name}
+                {t('ui.series', 'Series:')} {sermon.series.name}
               </span>
             )}
             {sermon.featured && (
               <span className="text-body-xs font-bold px-3 py-1 rounded-full bg-amber-100 text-amber-800">
-                ★ Featured Message
+                {t('ui.featured_message_96fc99', '★ Featured Message')}
               </span>
             )}
           </div>
@@ -195,7 +197,7 @@ export const SermonDetailPage: React.FC = () => {
             )}
             {sermon.published_at && (
               <span className="flex items-center gap-1.5 text-neutral-500 text-body-xs">
-                <Calendar className="w-3.5 h-3.5" /> Published {new Date(sermon.published_at).toLocaleDateString()}
+                <Calendar className="w-3.5 h-3.5" /> {t('ui.published', 'Published')} {new Date(sermon.published_at).toLocaleDateString(getDateLocale())}
               </span>
             )}
           </div>
@@ -241,7 +243,7 @@ export const SermonDetailPage: React.FC = () => {
                 <Play className="w-8 h-8 sm:w-10 sm:h-10 ml-1.5 fill-current" />
               </div>
               <span className="mt-4 px-4 py-1.5 rounded-full bg-black/60 backdrop-blur-md text-white text-body-xs font-bold uppercase tracking-wider border border-white/20 group-hover:bg-primary-red group-hover:border-primary-red transition-colors">
-                Watch Full Message
+                {t('ui.watch_full_message', 'Watch Full Message')}
               </span>
             </div>
           </div>
@@ -258,7 +260,7 @@ export const SermonDetailPage: React.FC = () => {
         {sermon.description && (
           <div className="bg-white rounded-3xl border border-neutral-200 p-8 sm:p-10 shadow-xs space-y-4">
             <h2 className="text-h4 font-bold text-neutral-900 border-b border-neutral-100 pb-3">
-              Message Notes & Study Guide
+              {t('ui.message_notes_study_guide', 'Message Notes & Study Guide')}
             </h2>
             <div data-color-mode="light" className="prose prose-neutral max-w-none">
               <MarkdownPreview source={sermon.description} style={{ backgroundColor: 'transparent', color: 'inherit' }} />
@@ -278,7 +280,7 @@ export const SermonDetailPage: React.FC = () => {
             </div>
             <div className="space-y-2 text-center sm:text-left flex-1">
               <span className="text-body-xs font-semibold text-primary-300 uppercase tracking-wider">
-                Preacher / Speaker
+                {t('ui.preacher_speaker', 'Preacher / Speaker')}
               </span>
               <h3 className="text-h4 font-bold">{sermon.speaker.name}</h3>
               {sermon.speaker.position && (
@@ -297,14 +299,14 @@ export const SermonDetailPage: React.FC = () => {
         <ShareBar
           title={sermon.title}
           description={sermon.scripture_reference || (typeof sermon.speaker === 'object' ? sermon.speaker?.name : sermon.speaker) || ''}
-          label="Share This Message"
+          label={t('ui.share_this_message', 'Share This Message')}
         />
 
         {/* Related Sermons Section */}
         {relatedSermons.length > 0 && (
           <section className="pt-8 border-t border-neutral-200 space-y-4">
             <h3 className="text-h5 font-bold text-neutral-900 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-amber-500" /> Related Sermons & Messages
+              <Sparkles className="w-4 h-4 text-amber-500" /> {t('ui.related_sermons_messages', 'Related Sermons & Messages')}
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {relatedSermons.map((rel) => {
@@ -333,9 +335,9 @@ export const SermonDetailPage: React.FC = () => {
                       </h4>
                       <p 
                         className="text-body-xs text-neutral-500 truncate"
-                        title={`${rel.speaker?.name || 'Horaios Baptist Church'}${rel.scripture_reference ? ` • ${rel.scripture_reference}` : ''}`}
+                        title={`${rel.speaker?.name || translate('ui.horaios_baptist_church', 'Horaios Baptist Church')}${rel.scripture_reference ? ` • ${rel.scripture_reference}` : ''}`}
                       >
-                        {rel.speaker?.name || 'Horaios Baptist Church'}
+                        {rel.speaker?.name || translate('ui.horaios_baptist_church', 'Horaios Baptist Church')}
                         {rel.scripture_reference && ` • ${rel.scripture_reference}`}
                       </p>
                     </div>

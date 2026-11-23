@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
 import { AlertTriangle, AlertCircle, Info, CheckCircle, Ban } from 'lucide-react';
 
+import { translate } from '../../context/LanguageContext';
 export type ConfirmVariant = 'danger' | 'warning' | 'info' | 'primary' | 'success';
 
 export interface ConfirmOptions {
@@ -115,14 +116,14 @@ export const ConfirmProvider: React.FC<{ children: ReactNode }> = ({ children })
                 onClick={() => handleClose(false)}
                 className="flex-1 px-4 py-2.5 border border-neutral-200 rounded-lg text-body-sm font-medium text-neutral-700 hover:bg-neutral-50 transition-colors"
               >
-                {options.cancelLabel || 'Cancel'}
+                {options.cancelLabel || translate('admin_msg.cancel', 'Cancel')}
               </button>
               <button
                 type="button"
                 onClick={() => handleClose(true)}
                 className={`flex-1 px-4 py-2.5 rounded-lg text-body-sm font-medium transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 ${styles.confirmBtn}`}
               >
-                {options.confirmLabel || 'Confirm'}
+                {options.confirmLabel || translate('admin_msg.confirm', 'Confirm')}
               </button>
             </div>
           </div>

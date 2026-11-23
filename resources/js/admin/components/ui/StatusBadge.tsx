@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { translate } from '../../../context/LanguageContext';
 export interface StatusBadgeProps {
   status: 'active' | 'inactive' | 'locked' | 'draft' | 'published' | string;
   size?: 'sm' | 'md';
@@ -42,7 +43,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, size = 'sm' })
   return (
     <span className={`inline-flex items-center font-medium rounded-full ${bgColor} ${textColor} ${padding}`}>
       <span className={`rounded-full mr-1.5 ${dotColor} ${dotSize}`} />
-      <span className="capitalize">{status}</span>
+      <span className="capitalize">{translate(`status.${normalizedStatus}`, status)}</span>
     </span>
   );
 };

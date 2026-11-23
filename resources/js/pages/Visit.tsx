@@ -90,11 +90,11 @@ export const VisitPage: React.FC = () => {
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  title="Horaios Baptist Church Location"
+                  title={t('ui.horaios_baptist_church_location', 'Horaios Baptist Church Location')}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <p className="text-neutral-600">Map loading...</p>
+                  <p className="text-neutral-600">{t('ui.map_loading', 'Map loading...')}</p>
                 </div>
               )}
             </div>

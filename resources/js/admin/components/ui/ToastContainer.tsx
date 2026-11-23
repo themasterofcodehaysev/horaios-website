@@ -1,6 +1,7 @@
 import React from 'react';
 import { CheckCircle, XCircle, AlertTriangle, Info, X } from 'lucide-react';
 
+import { useLanguage } from '../../../context/LanguageContext';
 export interface Toast {
   id: string;
   type: 'success' | 'error' | 'warning' | 'info';
@@ -28,6 +29,7 @@ const backgrounds = {
 };
 
 export const ToastContainer: React.FC<ToastContainerProps> = ({ toasts, onRemove }) => {
+  const { t } = useLanguage();
   return (
     <div className="fixed bottom-0 right-0 p-6 space-y-4 z-50 pointer-events-none flex flex-col items-end">
       {toasts.map((toast) => (
@@ -52,7 +54,7 @@ export const ToastContainer: React.FC<ToastContainerProps> = ({ toasts, onRemove
                   className="inline-flex rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-navy focus:ring-offset-2"
                   onClick={() => onRemove(toast.id)}
                 >
-                  <span className="sr-only">Close</span>
+                  <span className="sr-only">{t('ui.close', 'Close')}</span>
                   <X className="h-5 w-5" aria-hidden="true" />
                 </button>
               </div>

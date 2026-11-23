@@ -9,7 +9,7 @@ import { userService } from '../../services/user.service';
 import { roleService } from '../../services/role.service';
 import { useToast } from '../../hooks/useToast';
 import type { User, Role, PaginatedResponse, UserFilters } from '../../types';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage, translate, getDateLocale } from '../../../context/LanguageContext';
 
 const UsersListPage: React.FC = () => {
   const navigate = useNavigate();
@@ -36,7 +36,7 @@ const UsersListPage: React.FC = () => {
       setUsers(result.data);
       setMeta(result.meta);
     } catch (err: any) {
-      setError(err?.response?.data?.message || 'Failed to load users');
+      setError(err?.response?.data?.message || translate('admin_msg.failed_to_load_users', 'Failed to load users'));
     } finally {
       setLoading(false);
     }
@@ -65,11 +65,11 @@ const UsersListPage: React.FC = () => {
     try {
       setDeleting(true);
       await userService.delete(deleteModal.user.uuid);
-      addToast({ type: 'success', title: 'User deleted', message: `${deleteModal.user.display_name} has been deleted.` });
+      addToast({ type: 'success', title: t('admin_ui.user_deleted', 'User deleted'), message: translate('admin_msg.tpl_v0_has_been_deleted', '{0} has been deleted.', { 0: deleteModal.user.display_name }) });
       setDeleteModal({ open: false, user: null });
       fetchUsers();
     } catch (err: any) {
-      addToast({ type: 'error', title: 'Failed to delete user', message: err?.response?.data?.message || 'Please try again.' });
+      addToast({ type: 'error', title: t('admin_ui.failed_to_delete_user', 'Failed to delete user'), message: err?.response?.data?.message || translate('admin_msg.please_try_again', 'Please try again.') });
     } finally {
       setDeleting(false);
     }
@@ -82,11 +82,11 @@ const UsersListPage: React.FC = () => {
       setUsers(prev => prev.map(u => u.id === user.id ? updated : u));
       addToast({
         type: 'success',
-        title: updated.status === 'active' ? 'User activated' : 'User deactivated',
-        message: `${updated.display_name} is now ${updated.status}.`,
+        title: updated.status === 'active' ? translate('admin_msg.user_activated', 'User activated') : translate('admin_msg.user_deactivated', 'User deactivated'),
+        message: translate('admin_msg.tpl_v0_is_now_v1', '{0} is now {1}.', { 0: updated.display_name, 1: translate(`status.${updated.status}`, updated.status) }),
       });
     } catch (err: any) {
-      addToast({ type: 'error', title: 'Failed to update status', message: err?.response?.data?.message || 'Please try again.' });
+      addToast({ type: 'error', title: t('admin_ui.failed_to_update_status', 'Failed to update status'), message: err?.response?.data?.message || translate('admin_msg.please_try_again', 'Please try again.') });
     } finally {
       setTogglingStatus(null);
     }
@@ -96,9 +96,9 @@ const UsersListPage: React.FC = () => {
     try {
       setSendingReset(user.id);
       await userService.sendPasswordReset(user.uuid);
-      addToast({ type: 'success', title: 'Password reset sent', message: `A reset link has been emailed to ${user.email}.` });
+      addToast({ type: 'success', title: t('admin_ui.password_reset_sent', 'Password reset sent'), message: translate('admin_msg.tpl_a_reset_link_has_been_emailed_to_v0', 'A reset link has been emailed to {0}.', { 0: user.email }) });
     } catch (err: any) {
-      addToast({ type: 'error', title: 'Failed to send reset link', message: err?.response?.data?.message || 'Please try again.' });
+      addToast({ type: 'error', title: t('admin_ui.failed_to_send_reset_link', 'Failed to send reset link'), message: err?.response?.data?.message || translate('admin_msg.please_try_again', 'Please try again.') });
     } finally {
       setSendingReset(null);
     }
@@ -125,7 +125,7 @@ const UsersListPage: React.FC = () => {
           className="inline-flex items-center gap-2 px-4 py-2.5 bg-primary-red text-white rounded-lg text-body-sm font-medium hover:bg-primary-dark-red transition-colors shadow-sm"
         >
           <Plus className="w-4 h-4" />
-          Add User
+          {t('admin.users.add', 'Add User')}
         </Link>
       </div>
 
@@ -135,7 +135,7 @@ const UsersListPage: React.FC = () => {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
           <input
             type="text"
-            placeholder="Search users by name or email..."
+            placeholder={t('admin_ui.search_users_by_name_or_email', 'Search users by name or email...')}
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             className="w-full pl-10 pr-9 py-2.5 border border-neutral-200 rounded-lg text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 bg-white"
@@ -151,7 +151,7 @@ const UsersListPage: React.FC = () => {
           onChange={(e) => setFilters(f => ({ ...f, role_id: e.target.value ? Number(e.target.value) : undefined, page: 1 }))}
           className="px-3 py-2.5 border border-neutral-200 rounded-lg text-body-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500/20"
         >
-          <option value="">All Roles</option>
+          <option value="">{t('admin_ui.all_roles', 'All Roles')}</option>
           {roles.map(r => <option key={r.id} value={r.id}>{r.display_name}</option>)}
         </select>
         <select
@@ -159,10 +159,10 @@ const UsersListPage: React.FC = () => {
           onChange={(e) => setFilters(f => ({ ...f, status: e.target.value || undefined, page: 1 }))}
           className="px-3 py-2.5 border border-neutral-200 rounded-lg text-body-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500/20"
         >
-          <option value="">All Status</option>
-          <option value="active">Active</option>
-          <option value="inactive">Inactive</option>
-          <option value="locked">Locked</option>
+          <option value="">{t('admin_ui.all_status', 'All Status')}</option>
+          <option value="active">{t('admin_ui.active', 'Active')}</option>
+          <option value="inactive">{t('admin_ui.inactive', 'Inactive')}</option>
+          <option value="locked">{t('admin_ui.locked', 'Locked')}</option>
         </select>
       </div>
 
@@ -186,22 +186,22 @@ const UsersListPage: React.FC = () => {
           <div className="px-5 py-12 text-center">
             <AlertTriangle className="w-8 h-8 text-red-400 mx-auto mb-3" />
             <p className="text-body-sm text-neutral-600 mb-3">{error}</p>
-            <button onClick={fetchUsers} className="text-body-sm text-primary-600 font-medium hover:underline">Retry</button>
+            <button onClick={fetchUsers} className="text-body-sm text-primary-600 font-medium hover:underline">{t('form.retry', 'Retry')}</button>
           </div>
         ) : users.length === 0 ? (
           <div className="px-5 py-12 text-center">
             <Users className="w-8 h-8 text-neutral-300 mx-auto mb-3" />
-            <p className="text-body-sm text-neutral-500">No users found</p>
+            <p className="text-body-sm text-neutral-500">{t('admin_ui.no_users_found', 'No users found')}</p>
           </div>
         ) : (
           <>
             {/* Table Header */}
             <div className="hidden md:grid grid-cols-[1fr_1fr_120px_120px_80px] gap-4 px-5 py-3 bg-neutral-50 border-b border-neutral-200 text-body-xs text-neutral-500 font-medium uppercase tracking-wide">
-              <span>User</span>
-              <span>Role</span>
-              <span>Status</span>
-              <span>Joined</span>
-              <span className="text-right">Actions</span>
+              <span>{t('admin_ui.user', 'User')}</span>
+              <span>{t('admin_ui.role', 'Role')}</span>
+              <span>{t('admin_ui.status', 'Status')}</span>
+              <span>{t('admin_ui.joined', 'Joined')}</span>
+              <span className="text-right">{t('admin_ui.actions', 'Actions')}</span>
             </div>
             {/* Table Rows */}
             <div className="divide-y divide-neutral-100">
@@ -227,7 +227,7 @@ const UsersListPage: React.FC = () => {
                   </div>
                   <div>
                     <span className="text-body-xs text-neutral-500">
-                      {new Date(user.created_at).toLocaleDateString()}
+                      {new Date(user.created_at).toLocaleDateString(getDateLocale())}
                     </span>
                   </div>
                   <div className="relative flex justify-end">
@@ -245,7 +245,7 @@ const UsersListPage: React.FC = () => {
                             onClick={() => { setActionMenu(null); navigate(`/admin/users/${user.uuid}/edit`); }}
                             className="w-full flex items-center gap-2.5 px-3.5 py-2 text-body-sm text-neutral-700 hover:bg-neutral-50"
                           >
-                            <Edit2 className="w-4 h-4" /> Edit User
+                            <Edit2 className="w-4 h-4" /> {t('admin_ui.edit_user', 'Edit User')}
                           </button>
                           <button
                             onClick={() => { setActionMenu(null); handleToggleStatus(user); }}
@@ -253,9 +253,9 @@ const UsersListPage: React.FC = () => {
                             className="w-full flex items-center gap-2.5 px-3.5 py-2 text-body-sm text-neutral-700 hover:bg-neutral-50 disabled:opacity-50"
                           >
                             {user.status === 'active' ? (
-                              <><UserX className="w-4 h-4" /> Deactivate User</>
+                              <><UserX className="w-4 h-4" /> {t('admin_ui.deactivate_user', 'Deactivate User')}</>
                             ) : (
-                              <><UserCheck className="w-4 h-4" /> Activate User</>
+                              <><UserCheck className="w-4 h-4" /> {t('admin_ui.activate_user', 'Activate User')}</>
                             )}
                           </button>
                           <button
@@ -263,13 +263,13 @@ const UsersListPage: React.FC = () => {
                             disabled={sendingReset === user.id}
                             className="w-full flex items-center gap-2.5 px-3.5 py-2 text-body-sm text-neutral-700 hover:bg-neutral-50 disabled:opacity-50"
                           >
-                            <KeyRound className="w-4 h-4" /> Send Password Reset
+                            <KeyRound className="w-4 h-4" /> {t('admin_ui.send_password_reset', 'Send Password Reset')}
                           </button>
                           <button
                             onClick={() => { setActionMenu(null); setDeleteModal({ open: true, user }); }}
                             className="w-full flex items-center gap-2.5 px-3.5 py-2 text-body-sm text-red-600 hover:bg-red-50"
                           >
-                            <Trash2 className="w-4 h-4" /> Delete User
+                            <Trash2 className="w-4 h-4" /> {t('admin_ui.delete_user', 'Delete User')}
                           </button>
                         </div>
                       </>
@@ -286,7 +286,7 @@ const UsersListPage: React.FC = () => {
       {meta && meta.last_page > 1 && (
         <div className="flex items-center justify-between px-1">
           <span className="text-body-xs text-neutral-500">
-            Showing {meta.from || 0}–{meta.to || 0} of {meta.total}
+            {t('ui.showing', 'Showing')} {meta.from || 0}–{meta.to || 0} {t('ui.of', 'of')} {meta.total}
           </span>
           <div className="flex items-center gap-1">
             <button
@@ -334,23 +334,23 @@ const UsersListPage: React.FC = () => {
             <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
               <AlertTriangle className="w-6 h-6 text-red-600" />
             </div>
-            <h3 className="text-h5 text-neutral-900 text-center font-semibold mb-2">Delete User</h3>
+            <h3 className="text-h5 text-neutral-900 text-center font-semibold mb-2">{t('admin_ui.delete_user', 'Delete User')}</h3>
             <p className="text-body-sm text-neutral-500 text-center mb-6">
-              Are you sure you want to delete <strong>{deleteModal.user.display_name}</strong>? This action can be undone later.
+              {t('admin_ui.are_you_sure_you_want_to_delete', 'Are you sure you want to delete')} <strong>{deleteModal.user.display_name}</strong>{t('admin_ui.this_action_can_be_undone_later', '? This action can be undone later.')}
             </p>
             <div className="flex gap-3">
               <button
                 onClick={() => setDeleteModal({ open: false, user: null })}
                 className="flex-1 px-4 py-2.5 border border-neutral-200 rounded-lg text-body-sm font-medium text-neutral-700 hover:bg-neutral-50"
               >
-                Cancel
+                {t('form.cancel', 'Cancel')}
               </button>
               <button
                 onClick={handleDelete}
                 disabled={deleting}
                 className="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-lg text-body-sm font-medium hover:bg-red-700 disabled:opacity-50"
               >
-                {deleting ? 'Deleting...' : 'Delete User'}
+                {deleting ? t('admin_ui.deleting', 'Deleting...') : t('admin_ui.delete_user', 'Delete User')}
               </button>
             </div>
           </div>

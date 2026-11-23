@@ -4,7 +4,9 @@ import { Shield, Users, Key, ChevronRight } from 'lucide-react';
 import { roleService } from '../../services/role.service';
 import { Role } from '../../types';
 
+import { useLanguage, translate } from '../../../context/LanguageContext';
 export default function RolesListPage() {
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [roles, setRoles] = useState<Role[]>([]);
   const [loading, setLoading] = useState(true);
@@ -27,8 +29,8 @@ export default function RolesListPage() {
     <div className="max-w-7xl mx-auto py-6">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">Roles & Permissions</h1>
-          <p className="text-sm text-gray-500">Manage system roles and their access levels</p>
+          <h1 className="text-2xl font-semibold text-gray-900">{t('admin.roles', 'Roles & Permissions')}</h1>
+          <p className="text-sm text-gray-500">{t('admin_ui.manage_system_roles_and_their_access_levels', 'Manage system roles and their access levels')}</p>
         </div>
       </div>
 
@@ -48,8 +50,8 @@ export default function RolesListPage() {
       ) : roles.length === 0 ? (
         <div className="bg-white rounded-xl border border-gray-100 p-12 text-center">
           <Shield className="mx-auto h-12 w-12 text-gray-300 mb-4" />
-          <h3 className="text-lg font-medium text-gray-900">No roles found</h3>
-          <p className="mt-1 text-gray-500">There are no roles configured in the system yet.</p>
+          <h3 className="text-lg font-medium text-gray-900">{t('admin_ui.no_roles_found', 'No roles found')}</h3>
+          <p className="mt-1 text-gray-500">{t('admin_ui.there_are_no_roles_configured_in_the_system_', 'There are no roles configured in the system yet.')}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -67,13 +69,13 @@ export default function RolesListPage() {
                   </h3>
                   {isSystem && (
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-navy/10 text-primary-navy">
-                      System Role
+                      {t('admin_ui.system_role', 'System Role')}
                     </span>
                   )}
                 </div>
                 
                 <p className="text-sm text-gray-500 mb-6 flex-grow">
-                  {role.description || 'No description provided for this role.'}
+                  {role.description || translate('admin_msg.no_description_provided_for_this_role', 'No description provided for this role.')}
                 </p>
                 
                 <div className="flex items-center justify-between border-t border-gray-100 pt-4 mt-auto">

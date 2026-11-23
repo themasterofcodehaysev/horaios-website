@@ -9,7 +9,7 @@ import {
   Search, X, ChevronLeft, ChevronRight, AlertTriangle,
 } from 'lucide-react';
 import { ministryService } from '../services/publicContent.service';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage, translate } from '../context/LanguageContext';
 import type { MinistryPublic, MinistryCategoryPublic, MinistryFilters } from '../types';
 
 const iconMap: Record<string, React.ReactNode> = {
@@ -58,7 +58,7 @@ export const MinistriesPage: React.FC = () => {
       setMinistries(result.data);
       setMeta(result.meta);
     } catch (err: any) {
-      setError(err?.response?.data?.message || 'Failed to load ministries');
+      setError(err?.response?.data?.message || translate('ui.failed_to_load_ministries', 'Failed to load ministries'));
     } finally {
       setLoading(false);
     }
@@ -156,7 +156,7 @@ export const MinistriesPage: React.FC = () => {
               <AlertTriangle className="w-10 h-10 text-red-400 mx-auto mb-3" />
               <p className="text-body-base text-neutral-600 mb-3">{error}</p>
               <button onClick={fetchMinistries} className="text-body-sm text-primary-red font-medium hover:underline">
-                Retry
+                {t('form.retry', 'Retry')}
               </button>
             </div>
           ) : ministries.length === 0 ? (
@@ -190,7 +190,7 @@ export const MinistriesPage: React.FC = () => {
               {meta && meta.last_page > 1 && (
                 <div className="flex items-center justify-between pt-4">
                   <span className="text-body-xs text-neutral-500">
-                    Showing {meta.from || 0}–{meta.to || 0} of {meta.total} ministries
+                    {t('ui.showing', 'Showing')} {meta.from || 0}–{meta.to || 0} {t('ui.of', 'of')} {meta.total} {t('ui.ministries', 'ministries')}
                   </span>
                   <div className="flex items-center gap-1">
                     <button
@@ -201,7 +201,7 @@ export const MinistriesPage: React.FC = () => {
                       <ChevronLeft className="w-4 h-4" />
                     </button>
                     <span className="text-body-sm font-medium text-neutral-700 px-3">
-                      Page {meta.current_page} of {meta.last_page}
+                      {t('ui.page', 'Page')} {meta.current_page} {t('ui.of', 'of')} {meta.last_page}
                     </span>
                     <button
                       disabled={meta.current_page >= meta.last_page || loading}

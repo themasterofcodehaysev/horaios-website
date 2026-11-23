@@ -10,6 +10,7 @@ import type { SeoStructuredData } from '../components/common/Seo';
 import { songService } from '../admin/services/song.service';
 import type { SongItem } from '../admin/types';
 
+import { useLanguage, translate, getDateLocale } from '../context/LanguageContext';
 const SITE_NAME = 'Horaios Baptist Church';
 
 /**
@@ -44,6 +45,7 @@ function buildSongSeo(song: SongItem) {
 }
 
 export const SongDetailPage: React.FC = () => {
+  const { t } = useLanguage();
   const { id } = useParams<{ id: string }>();
 
   const [song, setSong] = useState<SongItem | null>(null);
@@ -89,7 +91,7 @@ export const SongDetailPage: React.FC = () => {
           setRelatedSongs([]);
         }
       } catch (err: any) {
-        setError(err?.response?.data?.message || 'Song not found.');
+        setError(err?.response?.data?.message || translate('ui.song_not_found_msg', 'Song not found.'));
       } finally {
         setLoading(false);
       }
@@ -199,10 +201,10 @@ export const SongDetailPage: React.FC = () => {
       <Layout>
         <div className="max-w-md mx-auto pt-32 pb-20 px-4 text-center">
           <Music className="w-12 h-12 text-neutral-300 mx-auto mb-4" />
-          <h2 className="text-h4 font-bold text-neutral-800 mb-2">Song Not Found</h2>
-          <p className="text-body-sm text-neutral-500 mb-6">{error || 'The requested song does not exist or has been removed.'}</p>
+          <h2 className="text-h4 font-bold text-neutral-800 mb-2">{t('ui.song_not_found', 'Song Not Found')}</h2>
+          <p className="text-body-sm text-neutral-500 mb-6">{error || translate('ui.the_requested_song_does_not_exist_or_has_bee', 'The requested song does not exist or has been removed.')}</p>
           <Link to="/songs" className="px-5 py-2.5 bg-primary-red text-white rounded-lg font-medium text-body-sm hover:bg-primary-dark-red">
-            Back to Song Library
+            {t('ui.back_to_song_library', 'Back to Song Library')}
           </Link>
         </div>
       </Layout>
@@ -231,9 +233,9 @@ export const SongDetailPage: React.FC = () => {
             <button
               onClick={() => { setWorshipMode(false); stopAutoScroll(); }}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white text-body-xs font-semibold transition-colors"
-              title="Exit Worship Mode (Esc)"
+              title={t('ui.exit_worship_mode_esc', 'Exit Worship Mode (Esc)')}
             >
-              <Minimize2 className="w-4 h-4 text-amber-400" /> Exit (Esc)
+              <Minimize2 className="w-4 h-4 text-amber-400" /> {t('ui.exit_esc', 'Exit (Esc)')}
             </button>
 
             {/* Song title */}
@@ -252,10 +254,10 @@ export const SongDetailPage: React.FC = () => {
                       ? 'bg-amber-500 text-neutral-950 shadow-sm'
                       : 'text-neutral-300 hover:text-white'
                   }`}
-                  title={isAutoScrolling ? 'Pause auto-scroll' : 'Start auto-scroll'}
+                  title={isAutoScrolling ? t('ui.pause_auto_scroll', 'Pause auto-scroll') : t('ui.start_auto_scroll', 'Start auto-scroll')}
                 >
                   {isAutoScrolling ? <Pause className="w-3.5 h-3.5 fill-current" /> : <Play className="w-3.5 h-3.5 fill-current" />}
-                  <span className="hidden sm:inline">{isAutoScrolling ? 'Pause' : 'Scroll'}</span>
+                  <span className="hidden sm:inline">{isAutoScrolling ? t('ui.pause', 'Pause') : t('ui.scroll', 'Scroll')}</span>
                 </button>
 
                 {isAutoScrolling && (
@@ -263,7 +265,7 @@ export const SongDetailPage: React.FC = () => {
                     <button
                       onClick={() => setScrollSpeed(s => Math.max(0.5, s - 0.25))}
                       className="p-1 text-neutral-400 hover:text-white"
-                      title="Slower"
+                      title={t('ui.slower', 'Slower')}
                     >
                       -
                     </button>
@@ -271,7 +273,7 @@ export const SongDetailPage: React.FC = () => {
                     <button
                       onClick={() => setScrollSpeed(s => Math.min(3, s + 0.25))}
                       className="p-1 text-neutral-400 hover:text-white"
-                      title="Faster"
+                      title={t('ui.faster', 'Faster')}
                     >
                       +
                     </button>
@@ -284,7 +286,7 @@ export const SongDetailPage: React.FC = () => {
                 <button
                   onClick={decreaseFontSize}
                   className="p-1.5 text-neutral-400 hover:text-white"
-                  title="Smaller font"
+                  title={t('ui.smaller_font', 'Smaller font')}
                 >
                   <AArrowDown className="w-3.5 h-3.5" />
                 </button>
@@ -292,7 +294,7 @@ export const SongDetailPage: React.FC = () => {
                 <button
                   onClick={increaseFontSize}
                   className="p-1.5 text-neutral-400 hover:text-white"
-                  title="Larger font"
+                  title={t('ui.larger_font', 'Larger font')}
                 >
                   <AArrowUp className="w-3.5 h-3.5" />
                 </button>
@@ -313,9 +315,9 @@ export const SongDetailPage: React.FC = () => {
               </h2>
             )}
             <div className="flex items-center justify-center gap-4 text-body-xs text-neutral-400 mt-2">
-              {song.key && <span className="bg-neutral-800 px-2 py-0.5 rounded text-amber-300 font-mono">Key: {song.key}</span>}
-              {song.tempo && <span>Tempo: {song.tempo} BPM</span>}
-              {song.author && <span>By: {song.author}</span>}
+              {song.key && <span className="bg-neutral-800 px-2 py-0.5 rounded text-amber-300 font-mono">{t('ui.key', 'Key:')} {song.key}</span>}
+              {song.tempo && <span>{t('ui.tempo', 'Tempo:')} {song.tempo} BPM</span>}
+              {song.author && <span>{t('ui.by', 'By:')} {song.author}</span>}
             </div>
           </div>
 
@@ -347,14 +349,14 @@ export const SongDetailPage: React.FC = () => {
               to="/songs"
               className="inline-flex items-center gap-1.5 text-body-sm font-medium text-neutral-600 hover:text-primary-red transition-colors"
             >
-              <ArrowLeft className="w-4 h-4" /> Back to Songbook
+              <ArrowLeft className="w-4 h-4" /> {t('ui.back_to_songbook', 'Back to Songbook')}
             </Link>
 
           <button
             onClick={() => setWorshipMode(true)}
             className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-neutral-900 to-neutral-800 text-amber-400 font-bold rounded-xl text-body-sm hover:shadow-lg transition-all transform hover:scale-105 border border-amber-400/20"
           >
-            <Maximize2 className="w-4 h-4 text-amber-400" /> Enter Worship Mode
+            <Maximize2 className="w-4 h-4 text-amber-400" /> {t('ui.enter_worship_mode', 'Enter Worship Mode')}
           </button>
         </div>
 
@@ -368,7 +370,7 @@ export const SongDetailPage: React.FC = () => {
             )}
             {song.featured && (
               <span className="text-body-xs font-bold px-3 py-1 rounded-full bg-amber-100 text-amber-800">
-                ★ Featured Worship Song
+                {t('ui.featured_worship_song', '★ Featured Worship Song')}
               </span>
             )}
           </div>
@@ -378,11 +380,11 @@ export const SongDetailPage: React.FC = () => {
           </h1>
 
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-body-sm text-neutral-500 font-medium">
-            {song.artist && <span>By <strong className="text-neutral-700">{song.artist}</strong></span>}
-            {song.composer && <span>Composer: <strong className="text-neutral-700">{song.composer}</strong></span>}
+            {song.artist && <span>{t('ui.by_53e5aa', 'By')} <strong className="text-neutral-700">{song.artist}</strong></span>}
+            {song.composer && <span>{t('ui.composer', 'Composer:')} <strong className="text-neutral-700">{song.composer}</strong></span>}
             <span className="text-neutral-300">•</span>
             <span className="flex items-center gap-1 text-body-xs text-neutral-400">
-              <Calendar className="w-3.5 h-3.5" /> Updated {new Date(song.updated_at).toLocaleDateString()}
+              <Calendar className="w-3.5 h-3.5" /> {t('ui.updated', 'Updated')} {new Date(song.updated_at).toLocaleDateString(getDateLocale())}
             </span>
           </div>
         </header>
@@ -392,14 +394,14 @@ export const SongDetailPage: React.FC = () => {
           {/* Font Size Adjuster */}
           <div className="flex items-center gap-3">
             <span className="text-body-xs font-bold text-neutral-500 uppercase tracking-wider">
-              Text Size
+              {t('ui.text_size', 'Text Size')}
             </span>
             <div className="flex items-center bg-white rounded-xl border border-neutral-200 p-1 shadow-xs">
               <button
                 type="button"
                 onClick={decreaseFontSize}
                 className="p-1.5 hover:bg-neutral-100 rounded-lg text-neutral-700 transition-colors"
-                title="Decrease Font Size"
+                title={t('ui.decrease_font_size', 'Decrease Font Size')}
               >
                 <AArrowDown className="w-4 h-4" />
               </button>
@@ -408,7 +410,7 @@ export const SongDetailPage: React.FC = () => {
                 type="button"
                 onClick={increaseFontSize}
                 className="p-1.5 hover:bg-neutral-100 rounded-lg text-neutral-700 transition-colors"
-                title="Increase Font Size"
+                title={t('ui.increase_font_size', 'Increase Font Size')}
               >
                 <AArrowUp className="w-4 h-4" />
               </button>
@@ -416,7 +418,7 @@ export const SongDetailPage: React.FC = () => {
                 type="button"
                 onClick={resetFontSize}
                 className="p-1.5 hover:bg-neutral-100 rounded-lg text-neutral-400 hover:text-neutral-700 transition-colors border-l border-neutral-200 ml-1"
-                title="Reset Font Size"
+                title={t('ui.reset_font_size', 'Reset Font Size')}
               >
                 <RefreshCw className="w-3.5 h-3.5" />
               </button>
@@ -426,7 +428,7 @@ export const SongDetailPage: React.FC = () => {
           {/* Auto Scroll Controls */}
           <div className="flex items-center gap-3">
             <span className="text-body-xs font-bold text-neutral-500 uppercase tracking-wider">
-              Auto Scroll
+              {t('ui.auto_scroll', 'Auto Scroll')}
             </span>
             <div className="flex items-center gap-2">
               <button
@@ -437,10 +439,10 @@ export const SongDetailPage: React.FC = () => {
                     ? 'bg-amber-500 text-neutral-950 shadow-md'
                     : 'bg-white border border-neutral-200 text-neutral-800 hover:bg-neutral-100'
                 }`}
-                title={isAutoScrolling ? 'Pause auto-scroll (Spacebar)' : 'Start auto-scroll'}
+                title={isAutoScrolling ? t('ui.pause_auto_scroll_spacebar', 'Pause auto-scroll (Spacebar)') : t('ui.start_auto_scroll', 'Start auto-scroll')}
               >
                 {isAutoScrolling ? <Pause className="w-3.5 h-3.5 fill-current" /> : <Play className="w-3.5 h-3.5 fill-current" />}
-                {isAutoScrolling ? 'Pause' : 'Start Scroll'}
+                {isAutoScrolling ? t('ui.pause', 'Pause') : t('ui.start_scroll', 'Start Scroll')}
               </button>
 
               <select
@@ -470,15 +472,15 @@ export const SongDetailPage: React.FC = () => {
         {isAutoScrolling && (
           <div className="fixed bottom-6 right-6 z-40 animate-fade-in flex items-center gap-2.5 bg-neutral-900/90 text-white backdrop-blur-md px-4 py-2.5 rounded-full shadow-2xl border border-neutral-700/80">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-body-xs font-medium text-neutral-200">Auto-Scrolling ({scrollSpeed}x)</span>
+            <span className="text-body-xs font-medium text-neutral-200">{t('ui.auto_scrolling', 'Auto-Scrolling (')}{scrollSpeed}x)</span>
             <button
               type="button"
               onClick={toggleAutoScroll}
               className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500 hover:bg-amber-400 text-neutral-950 font-bold text-body-xs transition-colors shadow-sm ml-1"
-              title="Pause auto-scroll (Spacebar)"
+              title={t('ui.pause_auto_scroll_spacebar', 'Pause auto-scroll (Spacebar)')}
             >
               <Pause className="w-3.5 h-3.5 fill-current" />
-              <span>Pause</span>
+              <span>{t('ui.pause', 'Pause')}</span>
             </button>
           </div>
         )}
@@ -486,15 +488,15 @@ export const SongDetailPage: React.FC = () => {
         {/* Social Share Bar */}
         <ShareBar
           title={song.title}
-          description={song.artist ? `Worship song by ${song.artist}` : 'Horaios Worship Song'}
-          label="Share Song"
+          description={song.artist ? translate('ui.worship_song_by_artist', 'Worship song by {artist}', { artist: song.artist }) : t('ui.horaios_worship_song', 'Horaios Worship Song')}
+          label={t('ui.share_song', 'Share Song')}
         />
 
         {/* Related Songs Section (Max 5) */}
         {relatedSongs.length > 0 && (
           <section className="pt-8 border-t border-neutral-200 space-y-4">
             <h3 className="text-h5 font-bold text-neutral-900 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-amber-500" /> More {song.category?.name || 'Worship'} Songs
+              <Sparkles className="w-4 h-4 text-amber-500" /> {translate('ui.more_category_songs', 'More {category} Songs', { category: song.category?.name || t('songs.worship_tag', 'Worship') })}
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {relatedSongs.map((rel) => (
@@ -508,7 +510,7 @@ export const SongDetailPage: React.FC = () => {
                       {rel.title}
                     </h4>
                     <p className="text-body-xs text-neutral-500">
-                      {rel.artist || 'Worship'}
+                      {rel.artist || t('songs.worship_tag', 'Worship')}
                     </p>
                   </div>
                   <ChevronRight className="w-4 h-4 text-neutral-400 group-hover:translate-x-1 transition-transform" />

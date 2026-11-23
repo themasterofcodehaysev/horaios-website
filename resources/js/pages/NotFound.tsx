@@ -4,7 +4,9 @@ import { Layout } from '../components/layout';
 import { Button } from '../components/ui/Button';
 import { AlertCircle } from 'lucide-react';
 
+import { useLanguage } from '../context/LanguageContext';
 export const NotFoundPage: React.FC = () => {
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   return (
@@ -24,38 +26,38 @@ export const NotFoundPage: React.FC = () => {
           </h1>
 
           <p className="text-h3 font-semibold text-neutral-900 mb-3">
-            Page Not Found
+            {t('ui.page_not_found', 'Page Not Found')}
           </p>
 
           <p className="text-body-lg text-neutral-600 mb-8 max-w-xl mx-auto">
-            Oops! It looks like the page you're looking for doesn't exist. Don't worry, we can help you get back on track.
+            {t('ui.oops_it_looks_like_the_page_you_re_looking_f', 'Oops! It looks like the page you\'re looking for doesn\'t exist. Don\'t worry, we can help you get back on track.')}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Button variant="primary" size="lg" onClick={() => navigate('/')}>
-              Go Home
+              {t('ui.go_home', 'Go Home')}
             </Button>
             <Button variant="default" size="lg" onClick={() => navigate('/contact')}>
-              Contact Us
+              {t('nav.contact', 'Contact Us')}
             </Button>
           </div>
 
           {/* Helpful Links */}
           <div className="mt-16">
             <h2 className="text-h5 font-semibold text-neutral-900 mb-6">
-              Quick Links
+              {t('footer.quick_links', 'Quick Links')}
             </h2>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { label: 'Home', href: '/' },
-                { label: 'About', href: '/about' },
-                { label: 'Sermons', href: '/sermons' },
-                { label: 'Events', href: '/events' },
-                { label: 'Ministries', href: '/ministries' },
-                { label: 'News', href: '/news' },
-                { label: 'Visit Us', href: '/visit' },
-                { label: 'Contact', href: '/contact' },
+                { label: t('nav.home', 'Home'), href: '/' },
+                { label: t('footer.about', 'About'), href: '/about' },
+                { label: t('nav.sermons', 'Sermons'), href: '/sermons' },
+                { label: t('nav.events', 'Events'), href: '/events' },
+                { label: t('nav.ministries', 'Ministries'), href: '/ministries' },
+                { label: t('footer.news', 'News'), href: '/news' },
+                { label: t('ui.visit_us', 'Visit Us'), href: '/visit' },
+                { label: t('footer.contact', 'Contact'), href: '/contact' },
               ].map((link) => (
                 <Link
                   key={link.href}
