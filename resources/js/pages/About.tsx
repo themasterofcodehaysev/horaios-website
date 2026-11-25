@@ -104,7 +104,7 @@ export const AboutPage: React.FC = () => {
             <div className="lg:col-span-5">
               <div className="relative rounded-3xl overflow-hidden shadow-elevation-lg aspect-[4/3] bg-neutral-100 border border-neutral-200/60">
                 <img 
-                  src={placeholderImage(600, 450, 'Church Building & Worship')} 
+                  src={settings.about_building_image ? getImageUrl(settings.about_building_image) : placeholderImage(600, 450, 'Church Building & Worship')}
                   alt={t('ui.horaios_baptist_church_sanctuary', 'Horaios Baptist Church Sanctuary')} 
                   className="w-full h-full object-cover" 
                 />

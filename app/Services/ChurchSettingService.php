@@ -35,6 +35,8 @@ class ChurchSettingService
                 $group = 'advanced';
             } elseif (in_array($key, ['default_language', 'timezone'])) {
                 $group = 'system';
+            } elseif (in_array($key, ['home_fellowship_image', 'about_building_image'])) {
+                $group = 'page_images';
             }
             ChurchSetting::set($key, $value, $type, $group);
         }

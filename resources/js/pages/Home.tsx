@@ -377,7 +377,7 @@ export const HomePage: React.FC = () => {
               <div className="relative mx-auto max-w-md lg:max-w-none">
                 <div className="relative rounded-3xl overflow-hidden shadow-elevation-lg aspect-[4/5] bg-neutral-100 border border-neutral-200/80">
                   <img
-                    src={placeholderImage(600, 750, 'Church Worship & Fellowship')}
+                    src={settings.home_fellowship_image ? getImageUrl(settings.home_fellowship_image) : placeholderImage(600, 750, 'Church Worship & Fellowship')}
                     alt={t('ui.horaios_baptist_church_fellowship', 'Horaios Baptist Church Fellowship')}
                     className="w-full h-full object-cover"
                   />

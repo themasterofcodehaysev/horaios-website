@@ -45,6 +45,10 @@ class ChurchSettingsSeeder extends Seeder
             ['key' => 'default_language', 'value' => 'en', 'type' => 'string', 'group' => 'system', 'is_public' => false],
             ['key' => 'timezone', 'value' => 'Asia/Phnom_Penh', 'type' => 'string', 'group' => 'system', 'is_public' => false],
 
+            // Page Images (empty value falls back to the built-in placeholder)
+            ['key' => 'home_fellowship_image', 'value' => '', 'type' => 'string', 'group' => 'page_images', 'is_public' => true],
+            ['key' => 'about_building_image', 'value' => '', 'type' => 'string', 'group' => 'page_images', 'is_public' => true],
+
             // Giving & Contribution Settings
             ['key' => 'giving_enabled', 'value' => 'true', 'type' => 'boolean', 'group' => 'giving', 'is_public' => true],
             ['key' => 'giving_qr_image', 'value' => '', 'type' => 'string', 'group' => 'giving', 'is_public' => true],

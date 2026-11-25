@@ -7,7 +7,7 @@ import { settingsService } from '../../services/settings.service';
 import ImageUpload from '../../components/ui/ImageUpload';
 
 import { useLanguage } from '../../../context/LanguageContext';
-const TABS = ['General', 'Contact', 'Giving', 'Social Media', 'System', 'Advanced'];
+const TABS = ['General', 'Contact', 'Page Images', 'Giving', 'Social Media', 'System', 'Advanced'];
 
 export default function ChurchSettingsPage() {
   const { t } = useLanguage();
@@ -130,6 +130,44 @@ export default function ChurchSettingsPage() {
       <div className="flex justify-end pt-4 border-t border-gray-100">
         <button
           onClick={() => handleSave('general')}
+          disabled={saving}
+          className="bg-accent-blue hover:bg-[#152752] text-white px-5 py-2.5 rounded-lg flex items-center gap-2 transition-colors shadow-sm disabled:opacity-50 font-medium"
+        >
+          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+          {t('admin_ui.save_changes', 'Save Changes')}
+        </button>
+      </div>
+    </div>
+  );
+
+  const renderPageImagesTab = () => (
+    <div className="space-y-6">
+      <p className="text-sm text-gray-500">
+        {t('admin_ui.page_images_intro', 'Images shown on the public website. If no image is uploaded, a placeholder is shown.')}
+      </p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <ImageUpload
+            value={settings.page_images?.home_fellowship_image || ''}
+            onChange={url => handleInputChange('page_images', 'home_fellowship_image', url)}
+            folder="pages"
+            label={t('admin_ui.home_fellowship_image', 'Church Worship & Fellowship (Home page)')}
+            helperText={t('admin_ui.home_fellowship_image_help', 'Shown in the welcome section of the Home page. Portrait 4:5, e.g. 1200×1500px.')}
+          />
+        </div>
+        <div>
+          <ImageUpload
+            value={settings.page_images?.about_building_image || ''}
+            onChange={url => handleInputChange('page_images', 'about_building_image', url)}
+            folder="pages"
+            label={t('admin_ui.about_building_image', 'Church Building & Worship (About page)')}
+            helperText={t('admin_ui.about_building_image_help', 'Shown beside the church history on the About page. Landscape 4:3, e.g. 1600×1200px.')}
+          />
+        </div>
+      </div>
+      <div className="flex justify-end pt-4 border-t border-gray-100">
+        <button
+          onClick={() => handleSave('page_images')}
           disabled={saving}
           className="bg-accent-blue hover:bg-[#152752] text-white px-5 py-2.5 rounded-lg flex items-center gap-2 transition-colors shadow-sm disabled:opacity-50 font-medium"
         >
@@ -857,6 +895,7 @@ export default function ChurchSettingsPage() {
           <h2 className="text-lg font-semibold text-gray-900 mb-6">{t('admin_ui.settings', 'Settings')} {t(`admin_tab.${activeTab}`, activeTab)}</h2>
           {activeTab === 'General' && renderGeneralTab()}
           {activeTab === 'Contact' && renderContactTab()}
+          {activeTab === 'Page Images' && renderPageImagesTab()}
           {activeTab === 'Giving' && renderGivingTab()}
           {activeTab === 'Social Media' && renderSocialTab()}
           {activeTab === 'System' && renderLocalizationTab()}

@@ -73,6 +73,10 @@ export interface SiteSettings {
   giving_instructions?: string;
   giving_mobile_instructions?: string;
   giving_online_url?: string;
+
+  // Page Images
+  home_fellowship_image?: string;
+  about_building_image?: string;
 }
 
 const defaultSettings: SiteSettings = {
@@ -140,6 +144,8 @@ const defaultSettings: SiteSettings = {
   giving_instructions: "1. Open your mobile banking app (ABA Mobile, Bakong, etc.).\n2. Scan the church QR code.\n3. Enter your giving amount and mention 'Tithe' or 'Offering' in the remarks.\n4. Confirm your transfer.",
   giving_mobile_instructions: "1. Open ABA Mobile, Bakong, or Wing.\n2. Tap 'Transfer to Bank Account' or 'Scan KHQR'.\n3. Select ABA Bank and enter account number 001 234 567.\n4. Input the amount and note 'Offering'.\n5. Confirm payment.",
   giving_online_url: "",
+  home_fellowship_image: "",
+  about_building_image: "",
 };
 
 function extractMapEmbedUrl(url: string): string {
